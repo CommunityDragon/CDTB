@@ -8,21 +8,21 @@ How to use:
 	- Run lol-patcher.jar once a settings.cfg file will show up
 	- Set the region and Language
 	- Set the items you want to download to true
-		- lol_air_client = the lagacy client
+		- lol_air_client = The lagacy client
 		
-		- lol_air_client_config = the config for the lagacy client
+		- lol_air_client_config = The config for the lagacy client
 		
-		- lol_game_client = the League of legends game
+		- lol_game_client = The League of legends game
 		
-		- lol_game_client_Lang = the language the lol_game_client is set at
+		- lol_game_client_Lang = The language the lol_game_client is set at
 		
-		- league_client = the current client
+		- league_client = The current client
 		
-		- league_client_Lang = the language the league_client is set at
+		- league_client_Lang = The language the league_client is set at
 		
-		- PURGE_UNWANTED_FILES = purges the files that the lol_game_client doesn't use
+		- PURGE_UNWANTED_FILES = Purges the files that the lol_game_client doesn't use
 
-	- after configuring simply run the jar again
+	- After configuring simply run the jar again
 	
 Change log:
 
