@@ -25,6 +25,7 @@ How to use:
 	- after configuring simply run the jar again
 	
 Change log:
+
 	-Removed laggy GUI
 	-Added the current league client
 	-Added more config options
