@@ -4,10 +4,10 @@ This is an edited/patched version of xupwup's LoLPatcher
 
 
 How to use:
+
 	- Run lol-patcher.jar once a settings.cfg file will show up
 	- Set the region and Language
 	- Set the items you want to download to true
-
 		- lol_air_client = the lagacy client
 		
 		- lol_air_client_config = the config for the lagacy client
