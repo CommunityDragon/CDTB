@@ -1,0 +1,322 @@
+package lolpatcher;
+
+import java.awt.Point;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import nl.xupwup.WindowManager.Component;
+import nl.xupwup.WindowManager.Components.Button;
+import nl.xupwup.WindowManager.Components.SelectList;
+import nl.xupwup.WindowManager.Listener;
+import nl.xupwup.WindowManager.Window;
+
+/**
+ *
+ * @author Rick
+ */
+public class ConfigurationTask extends PatchTask{
+    Main main;
+    String slnversion;
+    String new_slnversion;
+    String server;
+    float percentage = 0;
+    String language;
+    
+    boolean lol_air_client = false;
+    boolean lol_game_client = false;
+    boolean lol_game_client_sln = false;
+    boolean lol_game_client_Lang = false;
+    boolean lol_air_client_config = false;
+    boolean lol_game_client_patcher = false;
+    boolean league_client = false;
+    boolean league_client_sln  = true;
+    boolean league_client_Lang = false;
+    boolean PURGE_UNWANTED_FILES  = false;
+    
+    
+    public ConfigurationTask(Main main){
+        this.main = main;
+    }
+    
+    
+    private void selectLanguage(final String server) throws IOException{
+        slnversion = LoLPatcher.getVersion("solutions", "lol_game_client_sln", server); // temporarily use EUW to get language list
+        String branch = (server.equals("PBE") ? "pbe" : "live");
+        getSolutionManifest(slnversion, branch,"lol_game_client_sln");
+        File solutionmanifest = new java.io.File("RADS/solutions/lol_game_client_sln/releases/" + slnversion + "/solutionmanifest");
+        BufferedReader br = new BufferedReader(new FileReader(solutionmanifest));
+        String line;
+        final ArrayList<String> languages = new ArrayList<>();
+        while((line = br.readLine()) != null){
+            if(line.matches("lol_game_client_[a-z]+_[a-z]+")){
+                String nlang = line.substring("lol_game_client_".length());
+                boolean found = false;
+                for(String lang : languages){
+                    if(lang.equals(nlang)){
+                        found = true;
+                        break;
+                    }
+                }
+                if(!found){
+                    languages.add(nlang);
+                }
+            }
+        }
+        br.close();
+        final Window languageSelector = new Window(new Point(50, 10), "Select language");
+        
+        final SelectList languagelist = new SelectList(
+                    languages.toArray(new String[languages.size()]), 2
+                    , null, null, 0);
+        languageSelector.addComponent(languagelist);
+        languageSelector.addComponent(new Button("Save", new Listener() {
+            @Override
+            public void click(Component c) {
+
+                language = languages.get(languagelist.selected);
+
+                Properties props = new Properties();
+                try {
+                    props.setProperty("server", server);
+                    props.setProperty("language", language);
+                    try(FileWriter fw = new FileWriter("settings.txt")){
+                        props.store(fw, null);
+                    }
+                } catch (IOException ex) {
+                    error = ex;
+                    Logger.getLogger(ConfigurationTask.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                addPatchers();
+            }
+        } , null));
+        
+
+    }
+    
+    @Override
+    public void patch() throws MalformedURLException, IOException, NoSuchAlgorithmException {
+        if(! new File("settings.txt").exists()){
+            
+            
+            final Window serverSelector = new Window(new Point(70, 15), "Select server");
+            final String[] serversHuman = new String[]{"EUW", "EUNE", "BR", "NA", "PBE", "LAN", "LAS", "JP", "OCE"};
+            final String[] serversActual = new String[]{"EUW", "EUNE", "BR", "NA", "PBE", "LA1", "LA2", "JP", "OC1"};
+            final SelectList serverlist = new SelectList(
+                    serversHuman, 1
+                    , null, null, 0);
+            serverSelector.addComponent(serverlist);
+            serverSelector.addComponent(new Button("Save", new Listener() {
+                @Override
+                public void click(Component c) {
+
+                    server = serversActual[serverlist.selected];
+                    try {
+                        selectLanguage(server);
+                    } catch (IOException ex) {
+                        Logger.getLogger(ConfigurationTask.class.getName()).log(Level.SEVERE, null, ex);
+                        error = ex;
+                    }
+                }
+            }, null));
+            
+
+        }else{
+            Properties props = new Properties();
+            try(FileReader fr = new FileReader("settings.txt")){
+                props.load(fr);
+            }
+            server = props.getProperty("server");
+            language = props.getProperty("language");
+            lol_air_client=Boolean.parseBoolean(props.getProperty("lol_air_client"));
+    		lol_game_client=Boolean.parseBoolean(props.getProperty("lol_game_client"));
+    		lol_game_client_sln=Boolean.parseBoolean(props.getProperty("lol_game_client_sln"));
+    		lol_game_client_Lang=Boolean.parseBoolean(props.getProperty("lol_game_client_Lang"));
+    		lol_air_client_config=Boolean.parseBoolean(props.getProperty("lol_air_client_config"));
+    		lol_game_client_patcher=Boolean.parseBoolean(props.getProperty("lol_game_client_patcher"));
+    		
+    		league_client=Boolean.parseBoolean(props.getProperty("league_client"));
+    	    league_client_sln=Boolean.parseBoolean(props.getProperty("league_client_sln"));
+    	    league_client_Lang=Boolean.parseBoolean(props.getProperty("league_client_Lang"));
+    	    
+    		PURGE_UNWANTED_FILES=Boolean.parseBoolean(props.getProperty("PURGE_UNWANTED_FILES"));
+    		
+            addPatchers();
+        }
+    }
+    
+    private void getSolutionManifest(String version, String branch,String ab) throws IOException{
+    	System.out.println("RADS/solutions/"+ab+"/releases/" + version + "/solutionmanifest");
+        URL u = new URL("http://l3cdn.riotgames.com/releases/"+branch+"/solutions/"+ab+"/releases/"+version+"/solutionmanifest");
+        URLConnection con = u.openConnection();
+        
+        File f = new java.io.File("RADS/solutions/"+ab+"/releases/" + version + "/solutionmanifest");
+        new File(f.getParent()).mkdirs();
+        f.createNewFile();
+        
+        try (InputStream in = con.getInputStream()) {
+            try (OutputStream fo = new FileOutputStream(f)) {
+                int read;
+                byte[] buffer = new byte[2048];
+                while((read = in.read(buffer)) != -1){
+                    fo.write(buffer, 0, read);
+                }
+            }
+        }
+    }
+    
+    
+    
+    
+    public void dumpConfig(String versions , String num) throws IOException{
+        File f = new java.io.File("RADS/solutions/"+versions+"/releases/" + num + "/configurationmanifest");
+        System.out.println("a");
+        System.out.println("RADS/solutions/"+versions+"/releases/" + num + "/configurationmanifest");
+        f.createNewFile();
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
+            bw.write("RADS Configuration Manifest\r\n" +
+                    "1.0.0.0\r\n" +
+                    language + "\r\n" +
+                    "2\r\n" +
+                    versions +"\r\n" +
+                    versions+"_" + language + "\r\n");
+        }
+        
+        File confdir = new java.io.File("RADS/solutions/"+versions+"/releases/" + num + "/deploy/DATA/cfg/defaults/");
+        confdir.mkdirs();
+        File conf = new File(confdir, "locale.cfg");
+        
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(conf))) {
+            String[] lang = language.split("_");
+            lang[1] = lang[1].toUpperCase();
+            bw.write("[General]\r\n" +
+                     "LanguageLocaleRegion="+lang[0] + "_"+lang[1]);
+        }
+    }
+    
+    public void addPatchers(){
+    	
+        slnversion = LoLPatcher.getVersion("solutions", "lol_game_client_sln", server);
+        String branch = (server.equals("PBE") ? "pbe" : "live");
+        try {
+            getSolutionManifest(slnversion, branch,"lol_game_client_sln");
+            dumpConfig("lol_game_client_sln",slnversion);
+        } catch (IOException ex) {
+            Logger.getLogger(ConfigurationTask.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    	
+        
+    	if(league_client_sln){
+	        new_slnversion = LoLPatcher.getVersion("solutions", "league_client_sln", server);
+	        String new_branch = (server.equals("PBE") ? "pbe" : "live");
+	        try {
+	            getSolutionManifest(new_slnversion, new_branch,"league_client_sln");
+	            dumpConfig("league_client_sln",new_slnversion);
+	        } catch (IOException ex) {
+	            Logger.getLogger(ConfigurationTask.class.getName()).log(Level.SEVERE, null, ex);
+	        }
+    	}  
+        
+        main.airversion = LoLPatcher.getVersion("projects", "lol_air_client", server);
+        
+        String clientConfigName = "lol_air_client_config"+(server.equals("PBE") ? "" : "_"+server.toLowerCase());
+        
+        String league_client_clientConfigName = "league_client";
+        
+        
+        String gameversion = LoLPatcher.getVersion("projects", "lol_game_client", server);
+        String leagueclientversion = LoLPatcher.getVersion("projects", "league_client", server);
+        String airconfigversion = LoLPatcher.getVersion("projects", clientConfigName, server);
+        String league_client_version = LoLPatcher.getVersion("projects", league_client_clientConfigName, server);
+        String gamelanguageversion = LoLPatcher.getVersion("projects", "lol_game_client_"+language, server);
+        
+        String client_gamelanguageversion = LoLPatcher.getVersion("projects", "lol_game_client_"+language, server);
+        
+        
+        if(main.purgeAfterwards && PURGE_UNWANTED_FILES){
+            main.patchers.add(new ArchivePurgeTask("lol_game_client", gameversion, branch, "projects"));
+            done = true;
+            return;
+        }
+        
+        if (lol_air_client)
+        	main.patchers.add(new LoLPatcher(main.airversion, "lol_air_client", branch, main.ignoreS_OK, main.force));
+        
+        if (lol_game_client)
+        	main.patchers.add(new LoLPatcher(gameversion, "lol_game_client", branch, main.ignoreS_OK, main.force));
+        
+        
+        if(lol_game_client_sln)
+        	main.patchers.add(new LoLPatcher(airconfigversion, clientConfigName, branch, main.ignoreS_OK, main.force));
+        
+        if(lol_game_client_Lang)
+        	main.patchers.add(new LoLPatcher(gamelanguageversion, "lol_game_client_"+language, branch, main.ignoreS_OK, main.force));
+        
+        
+        
+        if (league_client)
+        	main.patchers.add(new LoLPatcher(leagueclientversion, "league_client", branch, main.ignoreS_OK, main.force));
+        
+        
+        if(league_client_sln)
+        	main.patchers.add(new LoLPatcher(league_client_version, league_client_clientConfigName, branch, main.ignoreS_OK, main.force));
+        
+        if(league_client_Lang)
+        	main.patchers.add(new LoLPatcher(client_gamelanguageversion, "lol_game_client_"+language, branch, main.ignoreS_OK, main.force));
+        
+        
+        
+        
+        if (lol_game_client_patcher){
+	        main.patchers.add(new CopyTask(
+	                new File("RADS/projects/"+clientConfigName+"/releases/"+airconfigversion+"/deploy/"),
+	                new File("RADS/projects/lol_air_client/releases/"+main.airversion+"/deploy/"), true));
+        }
+        
+        if(league_client_sln)
+        	main.patchers.add(new SLNPatcher(leagueclientversion, new_slnversion, main.ignoreS_OK,"league_client"));
+        
+        if(lol_game_client_sln)
+        	main.patchers.add(new SLNPatcher(gameversion, slnversion, main.ignoreS_OK,"lol_game_client"));
+
+        main.patchers.add(new RunTask(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                	System.out.println("B");
+                	System.out.println("RADS/projects/lol_air_client/releases/" + main.airversion + "/deploy/locale.properties");
+                    File f = new java.io.File("RADS/projects/lol_air_client/releases/" + main.airversion + "/deploy/locale.properties");
+                    f.createNewFile();
+                    try (BufferedWriter bw = new BufferedWriter(new FileWriter(f))) {
+                        String[] lang = language.split("_");
+                        lang[1] = lang[1].toUpperCase();
+                        bw.write("locale=" + lang[0] + "_" + lang[1]);
+                    }
+                }   catch (IOException ex) {
+                    Logger.getLogger(ConfigurationTask.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }, "Locale config"));
+   
+        
+        done = true;
+    }
+
+    @Override
+    public float getPercentage() {
+        return percentage;
+    }
+}
