@@ -20,7 +20,7 @@ How to use:
 		
 		- league_client_Lang = the language the league_client is set at
 		
-		- PURGE_UNWANTED_FILES purges the files that the lol_game_client doesn't use
+		- PURGE_UNWANTED_FILES = purges the files that the lol_game_client doesn't use
 
 	- after configuring simply run the jar again
 	
