@@ -1,33 +1,18 @@
-This is an edited/patched version of xupwup's LoLPatcher
+Downloads the latest Patch from the League of legends servers
 
- - The original version can be found here: https://github.com/xupwup/LoLPatcher
-
-
+Setup:
+	
+	- npm install 
+	
 How to use:
-
-	- Run the jar once, a settings.cfg file will show up
-	- Set the region and Language
-	- Set the items you want to download to true
-		- lol_air_client = The lagacy client
-		
-		- lol_air_client_config = The config for the lagacy client
-		
-		- lol_game_client = The League of legends game
-		
-		- lol_game_client_Lang = The language the lol_game_client is set at
-		
-		- league_client = The current client
-		
-		- league_client_Lang = The language the league_client is set at
-		
-		- PURGE_UNWANTED_FILES = Purges the files that the lol_game_client doesn't use
-
-	- After configuring simply run the jar again
+	
+	- Open Downloader.js
+	- At the bottom of the scrpt function "Download(region ,project)"
+	- Put in the region and project name of the files you want to download
+	- Then run the program
+	- Node Downloader.js
 	
 Change log:
 
-	-Removed laggy GUI
-	-Added the current league client
-	-Added more config options
-	-Removed some unwanted features such as auto launching league of legends?
-
+	- Made teh program
+ 
