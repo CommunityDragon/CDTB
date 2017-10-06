@@ -3,11 +3,14 @@ var rmParser = require('lol-releasemanifest-parser'),
 var url = require("url")
 var path = require("path")
 var request = require('request');
-var fs = require('fs');
+
 var Sync = require('sync');
 var BinaryFile = require('binary-file');
 var async = require('asyncawait/async');
 var await = require('asyncawait/await');
+var fs = require('graceful-fs')
+var zlib = require('zlib');
+ 
  
 
 //globals
@@ -95,15 +98,23 @@ var ReadAndWriteBIN = function(fBin,SavePath,Seek,len,Type){
      * 4 = copy to sln?
      */
 	BuildPath(SavePath)
+	Compressed = false
+	if (SavePath.endsWith('.compressed')){
+		SavePath = SavePath.slice(0,-11)
+		Compressed = true
+	}
 	const SavedFile = new BinaryFile(SavePath, 'w');
 	(async (function () {
 		try {
 			await (fBin.open())
 			await (SavedFile.open())
-const data= await (fBin.read(len, position = Seek))
+	  data= await (fBin.read(len, position = Seek))
+			if (Compressed){
+				data = zlib.inflateSync(data)
+			}
 			await (SavedFile.write(data))
-			await (fBin.close())
 			await (SavedFile.close())
+			await (fBin.close())
 		} catch (err) {
 			console.log(`There was an error: ${err}`);
 		}
@@ -169,6 +180,7 @@ var rmDir = function(dirPath) {
 }
 
 var DownloadReleaseMan = function(Name, Version){
+	console.log("Downloading: Release manifest");
 	URL = "live/projects/"+Name+"/releases/"+Version+"/releasemanifest"
 	Path = "RADS/"+URL
 	Download_File_RADS("releases/"+URL,Path)
@@ -288,6 +300,6 @@ var Download = function(Region,Name) {
 }
 
 var Main = function(){
-	Download('NA','lol_game_client')
+	Download('NA','league_client')
 }
 Main();
