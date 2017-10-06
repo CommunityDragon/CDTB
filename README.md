@@ -14,7 +14,7 @@ How to use:
 	
 Project names:
 
-	- lol_air_client = The lagacy client
+	- lol_air_client = The legacy client
 	
 	- lol_air_client_config = The config for the lagacy client
 	
