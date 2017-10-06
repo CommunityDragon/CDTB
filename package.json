@@ -1,0 +1,17 @@
+{
+  "name": "loldownloader",
+  "version": "0.1.0",
+  "description": "Download RADS for League of legends",
+  "main": "Downloader.js",
+  "scripts": {
+    "start": "StartDownload"
+  },
+  "dependencies": {
+	"lol-releasemanifest-parser": ">=0",
+	"request": ">=0",
+	"sync": ">=0",
+	"binary-file": ">=0",
+	"asyncawait": ">=0"
+  }
+  
+}
