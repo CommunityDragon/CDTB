@@ -1,6 +1,7 @@
 import os
 path = os.path
 
+import shutil
 import requests
 import zlib
 
@@ -155,7 +156,7 @@ def ExtractPackManFiles (PackMan,Version,Name,Region):
 		
 		BINFile.close()#close BIN read here
 		
-	os.removedirs(TempPath)
+	shutil.rmtree(TempPath, ignore_errors=False)
 
 #download the ReleaseManifest to the RADS folder
 def DownloadReleaseMan (Name, Version):
