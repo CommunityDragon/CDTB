@@ -12,7 +12,7 @@ How to use:
 	- At the bottom of the scrpt function "Download(region ,project)"
 	- Put in the region and project name of the files you want to download
 	- Then run the program
-	- "python36/python.exe" Downloader.py
+	- python Downloader.py
 	
 Project names:
 
