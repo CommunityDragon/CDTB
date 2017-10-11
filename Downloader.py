@@ -2,6 +2,7 @@ import os
 path = os.path
 
 import requests
+import zlib
 
 #globals
 LoLPatchServer = "http://l3cdn.riotgames.com/"
@@ -141,8 +142,16 @@ def ExtractPackManFiles (PackMan,Version,Name,Region):
 			Offlen = int(file[2])
 			
 			BINFile.seek(Offset)
+			CompressedFlag=False
+			if Path.endswith('.compressed'): #if file is compressed
+				Path=Path[:-11]
+				CompressedFlag = True
 			with open(Path, 'wb') as f:
-				f.write(BINFile.read(Offlen))
+				data = BINFile.read(Offlen)
+				if CompressedFlag: #decompress the file
+					print("Decompressing...")
+					data = zlib.decompress(data)
+				f.write(data)
 		
 		BINFile.close()#close BIN read here
 		
@@ -213,6 +222,6 @@ def Download (Region,Name):
 	ExtractPackManFiles(PackMan,version,Name,Region)
 
 def Main():
-	Download('NA','lol_air_client')
+	Download('NA','lol_game_client')
 
 Main()
