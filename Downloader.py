@@ -156,7 +156,7 @@ def ExtractPackManFiles (PackMan,Version,Name,Region):
 		
 		BINFile.close()#close BIN read here
 		
-	shutil.rmtree(TempPath, ignore_errors=False)
+	shutil.rmtree(TempPath, ignore_errors=True)
 
 #download the ReleaseManifest to the RADS folder
 def DownloadReleaseMan (Name, Version):
