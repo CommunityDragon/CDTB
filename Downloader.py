@@ -129,16 +129,16 @@ def DownloadPackManFiles (PackMan,Version,Name,Region):
 		
 		files = binitems[1]
 		BINFile = open(TempPath+BinName, "rb")#open BIN read here
-		for property in files:
-			Path = property[0].split('/')
+		for file in files:
+			Path = file[0].split('/')
 			print("Extracting file: "+ Path[len(Path)-2] + "/" + Path[len(Path)-1])
 			Path[4] = Version
 			Path[5] = "deploy"
 			Path = "RADS/"+('/'.join(Path))
 			BuildPath(Path)
 
-			Offset = int(property[1])
-			Offlen = int(property[2])
+			Offset = int(file[1])
+			Offlen = int(file[2])
 			
 			BINFile.seek(Offset)
 			with open(Path, 'wb') as f:
