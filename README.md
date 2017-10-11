@@ -1,5 +1,11 @@
 Downloads the latest Patch from the League of legends servers
 	
+Setup:
+	
+	- Install python36
+	- pip install requests
+	- Done :)
+	
 How to use:
 	
 	- Edit Downloader.py
