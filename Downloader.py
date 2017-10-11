@@ -77,7 +77,26 @@ var ManifestToUrl = function(JSONdata,Name, Version,PackMan){
 	print(Paths)
 		
 }'''
-
+#---------------------------------------------------------------------#
+#returns a sorted list of what files are from what BIN (showed below)
+'''
+	
+	["BIN_0x0000002d",
+		[
+			[ItemPath,ItemOffset,ItemLength,Type],
+			[ItemPath,ItemOffset,ItemLength,Type],
+			[ItemPath,ItemOffset,ItemLength,Type]...
+			
+		]
+	"BIN_0x00000005",
+		[
+			[ItemPath,ItemOffset,ItemLength,Type],
+			[ItemPath,ItemOffset,ItemLength,Type],
+			[ItemPath,ItemOffset,ItemLength,Type]...
+			
+		]
+	]
+'''
 def SortPackMan (PackMan):
 	TmpArr=[]
 	for Pack in PackMan:
@@ -96,30 +115,11 @@ def SortPackMan (PackMan):
 		else:
 			TmpArr[i-1][1].append(metaitems)
 			
-	'''
-	returns a sorted list of what files are from what BIN
-	
-	["BIN_0x0000002d",
-		[
-			[ItemPath,ItemOffset,ItemLength,Type],
-			[ItemPath,ItemOffset,ItemLength,Type],
-			[ItemPath,ItemOffset,ItemLength,Type]...
-			
-		]
-	"BIN_0x00000005",
-		[
-			[ItemPath,ItemOffset,ItemLength,Type],
-			[ItemPath,ItemOffset,ItemLength,Type],
-			[ItemPath,ItemOffset,ItemLength,Type]...
-			
-		]
-	]
-	'''
 	return(TmpArr)
 
 
-
-def DownloadPackManFiles (PackMan,Version,Name,Region):
+#downloads temp BIN files extracts the game files from the BIN
+def ExtractPackManFiles (PackMan,Version,Name,Region):
 	sortedfiles = SortPackMan(PackMan)
 	TempPath = 'TMP_BINS/'+Region+'/'+Name+'/'
 	for binitems in sortedfiles:
@@ -148,20 +148,20 @@ def DownloadPackManFiles (PackMan,Version,Name,Region):
 		
 	os.removedirs(TempPath)
 
-
+#download the ReleaseManifest to the RADS folder
 def DownloadReleaseMan (Name, Version):
 	print("Downloading: Release manifest")
 	URL = "live/projects/"+Name+"/releases/"+Version+"/releasemanifest"
 	Path = "RADS/"+URL
 	Download_File_RADS("releases/"+URL,Path)
 
-
+#creates a path of folders from a path -removes the file at the end
 def BuildPath (Path):
 	Path = '/'.join(Path.split('/')[:-1])
 	if not path.exists(Path):
 		os.makedirs(Path)
 	
-
+#downloads the files right to the RADS folder
 def Download_File_RADS (URL,Path):
 	Path = Path.replace('/live', '',1)
 	target_url = path.join(LoLPatchServer,URL)
@@ -170,28 +170,29 @@ def Download_File_RADS (URL,Path):
 	with open(Path, 'wb') as f:
 		f.write(requests.get(target_url).content)
 
+#Gets the latest version of the project
 def GetLatestVersion (Name,Region):
 	URL = "releases/live/projects/"+Name+"/releases/releaselisting_"+Region
 	target_url = LoLPatchServer+URL
 	version = requests.get(target_url).content.decode("utf-8")
 	return(version.split("\r\n")[0])
 
-
+#Reads PackageManifest files and output the propertys for each line
 def ReadPackMan(files):
+	files = files[1:-1] #remove the "Magic number" at the beginning and the blank line at the end
 	for i, file in enumerate(files):
 		files[i] = file.split(",")
 		
-	files = files[1:-1]
 	return (files)
 
-
+#downloads the PackageManifest to memory
 def DownloadPackMan (Name, Version):
 	URL = "releases/live/projects/"+Name+"/releases/"+Version+"/packages/files/packagemanifest"
 	target_url = LoLPatchServer+URL
-	print(target_url)
 	PackMan = requests.get(target_url).content.decode("utf-8")
 	return(PackMan.split("\r\n"))
 
+#downloads the BIN files from Riot Servers
 def DownloadBinFile(Name, Version,Region,BIN):
 	URL = "releases/live/projects/"+Name+"/releases/"+Version+"/packages/files/"+BIN
 	target_url = LoLPatchServer+URL
@@ -201,6 +202,7 @@ def DownloadBinFile(Name, Version,Region,BIN):
 	with open(BIN, 'wb') as f:
 		f.write(requests.get(target_url).content)
 
+#main download procedure calls all the functions
 def Download (Region,Name):
 	version = GetLatestVersion(Name,Region)
 	print(Name)
@@ -208,7 +210,7 @@ def Download (Region,Name):
 	PackMan = DownloadPackMan(Name,version)
 	PackMan = ReadPackMan(PackMan)
 	DownloadReleaseMan(Name,version)
-	DownloadPackManFiles(PackMan,version,Name,Region)
+	ExtractPackManFiles(PackMan,version,Name,Region)
 
 def Main():
 	Download('NA','lol_air_client')
