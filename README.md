@@ -8,7 +8,7 @@ Setup:
 	
 How to use:
 	
-	- Edit Downloader.py
+	- Edit downloader.py
 	- At the bottom of the scrpt function "download(region ,project)"
 	- Put in the region and project name of the files you want to download
 	- Then run the program
