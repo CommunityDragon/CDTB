@@ -19,24 +19,24 @@ LOLPATCHSERVER = "http://l3cdn.riotgames.com/"
 def sort_packman(packman):
     """
     Returns a sorted list of what files are from what BIN (showed below).
-	[
-		["BIN_0x0000002d",
-			[
-				[ItemPath,ItemOffset,ItemLength,Type],
-				[ItemPath,ItemOffset,ItemLength,Type],
-				[ItemPath,ItemOffset,ItemLength,Type]...
-				
-			]
-		],
-		["BIN_0x00000005",
-			[
-				[ItemPath,ItemOffset,ItemLength,Type],
-				[ItemPath,ItemOffset,ItemLength,Type],
-				[ItemPath,ItemOffset,ItemLength,Type]...
-				
-			]
-		]...
-	]
+    [
+        ["BIN_0x0000002d",
+            [
+                [ItemPath,ItemOffset,ItemLength,Type],
+                [ItemPath,ItemOffset,ItemLength,Type],
+                [ItemPath,ItemOffset,ItemLength,Type]...
+
+            ]
+        ],
+        ["BIN_0x00000005",
+            [
+                [ItemPath,ItemOffset,ItemLength,Type],
+                [ItemPath,ItemOffset,ItemLength,Type],
+                [ItemPath,ItemOffset,ItemLength,Type]...
+
+            ]
+        ]...
+    ]
     """
     tmp_list = []
     for pack in packman:
