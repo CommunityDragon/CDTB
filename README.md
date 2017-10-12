@@ -9,7 +9,7 @@ Setup:
 How to use:
 	
 	- Edit Downloader.py
-	- At the bottom of the scrpt function "Download(region ,project)"
+	- At the bottom of the scrpt function "download(region ,project)"
 	- Put in the region and project name of the files you want to download
 	- Then run the program
 	- python Downloader.py
