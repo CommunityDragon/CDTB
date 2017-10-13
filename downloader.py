@@ -101,7 +101,6 @@ def extract_packman_files(packman, version, name, region):
 
 def download_release_manifest(name, version):
     """Download the ReleaseManifest to the RADS folder"""
-    print('Downloading: Release manifest')
     stuff = ['live', 'projects', name, 'releases', version, 'releasemanifest']
     url = 'releases' + '/'.join(stuff)
     path = os.path.join('RADS', *stuff)
@@ -116,24 +115,26 @@ def build_path(path):
 
 def download_file_RADS(url, path):
     """downloads the files right to the RADS folder"""
-    path = path.replace('/live', '', 1)
+    #path = path.replace('/live', '', 1)
     target_url = os.path.join(LOLPATCHSERVER, url)
-    build_path(path)
+    build_path(os.path.split(path)[0])
     target_url = target_url.replace('\\', '//', 1)
+    print('Downloading: Release manifest ({}l)'.format(target_url))
     with open(path, 'wb') as f:
         f.write(requests.get(target_url).content)
 
 
-def get_latest_version(name, region):
+def get_latest_version(name):
     """Gets the latest version of the project"""
-    url = 'releases/live/projects/' + name + '/releases/releaselisting_' + region
+    url = 'releases/live/projects/' + name + '/releases/releaselisting'
     target_url = LOLPATCHSERVER + url
     version = requests.get(target_url).content.decode('utf-8')
     return version.split('\r\n')[0]
 
 
-def read_packman(files):
+def read_packman(packman):
     """Reads PackageManifest files and output the propertys for each line"""
+    files = packman.split('\r\n')
     files = files[1:-1]  # remove the "Magic number" at the beginning and the blank line at the end
     for i, file in enumerate(files):
         files[i] = file.split(',')
@@ -144,14 +145,16 @@ def download_packman(name, version):
     """downloads the PackageManifest to memory"""
     url = 'releases/live/projects/' + name + '/releases/' + version + '/packages/files/packagemanifest'
     target_url = LOLPATCHSERVER + url
+    print("Downloading: {}".format(target_url))
     packman = requests.get(target_url).content.decode('utf-8')
-    return packman.split('\r\n')
+    return packman
 
 
 def download_bin_file(name, version, region, bin_filename):
     """downloads the BIN files from Riot Servers"""
     url = 'releases/live/projects/' + name + '/releases/' + version + '/packages/files/' + bin_filename
     target_url = LOLPATCHSERVER + url
+    print("Downloading bin file: {}".format(target_url))
     tmp_bin = os.path.join('TMP_BINS', region, name)
     build_path(tmp_bin)
     bin_filename = os.path.join(tmp_bin, bin_filename)
@@ -161,13 +164,13 @@ def download_bin_file(name, version, region, bin_filename):
 
 def download(name, region):
     """main download procedure calls all the functions"""
-    version = get_latest_version(name, region)
-    print(name)
-    print(version)
+    version = get_latest_version(name)
+    print("Name:", name)
+    print("Version:", version)
     packman = download_packman(name, version)
-    packman = read_packman(packman)
+    files = read_packman(packman)
     download_release_manifest(name, version)
-    extract_packman_files(packman, version, name, region)
+    extract_packman_files(files, version, name, region)
 
 
 def main():
