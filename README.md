@@ -8,11 +8,7 @@ Setup:
 	
 How to use:
 	
-	- Edit downloader.py
-	- At the bottom of the scrpt function "download(region ,project)"
-	- Put in the region and project name of the files you want to download
-	- Then run the program
-	- python downloader.py 
+	- python downloader.py project_name region
 	
 Project names:
 
@@ -22,4 +18,13 @@ Project names:
 	
 	- league_client = The current client
 	
+Regions:
+	
+	- NA
+	- EUW
+	- EUNE
+	- JP
+	- BR
+	- RU
+	- TR
  

@@ -5,7 +5,7 @@ Note: `packman` in this code stands for `package manifest`.
 """
 
 import os
-
+import sys
 import shutil
 import requests
 import zlib
@@ -121,14 +121,14 @@ def download_file_RADS(url, path):
     target_url = os.path.join(LOLPATCHSERVER, url)
     build_path(path,True)
     target_url = target_url.replace('\\', '//', 1)
-    print('Downloading: Release manifest ({}l)'.format(target_url))
+    print('Downloading: Release manifest ({})'.format(target_url))
     with open(path, 'wb') as f:
         f.write(requests.get(target_url).content)
 
 
-def get_latest_version(name):
+def get_latest_version(name,region):
     """Gets the latest version of the project"""
-    url = 'releases/live/projects/' + name + '/releases/releaselisting'
+    url = 'releases/live/projects/' + name + '/releases/releaselisting'+'_'+region
     target_url = LOLPATCHSERVER + url
     version = requests.get(target_url).content.decode('utf-8')
     return version.split('\r\n')[0]
@@ -166,7 +166,7 @@ def download_bin_file(name, version, region, bin_filename):
 
 def download(name, region):
     """main download procedure calls all the functions"""
-    version = get_latest_version(name)
+    version = get_latest_version(name,region)
     print("Name:", name)
     print("Version:", version)
     packman = download_packman(name, version)
@@ -176,8 +176,38 @@ def download(name, region):
 
 
 def main():
-    download('lol_game_client', 'NA')
-
+	
+	try:
+		with open('config/ProjectList') as f:
+			projectlist = f.read().splitlines()
+	except FileNotFoundError:
+		print('Looks like your missing file "ProjectList" in your config folder!')
+		exit()
+		
+	try:
+		with open('config/RegionList') as f:
+			regionlist = f.read().splitlines()
+	except FileNotFoundError:
+		print('Looks like your missing file "RegionList" in your config folder!')
+		exit()
+	
+	if (sys.argv[1] in projectlist):
+		project = sys.argv[1]
+	else:
+		print(sys.argv[1] + " is not a project!")
+		exit()
+		
+	if (sys.argv[2] in regionlist):
+		region = sys.argv[2]	
+	else:
+		print(sys.argv[2] + " is not a region!")
+		exit()
+		
+	print("Starting download of "+project+" in region "+region+"!")
+	
+	download(project, region)
+	
+	print("Done!")
 
 if __name__ == "__main__":
     main()
