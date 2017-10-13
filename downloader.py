@@ -77,7 +77,7 @@ def extract_packman_files(packman, version, name, region):
                 path[4] = version
                 path[5] = 'deploy'
                 path = 'RADS/' + ('/'.join(path))
-                build_path(path)
+                build_path(path,True)
 
                 offset = int(file[1])
                 offlen = int(file[2])
@@ -107,17 +107,19 @@ def download_release_manifest(name, version):
     download_file_RADS(url, path)
 
 
-def build_path(path):
+def build_path(path,file):
     """create a path of folders from a path"""
+    if file:
+        path = os.path.dirname(path)
     if not os.path.exists(path):
         os.makedirs(path)
 
 
 def download_file_RADS(url, path):
     """downloads the files right to the RADS folder"""
-    #path = path.replace('/live', '', 1)
+    path = path.replace('\\live', '', 1)
     target_url = os.path.join(LOLPATCHSERVER, url)
-    build_path(os.path.split(path)[0])
+    build_path(path,True)
     target_url = target_url.replace('\\', '//', 1)
     print('Downloading: Release manifest ({}l)'.format(target_url))
     with open(path, 'wb') as f:
@@ -156,7 +158,7 @@ def download_bin_file(name, version, region, bin_filename):
     target_url = LOLPATCHSERVER + url
     print("Downloading bin file: {}".format(target_url))
     tmp_bin = os.path.join('TMP_BINS', region, name)
-    build_path(tmp_bin)
+    build_path(tmp_bin,False)
     bin_filename = os.path.join(tmp_bin, bin_filename)
     with open(bin_filename, 'wb') as f:
         f.write(requests.get(target_url).content)
