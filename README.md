@@ -8,7 +8,7 @@ Setup:
 	
 How to use:
 	
-	- python downloader.py project_name project
+	- python downloader.py project_name
 	
 Project names:
 
