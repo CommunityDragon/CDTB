@@ -1,6 +1,9 @@
 import struct
 import os
-import haslib
+import hashlib
+import binascii
+import zlib
+import gzip
 
 
 """
@@ -97,7 +100,7 @@ def extract_header_info(data, file_hashes, signatures):
             # Get the file extension
             position = parser.position
             parser.seek(offset)
-            magic = binascii.hexlify(parser.raw(12))
+            magic = binascii.hexlify(parser.raw(12)).decode()
             parser.seek(position)
             ext = get_extension(magic, signatures)
 
@@ -134,20 +137,27 @@ def extract_file(filename, file_data):
     # Make the direc if it doesn't exist
     head, tail = os.path.split(filename)
     if head != '':
-        os.makedirs(head, exists_ok=True)
+        os.makedirs(head, exist_ok=True)
 
     # Save the file
     with open(filename, "wb") as f:
         f.write(file_data)
 
 
-def save_files(data, file_headers):
+def save_files(directory, data, file_headers, ignore=None):
     parser = Parser(data)
-    for header in file_headers:
+    if ignore is None:
+        ignore = {}
+    else:
+        # convert list to dict for fast lookup
+        ignore = {hash: True for hash in ignore}
+
+    _five_percent_interval = int(len(file_headers) / 20.)
+    for i, header in enumerate(file_headers):
         parser.seek(header['offset'])
         if header['compressed']:
             file_data = parser.raw(header['compressed_file_size'])
-            file_data = zlib.decompress(file_data)
+            file_data = gzip.decompress(file_data)
         else:
             file_data = parser.raw(header['file_size'])
 
@@ -155,40 +165,85 @@ def save_files(data, file_headers):
 
         filename = header['filename']
         ext = header['extension']
-        if ext is not None:
+        if ext is not None and not filename.endswith(ext):
             filename = filename + '.' + ext
+        filename = filename.split('/')
+        filename = os.path.join(directory, *filename)
 
-        extract_file(header['filename'], file_data)
+        if not ignore.get(header['file_hash'], False):
+            extract_file(filename, file_data)
+            if i % _five_percent_interval == 0:
+                print(f'{i} out of {len(file_headers)} files extracted...')
 
 
-def main()
+def identify_file_type(fn):
+    import ujson as json
+    import scipy.ndimage
+    try:
+        with open(fn) as f:
+            json.load(f)
+            return "json"
+    except:
+        pass
+    try:
+        scipy.ndimage.imread(fn)
+        return "image"
+    except OSError:
+        pass
+
+
+def identify_unknown_file_types(directory):
+    # We don't know the file name or file signatures for some files, so try a few different methods of opening them until one works
+    files = [f for f in os.listdir(os.path.join(directory, 'unknown')) if not os.path.splitext(f)[1]]
+    for fn in files:
+        fn = os.path.join(directory, 'unknown', fn)
+        file_type = identify_file_type(fn)
+        if file_type == 'json':
+            os.rename(fn, fn + '.json')
+        elif file_type == "image":
+            # Just assume jpg
+            os.rename(fn, fn + '.jpg')
+
+
+def main():
     import sys
     import ujson as json
-    import requests
 
-    file_hashes = json.loads(requests.get('https://github.com/Pupix/lol-wad-parser/raw/master/lib/hashes.json').text)
-    signatures = json.loads(requests.get('https://github.com/Pupix/lol-wad-parser/raw/master/lib/signatures.json').text)
+    with open('hashes.json') as f:
+        file_hashes = json.load(f)
+    with open('signatures.json') as f:
+        signatures = json.load(f)
+    with open('ignore.json') as f:
+        ignore = json.load(f)
 
     try:
         directory = sys.argv[2]
     except IndexError:
         directory = "temp"
-    os.makedirs(directory, exists_ok=True)
+    os.makedirs(directory, exist_ok=True)
 
     try:
         wad_filename = sys.argv[1]
     except IndexError:
         wad_filename = "default-assets.wad"
 
+    print("Loading data...")
     with open(wad_filename, "rb") as f:
         data = f.read()
-    if wad_filename.endswith(".compressed")
+    if wad_filename.endswith(".compressed"):
+        print("Decompressing data...")
         data = zlib.decompress(data)
 
+    print("Loading headers...")
     headers = extract_header_info(data, file_hashes, signatures)
-    save_files(data, headers)
+    print(f"Got {len(headers)} headers/files.")
+
+    print("Saving files...")
+    save_files(directory, data, headers, ignore=ignore)
+
+    print("Identifying the type of unknown files...")
+    identify_unknown_file_types(directory)
 
 
 if __name__ == "__main__":
     main()
-
