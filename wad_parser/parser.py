@@ -80,8 +80,11 @@ def extract_header_info(data, file_hashes, signatures):
     _magic1, _magic2, version_major, version_minor = parser.unpack("ccBB")
     magic = _magic1 + _magic2; del _magic1; del _magic2
 
-    if version_major == 2:
-        parser.skip(84)
+    if version_major in (2, 3):
+        if version_major == 2:
+            parser.seek(88)
+        if version_major == 3:
+            parser.seek(256)
         wad_header_unk, wad_header_entry_header_offset, wad_header_entry_header_cell_size, wad_header_file_count = parser.unpack("QHHI")
 
         wad_file_headers = []
@@ -172,8 +175,8 @@ def save_files(directory, data, file_headers, ignore=None):
 
         if not ignore.get(header['file_hash'], False):
             extract_file(filename, file_data)
-            if i % _five_percent_interval == 0:
-                print(f'{i} out of {len(file_headers)} files extracted...')
+        if i % _five_percent_interval == 0:
+            print(f'{i} out of {len(file_headers)} files extracted...')
 
 
 def identify_file_type(fn):
