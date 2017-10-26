@@ -1,3 +1,71 @@
-lol_air_client
-lol_game_client
-league_client
+#------league_client paths------#
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_cs_cz"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_de_de"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_el_gr"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_en_au"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_en_gb"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_en_us"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_es_es"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_es_mx"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_fr_fr"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_hu_hu"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_it_it"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_ja_jp"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_pl_pl"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_pt_br"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_ro_ro"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_ru_ru"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "league_client_tr_tr"}
+
+# It could also be the old "http://legendspatch-lol.x-cdn.com/KR_CBT/", or "http://akacdn.riotgames.com/KR_CBT/", or "http://kr.patchdata.lolstatic.com/KR_CBT" ....
+{"schema":"http://", "base": "l3cdn.riotgames.com/KR_CBT/projects/", "name": "league_client_ko_kr"}
+
+#{"schema":"", "base": "", "name": "league_client_en_sg"}
+#{"schema":"", "base": "", "name": "league_client_es_ar"}
+#{"schema":"", "base": "", "name": "league_client_id_id"}
+#{"schema":"", "base": "", "name": "league_client_ms_my"}
+#{"schema":"", "base": "", "name": "league_client_th_th"}
+#{"schema":"", "base": "", "name": "league_client_vn_vn"}
+#{"schema":"", "base": "", "name": "league_client_zh_cn"}
+#{"schema":"", "base": "", "name": "league_client_zh_tw"}
+#{"schema":"", "base": "", "name": "league_client_zh_my"}
+#---------------------------------------------------------------------------------------------------------------------------#
+
+#------lol_game_client paths------#
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_cs_cz"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_de_de"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_el_gr"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_en_au"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_en_gb"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_en_us"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_es_es"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_es_mx"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_fr_fr"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_hu_hu"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_it_it"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_ja_jp"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_pl_pl"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_pt_br"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_ro_ro"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_ru_ru"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_game_client_tr_tr"}
+
+# It could also be the old "http://legendspatch-lol.x-cdn.com/KR_CBT/", or "http://akacdn.riotgames.com/KR_CBT/", or "http://kr.patchdata.lolstatic.com/KR_CBT" ....
+{"schema":"http://", "base": "l3cdn.riotgames.com/KR_CBT/projects/", "name": "lol_game_client_ko_kr"}
+
+#{"schema":"", "base": "", "name": "lol_game_client_en_sg"}
+#{"schema":"", "base": "", "name": "lol_game_client_es_ar"}
+#{"schema":"", "base": "", "name": "lol_game_client_id_id"}
+#{"schema":"", "base": "", "name": "lol_game_client_ms_my"}
+#{"schema":"", "base": "", "name": "lol_game_client_th_th"}
+#{"schema":"", "base": "", "name": "lol_game_client_vn_vn"}
+#{"schema":"", "base": "", "name": "lol_game_client_zh_cn"}
+#{"schema":"", "base": "", "name": "lol_game_client_zh_tw"}
+#{"schema":"", "base": "", "name": "lol_game_client_zh_my"}
+#---------------------------------------------------------------------------------------------------------------------------#
+
+#------lol_air_client paths------#
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_air_client"}
+#---------------------------------------------------------------------------------------------------------------------------#

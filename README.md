@@ -8,23 +8,9 @@ Setup:
 	
 How to use:
 	
-	- python downloader.py project_name region
+	- python downloader.py project_name
 	
 Project names:
 
-	- lol_air_client = The legacy client
+	- Project names are value of the key named "name" found in the config folder.
 	
-	- lol_game_client = The League of legends game
-	
-	- league_client = The current client
-	
-Regions:
-	
-	- NA
-	- EUW
-	- EUNE
-	- JP
-	- BR
-	- RU
-	- TR
- 
