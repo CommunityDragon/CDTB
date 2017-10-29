@@ -1,4 +1,4 @@
-# EasyThreadding is an easy to use threadding library for python!
+# Easythreading is an easy to use threading library for python!
 
 ## Functionalty and examples:
 ------
