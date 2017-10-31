@@ -53,7 +53,9 @@ def main():
         try:
             print("Downloading and calculating patch for release version {}...".format(version))
             client_filename = download_LoL_exe(version)
-            client_filename = unicode(client_filename)
+            #unicode() was replaced with str() in python3
+            #client_filename = unicode(client_filename)
+            client_filename = str(client_filename)
             client_version = extract_client_version(client_filename)
 
             version_conversion[version] = client_version
