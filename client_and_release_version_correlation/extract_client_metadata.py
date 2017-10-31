@@ -3,10 +3,11 @@ import requests
 import zlib
 import re
 import os
+#python 2.7
 #import hachoir_parser, hachoir_metadata
 
-from hachoir.parser import createParser
-from hachoir.metadata import extractMetadata
+#python 3
+import hachoir.parser, hachoir.metadata
 
 
 def get_all_release_versions():
@@ -29,8 +30,8 @@ def download_LoL_exe(release_version):
 
 def extract_client_version(client_path):
     #assert client_path.endswith("LeagueClient.exe")
-    parser = createParser(client_path, client_path)
-    metadata = extractMetadata(parser=parser)
+    parser = hachoir.parser.createParser(client_path, client_path)
+    metadata = hachoir.metadata.extractMetadata(parser=parser)
     metadata = metadata.exportPlaintext()
     version = None
     for md in metadata:
