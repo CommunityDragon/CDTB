@@ -171,37 +171,33 @@ def read_project_list(path):
 	except FileNotFoundError:
 		print('Looks like your missing your "ProjectList" file in your config folder!')
 		exit()
-	tmp=[]
-	for line in projectlist:
-		if line.startswith('{'):
-			tmp.append(json.loads(line))
-	return(tmp)
-	
-def find_project(jsonlist,name):
-	for j in jsonlist:
-		if j['name'] == name:
-			return(True,j)
-	return(False,None)
-	
-def download(project):
-	"""main download procedure calls all the functions"""
-	project.autorun()
+
+	projectlist = [json.loads(line) for line in projectlist if line.startswith('{')]
+	return(projectlist)
 	
 def main():
-	project = str(sys.argv[1])
-	lolprojectnames = read_project_list('config/ProjectList')
-	found,properties = find_project(lolprojectnames,project)
-	if found:
-		project = ProjectData(properties,'RADS/projects')
-		print("Starting download of "+project.properties['name']+"!")
-		download(project)
-		print("Done!")
+	"""main download procedure calls all the functions"""
+	added = True
+	if sys.argv[1] == 'all':
+		projects = sys.argv[2:]
+		added = False
 	else:
-		print('Project not found...')
-			
+		projects = sys.argv[1:]
+		
+	lolproject = read_project_list('config/ProjectList')
+	if added:
+		lolproject = [project for project in lolproject if project['name'] in projects]
+	else:
+		lolproject = [project for project in lolproject if project['name'] not in projects]
 
+	for projectProperties in lolproject:
+		project = ProjectData(projectProperties,'RADS/projects')
+		print("Downloading "+project.properties['name']+"!")
+		project.autorun()
+			
+	
 if __name__ == "__main__":
-	if len(sys.argv) == 2:
+	if len(sys.argv) >= 2:
 		main()
 	else:
 		print("Invalid argv!")

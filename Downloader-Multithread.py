@@ -203,31 +203,31 @@ def read_project_list(path):
 	except FileNotFoundError:
 		print('Looks like your missing your "ProjectList" file in your config folder!')
 		exit()
-	tmp=[]
-	for line in projectlist:
-		if line.startswith('{'):
-			tmp.append(json.loads(line))
-	return(tmp)
-	
-def find_project(jsonlist,name):
-	for j in jsonlist:
-		if j['name'] == name:
-			return(True,j)
-	return(False,None)
+
+	projectlist = [json.loads(line) for line in projectlist if line.startswith('{')]
+	return(projectlist)
 	
 def main():
 	"""main download procedure calls all the functions"""
+	added = True
 	cores = int(sys.argv[1])
-	projects = sys.argv[2:]
+	
+	if sys.argv[2] == 'all':
+		projects = sys.argv[3:]
+		added = False
+	else:
+		projects = sys.argv[2:]
+		
 	lolprojectnames = read_project_list('config/ProjectList')
-	for project in projects:
-		found,properties = find_project(lolprojectnames,project)
-		if found:
-			project = ProjectData(properties,'RADS/projects')
-			print("Adding download of "+project.properties['name']+" to queue!")
-			project.autorun(cores)
-		else:
-			print('Project not found...')
+	if added:
+		lolprojectnames = [project for project in lolprojectnames if project['name'] in projects]
+	else:
+		lolprojectnames = [project for project in lolprojectnames if project['name'] not in projects]
+
+	for projectProperties in lolprojectnames:
+		project = ProjectData(projectProperties,'RADS/projects')
+		print("Downloading "+project.properties['name']+"!")
+		project.autorun(cores)
 			
 	
 if __name__ == "__main__":
