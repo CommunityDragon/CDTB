@@ -66,6 +66,11 @@
 #{"schema":"", "base": "", "name": "lol_game_client_zh_my"}
 #---------------------------------------------------------------------------------------------------------------------------#
 
+#------PBE paths------#
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/pbe/projects/", "name": "league_client_PBE"}
+{"schema":"http://", "base": "l3cdn.riotgames.com/releases/pbe/projects/", "name": "lol_game_client_PBE"}
+#---------------------------------------------------------------------------------------------------------------------------#
+
 #------lol_air_client paths------#
 {"schema":"http://", "base": "l3cdn.riotgames.com/releases/live/projects/", "name": "lol_air_client"}
 #---------------------------------------------------------------------------------------------------------------------------#

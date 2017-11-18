@@ -15,10 +15,16 @@ class ProjectData:
 
 	def __init__(self,properties):
 		self.properties = properties
+		self.serverurl = properties['schema']+properties['base']+properties['name']+'/releases/'	
+		
+		self.properties = properties
 		self.versionpath = 'Versions'
 		self.localversion = os.path.join(self.versionpath, properties['name'])
-		self.serverurl = properties['schema']+properties['base']+properties['name']+'/releases/'
-
+		if properties['name'].endswith('_PBE'):
+			self.serverurl = properties['schema']+properties['base']+properties['name'][:-4]+'/releases/'
+		else:
+			self.serverurl = properties['schema']+properties['base']+properties['name']+'/releases/'
+			
 	def autorun(self):
 		"""main download procedure calls all the functions"""
 		build_path(self.versionpath,False)

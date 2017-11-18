@@ -35,9 +35,15 @@ class ProjectData:
 
 	def __init__(self,properties,RADS):
 		self.RADS = RADS
-		self.properties = properties
-		self.serverurl = properties['schema']+properties['base']+properties['name']+'/releases/'
+		self.pbe = False
+		if properties['name'].endswith('_PBE'):
+			properties['name'] = properties['name'][:-4]
+			self.RADS += '/PBE'
+			self.pbe = True
 
+		self.properties = properties
+		self.serverurl = properties['schema']+properties['base']+properties['name']+'/releases/'	
+		
 	def autorun(self,cores):
 		"""main download procedure calls all the functions"""
 		self.get_latest_version()
@@ -132,7 +138,7 @@ class ProjectData:
 		for i in range(len(self.packman)):
 			bin_name = self.packman[i][0]
 			print('adding BIN file ' + bin_name+' to queue!')
-			manager.add_priority_fork_job(download_bin_file,0,fork=i,args=[self.serverurl+self.version, self.properties['name'], bin_name])
+			manager.add_priority_fork_job(download_bin_file,0,fork=i,args=[self.serverurl+self.version, self.properties['name'], bin_name,self.pbe])
 			print('adding extract to queue!')
 			manager.add_priority_fork_job(self.extract_packman_files,1,fork=i,args=[tmp_path,self.packman[i],bin_name])
 			
@@ -147,7 +153,7 @@ class ProjectData:
 				print('Extracting file: ' + path[len(path)-2] + '/' + path[len(path)-1])
 				path[4] = self.version
 				path[5] = 'deploy'
-				path = 'RADS/' + ('/'.join(path))
+				path = self.RADS+'/' + ('/'.join(path[2:]))
 				build_path(path,True)
 
 				offset = int(file[1])
@@ -186,11 +192,14 @@ def build_path(path,file):
     if not os.path.exists(path):
         os.makedirs(path)
 		
-def download_bin_file(target_url, name, bin_filename):
+def download_bin_file(target_url, name, bin_filename,ispbe):
 	"""downloads the BIN files from Riot Servers"""
+	pbe = ''
+	if ispbe:
+		pbe='PBE'
 	target_url += '/packages/files/' + bin_filename
 	print("Downloading bin file: {}".format(target_url))
-	tmp_bin = os.path.join('TMP_BINS', name)
+	tmp_bin = os.path.join('TMP_BINS',pbe,name)
 	build_path(tmp_bin,False)
 	bin_filename = os.path.join(tmp_bin, bin_filename)
 	with open(bin_filename, 'wb') as f:

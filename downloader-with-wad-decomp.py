@@ -10,6 +10,7 @@ import shutil
 import requests
 import zlib
 import json
+from libs.wad_parser.parser import extract_wad
 
 class ProjectData:
 
@@ -137,6 +138,9 @@ class ProjectData:
 							print('Decompressing...')
 							data = zlib.decompress(data)
 						f.write(data)
+					if path.endswith('.wad') or path.endswith('.wad.client'):
+						extract_wad(path)
+                        
 			finally:
 				bin_file.close()  # close BIN read here
 

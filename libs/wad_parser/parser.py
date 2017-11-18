@@ -4,6 +4,7 @@ import hashlib
 import binascii
 import zlib
 import gzip
+import zstd
 
 
 """
@@ -160,9 +161,16 @@ def save_files(directory, data, file_headers, ignore=None):
         parser.seek(header['offset'])
         if header['compressed']:
             file_data = parser.raw(header['compressed_file_size'])
-            file_data = gzip.decompress(file_data)
-        else:
-            file_data = parser.raw(header['file_size'])
+            try:
+                file_data = gzip.decompress(file_data)
+                #print('gzip:',file_data)
+            except OSError: #if gzip wont work must be zstd
+                try:
+                    file_data = zstd.decompress(file_data)
+                    #print('zstd:',file_data)
+                except (OSError,ValueError): #if gzip or zstd wont work must be text of some sort (don't know)
+                    file_data = file_data[4:]#remove the first 4 bytes useless
+                    #print('OSError:',file_data)
 
         #assert header['sha256'] == hashlib.sha256(file_data).hexdigest()  # Make sure we have the correct data!
 
@@ -174,13 +182,21 @@ def save_files(directory, data, file_headers, ignore=None):
         filename = os.path.join(directory, *filename)
 
         if not ignore.get(header['file_hash'], False):
-            extract_file(filename, file_data)
+            #this is broken?
+            try:
+                extract_file(filename, file_data)
+            except UnboundLocalError:
+                pass
+				
+        #this is broken?
+        '''
         if i % _five_percent_interval == 0:
             print(f'{i} out of {len(file_headers)} files extracted...')
+        '''
 
 
 def identify_file_type(fn):
-    import ujson as json
+    import json
     import scipy.ndimage
     try:
         with open(fn) as f:
@@ -202,15 +218,57 @@ def identify_unknown_file_types(directory):
         fn = os.path.join(directory, 'unknown', fn)
         file_type = identify_file_type(fn)
         if file_type == 'json':
-            os.rename(fn, fn + '.json')
+            try:
+                os.rename(fn, fn + '.json')
+            except FileExistsError:
+                os.rename(fn, fn + '(error).json')
         elif file_type == "image":
             # Just assume jpg
-            os.rename(fn, fn + '.jpg')
+            try:
+                os.rename(fn, fn + '.jpg')
+            except FileExistsError:
+                os.rename(fn, fn + '(error).jpg')
 
+def extract_wad(path):
+    import os
+    import json
+    import inspect
+    scriptpath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+	
+    with open(scriptpath+'\\hashes.json') as f:
+        file_hashes = json.load(f)
+    with open(scriptpath+'\\signatures.json') as f:
+        signatures = json.load(f)
+    with open(scriptpath+'\\ignore.json') as f:
+        ignore = json.load(f)
 
+    directory = os.path.dirname(path)
+
+    wad_filename = path
+
+    print("Loading data...")
+    with open(wad_filename, "rb") as f:
+        data = f.read()
+    if wad_filename.endswith(".compressed"):
+        print("Decompressing data...")
+        data = zlib.decompress(data)
+
+    print("Loading headers...")
+    headers = extract_header_info(data, file_hashes, signatures)
+	#this is broken?
+    '''
+    print(f"Got {len(headers)} headers/files.")
+    '''
+
+    print("Saving files...")
+    save_files(directory, data, headers, ignore=ignore)
+
+    print("Identifying the type of unknown files...")
+    identify_unknown_file_types(directory)
+        
 def main():
     import sys
-    import ujson as json
+    import json
 
     with open('hashes.json') as f:
         file_hashes = json.load(f)
@@ -239,7 +297,10 @@ def main():
 
     print("Loading headers...")
     headers = extract_header_info(data, file_hashes, signatures)
+	#this is broken?
+    '''
     print(f"Got {len(headers)} headers/files.")
+    '''
 
     print("Saving files...")
     save_files(directory, data, headers, ignore=ignore)
