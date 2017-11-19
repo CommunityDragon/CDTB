@@ -5,7 +5,7 @@ import sys
 import zlib
 import json
 from contextlib import contextmanager
-from typing import List, Dict
+from typing import List, Dict, IO, Union
 import logging
 import requests
 
@@ -46,9 +46,9 @@ class Version:
         return not self == other
 
 
-class Downloader:
+class Storage:
     """
-    Download files from Riot server
+    Download and store game files
     """
 
     # all available values are in system.yaml
@@ -57,38 +57,60 @@ class Downloader:
     DOWNLOAD_URL = "l3cdn.riotgames.com"
     DOWNLOAD_PATH = "/releases/live"
 
-    def __init__(self, url=None):
+    def __init__(self, output, url=None):
         if url is None:
             url = f"http://{self.DOWNLOAD_URL}{self.DOWNLOAD_PATH}/"
         self.url = url
+        self.output = output
         self.s = requests.session()
 
-    def get(self, path, **kwargs) -> requests.Response:
+    def request_get(self, path, **kwargs) -> requests.Response:
         """Request a path, returns a requests.Response object"""
         return self.s.get(self.url + path, **kwargs)
 
-    def text(self, path) -> str:
-        """Request a path, returns content as text"""
-        r = self.get(path)
+    def request_text(self, path) -> str:
+        """Request a path, return content as text"""
+        r = self.request_get(path)
         r.raise_for_status()
-        return r.content.decode('utf-8')
+        r.encoding = 'utf-8'
+        return r.text
 
-    def lines(self, path) -> List[str]:
-        return self.text(path).split('\r\n')[:-1]
+    @contextmanager
+    def open(self, path, output, force=False, mode='r') -> IO:
+        """Open a storage file, download it if needed
+        If output is None, use path's value.
+        """
+        if output is None:
+            output = path
+        self.download(path, output, force)
+        with open(os.path.join(self.output, output), mode=mode) as f:
+            yield f
 
-    def download(self, path, output) -> None:
-        """Download to a path
-
-        If output ends with a '/', append path's basename to it.
+    def download(self, path, output, force=False) -> None:
+        """Download a path to disk
+        If output is None, use path's value.
         """
 
-        if output.endswith('/'):
-            output = os.path.join(output, os.path.basename(path))
-        os.makedirs(os.path.dirname(output), exist_ok=True)
-        r = self.s.get(self.url + path)
-        r.raise_for_status()
-        with open(output, 'wb') as f:
-            f.write(r.content)
+        if output is None:
+            output = path
+        abs_output = os.path.join(self.output, output)
+        if not force and os.path.isfile(abs_output):
+            return
+
+        logger.debug("download file: %s", output)
+        try:
+            os.makedirs(os.path.dirname(abs_output), exist_ok=True)
+            r = self.s.get(self.url + path)
+            r.raise_for_status()
+            with open(abs_output, 'wb') as f:
+                f.write(r.content)
+        except:
+            # remove partially downloaded file
+            try:
+                os.remove(abs_output)
+            except OSError:
+                pass
+            raise
 
     class StreamReader:
         """Wrapper for reading data from stream request"""
@@ -130,23 +152,18 @@ class Downloader:
             yield self.StreamReader(r)
 
 
-dl = Downloader()
-
-
 class Project:
     """
     RADS project
     """
 
-    def __init__(self, name):
+    def __init__(self, storage: Storage, name):
+        self.storage = storage
         self.path = f"projects/{name}/releases"
         self.name = name
 
     def __str__(self):
         return "<{} {}>".format(self.__class__.__name__, self.name)
-
-    def __repr__(self):
-        return "{}({!r})".format(self.__class__.__qualname__, self.name)
 
     def __eq__(self, other):
         if isinstance(other, Project):
@@ -159,7 +176,8 @@ class Project:
     def versions(self) -> List['ProjectVersion']:
         """Retrieve the list of versions of this project"""
         logger.debug("retrieve versions of %s", self)
-        return [ProjectVersion(self, Version(l)) for l in dl.lines(f"{self.path}/releaselisting")]
+        listing = self.storage.request_text(f"{self.path}/releaselisting")
+        return [ProjectVersion(self, Version(l)) for l in listing.splitlines()]
 
 
 class ProjectVersion:
@@ -175,9 +193,6 @@ class ProjectVersion:
     def __str__(self):
         return "<{} {} {}>".format(self.__class__.__name__, self.project.name, self.version)
 
-    def __repr__(self):
-        return "{}({!r}, {!r})".format(self.__class__.__qualname__, self.project, self.version)
-
     def __eq__(self, other):
         if isinstance(other, ProjectVersion):
             return self.project == other.project and self.version == other.version
@@ -186,10 +201,38 @@ class ProjectVersion:
     def __hash__(self):
         return hash((self.project, self.version))
 
-    def packages(self):
-        """Parse packages from the packagemanifest"""
-        logger.debug("retrieve packages of %s", self)
-        return BinPackage.from_manifest(f"{self.path}/packages/files/packagemanifest")
+    def packages(self, force=False):
+        """Return the list of packages"""
+
+        files_path = f"{self.path}/packages/files"
+        manifest_path = f"{self.path}/packages/files/packagemanifest"
+        manifest_output = f"{self.path}/packagemanifest"
+        with self.project.storage.open(manifest_path, manifest_output, force) as f:
+            lines = f.read().splitlines()
+
+        assert lines[0].startswith('PKG1'), "unexpected packagemanifest magic line"
+        packages = {}  # {path: BinPackage}
+        for line in lines[1:]:
+            file_path, package_name, offset, size, typ = line.split(',')
+            package_path = f"{files_path}/{package_name}"
+            if package_path not in packages:
+                packages[package_path] = BinPackage(self.project.storage, package_path, [])
+            packages[package_path].add_file(file_path, int(offset), int(size))
+        return list(packages.values())
+
+    def download(self, force=False, dry_run=False):
+        """Download project version files"""
+        logger.info("downloading project %s=%s", self.project.name, self.version)
+        self.project.storage.download(f"{self.path}/releasemanifest", None, force)
+        for package in self.packages(force):
+            if dry_run:
+                if package.missing_files():
+                    logger.info("package to extract: %s", package.path)
+                else:
+                    logger.debug("package already extracted: %s", package.path)
+            else:
+                package.extract()
+
 
 
 class Solution:
@@ -200,15 +243,13 @@ class Solution:
     `league_client_sln` and `lol_game_client_sln`.
     """
 
-    def __init__(self, name):
+    def __init__(self, storage: Storage, name):
+        self.storage = storage
         self.path = f"solutions/{name}/releases"
         self.name = name
 
     def __str__(self):
         return "<{} {}>".format(self.__class__.__name__, self.name)
-
-    def __repr__(self):
-        return "{}({!r})".format(self.__class__.__qualname__, self.name)
 
     def __eq__(self, other):
         if isinstance(other, Solution):
@@ -221,7 +262,8 @@ class Solution:
     def versions(self) -> List['SolutionVersion']:
         """Retrieve the list of versions of this solution"""
         logger.debug("retrieve versions of %s", self)
-        return [SolutionVersion(self, Version(l)) for l in dl.lines(f"{self.path}/releaselisting")]
+        listing = self.storage.request_text(f"{self.path}/releaselisting")
+        return [SolutionVersion(self, Version(l)) for l in listing.splitlines()]
 
 
 class SolutionVersion:
@@ -237,9 +279,6 @@ class SolutionVersion:
     def __str__(self):
         return "<{} {} {}>".format(self.__class__.__name__, self.solution.name, self.version)
 
-    def __repr__(self):
-        return "{}({!r}, {!r})".format(self.__class__.__qualname__, self.solution, self.version)
-
     def __eq__(self, other):
         if isinstance(other, SolutionVersion):
             return self.solution == other.solution and self.version == other.version
@@ -248,7 +287,7 @@ class SolutionVersion:
     def __hash__(self):
         return hash((self.solution, self.version))
 
-    def dependencies(self) -> Dict[str, List[ProjectVersion]]:
+    def dependencies(self, force=False) -> Dict[Union[str, None], List[ProjectVersion]]:
         """Parse dependencies from the solutionmanifest
 
         Return a map of project versions for each lang code.
@@ -257,7 +296,9 @@ class SolutionVersion:
 
         logger.debug("retrieve dependencies of %s", self)
 
-        lines = dl.lines(f"{self.path}/solutionmanifest")
+        path = f"{self.path}/solutionmanifest"
+        with self.solution.storage.open(path, None, force=force) as f:
+            lines = f.read().splitlines()
         assert lines[0] == "RADS Solution Manifest", "unexpected solutionmanifest magic line"
         assert lines[1] == "1.0.0.0", "unexpected solutionmanifest version"
         assert lines[2] == self.solution.name, "solution name mismatch in solutionmanifest header"
@@ -275,7 +316,7 @@ class SolutionVersion:
             else:
                 assert unk1 == 10
             assert unk2 == 0
-            projects[name] = ProjectVersion(Project(name), Version(version))
+            projects[name] = ProjectVersion(Project(self.solution.storage, name), Version(version))
 
         langs = {} # {code: [ProjectVersion, ...]}
         nlangs, idx = int(lines[idx]), idx + 1
@@ -289,82 +330,93 @@ class SolutionVersion:
         langs[None] = list(projects[name] for name in required_projects)
         return langs
 
+    def dependencies_for_langs(self, langs, force=False) -> List[ProjectVersion]:
+        """Return a list of dependencies for provided languages
+        
+        langs can have the following values:
+          False -- common dependencies, not language-dependent
+          True -- all languages
+          lang -- provided languages
+          [lang, ...] -- provided languages
+        """
+        dependencies = self.dependencies()
+        if langs is False:
+            return dependencies[None]
+        elif langs is True:
+            return list({pv for pvs in dependencies.values() for pv in pvs})
+        elif isinstance(lang, str):
+            return dependencies[lang]
+        else:
+            return list({pv for pv in dependencies[lang] for lang in langs})
+
+    def download(self, langs, force=False, dry_run=False):
+        """Download solution version files"""
+
+        logger.info("downloading solution %s=%s", self.solution.name, self.version)
+        for pv in self.dependencies_for_langs(langs, force=force):
+            pv.download(force=force, dry_run=dry_run)
+
+
+class BinPackageFile:
+    """A single file in a BIN package"""
+
+    def __init__(self, path, offset, size):
+        self.path = path.lstrip('/')
+        self.offset = offset
+        self.size = size
+
+    def __str__(self):
+        return "<{} {!r}>".format(self.__class__.__name__, self.path)
+
+    def __repr__(self):
+        return "{}({!r}, {!r}, {!r}, {!r})".format(self.__class__.__qualname__, self.path, self.offset, self.size)
+
+    def compressed(self):
+        return self.path.endswith('.compressed')
+
+    def output_path(self, base):
+        if self.compressed():
+            path = os.path.splitext(self.path)[0]
+        else:
+            path = self.path
+        return os.path.join(base, path)
+
 
 class BinPackage:
     """
     A BIN package with several files to extract in it
     """
 
-    class File:
-        """A single file in a BIN package"""
-
-        def __init__(self, path, offset, size):
-            self.path = path.lstrip('/')
-            self.offset = offset
-            self.size = size
-
-        def __str__(self):
-            return "<{} {!r}>".format(self.__class__.__name__, self.path)
-
-        def __repr__(self):
-            return "{}({!r}, {!r}, {!r}, {!r})".format(self.__class__.__qualname__, self.path, self.offset, self.size)
-
-        def compressed(self):
-            return self.path.endswith('.compressed')
-
-        def output_path(self, base):
-            if self.compressed():
-                path = os.path.splitext(self.path)[0]
-            else:
-                path = self.path
-            return os.path.join(base, path)
-
-
-    def __init__(self, path, files: List[File]):
+    def __init__(self, storage: Storage, path, files: List[BinPackageFile]):
+        self.storage = storage
         self.path = path
         self.files = files
 
     def __str__(self):
         return "<{} {!r} files:{}>".format(self.__class__.__name__, self.path, len(self.files))
 
-    @classmethod
-    def from_manifest(cls, path) -> List['BinPackage']:
-        """Return a list of packages from a packagemanifest"""
-
-        lines = dl.lines(path)
-        dirpath = os.path.dirname(path)
-        assert lines[0].startswith('PKG1'), "unexpected packagemanifest magic line"
-        packages = {}  # {path: BinPackage}
-        for line in lines[1:]:
-            file_path, package_name, offset, size, typ = line.split(',')
-            package_path = f"{dirpath}/{package_name}"
-            if package_path not in packages:
-                packages[package_path] = cls(package_path, [])
-            packages[package_path].add_file(file_path, int(offset), int(size))
-        return list(packages.values())
-
     def add_file(self, path, offset, size):
-        self.files.append(self.File(path, offset, size))
+        self.files.append(BinPackageFile(path, offset, size))
 
-    def missing_files(self, output):
+    def missing_files(self):
         """Return files not already extracted"""
         ret = []
         for pkgfile in self.files:
-            foutput = pkgfile.output_path(output)
+            foutput = pkgfile.output_path(self.storage.output)
             if os.path.isfile(foutput):
                 logger.debug("file already extracted: %s", pkgfile.path)
             else:
                 ret.append(pkgfile)
         return ret
 
-    def extract(self, output, force=False):
+    def extract(self, force=False):
         """Download and extract the package
 
         If force is False, don't re-extract files already extracted.
         """
 
         if not force:
-            pkgfiles = self.missing_files(output)
+            pkgfiles = self.missing_files()
         else:
             pkgfiles = self.files
         if not pkgfiles:
@@ -373,12 +425,12 @@ class BinPackage:
 
         logger.info("extracting files from %s", self.path)
 
-        with dl.stream(self.path) as reader:
+        with self.storage.stream(self.path) as reader:
             # sort files by offset to extract while streaming the bin file
             for pkgfile in sorted(self.files, key=lambda f: f.offset):
                 logger.debug("extracting %s", pkgfile.path)
                 reader.skip_to(pkgfile.offset)
-                foutput = pkgfile.output_path(output)
+                foutput = pkgfile.output_path(self.storage.output)
                 os.makedirs(os.path.dirname(foutput), exist_ok=True)
                 try:
                     with open(foutput, 'wb') as fout:
@@ -398,7 +450,7 @@ class BinPackage:
                     raise
 
 
-def parse_component(parser, component, need_version=False):
+def parse_component(parser, storage: Storage, component: str, need_version=False):
     m = re.match(r'^(?:([sp]):)?(\w+)(?:=([0-9]+(?:\.[0-9]+)*))?$', component)
     if not m:
         parser.error(f"invalid component: {component}")
@@ -408,7 +460,7 @@ def parse_component(parser, component, need_version=False):
     if version:
         version = Version(version)
     if typ == 'p':
-        project = Project(name)
+        project = Project(storage, name)
         if version is not None:
             return ProjectVersion(project, version)
         elif need_version:
@@ -416,7 +468,7 @@ def parse_component(parser, component, need_version=False):
         else:
             return project
     elif typ == 's':
-        solution = Solution(name)
+        solution = Solution(storage, name)
         if version is not None:
             return SolutionVersion(solution, version)
         elif need_version:
@@ -428,48 +480,32 @@ def parse_component(parser, component, need_version=False):
 def command_download(parser, args):
     if args.no_lang and args.lang:
         parser.error("--no-lang and --lang are incompatible")
-    components = [parse_component(parser, component, True) for component in args.component]
+    elif args.no_lang:
+        langs = False
+    elif args.lang:
+        langs = args.lang
+    else:
+        langs = True
 
-    # gather project versions to download
-    project_versions = set()
+    components = [parse_component(parser, args.storage, component, True) for component in args.component]
+
     for component in components:
         if isinstance(component, ProjectVersion):
-            project_versions.add(component)
+            component.download(force=args.force, dry_run=args.dry_run)
         elif isinstance(component, SolutionVersion):
-            dependencies = component.dependencies()
-            if args.no_lang:
-                project_versions |= set(dependencies[None])
-            elif args.lang:
-                for lang in args.lang:
-                    project_versions |= set(dependencies[lang])
-            else:
-                for l in dependencies.values():
-                    project_versions |= set(l)
+            component.download(langs, force=args.force, dry_run=args.dry_run)
         else:
             raise TypeError(component)
 
-    logger.info("projects to download: %d", len(project_versions))
-    for pv in project_versions:
-        logger.info("downloading project %s=%s", pv.project.name, pv.version)
-        for package in pv.packages():
-            if args.dry_run:
-                if args.force or package.missing_files(args.output):
-                    logger.info("package to extract: %s", package.path)
-                else:
-                    logger.debug("package already extracted: %s", package.path)
-            else:
-                package.extract(args.output, args.force)
-
 
 def command_versions(parser, args):
-    component = parse_component(parser, args.component)
+    component = parse_component(parser, args.storage, args.component)
     if isinstance(component, (Project, Solution)):
         for pv in component.versions():
             print(pv.version)
     elif isinstance(component, SolutionVersion):
-        dependencies = component.dependencies()
-        all_pvs = {pv for pvs in dependencies.values() for pv in pvs}
-        for pv in sorted(all_pvs, key=lambda o: (o.project.name, o.version)):
+        pvs = component.dependencies_for_langs(True)
+        for pv in sorted(pvs, key=lambda o: (o.project.name, o.version)):
             print("%s %s" % (pv.project.name, pv.version))
     else:
         raise TypeError(component)
@@ -505,12 +541,12 @@ def main():
 
     parser.add_argument('-v', '--verbose', action='count', default=0,
                         help="be verbose")
+    parser.add_argument('-o', '--storage', default='RADS',
+                        help="directory for downloaded files (default: %(default)s)")
 
     subparsers = parser.add_subparsers(dest='command', help="command")
 
     subparser = subparsers.add_parser('download', help="download components")
-    subparser.add_argument('-o', '--output', default='RADS',
-                        help="output directory for downloaded files (default: %(default)s)")
     subparser.add_argument('-f', '--force', action='store_true',
                         help="force redownload of files")
     subparser.add_argument('-n', '--dry-run', action='store_true',
@@ -527,6 +563,7 @@ def main():
                            help="component to list versions for")
 
     args = parser.parse_args()
+    args.storage = Storage(args.storage)
 
     logging.basicConfig(
         level=logging.WARNING,
