@@ -398,7 +398,7 @@ class BinPackage:
                     raise
 
 
-def parse_component(parser, component):
+def parse_component(parser, component, need_version=False):
     m = re.match(r'^(?:([sp]):)?(\w+)(?:=([0-9]+(?:\.[0-9]+)*))?$', component)
     if not m:
         parser.error(f"invalid component: {component}")
@@ -409,22 +409,26 @@ def parse_component(parser, component):
         version = Version(version)
     if typ == 'p':
         project = Project(name)
-        if version is None:
-            return Project(name).versions()[0]
-        else:
+        if version is not None:
             return ProjectVersion(project, version)
+        elif need_version:
+            return project.versions()[0]
+        else:
+            return project
     elif typ == 's':
         solution = Solution(name)
-        if version is None:
+        if version is not None:
+            return SolutionVersion(solution, version)
+        elif need_version:
             return solution.versions()[0]
         else:
-            return SolutionVersion(solution, version)
+            return solution
 
 
 def command_download(parser, args):
     if args.no_lang and args.lang:
         parser.error("--no-lang and --lang are incompatible")
-    components = [parse_component(parser, component) for component in args.component]
+    components = [parse_component(parser, component, True) for component in args.component]
 
     # gather project versions to download
     project_versions = set()
@@ -455,6 +459,20 @@ def command_download(parser, args):
                     logger.debug("package already extracted: %s", package.path)
             else:
                 package.extract(args.output, args.force)
+
+
+def command_versions(parser, args):
+    component = parse_component(parser, args.component)
+    if isinstance(component, (Project, Solution)):
+        for pv in component.versions():
+            print(pv.version)
+    elif isinstance(component, SolutionVersion):
+        dependencies = component.dependencies()
+        all_pvs = {pv for pvs in dependencies.values() for pv in pvs}
+        for pv in sorted(all_pvs, key=lambda o: (o.project.name, o.version)):
+            print("%s %s" % (pv.project.name, pv.version))
+    else:
+        raise TypeError(component)
 
 
 def main():
@@ -496,6 +514,10 @@ def main():
                            help="for solutions, download projects in given languages (default: all)")
     subparser.add_argument('component', nargs='+',
                            help="components to download")
+
+    subparser = subparsers.add_parser('versions', help="list versions of a component")
+    subparser.add_argument('component',
+                           help="component to list versions for")
 
     args = parser.parse_args()
 
