@@ -493,6 +493,13 @@ def main():
             Where `type` is `s` for solution and `p` for project.
             If omitted, it is deduced from the name.
             If version is not provided, the latest one is used.
+            Examples:
+
+              p:some_project
+              s:some_solution
+              league_client_sln=0.0.1.195
+              lol_game_client_sln
+
         """),
     )
 
