@@ -398,10 +398,10 @@ class BinPackage:
                     raise
 
 
-def parse_component_pattern(parser, pattern):
-    m = re.match(r'^(?:([sp]):)?(\w+)(?:=([0-9]+(?:\.[0-9]+)*))?$', pattern)
+def parse_component(parser, component):
+    m = re.match(r'^(?:([sp]):)?(\w+)(?:=([0-9]+(?:\.[0-9]+)*))?$', component)
     if not m:
-        parser.error(f"invalid pattern: {pattern}")
+        parser.error(f"invalid component: {component}")
     typ, name, version = m.group(1, 2, 3)
     if not typ:
         typ = 's' if name.endswith('_sln') else 'p'
@@ -424,15 +424,15 @@ def parse_component_pattern(parser, pattern):
 def command_download(parser, args):
     if args.no_lang and args.lang:
         parser.error("--no-lang and --lang are incompatible")
-    targets = [parse_component_pattern(parser, pattern) for pattern in args.patterns]
+    components = [parse_component(parser, component) for component in args.component]
 
     # gather project versions to download
     project_versions = set()
-    for target in targets:
-        if isinstance(target, ProjectVersion):
-            project_versions.add(target)
-        elif isinstance(target, SolutionVersion):
-            dependencies = target.dependencies()
+    for component in components:
+        if isinstance(component, ProjectVersion):
+            project_versions.add(component)
+        elif isinstance(component, SolutionVersion):
+            dependencies = component.dependencies()
             if args.no_lang:
                 project_versions |= set(dependencies[None])
             elif args.lang:
@@ -442,7 +442,7 @@ def command_download(parser, args):
                 for l in dependencies.values():
                     project_versions |= set(l)
         else:
-            raise TypeError(target)
+            raise TypeError(component)
 
     logger.info("projects to download: %d", len(project_versions))
     for pv in project_versions:
@@ -468,7 +468,7 @@ def main():
         description="Download League of Legends game files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
-            The following format is supported for solutions and projects:
+            The following format is supported components:
 
               [type:](name)[=version]
 
@@ -483,7 +483,7 @@ def main():
 
     subparsers = parser.add_subparsers(dest='command', help="command")
 
-    subparser = subparsers.add_parser('download', help="download solutions and projects")
+    subparser = subparsers.add_parser('download', help="download components")
     subparser.add_argument('-o', '--output', default='RADS',
                         help="output directory for downloaded files (default: %(default)s)")
     subparser.add_argument('-f', '--force', action='store_true',
@@ -494,8 +494,8 @@ def main():
                            help="don't download language projects")
     subparser.add_argument('--lang', nargs='*',
                            help="for solutions, download projects in given languages (default: all)")
-    subparser.add_argument('patterns', nargs='+',
-                           help="name of projects and solutions to download")
+    subparser.add_argument('component', nargs='+',
+                           help="components to download")
 
     args = parser.parse_args()
 
