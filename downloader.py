@@ -5,7 +5,7 @@ import sys
 import zlib
 import json
 from contextlib import contextmanager
-from typing import List, Dict, IO, Union
+from typing import List, Dict, IO, Union, Optional, Generator
 import logging
 import requests
 
@@ -75,15 +75,32 @@ class Storage:
         r.encoding = 'utf-8'
         return r.text
 
+    def storage_path(self, path) -> str:
+        """Return a full path from a storage-relative path"""
+        return os.path.join(self.output, path)
+
+    def is_stored(self, path) -> bool:
+        """Return if a file (not a directory) is available on storage"""
+        return os.path.isfile(self.storage_path(path))
+
     @contextmanager
-    def open(self, path, output, force=False, mode='r') -> IO:
-        """Open a storage file, download it if needed
-        If output is None, use path's value.
+    def open(self, path, urlpath=None, force=False, mode='r') -> IO:
+        """Open a storage file
+
+        If urlpath is set, download the file if needed.
+        If urlpath is set to True, use path as value.
+        If mode starts with 'w', parent directory is created if needed.
         """
-        if output is None:
-            output = path
-        self.download(path, output, force)
-        with open(os.path.join(self.output, output), mode=mode) as f:
+        if not mode:
+            raise ValueError("invalid mode")
+        if urlpath is True:
+            urlpath = path
+        if urlpath is not None:
+            self.download(urlpath, path, force=force)
+        storage_path = self.storage_path(path)
+        if mode[0] == 'w':
+            os.makedirs(os.path.dirname(storage_path), exist_ok=True)
+        with open(storage_path, mode=mode) as f:
             yield f
 
     def download(self, path, output, force=False) -> None:
@@ -163,7 +180,10 @@ class Project:
         self.name = name
 
     def __str__(self):
-        return "<{} {}>".format(self.__class__.__name__, self.name)
+        return f"p:{self.name}"
+
+    def __repr__(self):
+        return "<{} {}>".format(self.__class__.__qualname__, self.name)
 
     def __eq__(self, other):
         if isinstance(other, Project):
@@ -172,6 +192,11 @@ class Project:
 
     def __hash__(self):
         return hash(self.name)
+
+    def __lt__(self, other):
+        if isinstance(other, Project):
+            return self.name < other.name
+        return NotImplemented
 
     def versions(self) -> List['ProjectVersion']:
         """Retrieve the list of versions of this project"""
@@ -191,7 +216,10 @@ class ProjectVersion:
         self.version = version
 
     def __str__(self):
-        return "<{} {} {}>".format(self.__class__.__name__, self.project.name, self.version)
+        return f"{self.project}={self.version}"
+
+    def __repr__(self):
+        return "<{} {}={}>".format(self.__class__.__qualname__, self.project.name, self.version)
 
     def __eq__(self, other):
         if isinstance(other, ProjectVersion):
@@ -201,13 +229,23 @@ class ProjectVersion:
     def __hash__(self):
         return hash((self.project, self.version))
 
-    def packages(self, force=False):
+    def __lt__(self, other):
+        if isinstance(other, ProjectVersion):
+            if self.project < other.project:
+                return True
+            elif self.project == other.project:
+                return self.version > other.version
+            else:
+                return False
+        return NotImplemented
+
+    def packages(self, force=False) -> List['BinPackage']:
         """Return the list of packages"""
 
         files_path = f"{self.path}/packages/files"
-        manifest_path = f"{self.path}/packages/files/packagemanifest"
-        manifest_output = f"{self.path}/packagemanifest"
-        with self.project.storage.open(manifest_path, manifest_output, force) as f:
+        manifest_path = f"{self.path}/packagemanifest"
+        manifest_urlpath = f"{self.path}/packages/files/packagemanifest"
+        with self.project.storage.open(manifest_path, manifest_urlpath, force=force) as f:
             lines = f.read().splitlines()
 
         assert lines[0].startswith('PKG1'), "unexpected packagemanifest magic line"
@@ -220,10 +258,15 @@ class ProjectVersion:
             packages[package_path].add_file(file_path, int(offset), int(size))
         return list(packages.values())
 
+    def package_files(self, force=False) -> Generator['BinPackageFile', None, None]:
+        """Generate a list of all package files"""
+        for package in self.packages(force=force):
+            yield from package.files
+
     def download(self, force=False, dry_run=False):
         """Download project version files"""
         logger.info("downloading project %s=%s", self.project.name, self.version)
-        self.project.storage.download(f"{self.path}/releasemanifest", None, force)
+        self.project.storage.download(f"{self.path}/releasemanifest", None, force=force)
         for package in self.packages(force):
             if dry_run:
                 if package.missing_files():
@@ -232,7 +275,6 @@ class ProjectVersion:
                     logger.debug("package already extracted: %s", package.path)
             else:
                 package.extract()
-
 
 
 class Solution:
@@ -249,7 +291,10 @@ class Solution:
         self.name = name
 
     def __str__(self):
-        return "<{} {}>".format(self.__class__.__name__, self.name)
+        return f"s:{self.name}"
+
+    def __repr__(self):
+        return "<{} {}>".format(self.__class__.__qualname__, self.name)
 
     def __eq__(self, other):
         if isinstance(other, Solution):
@@ -259,11 +304,26 @@ class Solution:
     def __hash__(self):
         return hash(self.name)
 
+    def __lt__(self, other):
+        if isinstance(other, Solution):
+            return self.name < other.name
+        return NotImplemented
+
     def versions(self) -> List['SolutionVersion']:
         """Retrieve the list of versions of this solution"""
         logger.debug("retrieve versions of %s", self)
         listing = self.storage.request_text(f"{self.path}/releaselisting")
         return [SolutionVersion(self, Version(l)) for l in listing.splitlines()]
+
+    def storage_versions(self) -> List['SolutionVersion']:
+        """Get a list of versions on storage"""
+        base_path = f"{self.storage.output}/{self.path}"
+        ret = []
+        for path in os.listdir(base_path):
+            if not os.path.isdir(os.path.join(base_path, path)):
+                continue
+            ret.append(SolutionVersion(self, Version(path)))
+        return sorted(ret)
 
 
 class SolutionVersion:
@@ -277,7 +337,10 @@ class SolutionVersion:
         self.version = version
 
     def __str__(self):
-        return "<{} {} {}>".format(self.__class__.__name__, self.solution.name, self.version)
+        return f"{self.solution}={self.version}"
+
+    def __repr__(self):
+        return "<{} {}={}>".format(self.__class__.__qualname__, self.solution.name, self.version)
 
     def __eq__(self, other):
         if isinstance(other, SolutionVersion):
@@ -286,6 +349,16 @@ class SolutionVersion:
 
     def __hash__(self):
         return hash((self.solution, self.version))
+
+    def __lt__(self, other):
+        if isinstance(other, SolutionVersion):
+            if self.solution < other.solution:
+                return True
+            elif self.solution == other.solution:
+                return self.version > other.version
+            else:
+                return False
+        return NotImplemented
 
     def dependencies(self, force=False) -> Dict[Union[str, None], List[ProjectVersion]]:
         """Parse dependencies from the solutionmanifest
@@ -297,7 +370,7 @@ class SolutionVersion:
         logger.debug("retrieve dependencies of %s", self)
 
         path = f"{self.path}/solutionmanifest"
-        with self.solution.storage.open(path, None, force=force) as f:
+        with self.solution.storage.open(path, True, force=force) as f:
             lines = f.read().splitlines()
         assert lines[0] == "RADS Solution Manifest", "unexpected solutionmanifest magic line"
         assert lines[1] == "1.0.0.0", "unexpected solutionmanifest version"
@@ -356,11 +429,41 @@ class SolutionVersion:
         for pv in self.dependencies_for_langs(langs, force=force):
             pv.download(force=force, dry_run=dry_run)
 
+    def patch_version(self) -> Optional[Version]:
+        """Return patch version or None if it cannot be retrieved"""
+
+        if self.solution.name == 'league_client_sln':
+            for pv in self.dependencies_for_langs(False):
+                if pv.project.name == 'league_client':
+                    break
+            else:
+                raise ValueError("league_client project not found for %s" % self)
+
+            for pkgfile in pv.package_files():
+                if pkgfile.extract_path().endswith('/system.yaml'):
+                    if not pkgfile.is_stored():
+                        pkgfile.package.extract()
+                    break
+            else:
+                raise ValueError("system.yaml not found for %s" % pv)
+            with pkgfile.open() as f:
+                for line in f:
+                    #TODO do proper yaml parsing
+                    m = re.match(r"""^ *game-branch: ["']([0-9.]+)["']$""", line)
+                    if m:
+                        return m.group(1)
+                else:
+                    raise ValueError("patch version not found in %s" % system_yaml_path)
+        else:
+            logger.info("no known way to retrieve patch version for solution %s", self.solution.name)
+
+
 
 class BinPackageFile:
     """A single file in a BIN package"""
 
-    def __init__(self, path, offset, size):
+    def __init__(self, package, path, offset, size):
+        self.package = package
         self.path = path.lstrip('/')
         self.offset = offset
         self.size = size
@@ -368,18 +471,23 @@ class BinPackageFile:
     def __str__(self):
         return "<{} {!r}>".format(self.__class__.__name__, self.path)
 
-    def __repr__(self):
-        return "{}({!r}, {!r}, {!r}, {!r})".format(self.__class__.__qualname__, self.path, self.offset, self.size)
-
-    def compressed(self):
+    def compressed(self) -> bool:
         return self.path.endswith('.compressed')
 
-    def output_path(self, base):
+    def extract_path(self) -> str:
+        """Return the path of the extracted file"""
         if self.compressed():
-            path = os.path.splitext(self.path)[0]
+            return os.path.splitext(self.path)[0]
         else:
-            path = self.path
-        return os.path.join(base, path)
+            return self.path
+
+    def is_stored(self) -> bool:
+        return self.package.storage.is_stored(self.extract_path())
+
+    @contextmanager
+    def open(self, mode='r'):
+        with self.package.storage.open(self.extract_path(), mode=mode) as f:
+            yield f
 
 
 class BinPackage:
@@ -396,14 +504,13 @@ class BinPackage:
         return "<{} {!r} files:{}>".format(self.__class__.__name__, self.path, len(self.files))
 
     def add_file(self, path, offset, size):
-        self.files.append(BinPackageFile(path, offset, size))
+        self.files.append(BinPackageFile(self, path, offset, size))
 
     def missing_files(self):
         """Return files not already extracted"""
         ret = []
         for pkgfile in self.files:
-            foutput = pkgfile.output_path(self.storage.output)
-            if os.path.isfile(foutput):
+            if self.storage.is_stored(pkgfile.extract_path()):
                 logger.debug("file already extracted: %s", pkgfile.path)
             else:
                 ret.append(pkgfile)
@@ -430,10 +537,8 @@ class BinPackage:
             for pkgfile in sorted(self.files, key=lambda f: f.offset):
                 logger.debug("extracting %s", pkgfile.path)
                 reader.skip_to(pkgfile.offset)
-                foutput = pkgfile.output_path(self.storage.output)
-                os.makedirs(os.path.dirname(foutput), exist_ok=True)
                 try:
-                    with open(foutput, 'wb') as fout:
+                    with self.storage.open(pkgfile.extract_path(), mode='wb') as fout:
                         if pkgfile.compressed():
                             zobj = zlib.decompressobj(zlib.MAX_WBITS|32)
                             writer = lambda data: fout.write(zobj.decompress(data))
@@ -511,6 +616,58 @@ def command_versions(parser, args):
         raise TypeError(component)
 
 
+def command_patches(parser, args):
+    solution = Solution(args.storage, 'league_client_sln')
+
+    patches = {} # {patch: [SolutionVersion, ...]}
+    if args.version:
+        # browse all solution versions for the requested patch
+        # stop once the earliest patch has been found
+        earliest_patch = sorted(args.version)[0]
+        for sv in solution.versions():
+            patch = sv.patch_version()
+            if patch is None:
+                continue
+            if args.last_solution and patch in patches:
+                continue
+            if patch in args.version:
+                patches.setdefault(patch, []).append(sv)
+            elif patch < earliest_patch:
+                break
+        not_found = set(args.version) - set(patches)
+        if not_found:
+            raise ValueError("patches not found: %s" % ' '.join(sorted(not_found)))
+    else:
+        # use stored versions
+        for sv in solution.storage_versions():
+            patch = sv.patch_version()
+            if patch is None:
+                continue
+            if args.last_solution and patch in patches:
+                continue
+            patches.setdefault(patch, []).append(sv)
+
+    patch_content = {} # {patch: sorted_content}
+    for patch, svs in patches.items():
+        if args.element == 'solutions':
+            content = set(svs)
+        elif args.element == 'projects':
+            content = {pv for sv in svs for pv in sv.dependencies_for_langs(True)}
+        elif args.element == 'files':
+            pvs = (pv for sv in svs for pv in sv.dependencies_for_langs(True))
+            content = {pf.extract_path() for pv in pvs for pf in pv.package_files()}
+        patch_content[patch] = sorted(content)
+
+    if args.version and len(args.version) == 1:
+        for content in patch_content[args.version[0]]:
+            print(content)
+    else:
+        for patch in sorted(patch_content, reverse=True):
+            print(patch)
+            for content in patch_content[patch]:
+                print(f"  {content}")
+
+
 def main():
     """main download procedure calls all the functions"""
 
@@ -561,6 +718,14 @@ def main():
     subparser = subparsers.add_parser('versions', help="list versions of a component")
     subparser.add_argument('component',
                            help="component to list versions for")
+
+    subparser = subparsers.add_parser('patches', help="print elements used by patch versions")
+    subparser.add_argument('-e', '--element', choices=('files', 'projects', 'solutions'), required=True,
+                           help="which elements to display")
+    subparser.add_argument('-1', '--last-solution', action='store_true',
+                           help="for each patch, consider only the most recent solution")
+    subparser.add_argument('version', nargs='*',
+                           help="versions to display (default: browse solutions in storage)")
 
     args = parser.parse_args()
     args.storage = Storage(args.storage)
