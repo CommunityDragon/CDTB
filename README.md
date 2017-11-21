@@ -13,4 +13,3 @@ How to use:
 Project names:
 
 	- Project names are value of the key named "name" found in the config folder.
-	
