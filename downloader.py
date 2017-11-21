@@ -46,6 +46,39 @@ class Version:
         return not self == other
 
 
+class RequestStreamReader:
+    """Wrapper for reading data from stream request"""
+
+    DOWNLOAD_CHUNK_SIZE = 10 * 1024**2
+
+    def __init__(self, r):
+        self.it = r.iter_content(self.DOWNLOAD_CHUNK_SIZE)
+        self.pos = 0
+        self.buf = b''
+
+    def copy(self, writer, n):
+        """Read n bytes and write them using writer"""
+        self.pos += n
+        while n:
+            if n <= len(self.buf):
+                if writer:
+                    writer(self.buf[:n])
+                self.buf = self.buf[n:]
+                return
+            if writer and self.buf:
+                writer(self.buf)
+            n -= len(self.buf)
+            self.buf = next(self.it)
+
+    def skip(self, n):
+        """Skip n bytes"""
+        self.copy(None, n)
+
+    def skip_to(self, pos):
+        assert self.pos <= pos
+        self.skip(pos - self.pos)
+
+
 class Storage:
     """
     Download and store game files
@@ -57,11 +90,11 @@ class Storage:
     DOWNLOAD_URL = "l3cdn.riotgames.com"
     DOWNLOAD_PATH = "/releases/live"
 
-    def __init__(self, output, url=None):
+    def __init__(self, path, url=None):
         if url is None:
             url = f"http://{self.DOWNLOAD_URL}{self.DOWNLOAD_PATH}/"
         self.url = url
-        self.output = output
+        self.path = path
         self.s = requests.session()
 
     def request_get(self, path, **kwargs) -> requests.Response:
@@ -75,98 +108,42 @@ class Storage:
         r.encoding = 'utf-8'
         return r.text
 
-    def storage_path(self, path) -> str:
-        """Return a full path from a storage-relative path"""
-        return os.path.join(self.output, path)
+    def fspath(self, path) -> str:
+        """Return full path from a storage-relative path"""
+        return os.path.join(self.path, path)
 
-    def is_stored(self, path) -> bool:
-        """Return if a file (not a directory) is available on storage"""
-        return os.path.isfile(self.storage_path(path))
-
-    @contextmanager
-    def open(self, path, urlpath=None, force=False, mode='r') -> IO:
-        """Open a storage file
-
-        If urlpath is set, download the file if needed.
-        If urlpath is set to True, use path as value.
-        If mode starts with 'w', parent directory is created if needed.
-        """
-        if not mode:
-            raise ValueError("invalid mode")
-        if urlpath is True:
-            urlpath = path
-        if urlpath is not None:
-            self.download(urlpath, path, force=force)
-        storage_path = self.storage_path(path)
-        if mode[0] == 'w':
-            os.makedirs(os.path.dirname(storage_path), exist_ok=True)
-        with open(storage_path, mode=mode) as f:
-            yield f
-
-    def download(self, path, output, force=False) -> None:
+    def download(self, urlpath, path, force=False) -> None:
         """Download a path to disk
-        If output is None, use path's value.
+        If path is None, use urlpath's value.
         """
 
-        if output is None:
-            output = path
-        abs_output = os.path.join(self.output, output)
-        if not force and os.path.isfile(abs_output):
+        if path is None:
+            path = urlpath
+        fspath = self.fspath(path)
+        if not force and os.path.isfile(fspath):
             return
 
-        logger.debug("download file: %s", output)
+        logger.debug("download file: %s", path)
         try:
-            os.makedirs(os.path.dirname(abs_output), exist_ok=True)
-            r = self.s.get(self.url + path)
+            os.makedirs(os.path.dirname(fspath), exist_ok=True)
+            r = self.request_get(urlpath)
             r.raise_for_status()
-            with open(abs_output, 'wb') as f:
+            with open(fspath, 'wb') as f:
                 f.write(r.content)
         except:
             # remove partially downloaded file
             try:
-                os.remove(abs_output)
+                os.remove(fspath)
             except OSError:
                 pass
             raise
 
-    class StreamReader:
-        """Wrapper for reading data from stream request"""
-
-        DOWNLOAD_CHUNK_SIZE = 10 * 1024**2
-
-        def __init__(self, r):
-            self.it = r.iter_content(self.DOWNLOAD_CHUNK_SIZE)
-            self.pos = 0
-            self.buf = b''
-
-        def copy(self, writer, n):
-            """Read n bytes and write them using writer"""
-            self.pos += n
-            while n:
-                if n <= len(self.buf):
-                    if writer:
-                        writer(self.buf[:n])
-                    self.buf = self.buf[n:]
-                    return
-                if writer and self.buf:
-                    writer(self.buf)
-                n -= len(self.buf)
-                self.buf = next(self.it)
-
-        def skip(self, n):
-            """Skip n bytes"""
-            self.copy(None, n)
-
-        def skip_to(self, pos):
-            assert self.pos <= pos
-            self.skip(pos - self.pos)
-
     @contextmanager
-    def stream(self, path) -> StreamReader:
+    def stream(self, urlpath) -> RequestStreamReader:
         """Request a path for streaming download"""
-        with self.s.get(self.url + path, stream=True) as r:
+        with self.s.get(self.url + urlpath, stream=True) as r:
             r.raise_for_status()
-            yield self.StreamReader(r)
+            yield RequestStreamReader(r)
 
 
 class Project:
@@ -245,7 +222,8 @@ class ProjectVersion:
         files_path = f"{self.path}/packages/files"
         manifest_path = f"{self.path}/packagemanifest"
         manifest_urlpath = f"{self.path}/packages/files/packagemanifest"
-        with self.project.storage.open(manifest_path, manifest_urlpath, force=force) as f:
+        self.project.storage.download(manifest_urlpath, manifest_path, force=force)
+        with open(self.project.storage.fspath(manifest_path)) as f:
             lines = f.read().splitlines()
 
         assert lines[0].startswith('PKG1'), "unexpected packagemanifest magic line"
@@ -265,7 +243,7 @@ class ProjectVersion:
 
     def download(self, force=False, dry_run=False):
         """Download project version files"""
-        logger.info("downloading project %s=%s", self.project.name, self.version)
+        logger.info("downloading project %s", self)
         self.project.storage.download(f"{self.path}/releasemanifest", None, force=force)
         for package in self.packages(force):
             if dry_run:
@@ -317,10 +295,12 @@ class Solution:
 
     def storage_versions(self) -> List['SolutionVersion']:
         """Get a list of versions on storage"""
-        base_path = f"{self.storage.output}/{self.path}"
+        fspath = self.storage.fspath(self.path)
+        if not os.path.isdir(fspath):
+            return []
         ret = []
-        for path in os.listdir(base_path):
-            if not os.path.isdir(os.path.join(base_path, path)):
+        for path in os.listdir(fspath):
+            if not os.path.isdir(os.path.join(fspath, path)):
                 continue
             ret.append(SolutionVersion(self, Version(path)))
         return sorted(ret)
@@ -370,7 +350,8 @@ class SolutionVersion:
         logger.debug("retrieve dependencies of %s", self)
 
         path = f"{self.path}/solutionmanifest"
-        with self.solution.storage.open(path, True, force=force) as f:
+        self.solution.storage.download(path, path, force=force)
+        with open(self.solution.storage.fspath()) as f:
             lines = f.read().splitlines()
         assert lines[0] == "RADS Solution Manifest", "unexpected solutionmanifest magic line"
         assert lines[1] == "1.0.0.0", "unexpected solutionmanifest version"
@@ -425,7 +406,7 @@ class SolutionVersion:
     def download(self, langs, force=False, dry_run=False):
         """Download solution version files"""
 
-        logger.info("downloading solution %s=%s", self.solution.name, self.version)
+        logger.info("downloading solution %s", self)
         for pv in self.dependencies_for_langs(langs, force=force):
             pv.download(force=force, dry_run=dry_run)
 
@@ -441,12 +422,12 @@ class SolutionVersion:
 
             for pkgfile in pv.package_files():
                 if pkgfile.extract_path().endswith('/system.yaml'):
-                    if not pkgfile.is_stored():
+                    if os.path.isfile(pkgfile.fspath()):
                         pkgfile.package.extract()
                     break
             else:
                 raise ValueError("system.yaml not found for %s" % pv)
-            with pkgfile.open() as f:
+            with open(pkgfile.fspath()) as f:
                 for line in f:
                     #TODO do proper yaml parsing
                     m = re.match(r"""^ *game-branch: ["']([0-9.]+)["']$""", line)
@@ -481,13 +462,8 @@ class BinPackageFile:
         else:
             return self.path
 
-    def is_stored(self) -> bool:
-        return self.package.storage.is_stored(self.extract_path())
-
-    @contextmanager
-    def open(self, mode='r'):
-        with self.package.storage.open(self.extract_path(), mode=mode) as f:
-            yield f
+    def fspath(self) -> str:
+        return self.package.storage.fspath(self.extract_path())
 
 
 class BinPackage:
@@ -510,7 +486,7 @@ class BinPackage:
         """Return files not already extracted"""
         ret = []
         for pkgfile in self.files:
-            if self.storage.is_stored(pkgfile.extract_path()):
+            if os.path.isfile(pkgfile.fspath()):
                 logger.debug("file already extracted: %s", pkgfile.path)
             else:
                 ret.append(pkgfile)
@@ -537,8 +513,9 @@ class BinPackage:
             for pkgfile in sorted(self.files, key=lambda f: f.offset):
                 logger.debug("extracting %s", pkgfile.path)
                 reader.skip_to(pkgfile.offset)
+                fspath = pkgfile.fspath()
                 try:
-                    with self.storage.open(pkgfile.extract_path(), mode='wb') as fout:
+                    with open(fspath, mode='wb') as fout:
                         if pkgfile.compressed():
                             zobj = zlib.decompressobj(zlib.MAX_WBITS|32)
                             writer = lambda data: fout.write(zobj.decompress(data))
@@ -549,7 +526,7 @@ class BinPackage:
                 except:
                     # remove partially downloaded files
                     try:
-                        os.remove(foutput)
+                        os.remove(fspath)
                     except OSError:
                         pass
                     raise
