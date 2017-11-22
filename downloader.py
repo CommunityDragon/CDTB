@@ -181,6 +181,10 @@ class Project:
         listing = self.storage.request_text(f"{self.path}/releaselisting")
         return [ProjectVersion(self, Version(l)) for l in listing.splitlines()]
 
+    def download(self, force=False, dry_run=False):
+        for v in self.versions():
+            v.download(force=force, dry_run=dry_run)
+
 
 class ProjectVersion:
     """
@@ -304,6 +308,10 @@ class Solution:
                 continue
             ret.append(SolutionVersion(self, Version(path)))
         return sorted(ret)
+
+    def download(self, langs, force=False, dry_run=False):
+        for v in self.versions():
+            v.download(langs, force=force, dry_run=dry_run)
 
 
 class SolutionVersion:
@@ -532,31 +540,31 @@ class BinPackage:
                     raise
 
 
-def parse_component(parser, storage: Storage, component: str, need_version=False):
-    m = re.match(r'^(?:([sp]):)?(\w+)(?:=([0-9]+(?:\.[0-9]+)*))?$', component)
+def parse_component(parser, storage: Storage, component: str):
+    m = re.match(r'^(?:([sp]):)?(\w+)(?:=(|[0-9]+(?:\.[0-9]+)*)?)?$', component)
     if not m:
         parser.error(f"invalid component: {component}")
     typ, name, version = m.group(1, 2, 3)
     if not typ:
         typ = 's' if name.endswith('_sln') else 'p'
-    if version:
+    if version is not None and version != '':
         version = Version(version)
     if typ == 'p':
         project = Project(storage, name)
-        if version is not None:
-            return ProjectVersion(project, version)
-        elif need_version:
-            return project.versions()[0]
-        else:
+        if version is None:
             return project
+        elif version == '':
+            project.versions()[0]
+        else:
+            return ProjectVersion(project, version)
     elif typ == 's':
         solution = Solution(storage, name)
-        if version is not None:
-            return SolutionVersion(solution, version)
-        elif need_version:
-            return solution.versions()[0]
-        else:
+        if version is None:
             return solution
+        elif version == '':
+            solution.versions()[0]
+        else:
+            return SolutionVersion(solution, version)
 
 
 def command_download(parser, args):
@@ -569,12 +577,12 @@ def command_download(parser, args):
     else:
         langs = True
 
-    components = [parse_component(parser, args.storage, component, True) for component in args.component]
+    components = [parse_component(parser, args.storage, component) for component in args.component]
 
     for component in components:
-        if isinstance(component, ProjectVersion):
+        if isinstance(component, (Project, ProjectVersion)):
             component.download(force=args.force, dry_run=args.dry_run)
-        elif isinstance(component, SolutionVersion):
+        elif isinstance(component, (Solution, SolutionVersion)):
             component.download(langs, force=args.force, dry_run=args.dry_run)
         else:
             raise TypeError(component)
@@ -656,19 +664,22 @@ def main():
         description="Download League of Legends game files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
-            The following format is supported components:
+            The following formats are used for components:
 
-              [type:](name)[=version]
+              s:solution_name
+              s:solution_name=version
+              p:project_name
+              p:project_name=version
 
-            Where `type` is `s` for solution and `p` for project.
-            If omitted, it is deduced from the name.
-            If version is not provided, the latest one is used.
+            If version is empty, the latest one is used.
+            The `s:` and `p:` prefixes can be omitted if type can be deduced
+            from the name, which should always be the case.
             Examples:
 
-              p:some_project
-              s:some_solution
-              league_client_sln=0.0.1.195
+              league_client_fr_fr=0.0.0.78
+              league_client=
               lol_game_client_sln
+              s:league_client_sln=0.0.1.195
 
         """),
     )
@@ -686,7 +697,7 @@ def main():
     subparser.add_argument('-n', '--dry-run', action='store_true',
                         help="don't actually download package files, just list them")
     subparser.add_argument('--no-lang', action='store_true',
-                           help="don't download language projects")
+                           help="don't download language projects from solutions")
     subparser.add_argument('--lang', nargs='*',
                            help="for solutions, download projects in given languages (default: all)")
     subparser.add_argument('component', nargs='+',
