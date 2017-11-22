@@ -1,16 +1,10 @@
-Downloads the latest Patch from the League of legends servers
-	
-Setup:
-	
-	- Install python36
-	- pip install requests
-	- Done :)
-	
-How to use:
-	
-	- python downloader.py project_name
-	
-Project names:
+# ClientCorrelator
+## Correlate launcher client patches with game client patches
 
-	- Project names are value of the key named "name" found in the config folder.
+### Dependencies:
+pip install hachoir3
 
+### How to use:
+Run the file `extract_client_metadata.py` to download all of the League clients. The metadata will be extrafted from them, and the client release numbers -> patch numbers will be correlated.
+
+Results are saved in the file `version_conversion.json`.

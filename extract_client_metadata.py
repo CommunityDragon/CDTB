@@ -9,7 +9,6 @@ import os
 #python 3
 import hachoir.parser, hachoir.metadata
 
-
 def get_all_release_versions():
     url = 'http://l3cdn.riotgames.com/releases/live/projects/league_client/releases/releaselisting'
     versions = requests.get(url).text
