@@ -4,7 +4,7 @@ import json
 import glob
 import os
 
-class correlator:
+class Correlator:
     # constructs the correlator object
     def __init__(self):
         caching_dir = '.cache'
