@@ -1,5 +1,5 @@
 # CommunityDragon ToolBox
-## A library containing everything to build the file project
+## A library containing everything to build the files for DragonBuilder
 
 ---
 
