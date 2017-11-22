@@ -1,5 +1,4 @@
 from typing import List
-import time
 import json
 import requests
 import zlib
@@ -48,19 +47,6 @@ def extract_client_version(client_path):
     return version
 
 
-def get_timestamp(directory='.cache'):
-    try:
-        with open(os.path.join(directory, 'timestamp.txt'), 'r') as f:
-            timestamp = f.read()
-        if not timestamp:
-            timestamp = None
-        else:
-            timestamp = float(timestamp)
-        return timestamp
-    except FileNotFoundError:
-        return None
-
-
 def get_version_correlation(version: str, logger: bool):
     print(f'Downloading and correlating version {version}...')
     try:
@@ -73,35 +59,29 @@ def get_version_correlation(version: str, logger: bool):
 
 
 def get_version_correlations(client_versions: List[str] = None, logger: bool = True, delete_exes: bool = True):
-    output_direc = '.cache'
-    if not os.path.exists(output_direc):
-        os.makedirs(output_direc)
+    caching_direc = '.cache'
+    if not os.path.exists(caching_direc):
+        os.makedirs(caching_direc)
+
     if client_versions is None:
         client_versions = get_all_client_versions()
-    version_conversion = {}
 
-    if get_timestamp(output_direc) is None or float(get_timestamp() + 3600) < time.time():
-        with open(os.path.join(output_direc, 'timestamp.txt'), 'w') as f:
-            f.write(str(time.time()))
+    if os.path.exists(os.path.join(caching_direc, 'versions.json')):
+        with open(os.path.join(caching_direc, 'versions.json'), 'r') as f:
+            version_conversion = json.load(f)
+    else:
+        version_conversion = {}
 
-        for version in client_versions:
+    for version in client_versions:
+        if version not in version_conversion:
             client_version = get_version_correlation(version, logger)
             version_conversion[version] = client_version
 
-        with open('versions.json', 'w') as f:
-            json.dump(version_conversion, f, indent=2)
-
-    else:
-        with open('versions.json', 'r') as f:
-            version_conversion = json.load(f)
-
-        for version in client_versions:
-            if version not in version_conversion:
-                client_version = get_version_correlation(version, logger)
-                version_conversion[version] = client_version
+    with open(os.path.join(caching_direc, 'versions.json'), 'w') as f:
+        json.dump(version_conversion, f, indent=2)
 
     if delete_exes:
-        filelist = glob.glob(os.path.join(output_direc, 'LeagueClient*.exe'))
+        filelist = glob.glob(os.path.join(caching_direc, 'LeagueClient*.exe'))
         for f in filelist:
             os.remove(f)
 
