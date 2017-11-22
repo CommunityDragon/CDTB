@@ -7,10 +7,10 @@ from downloader import parse_component
 
 
 @pytest.mark.parametrize("arg,str_value", [
-    ('name=1.2.3', 'p:name=1.2.3'),
-    ('name_sln=1.2.3', 's:name_sln=1.2.3'),
-    ('p:name=1.2.3', 'p:name=1.2.3'),
-    ('s:name=1.2.3', 's:name=1.2.3'),
+    ('name=0.1.2.3', 'p:name=0.1.2.3'),
+    ('name_sln=0.1.2.3', 's:name_sln=0.1.2.3'),
+    ('p:name=0.1.2.3', 'p:name=0.1.2.3'),
+    ('s:name=0.1.2.3', 's:name=0.1.2.3'),
     ('name', 'p:name'),
     ('name_sln', 's:name_sln'),
     ('name=', 'p:name=1.2.0.0'),
@@ -62,19 +62,19 @@ def test_project_operators(storage):
 
 def test_project_version_operators(storage):
     s = storage
-    assert ProjectVersion(Project(s, 'abc'), '0.1.2') == ProjectVersion(Project(s, 'abc'), '0.1.2')
-    assert ProjectVersion(Project(s, 'abc'), '0.1.2') != ProjectVersion(Project(s, 'abc'), '0.1.0')
-    assert ProjectVersion(Project(s, 'abc'), '0.1.2') != ProjectVersion(Project(s, 'def'), '0.1.2')
-    assert ProjectVersion(Project(s, 'abc'), '0.1.2') != ProjectVersion(Project(s, 'def'), '0.1.0')
-    p_a_1 = ProjectVersion(Project(s, 'a'), '1')
-    p_a_0 = ProjectVersion(Project(s, 'a'), '0')
-    p_b_1 = ProjectVersion(Project(s, 'b'), '1')
-    p_b_0 = ProjectVersion(Project(s, 'b'), '0')
+    assert ProjectVersion(Project(s, 'abc'), '0.1.2.3') == ProjectVersion(Project(s, 'abc'), '0.1.2.3')
+    assert ProjectVersion(Project(s, 'abc'), '0.1.2.3') != ProjectVersion(Project(s, 'abc'), '0.1.2.0')
+    assert ProjectVersion(Project(s, 'abc'), '0.1.2.3') != ProjectVersion(Project(s, 'def'), '0.1.2.3')
+    assert ProjectVersion(Project(s, 'abc'), '0.1.2.3') != ProjectVersion(Project(s, 'def'), '0.1.2.0')
+    p_a_1 = ProjectVersion(Project(s, 'a'), '0.0.0.1')
+    p_a_0 = ProjectVersion(Project(s, 'a'), '0.0.0.0')
+    p_b_1 = ProjectVersion(Project(s, 'b'), '0.0.0.1')
+    p_b_0 = ProjectVersion(Project(s, 'b'), '0.0.0.0')
     assert p_a_1 < p_a_0 < p_b_1 < p_b_0
     assert not p_a_0 < p_a_1
     assert not p_b_0 < p_a_0
     assert sorted([p_b_1, p_a_0, p_b_0, p_a_1]) == [p_a_1, p_a_0, p_b_1, p_b_0]
-    assert {ProjectVersion(Project(s, 'name'), '0.1.2')}  # hashable
+    assert {ProjectVersion(Project(s, 'name'), '0.1.2.3')}  # hashable
 
 def test_solution_operators(storage):
     s = storage
@@ -92,25 +92,25 @@ def test_solution_operators(storage):
 
 def test_solution_version_operators(storage):
     s = storage
-    assert SolutionVersion(Solution(s, 'abc'), '0.1.2') == SolutionVersion(Solution(s, 'abc'), '0.1.2')
-    assert SolutionVersion(Solution(s, 'abc'), '0.1.2') != SolutionVersion(Solution(s, 'abc'), '0.1.0')
-    assert SolutionVersion(Solution(s, 'abc'), '0.1.2') != SolutionVersion(Solution(s, 'def'), '0.1.2')
-    assert SolutionVersion(Solution(s, 'abc'), '0.1.2') != SolutionVersion(Solution(s, 'def'), '0.1.0')
-    s_a_1 = SolutionVersion(Solution(s, 'a'), '1')
-    s_a_0 = SolutionVersion(Solution(s, 'a'), '0')
-    s_b_1 = SolutionVersion(Solution(s, 'b'), '1')
-    s_b_0 = SolutionVersion(Solution(s, 'b'), '0')
+    assert SolutionVersion(Solution(s, 'abc_sln'), '0.1.2.3') == SolutionVersion(Solution(s, 'abc_sln'), '0.1.2.3')
+    assert SolutionVersion(Solution(s, 'abc_sln'), '0.1.2.3') != SolutionVersion(Solution(s, 'abc_sln'), '0.1.2.0')
+    assert SolutionVersion(Solution(s, 'abc_sln'), '0.1.2.3') != SolutionVersion(Solution(s, 'def_sln'), '0.1.2.3')
+    assert SolutionVersion(Solution(s, 'abc_sln'), '0.1.2.3') != SolutionVersion(Solution(s, 'def_sln'), '0.1.2.0')
+    s_a_1 = SolutionVersion(Solution(s, 'a_sln'), '0.0.0.1')
+    s_a_0 = SolutionVersion(Solution(s, 'a_sln'), '0.0.0.0')
+    s_b_1 = SolutionVersion(Solution(s, 'b_sln'), '0.0.0.1')
+    s_b_0 = SolutionVersion(Solution(s, 'b_sln'), '0.0.0.0')
     assert s_a_1 < s_a_0 < s_b_1 < s_b_0
     assert not s_a_0 < s_a_1
     assert not s_b_0 < s_a_0
     assert sorted([s_b_1, s_a_0, s_b_0, s_a_1]) == [s_a_1, s_a_0, s_b_1, s_b_0]
-    assert {SolutionVersion(Solution(s, 'name'), '0.1.2')}  # hashable
-    assert ProjectVersion(Project(s, 'name'), '0.1.2') != SolutionVersion(Solution(s, 'name'), '0.1.2')
+    assert {SolutionVersion(Solution(s, 'name_sln'), '0.1.2.3')}  # hashable
+    assert ProjectVersion(Project(s, 'name_sln'), '0.1.2.3') != SolutionVersion(Solution(s, 'name_sln'), '0.1.2.3')
 
 def test_mixing_project_solution(storage):
     s = storage
     assert Project(s, 'name') != Solution(s, 'name')
-    assert ProjectVersion(Project(s, 'name'), '0.1.2') != SolutionVersion(Solution(s, 'name'), '0.1.2')
+    assert ProjectVersion(Project(s, 'name'), '0.1.2.3') != SolutionVersion(Solution(s, 'name_sln'), '0.1.2.3')
 
 
 def test_project_get_versions(storage, monkeypatch):
@@ -131,11 +131,11 @@ def test_project_get_versions(storage, monkeypatch):
     assert request_get.ncalls == 1
 
 def test_solution_get_versions(storage, monkeypatch):
-    solution = Solution(storage, 'name')
+    solution = Solution(storage, 'name_sln')
 
     @count_calls
     def request_get(path):
-        assert path == "solutions/name/releases/releaselisting"
+        assert path == "solutions/name_sln/releases/releaselisting"
         return mock_response(b'0.0.1.7\r\n0.0.1.6\r\n0.0.1.5\r\n')
     monkeypatch.setattr(storage, 'request_get', request_get)
 
@@ -192,13 +192,13 @@ def test_project_versions_packages(storage, monkeypatch):
 
 
 def test_solution_storage_versions(storage):
-    s_name = Solution(storage, 'name')
-    s_other = Solution(storage, 'other')
-    s_empty = Solution(storage, 'empty')
+    s_name = Solution(storage, 'name_sln')
+    s_other = Solution(storage, 'other_sln')
+    s_empty = Solution(storage, 'empty_sln')
 
-    os.makedirs(f"{storage.path}/solutions/name/releases/0.0.1.0")
-    os.makedirs(f"{storage.path}/solutions/name/releases/0.0.1.1")
-    os.makedirs(f"{storage.path}/solutions/other/releases/0.0.1.2")
+    os.makedirs(f"{storage.path}/solutions/name_sln/releases/0.0.1.0")
+    os.makedirs(f"{storage.path}/solutions/name_sln/releases/0.0.1.1")
+    os.makedirs(f"{storage.path}/solutions/other_sln/releases/0.0.1.2")
 
     assert s_name.storage_versions() == [SolutionVersion(s_name, '0.0.1.1'), SolutionVersion(s_name, '0.0.1.0')]
     assert s_other.storage_versions() == [SolutionVersion(s_other, '0.0.1.2')]
