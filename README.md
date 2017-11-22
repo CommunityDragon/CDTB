@@ -4,11 +4,13 @@
 ---
 
 ## Correlator
-### Correlates Launcher Client patches with Game Client patches
+#### Description
+Correlates Launcher Client patches with Game Client patches
 
-### Dependencies:
+#### Dependencies:
 pip install hachoir3
 
+#### Example
 ```python
 from correlator import correlator
 
