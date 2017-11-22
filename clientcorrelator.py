@@ -1,6 +1,8 @@
+import time
 import json
 import requests
 import zlib
+import glob
 import re
 import os
 #python 2.7
@@ -42,30 +44,40 @@ def extract_client_version(client_path):
     version = m.group(0)
     return version
 
+def getCache():
+    with open('.cache', 'a+') as f:
+        with open('.cache', 'r') as f:
+            return f.read()
 
-def main():
+def getCorrelations(logger=False):
     all_versions = get_all_release_versions()
-    print(all_versions)
-
     version_conversion = {}
-    for version in all_versions:
-        try:
-            print("Downloading and calculating patch for release version {}...".format(version))
-            client_filename = download_LoL_exe(version)
-            #unicode() was replaced with str() in python3
-            #client_filename = unicode(client_filename)
-            client_filename = str(client_filename)
-            client_version = extract_client_version(client_filename)
 
-            version_conversion[version] = client_version
-        except Exception as error:
-            print(error)
+    if getCache() == '' or int(int(getCache()) + 3600) < int(round(time.time())):
+        with open(".cache", "w+") as f:
+            f.write(str(round(time.time())))
 
-    print(version_conversion)
+        for version in all_versions:
+            try:
+                client_filename = download_LoL_exe(version)
+                client_filename = str(client_filename)
+                client_version = extract_client_version(client_filename)
+                version_conversion[version] = client_version
+            except Exception as error:
+                if logger:
+                    print(error)
 
-    with open("version_conversion.json", "w") as f:
-        json.dump(version_conversion, f, indent=2)
+        filelist = glob.glob(os.path.join('', "*.exe"))
+        for f in filelist:
+            os.remove(f)
+
+        with open("versions.json", "w+") as f:
+            json.dump(version_conversion, f, indent=2)
+        return version_conversion
+
+    else:
+        with open("versions.json", "a+") as f:
+            with open("versions.json", "r") as f:
+                return json.loads(f.read())
 
 
-if __name__ == "__main__":
-    main()
