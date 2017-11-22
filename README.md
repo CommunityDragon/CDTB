@@ -7,5 +7,5 @@ pip install hachoir3
 ```python
 from clientcorrelator import clientcorrelator
 
-clientcorrelator.get_correlations()  # gets the correlations in dict format
+clientcorrelator.get_version_correlations()  # gets the correlations in dict format
 ```
