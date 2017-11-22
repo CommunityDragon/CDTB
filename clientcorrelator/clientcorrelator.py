@@ -47,10 +47,10 @@ def extract_client_version(client_path):
     return version
 
 
-def get_version_correlation(version: str, logger: bool):
+def get_version_correlation(version: str, caching_direc, logger: bool):
     print(f'Downloading and correlating version {version}...')
     try:
-        client_path = download_LoL_exe(version, output_directory='.cache')
+        client_path = download_LoL_exe(version, output_directory=caching_direc)
         client_version = extract_client_version(client_path)
         return client_version
     except Exception as error:
@@ -74,7 +74,7 @@ def get_version_correlations(client_versions: List[str] = None, logger: bool = T
 
     for version in client_versions:
         if version not in version_conversion:
-            client_version = get_version_correlation(version, logger)
+            client_version = get_version_correlation(version, caching_direc, logger)
             version_conversion[version] = client_version
 
     with open(os.path.join(caching_direc, 'versions.json'), 'w') as f:
