@@ -540,10 +540,12 @@ class BinPackage:
                     raise
 
 
-def parse_component(parser, storage: Storage, component: str):
+def parse_component(storage: Storage, component: str):
+    """Parse a component string representation to an object"""
+
     m = re.match(r'^(?:([sp]):)?(\w+)(?:=(|[0-9]+(?:\.[0-9]+)*)?)?$', component)
     if not m:
-        parser.error(f"invalid component: {component}")
+        raise ValueError(f"invalid component: {component}")
     typ, name, version = m.group(1, 2, 3)
     if not typ:
         typ = 's' if name.endswith('_sln') else 'p'
@@ -554,7 +556,7 @@ def parse_component(parser, storage: Storage, component: str):
         if version is None:
             return project
         elif version == '':
-            project.versions()[0]
+            return project.versions()[0]
         else:
             return ProjectVersion(project, version)
     elif typ == 's':
@@ -562,9 +564,17 @@ def parse_component(parser, storage: Storage, component: str):
         if version is None:
             return solution
         elif version == '':
-            solution.versions()[0]
+            return solution.versions()[0]
         else:
             return SolutionVersion(solution, version)
+
+
+def parse_component_arg(parser, storage: Storage, component: str):
+    """Wrapper around parse_component() to parse CLI arguments"""
+    try:
+        return parse_component(storage, component)
+    except ValueError:
+        parser.error(f"invalid component: {component}")
 
 
 def command_download(parser, args):
@@ -577,7 +587,7 @@ def command_download(parser, args):
     else:
         langs = True
 
-    components = [parse_component(parser, args.storage, component) for component in args.component]
+    components = [parse_component_arg(parser, args.storage, component) for component in args.component]
 
     for component in components:
         if isinstance(component, (Project, ProjectVersion)):
@@ -589,7 +599,7 @@ def command_download(parser, args):
 
 
 def command_versions(parser, args):
-    component = parse_component(parser, args.storage, args.component)
+    component = parse_component_arg(parser, args.storage, args.component)
     if isinstance(component, (Project, Solution)):
         for pv in component.versions():
             print(pv.version)

@@ -25,8 +25,9 @@ def test_parse_component(storage, monkeypatch, arg, str_value):
     def request_get(path):
         return mock_response(b'1.2.0.0\r\n1.0.0.0\r\n')
     monkeypatch.setattr(storage, 'request_get', request_get)
+    component = parse_component(storage, arg)
+    assert str(component) == str_value
 
-    component = parse_component(None, storage, arg)
 
 @pytest.mark.parametrize("arg", [
     'x:name',
@@ -41,10 +42,8 @@ def test_parse_component(storage, monkeypatch, arg, str_value):
     'name=0.0.0.1 ',
 ])
 def test_parse_component_error(arg):
-    def parser_error(msg):
-        raise RuntimeError(msg)
-    with pytest.raises(RuntimeError):
-        parse_component(SimpleNamespace(error=parser_error), None, arg)
+    with pytest.raises(ValueError):
+        parse_component(None, arg)
 
 
 def test_project_operators(storage):
