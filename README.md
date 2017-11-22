@@ -1,16 +1,21 @@
-Downloads the latest Patch from the League of legends servers
-	
-Setup:
-	
-	- Install python36
-	- pip install requests
-	- Done :)
-	
-How to use:
-	
-	- python downloader.py project_name
-	
-Project names:
+# CommunityDragon ToolBox
+## A library containing everything to build the files for DragonBuilder
 
-	- Project names are value of the key named "name" found in the config folder.
-	
+---
+
+## Correlator
+#### Description
+Correlates Launcher Client patches with Game Client patches
+
+#### Dependencies:
+pip install hachoir3
+
+#### Example
+```python
+from correlator import Correlator
+
+c = Correlator()
+
+c.convert()  # gets all correlations
+c.convert(['0.0.0.101', '0.0.0.30']) # gets specific correlations
+```
