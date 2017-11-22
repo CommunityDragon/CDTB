@@ -5,7 +5,7 @@
 pip install hachoir3
 
 ```python
-from ClientCorrelator import getCorrelations
+from ClientCorrelator import clientcorrelator
 
-getCorrelations() #gets the correlations in JSON format
+clientcorrelator.getCorrelations() #gets the correlations in JSON format
 ```

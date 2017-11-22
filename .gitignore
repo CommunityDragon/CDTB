@@ -1,3 +1,4 @@
 .cache
 versions.json
 *.exe
+__pycache__/

@@ -1,1 +1,0 @@
-from clientcorrelator import getCorrelations

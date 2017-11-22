@@ -67,7 +67,7 @@ def getCorrelations(logger=False):
                 if logger:
                     print(error)
 
-        filelist = glob.glob(os.path.join('', "*.exe"))
+        filelist = glob.glob(os.path.join('', "LeagueClient*.exe"))
         for f in filelist:
             os.remove(f)
 
