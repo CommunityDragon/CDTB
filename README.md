@@ -1,11 +1,17 @@
-# ClientCorrelator
-## Correlate launcher client patches with game client patches
+# CommunityDragon ToolBox
+## A library containing everything to build the file project
+
+---
+
+## Correlator
+### Correlates Launcher Client patches with Game Client patches
 
 ### Dependencies:
 pip install hachoir3
 
 ```python
-from clientcorrelator import clientcorrelator
+from correlator import correlator
 
-clientcorrelator.get_version_correlations()  # gets the correlations in dict format
+correlator.convert()  # gets all correlations
+correlator.convert(['0.0.0.101', '0.0.0.30']) # gets specific correlations
 ```
