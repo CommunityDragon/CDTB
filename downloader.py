@@ -193,6 +193,16 @@ class Project:
         for v in self.versions():
             v.download(force=force, dry_run=dry_run)
 
+    @staticmethod
+    def list(storage: Storage) -> List['Project']:
+        """List projects present in storage"""
+        ret = []
+        base = storage.fspath("projects")
+        for name in os.listdir(base):
+            if os.path.isdir(f"{base}/{name}/releases"):
+                ret.append(Project(storage, name))
+        return ret
+
 
 class ProjectVersion:
     """
@@ -324,6 +334,16 @@ class Solution:
         for v in self.versions():
             v.download(langs, force=force, dry_run=dry_run)
 
+    @staticmethod
+    def list(storage: Storage) -> List['Solution']:
+        """List solutions present in storage"""
+        ret = []
+        base = storage.fspath("solutions")
+        for name in os.listdir(base):
+            if os.path.isdir(f"{base}/{name}/releases"):
+                ret.append(Solution(storage, name))
+        return ret
+
 
 class SolutionVersion:
     """
@@ -403,8 +423,8 @@ class SolutionVersion:
         langs[None] = list(projects[name] for name in required_projects)
         return langs
 
-    def dependencies_for_langs(self, langs, force=False) -> List[ProjectVersion]:
-        """Return a list of dependencies for provided languages
+    def projects(self, langs, force=False) -> List[ProjectVersion]:
+        """Return a list of projects for provided languages
 
         langs can have the following values:
           False -- common dependencies, not language-dependent
@@ -426,7 +446,7 @@ class SolutionVersion:
         """Download solution version files"""
 
         logger.info("downloading solution %s", self)
-        for pv in self.dependencies_for_langs(langs, force=force):
+        for pv in self.projects(langs, force=force):
             pv.download(force=force, dry_run=dry_run)
 
     def patch_version(self) -> Optional[Version]:
@@ -434,7 +454,7 @@ class SolutionVersion:
 
         if self.solution.name == 'league_client_sln':
             # get patch version from system.yaml
-            for pv in self.dependencies_for_langs(False):
+            for pv in self.projects(False):
                 if pv.project.name == 'league_client':
                     break
             else:
@@ -458,7 +478,7 @@ class SolutionVersion:
 
         elif self.solution.name == 'lol_game_client_sln':
             # get patch version from .exe metadata
-            for pv in self.dependencies_for_langs(False):
+            for pv in self.projects(False):
                 if pv.project.name == 'lol_game_client':
                     break
             else:
@@ -740,79 +760,82 @@ def parse_component_arg(parser, storage: Storage, component: str):
 
 
 def command_download(parser, args):
-    if args.no_lang and args.lang:
-        parser.error("--no-lang and --lang are incompatible")
-    elif args.no_lang:
-        langs = False
-    elif args.lang:
-        langs = args.lang
-    else:
-        langs = True
-
     components = [parse_component_arg(parser, args.storage, component) for component in args.component]
-
     for component in components:
         if isinstance(component, (Project, ProjectVersion)):
             component.download(force=args.force, dry_run=args.dry_run)
         elif isinstance(component, (Solution, SolutionVersion)):
-            component.download(langs, force=args.force, dry_run=args.dry_run)
+            component.download(args.langs, force=args.force, dry_run=args.dry_run)
+        elif isinstance(component, PatchVersion):
+            for sv in component.solutions(latest=args.latest):
+                sv.download(args.langs, force=args.force, dry_run=args.dry_run)
         else:
             raise TypeError(component)
 
 
 def command_versions(parser, args):
+    if args.component == 'patch':
+        # special case for listing patch versions
+        for patch in PatchVersion.versions(args.storage, stored=args.stored):
+            print(patch.version)
+        return
+
     component = parse_component_arg(parser, args.storage, args.component)
     if isinstance(component, (Project, Solution)):
         for pv in component.versions():
             print(pv.version)
+    else:
+        parser.error(f"command cannot be used on {component}")
+
+
+def command_projects(parser, args):
+    component = parse_component_arg(parser, args.storage, args.component)
+    if isinstance(component, SolutionVersion):
+        for pv in sorted(component.projects(args.langs, force=args.force)):
+            print(pv)
+    elif isinstance(component, PatchVersion):
+        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs, force=args.force)}
+        for pv in sorted(projects):
+            print(pv)
+    else:
+        parser.error(f"command cannot be used on {component}")
+
+
+def command_solutions(parser, args):
+    component = parse_component_arg(parser, args.storage, args.component)
+    if isinstance(component, Project):
+        for sln in Solution.list(args.storage):
+            for sv in sln.versions(stored=True):
+                if component in (pv.project for pv in sv.projects(True)):
+                    print(sv)
+    elif isinstance(component, ProjectVersion):
+        for sln in Solution.list(args.storage):
+            for sv in sln.versions(stored=True):
+                if component in sv.projects(True):
+                    print(sv)
+    elif isinstance(component, PatchVersion):
+        for sv in component.solutions(latest=args.latest):
+            print(sv)
+    else:
+        parser.error(f"command cannot be used on {component}")
+
+
+def command_files(parser, args):
+    component = parse_component_arg(parser, args.storage, args.component)
+    if isinstance(component, ProjectVersion):
+        for pf in component.package_files(force=args.force):
+            print(pf.extract_path())
     elif isinstance(component, SolutionVersion):
-        pvs = component.dependencies_for_langs(True)
-        for pv in sorted(pvs, key=lambda o: (o.project.name, o.version)):
-            print("%s %s" % (pv.project.name, pv.version))
+        for pv in component.projects(args.langs):
+            for pf in pv.package_files(force=args.force):
+                print(pf.extract_path())
+    elif isinstance(component, PatchVersion):
+        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs, force=args.force)}
+        for pv in sorted(projects):
+            for pf in pv.package_files(force=args.force):
+                print(pf.extract_path())
     else:
-        raise TypeError(component)
-
-
-def command_patches(parser, args):
-    solution = Solution(args.storage, 'league_client_sln')
-
-    patches = []
-    if args.version:
-        # browse all solution versions for the requested patch
-        # stop once the earliest patch has been found
-        earliest_patch = sorted(args.version)[0]
-        for patch in PatchVersion.versions(args.storage):
-            if patch.version in args.version:
-                patches.append(patch)
-            elif patch.version < earliest_patch:
-                break
-        not_found = set(args.version) - {p.version for p in patches}
-        if not_found:
-            raise ValueError("patch versions not found: %s" % ' '.join(sorted(not_found)))
-    else:
-        # use stored versions
-        patches = list(PatchVersion.versions(args.storage, stored=True))
-
-    patch_content = [] # [(patch,  sorted_content)]
-    for patch in patches:
-        svs = patch.solutions(latest=args.last_solution)
-        if args.element == 'solutions':
-            content = set(svs)
-        elif args.element == 'projects':
-            content = {pv for sv in svs for pv in sv.dependencies_for_langs(True)}
-        elif args.element == 'files':
-            pvs = (pv for sv in svs for pv in sv.dependencies_for_langs(True))
-            content = {pf.extract_path() for pv in pvs for pf in pv.package_files()}
-        patch_content.append((patch, sorted(content)))
-
-    if args.version and len(args.version) == 1:
-        for content in patch_content[args.version[0]]:
-            print(content)
-    else:
-        for patch, content in patch_content:
-            print(patch)
-            for elem in content:
-                print(f"  {elem}")
+        parser.error(f"command cannot be used on {component}")
 
 
 def main():
@@ -852,32 +875,47 @@ def main():
                         help="be verbose")
     parser.add_argument('-o', '--storage', default='RADS',
                         help="directory for downloaded files (default: %(default)s)")
+    parser.add_argument('-f', '--force', action='store_true',
+                           help="force redownload of files")
 
     subparsers = parser.add_subparsers(dest='command', help="command")
 
-    subparser = subparsers.add_parser('download', help="download components")
-    subparser.add_argument('-f', '--force', action='store_true',
-                        help="force redownload of files")
+    component_parser = argparse.ArgumentParser(add_help=False)
+    component_parser.add_argument('--no-lang', dest='langs', action='store_false', default=True,
+                                  help="ignore language projects from solutions")
+    component_parser.add_argument('--lang', dest='langs', nargs='*',
+                                  help="use projects from solutions in given languages (default: all)")
+    component_parser.add_argument('-1', '--latest', action='store_true',
+                                  help="consider only the most recent solutions when searching for patches")
+
+    subparser = subparsers.add_parser('download', parents=[component_parser],
+                                      help="download components")
     subparser.add_argument('-n', '--dry-run', action='store_true',
-                        help="don't actually download package files, just list them")
-    subparser.add_argument('--no-lang', action='store_true',
-                           help="don't download language projects from solutions")
-    subparser.add_argument('--lang', nargs='*',
-                           help="for solutions, download projects in given languages (default: all)")
+                           help="don't actually download package files, just list them")
     subparser.add_argument('component', nargs='+',
                            help="components to download")
 
-    subparser = subparsers.add_parser('versions', help="list versions of a component")
+    subparser = subparsers.add_parser('versions', parents=[component_parser],
+                                      help="list versions")
+    subparser.add_argument('-a', '--all', dest='stored', action='store_false', default=True,
+                           help="when listing patch versions, don't use only stored solutions")
     subparser.add_argument('component',
-                           help="component to list versions for")
+                           help="solution, project or 'patch' to list patch versions")
 
-    subparser = subparsers.add_parser('patches', help="print elements used by patch versions")
-    subparser.add_argument('-e', '--element', choices=('files', 'projects', 'solutions'), required=True,
-                           help="which elements to display")
-    subparser.add_argument('-1', '--last-solution', action='store_true',
-                           help="for each patch, consider only the most recent solution")
-    subparser.add_argument('version', nargs='*', type=Version,
-                           help="versions to display (default: browse solutions in storage)")
+    subparser = subparsers.add_parser('projects', parents=[component_parser],
+                                      help="list projects")
+    subparser.add_argument('component',
+                           help="solution version or patch version")
+
+    subparser = subparsers.add_parser('solutions', parents=[component_parser],
+                                      help="list solution")
+    subparser.add_argument('component',
+                           help="project, project version or patch version")
+
+    subparser = subparsers.add_parser('files', parents=[component_parser],
+                                      help="list files")
+    subparser.add_argument('component',
+                           help="project version, solution version or patch version")
 
     args = parser.parse_args()
     args.storage = Storage(args.storage)
