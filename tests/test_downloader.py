@@ -30,6 +30,21 @@ def test_parse_component(storage, monkeypatch, arg, str_value):
     component = parse_component(storage, arg)
     assert str(component) == str_value
 
+@pytest.mark.parametrize("arg,str_value", [
+    ('patch=7.20', 'patch=7.20'),
+    ('patch=', 'patch=7.23'),
+])
+def test_parse_component_patch(storage, monkeypatch, arg, str_value):
+
+    def gen_versions(storage, stored):
+        assert stored == False
+        for v in ('7.23', '7.21', '7.20', '7.19'):
+            yield PatchVersion(storage, Version(v), [])
+    monkeypatch.setattr(PatchVersion, 'versions', gen_versions)
+
+    component = parse_component(storage, arg)
+    assert str(component) == str_value
+
 
 @pytest.mark.parametrize("arg", [
     'x:name',
@@ -42,6 +57,7 @@ def test_parse_component(storage, monkeypatch, arg, str_value):
     ' name',
     'name= ',
     'name=0.0.0.1 ',
+    'patch',
 ])
 def test_parse_component_error(arg):
     with pytest.raises(ValueError):

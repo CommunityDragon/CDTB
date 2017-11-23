@@ -483,7 +483,7 @@ class PatchVersion:
     A single game patch version
 
     This class should not be instanciated directly.
-    Use versions() to retrieve patch versions.
+    Use versions() or version() to retrieve patch versions.
     """
 
     def __init__(self, storage: Storage, version: Version, solutions: List[SolutionVersion]):
@@ -581,6 +581,20 @@ class PatchVersion:
             patches_iterators = new_patches_iterators
         if cur_patch is not None:
             yield PatchVersion(storage, cur_patch, cur_solutions)
+
+    @staticmethod
+    def version(storage: Storage, version=None, stored=False):
+        """Retrieve a single version, None if not found
+
+        If version if None, retrieve the latest one.
+        """
+        it = PatchVersion.versions(storage, stored=stored)
+        if version is None:
+            return next(it)
+        for v in it:
+            if v.version == version:
+                return v
+        return None
 
 
 class BinPackageFile:
@@ -684,7 +698,12 @@ def parse_component(storage: Storage, component: str):
         raise ValueError(f"invalid component: {component}")
     typ, name, version = m.group(1, 2, 3)
     if not typ:
-        typ = 's' if name.endswith('_sln') else 'p'
+        if name == 'patch':
+            typ = 'patch'
+        elif name.endswith('_sln'):
+            typ = 's'
+        else:
+            typ = 'p'
     if version is not None and version != '':
         version = Version(version)
     if typ == 'p':
@@ -703,6 +722,13 @@ def parse_component(storage: Storage, component: str):
             return solution.versions()[0]
         else:
             return SolutionVersion(solution, version)
+    elif typ == 'patch':
+        if version is None:
+            raise ValueError(f"patch requires a version")
+        elif version == '':
+            return PatchVersion.version(storage, None)
+        else:
+            return PatchVersion.version(storage, version)
 
 
 def parse_component_arg(parser, storage: Storage, component: str):
@@ -806,6 +832,7 @@ def main():
               s:solution_name=version
               p:project_name
               p:project_name=version
+              patch=version
 
             If version is empty, the latest one is used.
             The `s:` and `p:` prefixes can be omitted if type can be deduced
@@ -816,6 +843,7 @@ def main():
               league_client=
               lol_game_client_sln
               s:league_client_sln=0.0.1.195
+              patch=7.23
 
         """),
     )
