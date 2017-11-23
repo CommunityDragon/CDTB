@@ -429,7 +429,7 @@ class SolutionVersion:
         langs can have the following values:
           False -- common dependencies, not language-dependent
           True -- all languages
-          lang -- provided languages
+          lang -- provided language
           [lang, ...] -- provided languages
         """
         dependencies = self.dependencies()
@@ -437,10 +437,10 @@ class SolutionVersion:
             return dependencies[None]
         elif langs is True:
             return list({pv for pvs in dependencies.values() for pv in pvs})
-        elif isinstance(lang, str):
-            return dependencies[lang]
+        elif isinstance(langs, str):
+            return dependencies[langs]
         else:
-            return list({pv for pv in dependencies[lang] for lang in langs})
+            return list({pv for lang in langs for pv in dependencies[lang]})
 
     def download(self, langs, force=False, dry_run=False):
         """Download solution version files"""
