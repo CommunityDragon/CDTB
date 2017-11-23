@@ -4,18 +4,26 @@ import re
 import sys
 import zlib
 import json
+import itertools
 from contextlib import contextmanager
 from typing import List, Dict, IO, Union, Optional, Generator
 import logging
 import requests
+from correlator.functions import extract_client_version
 
 logger = logging.getLogger("downloader")
 
 
 class Version:
-    def __init__(self, s):
-        self.s = s
-        self.t = tuple(int(x) for x in s.split('.'))
+    def __init__(self, v: Union[str, tuple]):
+        if isinstance(v, str):
+            self.s = v
+            self.t = tuple(int(x) for x in v.split('.'))
+        elif isinstance(v, tuple):
+            self.s = '.'.join(str(x) for x in v)
+            self.t = v
+        else:
+            raise TypeError(v)
 
     def __repr__(self):
         return "{}({!r})".format(self.__class__.__qualname__, self.s)
@@ -37,7 +45,7 @@ class Version:
         elif isinstance(other, tuple):
             return self.t == other
         else:
-            raise False
+            return False
 
     def __hash__(self):
         return hash(self.s)
@@ -291,23 +299,26 @@ class Solution:
             return self.name < other.name
         return NotImplemented
 
-    def versions(self) -> List['SolutionVersion']:
-        """Retrieve the list of versions of this solution"""
-        logger.debug("retrieve versions of %s", self)
-        listing = self.storage.request_text(f"{self.path}/releaselisting")
-        return [SolutionVersion(self, Version(l)) for l in listing.splitlines()]
+    def versions(self, stored=False) -> List['SolutionVersion']:
+        """Retrieve a sorted list of versions of this solution
 
-    def storage_versions(self) -> List['SolutionVersion']:
-        """Get a list of versions on storage"""
-        fspath = self.storage.fspath(self.path)
-        if not os.path.isdir(fspath):
-            return []
-        ret = []
-        for path in os.listdir(fspath):
-            if not os.path.isdir(os.path.join(fspath, path)):
-                continue
-            ret.append(SolutionVersion(self, Version(path)))
-        return sorted(ret)
+        If stored in True, only versions in storage are used (to avoid
+        downloading new files).
+        """
+
+        if stored:
+            fspath = self.storage.fspath(self.path)
+            if not os.path.isdir(fspath):
+                return []  # solution not in storage
+            listing = []
+            for path in os.listdir(fspath):
+                if not os.path.isdir(os.path.join(fspath, path)):
+                    continue
+                listing.append(path)
+        else:
+            logger.debug("retrieve versions of %s", self)
+            listing = self.storage.request_text(f"{self.path}/releaselisting").splitlines()
+        return sorted(SolutionVersion(self, Version(l)) for l in listing)
 
     def download(self, langs, force=False, dry_run=False):
         for v in self.versions():
@@ -359,7 +370,7 @@ class SolutionVersion:
 
         path = f"{self.path}/solutionmanifest"
         self.solution.storage.download(path, path, force=force)
-        with open(self.solution.storage.fspath()) as f:
+        with open(self.solution.storage.fspath(path)) as f:
             lines = f.read().splitlines()
         assert lines[0] == "RADS Solution Manifest", "unexpected solutionmanifest magic line"
         assert lines[1] == "1.0.0.0", "unexpected solutionmanifest version"
@@ -394,7 +405,7 @@ class SolutionVersion:
 
     def dependencies_for_langs(self, langs, force=False) -> List[ProjectVersion]:
         """Return a list of dependencies for provided languages
-        
+
         langs can have the following values:
           False -- common dependencies, not language-dependent
           True -- all languages
@@ -422,6 +433,7 @@ class SolutionVersion:
         """Return patch version or None if it cannot be retrieved"""
 
         if self.solution.name == 'league_client_sln':
+            # get patch version from system.yaml
             for pv in self.dependencies_for_langs(False):
                 if pv.project.name == 'league_client':
                     break
@@ -430,7 +442,7 @@ class SolutionVersion:
 
             for pkgfile in pv.package_files():
                 if pkgfile.extract_path().endswith('/system.yaml'):
-                    if os.path.isfile(pkgfile.fspath()):
+                    if not os.path.isfile(pkgfile.fspath()):
                         pkgfile.package.extract()
                     break
             else:
@@ -440,12 +452,135 @@ class SolutionVersion:
                     #TODO do proper yaml parsing
                     m = re.match(r"""^ *game-branch: ["']([0-9.]+)["']$""", line)
                     if m:
-                        return m.group(1)
+                        return Version(m.group(1))
                 else:
                     raise ValueError("patch version not found in %s" % system_yaml_path)
+
+        elif self.solution.name == 'lol_game_client_sln':
+            # get patch version from .exe metadata
+            for pv in self.dependencies_for_langs(False):
+                if pv.project.name == 'lol_game_client':
+                    break
+            else:
+                raise ValueError("league_client project not found for %s" % self)
+
+            for pkgfile in pv.package_files():
+                if pkgfile.extract_path().endswith('/League of Legends.exe'):
+                    if not os.path.isfile(pkgfile.fspath()):
+                        pkgfile.package.extract()
+                    break
+            else:
+                raise ValueError("'League of Legends.exe' not found for %s" % pv)
+            patch = Version(extract_client_version(pkgfile.fspath()))
+            return Version(patch.t[:2])
+
         else:
             logger.info("no known way to retrieve patch version for solution %s", self.solution.name)
 
+
+class PatchVersion:
+    """
+    A single game patch version
+
+    This class should not be instanciated directly.
+    Use versions() to retrieve patch versions.
+    """
+
+    def __init__(self, storage: Storage, version: Version, solutions: List[SolutionVersion]):
+        self.storage = storage
+        self.version = version
+        self._solutions = sorted(solutions)
+
+    def __str__(self):
+        return f"patch={self.version}"
+
+    def __repr__(self):
+        return "<{} {}={}>".format(self.__class__.__qualname__, self.version)
+
+    def __eq__(self, other):
+        if isinstance(other, PatchVersion):
+            return self.version == other.version
+        return False
+
+    def __hash__(self):
+        return hash(self.version)
+
+    def __lt__(self, other):
+        if isinstance(other, PatchVersion):
+            return self.version > other.version
+        return NotImplemented
+
+    def solutions(self, latest=False):
+        """Return solution versions used by the patch version
+
+        If latest_sln is True, only the latest version of each solution is returned.
+        """
+        if latest:
+            ret = []
+            previous_solution = None
+            for sv in self._solutions:
+                if sv.solution != previous_solution:
+                    ret.append(sv)
+                previous_solution = sv.solution
+            return ret
+        else:
+            return self._solutions
+
+    @staticmethod
+    def versions(storage: Storage, stored=False) -> Generator['PatchVersion', None, None]:
+        """Generate patch versions, sorted from the latest one
+
+        If stored is True, only solution versions in storage are used (to avoid
+        downloading new files).
+
+        Versions are generated so the caller can stop iterating when needed
+        versions have been retrieved, avoiding to fetch all solutions.
+
+        Note: patch versions are assumed to be monotonous in successive
+        solution versions (they never decrease).
+        """
+
+        solution_names = ('league_client_sln', 'lol_game_client_sln')
+
+        # group versions by patch, drop those without patch
+        def gen_solution_patches(name):
+            solution = Solution(storage, name)
+            previous_patch = None
+            for sv in solution.versions(stored=stored):
+                patch = sv.patch_version()
+                if patch is None:
+                    continue
+                yield patch, sv
+                previous_patch = patch
+
+        # for each solution, peek the next patch to yield the lowest one
+        patches_iterators = [(None, None, gen_solution_patches(sln)) for sln in solution_names]
+        cur_patch = None
+        cur_solutions = None
+        while True:
+            new_patches_iterators = []
+            for patch, sv, it in patches_iterators:
+                if patch is None:
+                    try:
+                        patch, sv = next(it)
+                    except StopIteration:
+                        continue  # exhausted, remove from patches_iterators
+                new_patches_iterators.append((patch, sv, it))
+            if not new_patches_iterators:
+                break  # all iterators exhausted
+            # get and "consume" the highest patch version
+            new_patches_iterators.sort(key=lambda pit: pit[0], reverse=True)
+            patch, sv, it = new_patches_iterators[0]
+            if patch != cur_patch:
+                if cur_patch is not None:
+                    yield PatchVersion(storage, cur_patch, cur_solutions)
+                cur_patch = patch
+                cur_solutions = []
+            cur_solutions.append(sv)
+            new_patches_iterators[0] = None, None, it
+            patches_iterators = new_patches_iterators
+        if cur_patch is not None:
+            yield PatchVersion(storage, cur_patch, cur_solutions)
 
 
 class BinPackageFile:
@@ -523,6 +658,7 @@ class BinPackage:
                 reader.skip_to(pkgfile.offset)
                 fspath = pkgfile.fspath()
                 try:
+                    os.makedirs(os.path.dirname(fspath), exist_ok=True)
                     with open(fspath, mode='wb') as fout:
                         if pkgfile.compressed():
                             zobj = zlib.decompressobj(zlib.MAX_WBITS|32)
@@ -614,36 +750,26 @@ def command_versions(parser, args):
 def command_patches(parser, args):
     solution = Solution(args.storage, 'league_client_sln')
 
-    patches = {} # {patch: [SolutionVersion, ...]}
+    patches = []
     if args.version:
         # browse all solution versions for the requested patch
         # stop once the earliest patch has been found
         earliest_patch = sorted(args.version)[0]
-        for sv in solution.versions():
-            patch = sv.patch_version()
-            if patch is None:
-                continue
-            if args.last_solution and patch in patches:
-                continue
-            if patch in args.version:
-                patches.setdefault(patch, []).append(sv)
-            elif patch < earliest_patch:
+        for patch in PatchVersion.versions(args.storage):
+            if patch.version in args.version:
+                patches.append(patch)
+            elif patch.version < earliest_patch:
                 break
-        not_found = set(args.version) - set(patches)
+        not_found = set(args.version) - {p.version for p in patches}
         if not_found:
-            raise ValueError("patches not found: %s" % ' '.join(sorted(not_found)))
+            raise ValueError("patch versions not found: %s" % ' '.join(sorted(not_found)))
     else:
         # use stored versions
-        for sv in solution.storage_versions():
-            patch = sv.patch_version()
-            if patch is None:
-                continue
-            if args.last_solution and patch in patches:
-                continue
-            patches.setdefault(patch, []).append(sv)
+        patches = list(PatchVersion.versions(args.storage, stored=True))
 
-    patch_content = {} # {patch: sorted_content}
-    for patch, svs in patches.items():
+    patch_content = [] # [(patch,  sorted_content)]
+    for patch in patches:
+        svs = patch.solutions(latest=args.last_solution)
         if args.element == 'solutions':
             content = set(svs)
         elif args.element == 'projects':
@@ -651,16 +777,16 @@ def command_patches(parser, args):
         elif args.element == 'files':
             pvs = (pv for sv in svs for pv in sv.dependencies_for_langs(True))
             content = {pf.extract_path() for pv in pvs for pf in pv.package_files()}
-        patch_content[patch] = sorted(content)
+        patch_content.append((patch, sorted(content)))
 
     if args.version and len(args.version) == 1:
         for content in patch_content[args.version[0]]:
             print(content)
     else:
-        for patch in sorted(patch_content, reverse=True):
+        for patch, content in patch_content:
             print(patch)
-            for content in patch_content[patch]:
-                print(f"  {content}")
+            for elem in content:
+                print(f"  {elem}")
 
 
 def main():
@@ -722,7 +848,7 @@ def main():
                            help="which elements to display")
     subparser.add_argument('-1', '--last-solution', action='store_true',
                            help="for each patch, consider only the most recent solution")
-    subparser.add_argument('version', nargs='*',
+    subparser.add_argument('version', nargs='*', type=Version,
                            help="versions to display (default: browse solutions in storage)")
 
     args = parser.parse_args()
