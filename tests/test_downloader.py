@@ -2,10 +2,17 @@ import os
 import pytest
 from types import SimpleNamespace
 from tools import *
-from downloader import Version, Project, ProjectVersion, Solution, SolutionVersion, PatchVersion
-from downloader import parse_component
+from cdragontoolbox.downloader import Storage, Version
+from cdragontoolbox.downloader import Project, ProjectVersion, Solution, SolutionVersion, PatchVersion
+from cdragontoolbox.downloader import parse_component
 
-V = Version  # for readibility
+@pytest.fixture
+def storage(tmpdir):
+    storage = Storage(os.path.join(tmpdir, 'RADS'))
+    storage.s = None  # prevent requests
+    return storage
+
+V = Version  # helper for readability
 
 
 @pytest.mark.parametrize("arg,str_value", [
