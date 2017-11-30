@@ -1,326 +1,408 @@
+#!/usr/bin/env python3
+import os
+import re
 import struct
-import hashlib
-import binascii
 import zlib
 import gzip
-import zstd
-import os
 import json
+import imghdr
 import logging
+import posixpath
+import xxhash
+import zstd
+# support both zstd and zstandard implementations
+if hasattr(zstd, 'decompress'):
+    zstd_decompress = zstd.decompress
+else:
+    zstd_decompress = zstd.ZstdDecompressor().decompress
 
-logger = logging.getLogger("wad_parser")
+logger = logging.getLogger("wad")
 
-logging.basicConfig(
+
+class Parser:
+    def __init__(self, f):
+        self.f = f
+
+    def tell(self):
+        return self.f.tell()
+
+    def seek(self, position):
+        self.f.seek(position, 0)
+
+    def skip(self, amount):
+        self.f.seek(amount, 1)
+
+    def rewind(self, amount):
+        self.f.seek(-amount, 1)
+
+    def unpack(self, fmt):
+        length = struct.calcsize(fmt)
+        return struct.unpack(fmt, self.f.read(length))
+
+    def raw(self, length):
+        return self.f.read(length)
+
+
+class WadFileHeader:
+    """
+    Single file entry in a WAD archive
+    """
+
+    _magic_numbers_ext = {
+        b'OggS': 'ogg',
+        bytes.fromhex('00010000'): 'ttf',
+        bytes.fromhex('1a45dfa3'): 'webm',
+        b'true': 'ttf',
+        b'OTTO\0': 'otf',
+        b'"use strict";': 'min.js',
+        b'<template ': 'template.html',
+        b'<!-- Elements -->': 'template.html',
+        b'DDS ': 'dds',
+        b'r3d2Mesh': 'scb',
+    }
+
+    def __init__(self, path_hash, offset, compressed_size, size, type, duplicate, unk0, unk1, sha256):
+        self.path_hash = path_hash
+        self.offset = offset
+        self.size = size
+        self.type = type
+        self.compressed_size = compressed_size
+        self.duplicate = bool(duplicate)
+        self.unk0, self.unk1 = unk0, unk1
+        self.sha256 = sha256
+        # values that can be guessed
+        self.path = None
+        self.ext = None
+
+    def read_data(self, f):
+        """Retrieve (uncompressed) data from WAD file object"""
+
+        f.seek(self.offset)
+        # assume files are small enough to fit in memory
+        data = f.read(self.compressed_size)
+        if self.type == 0:
+            return data
+        elif self.type == 1:
+            return gzip.decompress(data)
+        elif self.type == 3:
+            return zstd_decompress(data)
+        raise ValueError("unsupported file type: %d" % self.type)
+
+    @staticmethod
+    def guess_extension(data):
+        # image type
+        typ = imghdr.what(None, h=data)
+        if typ == 'jpeg':
+            return 'jpg'
+        elif typ is not None:
+            return typ
+
+        # json
+        try:
+            json.loads(data)
+            return 'json'
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            pass
+
+        # others
+        for prefix, ext in WadFileHeader._magic_numbers_ext.items():
+            if data.startswith(prefix):
+                return ext
+
+
+class Wad:
+    """
+    WAD archive
+    """
+
+    def __init__(self, path):
+        self.path = path
+        self.version = None
+        self.files = None
+
+    def parse_headers(self):
+        """Parse version and file list"""
+
+        logger.debug("parse headers of %s", self.path)
+        with open(self.path, 'rb') as f:
+            parser = Parser(f)
+            magic, version_major, version_minor = parser.unpack("<2sBB")
+            if magic != b'RW':
+                raise ValueError("invalid magic code")
+            self.version = (version_major, version_minor)
+
+            if version_major == 2:
+                parser.seek(88)
+            elif version_major == 3:
+                parser.seek(256)
+            else:
+                raise ValueError("unsupported WAD version: %d.%d" % (version_major, version_minor))
+
+            unk, entry_header_offset, entry_header_cell_size, entry_count = parser.unpack("<QHHI")
+            self.files = [WadFileHeader(*parser.unpack("<QIIIBBBBQ")) for _ in range(entry_count)]
+
+    def resolve_paths(self, hashes):
+        """Guess path and/or extension of files"""
+
+        for wadfile in self.files:
+            if wadfile.path_hash in hashes:
+                wadfile.path = hashes[wadfile.path_hash]
+                wadfile.ext = wadfile.path.split('.', 1)[1]
+
+    def guess_extensions(self):
+        with open(self.path, 'rb') as f:
+            for wadfile in self.files:
+                if not wadfile.path and not wadfile.ext:
+                    data = wadfile.read_data(f)
+                    wadfile.ext = WadFileHeader.guess_extension(data)
+
+
+    def extract(self, output):
+        """Extract WAD file"""
+
+        logger.info("extracting %s to %s", self.path, output)
+        assert self.files is not None, "parse_headers() must be called before extract()"
+
+        with open(self.path, 'rb') as fwad:
+            for wadfile in self.files:
+                path = wadfile.path
+                if path is None:
+                    path = 'unknown/%016x' % wadfile.path_hash
+                    if wadfile.ext:
+                        path += '.%s' % wadfile.ext
+                output_path = os.path.join(output, path)
+
+                logger.info("extracting %016x %s", wadfile.path_hash, path if path else '?')
+
+                fwad.seek(wadfile.offset)
+                # assume files are small enough to fit in memory
+                data = wadfile.read_data(fwad)
+                os.makedirs(os.path.dirname(output_path), exist_ok=True)
+                with open(output_path, 'wb') as fout:
+                    fout.write(data)
+
+    def guess_hashes(self):
+        """Try to guess hashes"""
+
+        unknown_hashes = {wadfile.path_hash for wadfile in self.files if not wadfile.path}
+
+        resolved_paths = set()
+        found_paths = set()  # candidate paths
+        plugin_name = None
+
+        # parse all information in one pass
+        with open(self.path, 'rb') as f:
+            for wadfile in self.files:
+                # only process text files
+                try:
+                    data = wadfile.read_data(f).decode('utf-8-sig')
+                except UnicodeDecodeError:
+                    continue
+
+                if wadfile.ext == 'json':
+                    jdata = json.loads(data)
+                    # retrieve plugin_name from description.json
+                    if 'pluginDependencies' in jdata and 'name' in jdata:
+                        plugin_name = jdata['name']
+
+                # paths starting with /fe/
+                found_paths |= {m.group(1) for m in re.finditer(r'(/fe/[a-zA-Z0-9/_.-]+)', data)}
+                # relative path starting with ./ or ../ (e.g. require() use)
+                relpaths = {m.group(1) for m in re.finditer(r'[^a-zA-Z0-9/_.\\-]((?:\.|\.\.)/[a-zA-Z0-9/_.-]+)', data)}
+                found_paths |= relpaths
+                if wadfile.path:
+                    resolved_paths |= {posixpath.normpath(posixpath.join(posixpath.dirname(wadfile.path), path)) for path in relpaths}
+                # paths with known extension
+                found_paths |= {m.group(1) for m in re.finditer(r'''["']([a-zA-Z0-9/_.-]+\.(?:png|jpg|webm|js|html|css|ttf|otf))\b''', data)}
+
+        if not plugin_name:
+            # try to guess plugin_name from path
+            # this will work when loading a wad in a RADS tree
+            plugin_name = os.path.basename(os.path.dirname(os.path.abspath(self.path)))
+            if not plugin_name.startswith('rcp-'):
+                plugin_name = None
+        default_path = f"plugins/{plugin_name}/global/default" if plugin_name else None
+
+        # resolve parsed paths, using plugin name, known subdirs, ...
+        for path in found_paths:
+            basename = posixpath.basename(path)
+
+            # /fe/{plugin}/{subpath} -> plugins/rcp-[bf]e-{plugin}/global/default/{subpath}
+            m = re.match(r'/fe/([^/]+)/(.*)', path)
+            if m:
+                plugin, subpath = m.groups()
+                resolved_paths.add(f"plugins/rcp-fe-{plugin}/global/default/{subpath}")
+                resolved_paths.add(f"plugins/rcp-be-{plugin}/global/default/{subpath}")
+                continue
+
+            # starting with './' or '../' without extension, try node module file
+            m = re.match(r'\.+/(.*/[^.]+)$', path)
+            if m:
+                subpath = path.lstrip('./')  # strip all './' and '../' leading parts
+                for prefix in ('components', 'components/elements', 'components/dropdowns', 'components/components'):
+                    resolved_paths |= {f"{prefix}{suffix}" for suffix in ('.js', '.js.map', '/index.js', '/index.js.map')}
+
+            if default_path:
+                # known subdirectories
+                m = re.match(r'\b((?:data|assets|images|audio|components|sounds|css)/.+)', path)
+                if m:
+                    subpath = m.group(1)
+                    resolved_paths.add(f"{default_path}/{subpath}")
+                    resolved_paths.add(f"{default_path}/{posixpath.dirname(subpath)}")
+                # combine basename and subpath with known directories
+                for subpath in (basename, path.lstrip('./')):
+                    resolved_paths.add(f"{default_path}/{subpath}")
+                    resolved_paths |= {f"{default_path}/{subdir}/{subpath}" for subdir in (
+                        'components', 'components/elements', 'components/dropdowns', 'components/components',
+                        'images', 'audio', 'sounds', 'video', 'mograph', 'css',
+                        'assets', 'assets/images', 'assets/audio', 'assets/sounds', 'assets/video', 'assets/mograph',
+                    )}
+
+        # add lowercase variants
+        resolved_paths |= {p.lower() for p in resolved_paths}
+
+        # add common names at root
+        if default_path:
+            resolved_paths |= {f"{default_path}/{name}" for name in (
+                'description.json', 'index.html',
+                'init.js', 'init.js.map', 'bundle.js', 'trans.js',
+            )}
+            resolved_paths |= {f"{default_path}/{i}.bundle.js" for i in range(10)}
+
+        # try to find new hashes from these paths
+        discovered_hashes = {}
+        for path in resolved_paths:
+            h = xxhash.xxh64(path).intdigest()
+            if h in unknown_hashes:
+                discovered_hashes[h] = path
+
+        return discovered_hashes
+
+
+def load_hashes(fname):
+    if not fname:
+        return None
+    if fname.endswith('.json'):
+        with open(fname) as f:
+            hashes = json.load(f)
+    else:
+        with open(fname) as f:
+            hashes = dict(l.strip().split(' ', 1) for l in f)
+    return {int(h, 16): path for h, path in hashes.items()}
+
+def save_hashes(fname, hashes):
+    if fname.endswith('.json'):
+        with open(fname, 'w', newline='') as f:
+            json.dump(hashes, f)
+    else:
+        with open(fname, 'w', newline='') as f:
+            for h, path in sorted(hashes.items(), key=lambda kv: kv[1]):
+                print("%016x %s" % (h, path), file=f)
+
+
+def command_extract(parser, args):
+    if not os.path.isfile(args.wad):
+        parser.error("WAD file does not exist")
+    if not args.output:
+        args.output = os.path.splitext(args.wad)[0]
+    if os.path.exists(args.output) and not os.path.isdir(args.output):
+        parser.error("output is not a directory")
+
+    hashes = load_hashes(args.hashes)
+    wad = Wad(args.wad)
+    wad.parse_headers()
+    if hashes:
+        wad.resolve_paths(hashes)
+    wad.guess_extensions()
+    wad.extract(args.output)
+
+
+def command_list(parser, args):
+    if not os.path.isfile(args.wad):
+        parser.error("WAD file does not exist")
+
+    hashes = load_hashes(args.hashes)
+    wad = Wad(args.wad)
+    wad.parse_headers()
+    if hashes:
+        wad.resolve_paths(hashes)
+
+    wadfiles = [(wf.path or ('?.%s' % wf.ext if wf.ext else '?'), wf.path_hash) for wf in wad.files]
+    for path, h in sorted(wadfiles):
+        print("%016x %s" % (h, path))
+
+
+def command_guess_hashes(parser, args):
+    if not os.path.isfile(args.wad):
+        parser.error("WAD file does not exist")
+    if args.update and not args.hashes:
+        parser.error("--update requires --hashes")
+
+    hashes = load_hashes(args.hashes)
+    wad = Wad(args.wad)
+    wad.parse_headers()
+    if hashes:
+        wad.resolve_paths(hashes)
+    wad.guess_extensions()
+    new_hashes = wad.guess_hashes()
+
+    for h, path in new_hashes.items():
+        print("%016x %s" % (h, path))
+
+    if args.update and new_hashes:
+        hashes.update(new_hashes)
+        save_hashes(args.hashes, hashes)
+
+
+def main():
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Extract WAD files")
+    parser.add_argument('-v', '--verbose', action='count', default=0,
+                        help="be verbose")
+
+    subparsers = parser.add_subparsers(dest='command', help="command")
+
+    subparser = subparsers.add_parser('extract',
+                                      help="extract a WAD file")
+    subparser.add_argument('-o', '--output',
+                           help="extract directory")
+    subparser.add_argument('-H', '--hashes',
+                           help="hashes of known paths (JSON or plain text)")
+    subparser.add_argument('wad',
+                           help="WAD file to extract")
+
+    subparser = subparsers.add_parser('list',
+                                      help="list WAD content")
+    subparser.add_argument('-H', '--hashes',
+                           help="hashes of known paths (JSON or plain text)")
+    subparser.add_argument('wad',
+                           help="WAD file to list")
+
+    subparser = subparsers.add_parser('guess-hashes',
+                                      help="guess hashes from WAD content")
+    subparser.add_argument('-H', '--hashes',
+                           help="hashes of known paths (JSON or plain text)")
+    subparser.add_argument('-u', '--update', action='store_true',
+                           help="update given hashes file")
+    subparser.add_argument('wad',
+                           help="WAD file to analyze")
+
+    args = parser.parse_args()
+
+    logging.basicConfig(
         level=logging.WARNING,
         datefmt='%H:%M:%S',
         format='%(asctime)s %(levelname)s %(name)s - %(message)s',
     )
-logger.setLevel(logging.DEBUG)
-
-"""
-The file hashes are generated using xxhash.xxh64 on the filename. The filename starts with plugins/...
-Here is a list of all the file names we know about:
-https://github.com/Pupix/lol-wad-parser/blob/master/lib/hashes.json
-If you take any one of those filenames and prepend "plugins", you should get the correct hash value.
-These hash values are stored in the decompressed wad file; however, any leading zeros are not in the file hash in the wad file.
-
-The process here is to:
-1) Download a (compressed) wad file.
-2) Decompress it if necessary.
-3) Look through the file headers for all the files an extract the header info.
-4) Inside the header info is the file hash, and we can map that back to the correct filename in the above linked hashes.json file.
-5) Pull the file data chunk from the wad file.
-6) Save the file data to its filename.
-"""
-
-
-class Parser(object):
-    def __init__(self, data):
-        self.data = data
-        self.position = 0
-
-    def seek(self, position):
-        self.position = position
-
-    def skip(self, amount):
-        self.position += amount
-        return None
-
-    def rewind(self, amount):
-        self.position -= amount
-
-    def unpack(self, fmt):
-        length = struct.calcsize(fmt)
-        result = struct.unpack(fmt, self.data[self.position:self.position + length])
-        self.position += length
-        return result
-
-    def raw(self, length):
-        result = self.data[self.position:self.position + length]
-        self.position += length
-        return result
-
-    # Info table from struct documentation
-    #x   pad byte    no value
-    #c   char    bytes of length 1   1
-    #b   signed char integer 1   (1),(3)
-    #B   unsigned char   integer 1   (3)
-    #?   _Bool   bool    1   (1)
-    #h   short   integer 2   (3)
-    #H   unsigned short  integer 2   (3)
-    #i   int integer 4   (3)
-    #I   unsigned int    integer 4   (3)
-    #l   long    integer 4   (3)
-    #L   unsigned long   integer 4   (3)
-    #q   long long   integer 8   (2), (3)
-    #Q   unsigned long long  integer 8   (2), (3)
-    #n   ssize_t integer     (4)
-    #N   size_t  integer     (4)
-    #e   (7) float   2   (5)
-    #f   float   float   4   (5)
-    #d   double  float   8   (5)
-    #s   char[]  bytes
-    #p   char[]  bytes
-    #P   void *  integer     (6)
-
-
-def extract_header_info(data, file_hashes, signatures):
-    parser = Parser(data)
-    parser.seek(0)
-
-    _magic1, _magic2, version_major, version_minor = parser.unpack("ccBB")
-    magic = _magic1 + _magic2; del _magic1; del _magic2
-
-    if version_major in (2, 3):
-        if version_major == 2:
-            parser.seek(88)
-        if version_major == 3:
-            parser.seek(256)
-        wad_header_unk, wad_header_entry_header_offset, wad_header_entry_header_cell_size, wad_header_file_count = parser.unpack("QHHI")
-
-        wad_file_headers = []
-        for i in range(wad_header_file_count):
-            path_hash, offset, compressed_file_size, file_size, compressed, duplicate, unk, unk0, sha256 = parser.unpack("QIIIBBBBQ")
-
-            file_hash = hex(path_hash)[2:]  # The [2:] is because hex(some_int) has "0x" prepended to it; it is returned as a string.
-            # Left pad with 0s if necessary
-            while len(file_hash) < 16:
-                file_hash = '0' + file_hash
-
-            # See if we know the filename for this hash; if so, get it!
-            unknown_file_path = "unknown"
-            filename = file_hashes.get(file_hash, os.path.join(unknown_file_path, file_hash))
-
-            # Get the file extension
-            position = parser.position
-            parser.seek(offset)
-            magic = binascii.hexlify(parser.raw(12)).decode()
-            parser.seek(position)
-            ext = get_extension(magic, signatures)
-
-            wad_file_headers.append({
-                "path_hash": path_hash,
-                "file_hash": file_hash,
-                "filename": filename,
-                "extension": ext,
-                "offset": offset,
-                "compressed_file_size": compressed_file_size,
-                "file_size": file_size,
-                "compressed": compressed,
-                "duplicate": duplicate,
-                "unk": unk,
-                "unk0": unk0,
-                "sha256": sha256
-            })
+    if args.verbose >= 1:
+        logger.setLevel(logging.DEBUG)
     else:
-        raise NotImplementedError("A parser for wad version {} is not implemented.".format(version_major))
-    return wad_file_headers
+        logger.setLevel(logging.INFO)
+    if args.verbose >= 2:
+        logging.getLogger("requests").setLevel(logging.DEBUG)
 
-
-def get_extension(a_hash, signatures):
-    for ext_hash, ext_name in signatures.items():
-        if a_hash.startswith(ext_hash):
-            return ext_name
-
-
-def extract_file(filename, file_data):
-    """
-    header_data: a dict from the above extract_header_info function
-    file_data: a piece of data from the wad file, extracted via data[header['offset']:header['offset'] + header['file_size']]  (take into account possible compression)
-    """
-    # Make the direc if it doesn't exist
-    head, tail = os.path.split(filename)
-    if head != '':
-        os.makedirs(head, exist_ok=True)
-
-    # Save the file
-    with open(filename, "wb") as f:
-        f.write(file_data)
-
-
-def save_files(directory, data, file_headers, ignore=None):
-    parser = Parser(data)
-    if ignore is None:
-        ignore = {}
-    else:
-        # convert list to dict for fast lookup
-        ignore = {hash: True for hash in ignore}
-
-    _five_percent_interval = int(len(file_headers) / 20.)
-    for i, header in enumerate(file_headers):
-        parser.seek(header['offset'])
-        if header['compressed']:
-            file_data = parser.raw(header['compressed_file_size'])
-            try:
-                file_data = gzip.decompress(file_data)
-                #print('gzip:',file_data)
-            except OSError: #if gzip wont work must be zstd
-                try:
-                    file_data = zstd.decompress(file_data)
-                    #print('zstd:',file_data)
-                except (OSError,ValueError): #if gzip or zstd wont work must be text of some sort (don't know)
-                    file_data = file_data[4:]#remove the first 4 bytes useless
-                    #print('OSError:',file_data)
-
-        #assert header['sha256'] == hashlib.sha256(file_data).hexdigest()  # Make sure we have the correct data!
-
-        filename = header['filename']
-        ext = header['extension']
-        if ext is not None and not filename.endswith(ext):
-            filename = filename + '.' + ext
-        filename = filename.split('/')
-        filename = os.path.join(directory, *filename)
-
-        if not ignore.get(header['file_hash'], False):
-            #this is broken?
-            try:
-                extract_file(filename, file_data)
-            except UnboundLocalError:
-                pass
-				
-        #this is broken?
-        '''
-        if i % _five_percent_interval == 0:
-            print(f'{i} out of {len(file_headers)} files extracted...')
-        '''
-
-
-def identify_file_type(fn):
-    import json
-    import scipy.ndimage
-    try:
-        with open(fn) as f:
-            json.load(f)
-            return "json"
-    except:
-        pass
-    try:
-        scipy.ndimage.imread(fn)
-        return "image"
-    except OSError:
-        pass
-
-
-def identify_unknown_file_types(directory):
-    # We don't know the file name or file signatures for some files, so try a few different methods of opening them until one works
-    files = [f for f in os.listdir(os.path.join(directory, 'unknown')) if not os.path.splitext(f)[1]]
-    for fn in files:
-        fn = os.path.join(directory, 'unknown', fn)
-        file_type = identify_file_type(fn)
-        if file_type == 'json':
-            try:
-                os.rename(fn, fn + '.json')
-            except FileExistsError:
-                os.rename(fn, fn + '(error).json')
-        elif file_type == "image":
-            # Just assume jpg
-            try:
-                os.rename(fn, fn + '.jpg')
-            except FileExistsError:
-                os.rename(fn, fn + '(error).jpg')
-
-class wad():
-	def __init__(self,vob):
-		import inspect
-		scriptpath = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
-		
-		with open(scriptpath+'\\hashes.json') as f:
-			self.file_hashes = json.load(f)
-		with open(scriptpath+'\\signatures.json') as f:
-			self.signatures = json.load(f)
-		with open(scriptpath+'\\ignore.json') as f:
-			self.ignore = json.load(f)
-		
-		if vob >= 1:
-			logger.setLevel(logging.DEBUG)
-		else:
-			logger.setLevel(logging.INFO)
-		if vob >= 2:
-			logging.getLogger("requests").setLevel(logging.DEBUG)
-		
-	def extract(self,path):
-		logger.info("extracting %s", foutput)
-		directory = os.path.dirname(path)
-		wad_filename = path
-		
-		logger.debug("Loading data...")
-		with open(wad_filename, "rb") as f:
-			data = f.read()
-		if wad_filename.endswith(".compressed"):
-			logger.debug("Decompressing data...")
-			data = zlib.decompress(data)
-
-		logger.debug("Loading headers...")
-		headers = extract_header_info(data, self.file_hashes, self.signatures)
-
-		logger.debug(f"Got {len(headers)} headers/files.")
-
-		logger.debug("Saving files...")
-		save_files(directory, data, headers, ignore=self.ignore)
-
-		logger.debug("Identifying the type of unknown files...")
-		identify_unknown_file_types(directory)
-        
-def main():
-    import sys
-    import json
-
-    with open('hashes.json') as f:
-        file_hashes = json.load(f)
-    with open('signatures.json') as f:
-        signatures = json.load(f)
-    with open('ignore.json') as f:
-        ignore = json.load(f)
-
-    try:
-        directory = sys.argv[2]
-    except IndexError:
-        directory = "temp"
-    os.makedirs(directory, exist_ok=True)
-
-    try:
-        wad_filename = sys.argv[1]
-    except IndexError:
-        wad_filename = "default-assets.wad"
-
-    logger.debug("Loading data...")
-    with open(wad_filename, "rb") as f:
-        data = f.read()
-    if wad_filename.endswith(".compressed"):
-        logger.debug("Decompressing data...")
-        data = zlib.decompress(data)
-
-    logger.debug("Loading headers...")
-    headers = extract_header_info(data, file_hashes, signatures)
-
-    logger.debug(f"Got {len(headers)} headers/files.")
-
-    logger.debug("Saving files...")
-    save_files(directory, data, headers, ignore=ignore)
-
-    logger.debug("Identifying the type of unknown files...")
-    identify_unknown_file_types(directory)
-
+    globals()["command_%s" % args.command.replace('-', '_')](parser, args)
 
 if __name__ == "__main__":
     main()
