@@ -402,6 +402,12 @@ def main():
     if args.verbose >= 2:
         logging.getLogger("requests").setLevel(logging.DEBUG)
 
+    # use default hashes.txt from packages directory if available
+    if hasattr(args, 'hashes') and args.hashes is None:
+        default_hashes = os.path.join(os.path.dirname(__file__), 'hashes.txt')
+        if os.path.isfile(default_hashes):
+            args.hashes = default_hashes
+
     globals()["command_%s" % args.command.replace('-', '_')](parser, args)
 
 if __name__ == "__main__":
