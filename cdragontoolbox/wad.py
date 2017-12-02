@@ -216,6 +216,8 @@ class Wad:
                     resolved_paths |= {posixpath.normpath(posixpath.join(posixpath.dirname(wadfile.path), path)) for path in relpaths}
                 # paths with known extension
                 found_paths |= {m.group(1) for m in re.finditer(r'''["']([a-zA-Z0-9/_.-]+\.(?:png|jpg|webm|js|html|css|ttf|otf))\b''', data)}
+                # template ID to template path
+                found_paths |= {'%s/template.html' % m.group(1) for m in re.finditer(r'<template id="[^"]*-template-([^"]+)"', data)}
 
         if not plugin_name:
             # try to guess plugin_name from path
