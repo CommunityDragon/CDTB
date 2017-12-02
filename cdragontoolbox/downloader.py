@@ -843,7 +843,6 @@ def main():
 
     import argparse
     import textwrap
-    script_dir = os.path.dirname(__file__)
 
     parser = argparse.ArgumentParser(
         description="Download League of Legends game files",
@@ -932,7 +931,7 @@ def main():
     if args.verbose >= 2:
         logging.getLogger("requests").setLevel(logging.DEBUG)
 
-    globals()["command_%s" % args.command](parser, args)
+    globals()["command_%s" % args.command.replace('-', '_')](parser, args)
 
 
 if __name__ == "__main__":
