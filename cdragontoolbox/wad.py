@@ -198,6 +198,8 @@ class Wad:
                     data = wadfile.read_data(f).decode('utf-8-sig')
                 except UnicodeDecodeError:
                     continue
+                if not data:
+                    continue
 
                 if wadfile.ext == 'json':
                     jdata = json.loads(data)
