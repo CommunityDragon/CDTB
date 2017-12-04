@@ -219,6 +219,9 @@ class Wad:
                 # template ID to template path
                 found_paths |= {'%s/template.html' % m.group(1) for m in re.finditer(r'<template id="[^"]*-template-([^"]+)"', data)}
 
+        # hashed paths are always lowercased, do the same
+        found_paths = {p.lower() for p in found_paths}
+
         if not plugin_name:
             # try to guess plugin_name from path
             # this will work when loading a wad in a RADS tree
@@ -261,9 +264,6 @@ class Wad:
                         'images', 'audio', 'sounds', 'video', 'mograph', 'css',
                         'assets', 'assets/images', 'assets/audio', 'assets/sounds', 'assets/video', 'assets/mograph',
                     )}
-
-        # add lowercase variants
-        resolved_paths |= {p.lower() for p in resolved_paths}
 
         # add common names at root
         if default_path:
