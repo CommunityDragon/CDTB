@@ -181,10 +181,10 @@ class Wad:
                 with open(output_path, 'wb') as fout:
                     fout.write(data)
 
-    def guess_hashes(self):
+    def guess_hashes(self, unknown_hashes):
         """Try to guess hashes"""
 
-        unknown_hashes = {wadfile.path_hash for wadfile in self.files if not wadfile.path}
+        logger.info("guessing hashes from %s", self.path)
 
         resolved_paths = set()
         found_paths = set()  # candidate paths
@@ -194,6 +194,9 @@ class Wad:
         with open(self.path, 'rb') as f:
             for wadfile in self.files:
                 # only process text files
+                # skip non-text files as soon as possible
+                if wadfile.ext in ('png', 'jpg', 'ttf', 'webm', 'ogg', 'dds'):
+                    continue
                 try:
                     data = wadfile.read_data(f).decode('utf-8-sig')
                 except UnicodeDecodeError:
@@ -207,8 +210,8 @@ class Wad:
                     if 'pluginDependencies' in jdata and 'name' in jdata:
                         plugin_name = jdata['name']
 
-                # paths starting with /fe/
-                found_paths |= {m.group(1) for m in re.finditer(r'(/fe/[a-zA-Z0-9/_.-]+)', data)}
+                # paths starting with /fe/ or /lol-plugin/
+                found_paths |= {m.group(1) for m in re.finditer(r'((?:/fe/|/lol-)[a-zA-Z0-9/_.@-]+)', data)}
                 # relative path starting with ./ or ../ (e.g. require() use)
                 relpaths = {m.group(1) for m in re.finditer(r'[^a-zA-Z0-9/_.\\-]((?:\.|\.\.)/[a-zA-Z0-9/_.-]+)', data)}
                 found_paths |= relpaths
@@ -235,9 +238,12 @@ class Wad:
             basename = posixpath.basename(path)
 
             # /fe/{plugin}/{subpath} -> plugins/rcp-[bf]e-{plugin}/global/default/{subpath}
-            m = re.match(r'/fe/([^/]+)/(.*)', path)
+            # /lol-{name}/{subpath}  -> plugins/rcp-[bf]e-lol-{name}/global/default/{subpath}
+            m = re.match(r'/(fe/|lol-)([^/]+)/(.*)', path)
             if m:
-                plugin, subpath = m.groups()
+                prefix, plugin, subpath = m.groups()
+                if prefix  == 'lol-':
+                    plugin = f"lol-{plugin}"
                 resolved_paths.add(f"plugins/rcp-fe-{plugin}/global/default/{subpath}")
                 resolved_paths.add(f"plugins/rcp-be-{plugin}/global/default/{subpath}")
                 continue
@@ -279,6 +285,79 @@ class Wad:
             h = xxhash.xxh64(path).intdigest()
             if h in unknown_hashes:
                 discovered_hashes[h] = path
+
+        return discovered_hashes
+
+    @staticmethod
+    def guess_hashes_from_known(known_hashes, unknown_hashes):
+        logger.info("guessing hashes from known path patterns")
+
+        regions = 'euw na tr br eune jp kr lan las oce ru'.split()
+        langs = 'el_gr en_au en_gb en_ph en_sg en_us es_ar es_es es_mx fr_fr hu_hu id_id it_it ja_jp ko_kr ms_my pl_pl pt_br ro_ro ru_ru th_th tr_tr vn_vn zh_cn zh_my zh_tw'.split()
+        re_plugin_region_lang = re.compile(r'^plugins/([^/]+)/([^/]+)/([^/]+)/')
+
+        # trans.json files, for each lang
+        new_paths = set()
+        for path in known_hashes.values():
+            if path.endswith('trans.json'):
+                # add lang variants
+                new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/\2/%s/' % lang, path) for lang in langs}
+
+        # ward skins
+        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/wardskinimages/wardhero_%d.png' % i for i in range(1000)}
+        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/wardskinimages/wardheroshadow_%d.png' % i for i in range(1000)}
+
+        # summoner icons
+        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/%d.jpg' % i for i in range(5000)}
+
+        # ultimate skins
+        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/%d.jpg' % i for i in range(5000)}
+        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/%d.webm' % i for i in range(5000)}
+
+        # hextech
+        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/chest_%d.png' % i for i in range(1000)}
+        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/chest_%d_open.png' % i for i in range(1000)}
+        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_%d.png' % i for i in range(1000)}
+        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_%d_%d.png' % (i, j) for i in range(1000) for j in range(4)}
+
+        # champion resources
+        for cid in range(1000):
+            new_paths |= {
+                'plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/%d.jpg' % cid,
+                'plugins/rcp-be-lol-game-data/global/default/v1/champion-ban-vo/%d.ogg' % cid,
+                'plugins/rcp-be-lol-game-data/global/default/v1/champion-choose-vo/%d.ogg' % cid,
+                'plugins/rcp-be-lol-game-data/global/default/v1/champion-sfx-audio/%d.ogg' % cid,
+                'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/%d/metadata.json' % cid,
+            }
+            # skins and chromas
+            for skin_id in range(cid * 1000, (cid + 1) * 1000):
+                new_paths |= {
+                    'plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/%d/%d.jpg' % (cid, skin_id),
+                    'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/%d/%d.jpg' % (cid, skin_id),
+                    'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/%d/%d.jpg' % (cid, skin_id),
+                    'plugins/rcp-be-lol-game-data/global/default/v1/champion-chroma-images/%d/%d.png' % (cid, skin_id),
+                    'plugins/rcp-be-lol-game-data/global/default/v1/champion-splash-videos/%d/%d.webm' % (cid, skin_id),
+                    'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/champion_skin_%d.png' % skin_id,
+                    'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/champion_skin_rental_%d.png' % skin_id,
+                }
+
+        #TODO
+        # plugins/rcp-be-lol-game-data/global/default/data/characters/{name}/skins/skin{NN}/{name}loadscreen_{N}.png
+
+        # for each file, try region variants if the global path exists
+        discovered_hashes = {}
+        for path in new_paths:
+            h = xxhash.xxh64(path).intdigest()
+            if h in unknown_hashes:
+                discovered_hashes[h] = path
+            elif h not in known_hashes:
+                continue
+            # try region variants if the global hash exists
+            if not path.endswith('.json'):
+                for p in (re_plugin_region_lang.sub(r'plugins/\1/%s/\3/' % region, path) for region in regions):
+                    h = xxhash.xxh64(path).intdigest()
+                    if h in unknown_hashes:
+                        discovered_hashes[h] = path
 
         return discovered_hashes
 
@@ -337,18 +416,21 @@ def command_list(parser, args):
 
 
 def command_guess_hashes(parser, args):
-    if not os.path.isfile(args.wad):
-        parser.error("WAD file does not exist")
-    if args.update and not args.hashes:
-        parser.error("--update requires --hashes")
-
     hashes = load_hashes(args.hashes)
-    wad = Wad(args.wad)
-    wad.parse_headers()
-    if hashes:
-        wad.resolve_paths(hashes)
-    wad.guess_extensions()
-    new_hashes = wad.guess_hashes()
+
+    wads = [Wad(path) for path in args.wad]
+    unknown_hashes = set()
+    for wad in wads:
+        wad.parse_headers()
+        if hashes:
+            wad.resolve_paths(hashes)
+        unknown_hashes |= set(wadfile.path_hash for wadfile in wad.files)
+    unknown_hashes -= set(hashes)
+
+    new_hashes = {}
+    for wad in wads:
+        new_hashes.update(wad.guess_hashes(unknown_hashes))
+    new_hashes.update(Wad.guess_hashes_from_known(hashes, unknown_hashes))
 
     for h, path in new_hashes.items():
         print("%016x %s" % (h, path))
@@ -389,8 +471,8 @@ def main():
                            help="hashes of known paths (JSON or plain text)")
     subparser.add_argument('-u', '--update', action='store_true',
                            help="update given hashes file")
-    subparser.add_argument('wad',
-                           help="WAD file to analyze")
+    subparser.add_argument('wad', nargs='+',
+                           help="WAD files to analyze")
 
     args = parser.parse_args()
 
