@@ -299,7 +299,7 @@ class Wad:
         # trans.json files, for each lang
         new_paths = set()
         for path in known_hashes.values():
-            if path.endswith('trans.json'):
+            if path.endswith('.json'):
                 # add lang variants
                 new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/\2/%s/' % lang, path) for lang in langs}
 
