@@ -257,7 +257,7 @@ class Wad:
 
             if default_path:
                 # known subdirectories
-                m = re.match(r'\b((?:data|assets|images|audio|components|sounds|css)/.+)', path)
+                m = re.match(r'\b((?:data|assets|images|audio|components|sounds|video|css)/.+)', path)
                 if m:
                     subpath = m.group(1)
                     resolved_paths.add(f"{default_path}/{subpath}")
@@ -320,6 +320,17 @@ class Wad:
         new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_%d.png' % i for i in range(1000)}
         new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_%d_%d.png' % (i, j) for i in range(1000) for j in range(4)}
 
+        # runes (perks)
+        for i in range(8000, 8500, 100):
+            new_paths |= {'plugins/rcp-fe-lol-perks/global/default/images/inventory-card/%d/p%d_s%d_k%d.jpg' % (i, i, j, k)
+                          for j in [0] + list(range(8000, 8500, 100))
+                          for k in [0] + list(range(8000, 8500, 1))
+                          }
+            paths = ['environment.jpg', 'construct.png']
+            paths += ['keystones/%d.png' % (i + j) for j in range(100)]
+            paths += ['second/%d.png' % (i + j) for j in range(100)]
+            new_paths |= {'plugins/rcp-fe-lol-perks/global/default/images/construct/%d/%s' % (i, p) for p in paths}
+
         # champion resources
         for cid in range(1000):
             new_paths |= {
@@ -339,6 +350,7 @@ class Wad:
                     'plugins/rcp-be-lol-game-data/global/default/v1/champion-splash-videos/%d/%d.webm' % (cid, skin_id),
                     'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/champion_skin_%d.png' % skin_id,
                     'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/champion_skin_rental_%d.png' % skin_id,
+                    'plugins/rcp-fe-lol-skins-viewer/global/default/video/collection/%d.webm' % (cid * 1000 + skin_id),
                 }
 
         #TODO
