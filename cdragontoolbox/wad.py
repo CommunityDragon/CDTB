@@ -292,7 +292,7 @@ class Wad:
     def guess_hashes_from_known(known_hashes, unknown_hashes):
         logger.info("guessing hashes from known path patterns")
 
-        regions = 'euw na tr br eune jp kr lan las oce ru'.split()
+        regions = 'euw na tr br eune jp kr lan las oce ru la1 la2 oc1 eun id la oc ph sg th vn cn tw pbe garena2 garena3 tencent'.split()
         langs = 'el_gr en_au en_gb en_ph en_sg en_us es_ar es_es es_mx fr_fr hu_hu id_id it_it ja_jp ko_kr ms_my pl_pl pt_br ro_ro ru_ru th_th tr_tr vn_vn zh_cn zh_my zh_tw'.split()
         re_plugin_region_lang = re.compile(r'^plugins/([^/]+)/([^/]+)/([^/]+)/')
 
