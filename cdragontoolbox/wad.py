@@ -296,12 +296,7 @@ class Wad:
         langs = 'el_gr en_au en_gb en_ph en_sg en_us es_ar es_es es_mx fr_fr hu_hu id_id it_it ja_jp ko_kr ms_my pl_pl pt_br ro_ro ru_ru th_th tr_tr vn_vn zh_cn zh_my zh_tw'.split()
         re_plugin_region_lang = re.compile(r'^plugins/([^/]+)/([^/]+)/([^/]+)/')
 
-        # trans.json files, for each lang
         new_paths = set()
-        for path in known_hashes.values():
-            if path.endswith('.json'):
-                # add lang variants
-                new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/\2/%s/' % lang, path) for lang in langs}
 
         # ward skins
         new_paths |= {'plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/wardskinimages/wardhero_%d.png' % i for i in range(1000)}
@@ -356,20 +351,22 @@ class Wad:
         #TODO
         # plugins/rcp-be-lol-game-data/global/default/data/characters/{name}/skins/skin{NN}/{name}loadscreen_{N}.png
 
-        # for each file, try region variants if the global path exists
+        logger.info("building hashes for alternate regions and languages")
+
+        for path in known_hashes.values():
+            ext = path.rsplit('.', 1)
+            if ext in ('json', 'ogg'):
+                # try language variants
+                new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/\2/%s/' % lang, path) for lang in langs}
+            elif ext in ('png', 'jpg', 'webm'):
+                # try region variants
+                new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/%s/\3/' % region, path) for region in regions}
+
         discovered_hashes = {}
         for path in new_paths:
             h = xxhash.xxh64(path).intdigest()
             if h in unknown_hashes:
                 discovered_hashes[h] = path
-            elif h not in known_hashes:
-                continue
-            # try region variants if the global hash exists
-            if not path.endswith('.json'):
-                for p in (re_plugin_region_lang.sub(r'plugins/\1/%s/\3/' % region, path) for region in regions):
-                    h = xxhash.xxh64(path).intdigest()
-                    if h in unknown_hashes:
-                        discovered_hashes[h] = path
 
         return discovered_hashes
 
