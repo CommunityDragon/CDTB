@@ -115,10 +115,12 @@ class Wad:
     WAD archive
     """
 
-    def __init__(self, path):
+    def __init__(self, path, hashes=None):
         self.path = path
         self.version = None
         self.files = None
+        self.parse_headers()
+        self.resolve_paths(hashes)
 
     def parse_headers(self):
         """Parse version and file list"""
@@ -141,9 +143,11 @@ class Wad:
             unk, entry_header_offset, entry_header_cell_size, entry_count = parser.unpack("<QHHI")
             self.files = [WadFileHeader(*parser.unpack("<QIIIBBBBQ")) for _ in range(entry_count)]
 
-    def resolve_paths(self, hashes):
+    def resolve_paths(self, hashes=None):
         """Guess path and/or extension of files"""
 
+        if hashes is None:
+            hashes = load_hashes()
         for wadfile in self.files:
             if wadfile.path_hash in hashes:
                 wadfile.path = hashes[wadfile.path_hash]
@@ -161,7 +165,6 @@ class Wad:
         """Extract WAD file"""
 
         logger.info("extracting %s to %s", self.path, output)
-        assert self.files is not None, "parse_headers() must be called before extract()"
 
         with open(self.path, 'rb') as fwad:
             for wadfile in self.files:
@@ -371,9 +374,16 @@ class Wad:
         return discovered_hashes
 
 
-def load_hashes(fname):
-    if not fname:
-        return None
+_default_hashes = None  # cached
+_default_hashes_path = os.path.join(os.path.dirname(__file__), 'hashes.txt')
+
+def load_hashes(fname=None):
+    if fname is None:
+        global _default_hashes
+        if _default_hashes is None:
+            _default_hashes = load_hashes(_default_hashes_path)
+        return _default_hashes
+
     if fname.endswith('.json'):
         with open(fname) as f:
             hashes = json.load(f)
@@ -401,10 +411,7 @@ def command_extract(parser, args):
         parser.error("output is not a directory")
 
     hashes = load_hashes(args.hashes)
-    wad = Wad(args.wad)
-    wad.parse_headers()
-    if hashes:
-        wad.resolve_paths(hashes)
+    wad = Wad(args.wad, hashes=hashes)
     wad.guess_extensions()
     wad.extract(args.output)
 
@@ -414,10 +421,7 @@ def command_list(parser, args):
         parser.error("WAD file does not exist")
 
     hashes = load_hashes(args.hashes)
-    wad = Wad(args.wad)
-    wad.parse_headers()
-    if hashes:
-        wad.resolve_paths(hashes)
+    wad = Wad(args.wad, hashes=hashes)
 
     wadfiles = [(wf.path or ('?.%s' % wf.ext if wf.ext else '?'), wf.path_hash) for wf in wad.files]
     for path, h in sorted(wadfiles):
@@ -430,9 +434,6 @@ def command_guess_hashes(parser, args):
     wads = [Wad(path) for path in args.wad]
     unknown_hashes = set()
     for wad in wads:
-        wad.parse_headers()
-        if hashes:
-            wad.resolve_paths(hashes)
         unknown_hashes |= set(wadfile.path_hash for wadfile in wad.files)
     unknown_hashes -= set(hashes)
 
@@ -446,7 +447,8 @@ def command_guess_hashes(parser, args):
 
     if args.update and new_hashes:
         hashes.update(new_hashes)
-        save_hashes(args.hashes, hashes)
+        hashes_path = _default_hashes_path if args.hashes is None else args.hashes
+        save_hashes(hashes_path, hashes)
 
 
 def main():
@@ -496,12 +498,6 @@ def main():
         logger.setLevel(logging.INFO)
     if args.verbose >= 2:
         logging.getLogger("requests").setLevel(logging.DEBUG)
-
-    # use default hashes.txt from packages directory if available
-    if hasattr(args, 'hashes') and args.hashes is None:
-        default_hashes = os.path.join(os.path.dirname(__file__), 'hashes.txt')
-        if os.path.isfile(default_hashes):
-            args.hashes = default_hashes
 
     globals()["command_%s" % args.command.replace('-', '_')](parser, args)
 
