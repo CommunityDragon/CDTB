@@ -546,6 +546,10 @@ class PatchVersion:
         else:
             return self._solutions
 
+    def download(self, langs=True, latest=False, force=False, dry_run=False):
+        for sv in self.solutions(latest=latest):
+            sv.download(langs, force=force, dry_run=dry_run)
+
     @staticmethod
     def versions(storage: Storage, stored=False) -> Generator['PatchVersion', None, None]:
         """Generate patch versions, sorted from the latest one
@@ -767,8 +771,7 @@ def command_download(parser, args):
         elif isinstance(component, (Solution, SolutionVersion)):
             component.download(args.langs, force=args.force, dry_run=args.dry_run)
         elif isinstance(component, PatchVersion):
-            for sv in component.solutions(latest=args.latest):
-                sv.download(args.langs, force=args.force, dry_run=args.dry_run)
+            component.download(langs=args.langs, latest=args.latest, force=args.force, dry_run=args.dry_run)
         else:
             raise TypeError(component)
 
