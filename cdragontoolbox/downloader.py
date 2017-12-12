@@ -9,7 +9,7 @@ from contextlib import contextmanager
 from typing import List, Dict, IO, Union, Optional, Generator
 import logging
 import requests
-from correlator.functions import extract_client_version
+from .correlator.functions import extract_client_version
 
 logger = logging.getLogger("downloader")
 
