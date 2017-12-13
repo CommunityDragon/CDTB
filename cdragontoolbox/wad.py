@@ -442,8 +442,9 @@ def command_guess_hashes(parser, args):
     unknown_hashes -= set(hashes)
 
     new_hashes = {}
-    for wad in wads:
-        new_hashes.update(wad.guess_hashes(unknown_hashes))
+    if args.search:
+        for wad in wads:
+            new_hashes.update(wad.guess_hashes(unknown_hashes))
     new_hashes.update(Wad.guess_hashes_from_known(hashes, unknown_hashes))
 
     for h, path in new_hashes.items():
@@ -486,6 +487,8 @@ def main():
                            help="hashes of known paths (JSON or plain text)")
     subparser.add_argument('-u', '--update', action='store_true',
                            help="update given hashes file")
+    subparser.add_argument('-s', '--search', action='store_true',
+                           help="search for paths in WAD files")
     subparser.add_argument('wad', nargs='+',
                            help="WAD files to analyze")
 
