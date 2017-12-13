@@ -362,7 +362,7 @@ class Wad:
 
         for path in known_hashes.values():
             ext = path.rsplit('.', 1)[1]
-            if ext in ('json', 'ogg', 'js'):
+            if ext in ('json', 'ogg', 'js', 'txt'):
                 # try language variants
                 new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/\2/%s/' % lang, path) for lang in langs}
             elif ext in ('png', 'jpg', 'webm'):
