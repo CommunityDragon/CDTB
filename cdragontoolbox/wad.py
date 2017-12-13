@@ -88,6 +88,14 @@ class WadFileHeader:
             return zstd_decompress(data)
         raise ValueError("unsupported file type: %d" % self.type)
 
+    def export_path(self):
+        if self.path is not None:
+            return self.path
+        path = 'unknown/%016x' % self.path_hash
+        if self.ext:
+            path += '.%s' % self.ext
+        return path
+
     @staticmethod
     def guess_extension(data):
         # image type
@@ -168,14 +176,10 @@ class Wad:
 
         with open(self.path, 'rb') as fwad:
             for wadfile in self.files:
-                path = wadfile.path
-                if path is None:
-                    path = 'unknown/%016x' % wadfile.path_hash
-                    if wadfile.ext:
-                        path += '.%s' % wadfile.ext
+                path = wadfile.export_path()
                 output_path = os.path.join(output, path)
 
-                logger.info("extracting %016x %s", wadfile.path_hash, path if path else '?')
+                logger.debug("extracting %016x %s", wadfile.path_hash, path if path else '?')
 
                 fwad.seek(wadfile.offset)
                 # assume files are small enough to fit in memory
