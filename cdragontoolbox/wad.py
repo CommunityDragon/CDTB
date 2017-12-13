@@ -357,8 +357,8 @@ class Wad:
         logger.info("building hashes for alternate regions and languages")
 
         for path in known_hashes.values():
-            ext = path.rsplit('.', 1)
-            if ext in ('json', 'ogg'):
+            ext = path.rsplit('.', 1)[1]
+            if ext in ('json', 'ogg', 'js'):
                 # try language variants
                 new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/\2/%s/' % lang, path) for lang in langs}
             elif ext in ('png', 'jpg', 'webm'):
