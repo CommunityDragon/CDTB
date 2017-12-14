@@ -5,7 +5,8 @@ from contextlib import contextmanager
 from typing import List, Dict, Union, Optional, Generator
 import logging
 import requests
-from .correlator.functions import extract_client_version
+import hachoir.parser
+import hachoir.metadata
 
 logger = logging.getLogger(__name__)
 
@@ -489,7 +490,7 @@ class SolutionVersion:
                     break
             else:
                 raise ValueError("'League of Legends.exe' not found for %s" % pv)
-            patch = Version(extract_client_version(pkgfile.fspath()))
+            patch = get_exe_version(pkgfile.fspath())
             return Version(patch.t[:2])
 
         else:
@@ -708,6 +709,14 @@ class BinPackage:
                     except OSError:
                         pass
                     raise
+
+
+def get_exe_version(path) -> Version:
+    """Return version from an executable"""
+
+    parser = hachoir.parser.createParser(path)
+    metadata = hachoir.metadata.extractMetadata(parser=parser)
+    return Version(metadata.get('version'))
 
 
 def parse_component(storage: Storage, component: str):
