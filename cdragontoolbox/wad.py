@@ -1,8 +1,6 @@
-#!/usr/bin/env python3
 import os
 import re
 import struct
-import zlib
 import gzip
 import json
 import imghdr
@@ -16,7 +14,7 @@ if hasattr(zstd, 'decompress'):
 else:
     zstd_decompress = zstd.ZstdDecompressor().decompress
 
-logger = logging.getLogger("wad")
+logger = logging.getLogger(__name__)
 
 
 class Parser:
@@ -327,7 +325,7 @@ class Wad:
             new_paths |= {'plugins/rcp-fe-lol-perks/global/default/images/inventory-card/%d/p%d_s%d_k%d.jpg' % (i, i, j, k)
                           for j in [0] + list(range(8000, 8500, 100))
                           for k in [0] + list(range(8000, 8500, 1))
-                          }
+                         }
             paths = ['environment.jpg', 'construct.png']
             paths += ['keystones/%d.png' % (i + j) for j in range(100)]
             paths += ['second/%d.png' % (i + j) for j in range(100)]
@@ -397,6 +395,8 @@ def load_hashes(fname=None):
     return {int(h, 16): path for h, path in hashes.items()}
 
 def save_hashes(fname, hashes):
+    if fname is None:
+        fname = _default_hashes_path
     if fname.endswith('.json'):
         with open(fname, 'w', newline='') as f:
             json.dump(hashes, f)
@@ -406,107 +406,3 @@ def save_hashes(fname, hashes):
                 print("%016x %s" % (h, path), file=f)
 
 
-def command_extract(parser, args):
-    if not os.path.isfile(args.wad):
-        parser.error("WAD file does not exist")
-    if not args.output:
-        args.output = os.path.splitext(args.wad)[0]
-    if os.path.exists(args.output) and not os.path.isdir(args.output):
-        parser.error("output is not a directory")
-
-    hashes = load_hashes(args.hashes)
-    wad = Wad(args.wad, hashes=hashes)
-    wad.guess_extensions()
-    wad.extract(args.output)
-
-
-def command_list(parser, args):
-    if not os.path.isfile(args.wad):
-        parser.error("WAD file does not exist")
-
-    hashes = load_hashes(args.hashes)
-    wad = Wad(args.wad, hashes=hashes)
-
-    wadfiles = [(wf.path or ('?.%s' % wf.ext if wf.ext else '?'), wf.path_hash) for wf in wad.files]
-    for path, h in sorted(wadfiles):
-        print("%016x %s" % (h, path))
-
-
-def command_guess_hashes(parser, args):
-    hashes = load_hashes(args.hashes)
-
-    wads = [Wad(path) for path in args.wad]
-    unknown_hashes = set()
-    for wad in wads:
-        unknown_hashes |= set(wadfile.path_hash for wadfile in wad.files)
-    unknown_hashes -= set(hashes)
-
-    new_hashes = {}
-    if args.search:
-        for wad in wads:
-            new_hashes.update(wad.guess_hashes(unknown_hashes))
-    new_hashes.update(Wad.guess_hashes_from_known(hashes, unknown_hashes))
-
-    for h, path in new_hashes.items():
-        print("%016x %s" % (h, path))
-
-    if args.update and new_hashes:
-        hashes.update(new_hashes)
-        hashes_path = _default_hashes_path if args.hashes is None else args.hashes
-        save_hashes(hashes_path, hashes)
-
-
-def main():
-    import argparse
-
-    parser = argparse.ArgumentParser(description="Extract WAD files")
-    parser.add_argument('-v', '--verbose', action='count', default=0,
-                        help="be verbose")
-
-    subparsers = parser.add_subparsers(dest='command', help="command")
-
-    subparser = subparsers.add_parser('extract',
-                                      help="extract a WAD file")
-    subparser.add_argument('-o', '--output',
-                           help="extract directory")
-    subparser.add_argument('-H', '--hashes',
-                           help="hashes of known paths (JSON or plain text)")
-    subparser.add_argument('wad',
-                           help="WAD file to extract")
-
-    subparser = subparsers.add_parser('list',
-                                      help="list WAD content")
-    subparser.add_argument('-H', '--hashes',
-                           help="hashes of known paths (JSON or plain text)")
-    subparser.add_argument('wad',
-                           help="WAD file to list")
-
-    subparser = subparsers.add_parser('guess-hashes',
-                                      help="guess hashes from WAD content")
-    subparser.add_argument('-H', '--hashes',
-                           help="hashes of known paths (JSON or plain text)")
-    subparser.add_argument('-u', '--update', action='store_true',
-                           help="update given hashes file")
-    subparser.add_argument('-s', '--search', action='store_true',
-                           help="search for paths in WAD files")
-    subparser.add_argument('wad', nargs='+',
-                           help="WAD files to analyze")
-
-    args = parser.parse_args()
-
-    logging.basicConfig(
-        level=logging.WARNING,
-        datefmt='%H:%M:%S',
-        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
-    )
-    if args.verbose >= 1:
-        logger.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.INFO)
-    if args.verbose >= 2:
-        logging.getLogger("requests").setLevel(logging.DEBUG)
-
-    globals()["command_%s" % args.command.replace('-', '_')](parser, args)
-
-if __name__ == "__main__":
-    main()

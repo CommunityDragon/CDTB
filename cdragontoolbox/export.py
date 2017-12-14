@@ -1,11 +1,10 @@
-#!/usr/bin/env python3
 import os
 import shutil
 import logging
-from .downloader import Storage, Version, PatchVersion, BinPackageFile
+from .storage import PatchVersion
 from .wad import Wad
 
-logger = logging.getLogger("export")
+logger = logging.getLogger(__name__)
 
 
 def paths_to_tree(paths):
@@ -16,7 +15,6 @@ def paths_to_tree(paths):
 
     For instance: ['a/x/1', 'a/2']
     Is reduced to: {'a': {'x': {'1': None}, '2': None}}
-    
     """
 
     tree = {}
@@ -59,6 +57,8 @@ def reduce_common_paths(paths1, paths2):
 
 
 class Exporter:
+    """Handle export patch files to a directory"""
+
     def __init__(self, output: str, patch: PatchVersion, previous_patch: PatchVersion):
         self.storage = patch.storage
         self.output = output
@@ -173,74 +173,3 @@ class Exporter:
         # projects/<p_name>/releases/<p_version>/files/<export_path>
         return path.split('/', 5)[5].lower()
 
-
-def command_export(parser, args):
-    storage = Storage(args.storage)
-
-    # retrieve target and previous patch versions
-    patch = PatchVersion.version(storage, Version(args.patch))
-    if patch is None:
-        parser.error("patch not found: %s" % args.patch)
-    if args.previous:
-        previous_patch = PatchVersion.version(storage, Version(args.previous), stored=True)
-        if previous_patch is None:
-            parser.error("previous patch not found: %s" % args.patch)
-    else:
-        it = PatchVersion.versions(storage, stored=True)
-        for v in it:
-            if v.version == args.patch:
-                previous_patch = next(it)
-                break
-        else:
-            parser.error("cannot guess previous patch")
-
-    exporter = Exporter(args.output, patch, previous_patch)
-    exporter.export()
-    exporter.write_links(args.output + '.links.txt')
-
-
-def main():
-    import argparse
-
-    parser = argparse.ArgumentParser(
-        description="Gather files to be served for a new patch",
-    )
-
-    parser.add_argument('-v', '--verbose', action='count', default=0,
-                        help="be verbose")
-
-    subparsers = parser.add_subparsers(dest='command', help="command")
-
-    subparser = subparsers.add_parser('export',
-                                      help="generate files to export")
-    subparser.add_argument('-s', '--storage', default='RADS',
-                           help="directory for downloaded files (default: %(default)s)")
-    subparser.add_argument('-o', '--output', default='export',
-                           help="directory for files to export (default: %(default)s)")
-    subparser.add_argument('--previous',
-                           help="previous patch version to compare with (default: guessed)")
-    subparser.add_argument('patch',
-                           help="patch version to export")
-
-    args = parser.parse_args()
-
-    logging.basicConfig(
-        level=logging.WARNING,
-        datefmt='%H:%M:%S',
-        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
-    )
-    if args.verbose == 0:
-        logger.setLevel(logging.INFO)
-        logging.getLogger().setLevel(logging.INFO)
-    elif args.verbose == 1:
-        logger.setLevel(logging.DEBUG)
-        logging.getLogger().setLevel(logging.INFO)
-    else:
-        logger.setLevel(logging.DEBUG)
-        logging.getLogger().setLevel(logging.DEBUG)
-
-    globals()["command_%s" % args.command.replace('-', '_')](parser, args)
-
-
-if __name__ == "__main__":
-    main()

@@ -1,20 +1,18 @@
-#!/usr/bin/env python3
 import os
 import re
-import sys
 import zlib
-import json
-import itertools
 from contextlib import contextmanager
-from typing import List, Dict, IO, Union, Optional, Generator
+from typing import List, Dict, Union, Optional, Generator
 import logging
 import requests
 from .correlator.functions import extract_client_version
 
-logger = logging.getLogger("downloader")
+logger = logging.getLogger(__name__)
 
 
 class Version:
+    """Wrap a dotted version"""
+
     def __init__(self, v: Union[str, tuple]):
         if isinstance(v, str):
             self.s = v
@@ -474,7 +472,7 @@ class SolutionVersion:
                     if m:
                         return Version(m.group(1))
                 else:
-                    raise ValueError("patch version not found in %s" % system_yaml_path)
+                    raise ValueError("patch version not found in %s" % pkgfile.fspath())
 
         elif self.solution.name == 'lol_game_client_sln':
             # get patch version from .exe metadata
@@ -515,7 +513,7 @@ class PatchVersion:
         return f"patch={self.version}"
 
     def __repr__(self):
-        return "<{} {}={}>".format(self.__class__.__qualname__, self.version)
+        return "<{} {}>".format(self.__class__.__qualname__, self.version)
 
     def __eq__(self, other):
         if isinstance(other, PatchVersion):
@@ -569,13 +567,11 @@ class PatchVersion:
         # group versions by patch, drop those without patch
         def gen_solution_patches(name):
             solution = Solution(storage, name)
-            previous_patch = None
             for sv in solution.versions(stored=stored):
                 patch = sv.patch_version()
                 if patch is None:
                     continue
                 yield patch, sv
-                previous_patch = patch
 
         # for each solution, peek the next patch to yield the lowest one
         patches_iterators = [(None, None, gen_solution_patches(sln)) for sln in solution_names]
@@ -704,7 +700,7 @@ class BinPackage:
                             reader.copy(writer, pkgfile.size)
                             fout.write(zobj.flush())
                         else:
-                            reader.copy(f.write, pkgfile.size)
+                            reader.copy(fout.write, pkgfile.size)
                 except:
                     # remove partially downloaded files
                     try:
@@ -754,188 +750,3 @@ def parse_component(storage: Storage, component: str):
         else:
             return PatchVersion.version(storage, version)
 
-
-def parse_component_arg(parser, storage: Storage, component: str):
-    """Wrapper around parse_component() to parse CLI arguments"""
-    try:
-        return parse_component(storage, component)
-    except ValueError:
-        parser.error(f"invalid component: {component}")
-
-
-def command_download(parser, args):
-    components = [parse_component_arg(parser, args.storage, component) for component in args.component]
-    for component in components:
-        if isinstance(component, (Project, ProjectVersion)):
-            component.download(force=args.force, dry_run=args.dry_run)
-        elif isinstance(component, (Solution, SolutionVersion)):
-            component.download(args.langs, force=args.force, dry_run=args.dry_run)
-        elif isinstance(component, PatchVersion):
-            component.download(langs=args.langs, latest=args.latest, force=args.force, dry_run=args.dry_run)
-        else:
-            raise TypeError(component)
-
-
-def command_versions(parser, args):
-    if args.component == 'patch':
-        # special case for listing patch versions
-        for patch in PatchVersion.versions(args.storage, stored=args.stored):
-            print(patch.version)
-        return
-
-    component = parse_component_arg(parser, args.storage, args.component)
-    if isinstance(component, (Project, Solution)):
-        for pv in component.versions():
-            print(pv.version)
-    else:
-        parser.error(f"command cannot be used on {component}")
-
-
-def command_projects(parser, args):
-    component = parse_component_arg(parser, args.storage, args.component)
-    if isinstance(component, SolutionVersion):
-        for pv in sorted(component.projects(args.langs, force=args.force)):
-            print(pv)
-    elif isinstance(component, PatchVersion):
-        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs, force=args.force)}
-        for pv in sorted(projects):
-            print(pv)
-    else:
-        parser.error(f"command cannot be used on {component}")
-
-
-def command_solutions(parser, args):
-    component = parse_component_arg(parser, args.storage, args.component)
-    if isinstance(component, Project):
-        for sln in Solution.list(args.storage):
-            for sv in sln.versions(stored=True):
-                if component in (pv.project for pv in sv.projects(True)):
-                    print(sv)
-    elif isinstance(component, ProjectVersion):
-        for sln in Solution.list(args.storage):
-            for sv in sln.versions(stored=True):
-                if component in sv.projects(True):
-                    print(sv)
-    elif isinstance(component, PatchVersion):
-        for sv in component.solutions(latest=args.latest):
-            print(sv)
-    else:
-        parser.error(f"command cannot be used on {component}")
-
-
-def command_files(parser, args):
-    component = parse_component_arg(parser, args.storage, args.component)
-    if isinstance(component, ProjectVersion):
-        for pf in component.package_files(force=args.force):
-            print(pf.extract_path())
-    elif isinstance(component, SolutionVersion):
-        for pv in component.projects(args.langs):
-            for pf in pv.package_files(force=args.force):
-                print(pf.extract_path())
-    elif isinstance(component, PatchVersion):
-        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs, force=args.force)}
-        for pv in sorted(projects):
-            for pf in pv.package_files(force=args.force):
-                print(pf.extract_path())
-    else:
-        parser.error(f"command cannot be used on {component}")
-
-
-def main():
-    """main download procedure calls all the functions"""
-
-    import argparse
-    import textwrap
-
-    parser = argparse.ArgumentParser(
-        description="Download League of Legends game files",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=textwrap.dedent("""
-            The following formats are used for components:
-
-              s:solution_name
-              s:solution_name=version
-              p:project_name
-              p:project_name=version
-              patch=version
-
-            If version is empty, the latest one is used.
-            The `s:` and `p:` prefixes can be omitted if type can be deduced
-            from the name, which should always be the case.
-            Examples:
-
-              league_client_fr_fr=0.0.0.78
-              league_client=
-              lol_game_client_sln
-              s:league_client_sln=0.0.1.195
-              patch=7.23
-
-        """),
-    )
-
-    parser.add_argument('-v', '--verbose', action='count', default=0,
-                        help="be verbose")
-    parser.add_argument('-o', '--storage', default='RADS',
-                        help="directory for downloaded files (default: %(default)s)")
-    parser.add_argument('-f', '--force', action='store_true',
-                           help="force redownload of files")
-
-    subparsers = parser.add_subparsers(dest='command', help="command")
-
-    component_parser = argparse.ArgumentParser(add_help=False)
-    component_parser.add_argument('--no-lang', dest='langs', action='store_false', default=True,
-                                  help="ignore language projects from solutions")
-    component_parser.add_argument('--lang', dest='langs', nargs='*',
-                                  help="use projects from solutions in given languages (default: all)")
-    component_parser.add_argument('-1', '--latest', action='store_true',
-                                  help="consider only the most recent solutions when searching for patches")
-
-    subparser = subparsers.add_parser('download', parents=[component_parser],
-                                      help="download components")
-    subparser.add_argument('-n', '--dry-run', action='store_true',
-                           help="don't actually download package files, just list them")
-    subparser.add_argument('component', nargs='+',
-                           help="components to download")
-
-    subparser = subparsers.add_parser('versions', parents=[component_parser],
-                                      help="list versions")
-    subparser.add_argument('-a', '--all', dest='stored', action='store_false', default=True,
-                           help="when listing patch versions, don't use only stored solutions")
-    subparser.add_argument('component',
-                           help="solution, project or 'patch' to list patch versions")
-
-    subparser = subparsers.add_parser('projects', parents=[component_parser],
-                                      help="list projects")
-    subparser.add_argument('component',
-                           help="solution version or patch version")
-
-    subparser = subparsers.add_parser('solutions', parents=[component_parser],
-                                      help="list solution")
-    subparser.add_argument('component',
-                           help="project, project version or patch version")
-
-    subparser = subparsers.add_parser('files', parents=[component_parser],
-                                      help="list files")
-    subparser.add_argument('component',
-                           help="project version, solution version or patch version")
-
-    args = parser.parse_args()
-    args.storage = Storage(args.storage)
-
-    logging.basicConfig(
-        level=logging.WARNING,
-        datefmt='%H:%M:%S',
-        format='%(asctime)s %(levelname)s %(name)s - %(message)s',
-    )
-    if args.verbose >= 1:
-        logger.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.INFO)
-    if args.verbose >= 2:
-        logging.getLogger("requests").setLevel(logging.DEBUG)
-
-    globals()["command_%s" % args.command.replace('-', '_')](parser, args)
-
-
-if __name__ == "__main__":
-    main()

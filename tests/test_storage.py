@@ -1,10 +1,14 @@
 import os
 import pytest
-from types import SimpleNamespace
 from tools import *
-from cdragontoolbox.downloader import Storage, Version
-from cdragontoolbox.downloader import Project, ProjectVersion, Solution, SolutionVersion, PatchVersion
-from cdragontoolbox.downloader import parse_component
+from cdragontoolbox.storage import (
+    Version,
+    Storage,
+    Project, ProjectVersion,
+    Solution, SolutionVersion,
+    PatchVersion,
+    parse_component,
+)
 
 @pytest.fixture
 def storage(tmpdir):
