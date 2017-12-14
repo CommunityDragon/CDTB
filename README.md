@@ -1,40 +1,53 @@
-# CommunityDragon ToolBox
-## A library containing everything to build the files for DragonBuilder
+# CommunityDragon Toolbox
 
----
+A toolbox to work with League of Legends game files and export files for CDragon.
+It can be used as a library or a command-line tool.
 
-## Correlator
-#### Description
-Correlates Launcher Client patches with Game Client patches
+## Dependencies:
 
-#### Dependencies:
-pip install hachoir3
-
-#### Example
-```python
-from correlator import Correlator
-
-c = Correlator()
-
-c.convert()  # gets all correlations
-c.convert(['0.0.0.101', '0.0.0.30']) # gets specific correlations
+```
+pip install requests hachoir3
 ```
 
----
+## Command-line examples
 
-## Downloader
+The CLI interface allows:
+ - download game files and list relations between
+ - list and extract content of WAD files
+ - export game files to be served by CDragon
 
-Download, extract and manage game files.
+Here are some examples, use `python3 -m cdragontoolbox -h` for details.
 
-### Dependencies
+```console
+# download and extract files for the latest patch
+python3 -m cdragontoolbox download patch=
 
-```sh
-pip install requests
+# download a solution, don't download language-specific projects
+python3 -m cdragontoolbox download --no-lang lol_game_client_sln=0.0.1.196
+
+# list projects used by patch 7.23
+python3 -m cdragontoolbox projects patch=7.23
+
+# list patch versions (using already downloaded data)
+python3 -m cdragontoolbox versions patch
+
+# list files used by a given project version
+python3 -m cdragontoolbox files league_client_fr_fr=0.0.0.80
+
+# extract a WAD file
+python3 -m cdragontoolbox wad-extract path/to/assets.wad
+
+# list content of a WAD file
+python3 -m cdragontoolbox wad-list path/to/assets.wad
+
+# export files of patch 7.23 into a directory
+# (files unchanged from 7.22 files are listed into export.links.txt)
+python3 -m cdragontoolbox export -o export 7.23
 ```
 
-### Components
+## Components
 
-#### Solutions
+### Solutions
 
 Solutions are the top-level components downloaded by the patcher. They are
 located under the `solutions/` directory.
@@ -43,7 +56,7 @@ Currently, two solutions are used: `league_client_sln` for the LCU and
 
 Each solution version is located under `solutions/{name}/releases/{version}`.
 
-#### Projects
+### Projects
 
 Each solution version depends on several projects: a *main* project and
 additional projects for each available language. They are located under the
@@ -59,7 +72,7 @@ version stay in this version directory.
 As a result, downloading the latest version of a project actually download
 files of previous project versions too.
 
-#### Patches
+### Patches
 
 A patch version is the version used publicly by Riot (for instance `7.23`) and
 retrieved from downloaded files
@@ -67,26 +80,15 @@ retrieved from downloaded files
 Patch version changes independently from solution and project versions.
 
 
-### CLI interface
+## WAD files
 
-The CLI interface allows to download game files and list relations between
-components.
-Here are some examples, use `./downloader.py --help` for details:
+WADs are archives used by the clients. They contain assets, game data (e.g.
+item description), files for the LCU interface and more.
 
-```python
-# download and extract files for the latest patch
-./downloader.py download patch=
+Paths of files in WAD files are hashed, they are not stored in clear in the
+archive. A large number of these hashes have been guessed but there are still a
+lot of unresolved hashes.
 
-# download a solution, don't download language-specific projects
-./downloader.py download lol_game_client_sln=0.0.1.196
-
-# list projects used by patch 7.23
-./downloader.py projects patch=7.23
-
-# list patch versions (using already downloaded data)
-./downloader.py versions patch
-
-# list files used by a given project version
-./downloader.py files league_client_fr_fr=0.0.0.80
-```
+An hash list is provided and regularly updated with new hashes as they are
+discovered, especially after client updates.
 
