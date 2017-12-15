@@ -18,7 +18,7 @@ The CLI interface allows:
 
 Here are some examples, use `python3 -m cdragontoolbox -h` for details.
 
-```console
+```sh
 # download and extract files for the latest patch
 python3 -m cdragontoolbox download patch=
 
