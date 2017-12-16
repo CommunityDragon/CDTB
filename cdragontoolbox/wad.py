@@ -280,6 +280,7 @@ class Wad:
         if default_path:
             resolved_paths |= {f"{default_path}/{name}" for name in (
                 'index.html', 'init.js', 'init.js.map', 'bundle.js', 'trans.js',
+                'license.json',
             )}
             resolved_paths |= {f"{default_path}/{i}.bundle.js" for i in range(10)}
             resolved_paths.add(f"plugins/{plugin_name}/description.json")
