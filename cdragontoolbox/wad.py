@@ -335,16 +335,24 @@ class Wad:
         new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_%d.png' % i for i in range(1000)}
         new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_%d_%d.png' % (i, j) for i in range(1000) for j in range(4)}
 
+        # loot
+        new_paths |= {'plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_%d.png' % i for i in range(1000)}
+        new_paths |= {'plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_%d_open.png' % i for i in range(1000)}
+        new_paths |= {'plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/material_%d.png' % i for i in range(1000)}
+
         # runes (perks)
         for i in range(8000, 8500, 100):
             new_paths |= {'plugins/rcp-fe-lol-perks/global/default/images/inventory-card/%d/p%d_s%d_k%d.jpg' % (i, i, j, k)
                           for j in [0] + list(range(8000, 8500, 100))
-                          for k in [0] + list(range(8000, 8500, 1))
+                          for k in [0] + list(range(8000, 8500))
                          }
             paths = ['environment.jpg', 'construct.png']
-            paths += ['keystones/%d.png' % (i + j) for j in range(100)]
-            paths += ['second/%d.png' % (i + j) for j in range(100)]
+            paths += ['keystones/%d.png' % j for j in range(8000, 8500)]
+            paths += ['second/%d.png' % j for j in range(8000, 8500)]
             new_paths |= {'plugins/rcp-fe-lol-perks/global/default/images/construct/%d/%s' % (i, p) for p in paths}
+
+        # spells
+        new_paths |= {'plugins/rcp-fe-lol-champ-select/global/default/sounds/sfx-spellchoose-%d.ogg' % i for i in range(100)}
 
         # champion resources
         for cid in range(1000):
