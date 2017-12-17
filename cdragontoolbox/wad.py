@@ -354,6 +354,20 @@ class Wad:
                     'plugins/rcp-fe-lol-skins-viewer/global/default/video/collection/%d.webm' % (cid * 1000 + skin_id),
                 }
 
+        # sanitizer
+        paths = set()
+        for i in range(5):
+            for action in ('filter', 'unfilter'):
+                paths |= {'%d.%s.csv' % (i, action)}
+                paths |= {'%d.%s.language.%s.csv' % (i, action, x.split('_')[0]) for x in langs}
+                paths |= {'%d.%s.country.%s.csv' % (i, action, x.split('_')[1]) for x in langs}
+                paths |= {'%d.%s.region.%s.csv' % (i, action, x) for x in regions}
+                paths |= {'%d.%s.locale.%s.csv' % (i, action, x) for x in langs}
+        for p in 'allowedchars breakingchars projectedchars projectedchars1337 punctuationchars variantaliases'.split():
+            paths |= {'%s.locale.%s.txt' % (p, x) for x in langs}
+            paths |= {'%s.language.%s.txt' % (p, x.split('_')[0]) for x in langs}
+        new_paths |= {'plugins/rcp-be-sanitizer/global/default/%s' % p for p in paths}
+
         #TODO
         # plugins/rcp-be-lol-game-data/global/default/data/characters/{name}/skins/skin{NN}/{name}loadscreen_{N}.png
 
@@ -405,5 +419,4 @@ def save_hashes(fname, hashes):
         with open(fname, 'w', newline='') as f:
             for h, path in sorted(hashes.items(), key=lambda kv: kv[1]):
                 print("%016x %s" % (h, path), file=f)
-
 
