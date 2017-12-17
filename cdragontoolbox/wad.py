@@ -6,6 +6,7 @@ import json
 import imghdr
 import logging
 import posixpath
+from typing import Dict, Iterable
 import xxhash
 import zstd
 # support both zstd and zstandard implementations
@@ -13,6 +14,8 @@ if hasattr(zstd, 'decompress'):
     zstd_decompress = zstd.decompress
 else:
     zstd_decompress = zstd.ZstdDecompressor().decompress
+
+HashMap = Dict[int, str]
 
 logger = logging.getLogger(__name__)
 
@@ -167,13 +170,28 @@ class Wad:
                     wadfile.ext = WadFileHeader.guess_extension(data)
 
 
-    def extract(self, output):
-        """Extract WAD file"""
+    def extract(self, output, unknown=None):
+        """Extract WAD file
+
+        If unknown is None, all files are extracted.
+        If unknown is True, only unknown files are extracted.
+        If unknown is False, only known files are extracted.
+        """
 
         logger.info("extracting %s to %s", self.path, output)
+        if unknown is None:
+            filter_unknown = lambda wf: True
+        elif unknown is True:
+            filter_unknown = lambda wf: wf.path is None
+        elif unknown is False:
+            filter_unknown = lambda wf: wf.path is not None
+        else:
+            raise ValueError("invalid unknown parameter value")
 
         with open(self.path, 'rb') as fwad:
             for wadfile in self.files:
+                if not filter_unknown(wadfile):
+                    continue
                 path = wadfile.export_path()
                 output_path = os.path.join(output, path)
 
@@ -286,13 +304,7 @@ class Wad:
             resolved_paths.add(f"plugins/{plugin_name}/description.json")
 
         # try to find new hashes from these paths
-        discovered_hashes = {}
-        for path in resolved_paths:
-            h = xxhash.xxh64(path).intdigest()
-            if h in unknown_hashes:
-                discovered_hashes[h] = path
-
-        return discovered_hashes
+        return discover_hashes(unknown_hashes, resolved_paths)
 
     @staticmethod
     def guess_hashes_from_known(known_hashes, unknown_hashes):
@@ -382,19 +394,14 @@ class Wad:
                 # try region variants
                 new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/%s/\3/' % region, path) for region in regions}
 
-        discovered_hashes = {}
-        for path in new_paths:
-            h = xxhash.xxh64(path).intdigest()
-            if h in unknown_hashes:
-                discovered_hashes[h] = path
-
-        return discovered_hashes
+        # try to find new hashes from these paths
+        return discover_hashes(unknown_hashes, new_paths)
 
 
 _default_hashes = None  # cached
 _default_hashes_path = os.path.join(os.path.dirname(__file__), 'hashes.txt')
 
-def load_hashes(fname=None):
+def load_hashes(fname=None) -> HashMap:
     if fname is None:
         global _default_hashes
         if _default_hashes is None:
@@ -409,7 +416,7 @@ def load_hashes(fname=None):
             hashes = dict(l.strip().split(' ', 1) for l in f)
     return {int(h, 16): path for h, path in hashes.items()}
 
-def save_hashes(fname, hashes):
+def save_hashes(fname, hashes: HashMap) -> None:
     if fname is None:
         fname = _default_hashes_path
     if fname.endswith('.json'):
@@ -419,4 +426,15 @@ def save_hashes(fname, hashes):
         with open(fname, 'w', newline='') as f:
             for h, path in sorted(hashes.items(), key=lambda kv: kv[1]):
                 print("%016x %s" % (h, path), file=f)
+
+def discover_hashes(unknown_hashes: HashMap, paths: Iterable[str]) -> HashMap:
+    """Find new paths from a list and return them"""
+    new_hashes = {}
+    for path in paths:
+        if path == '?':
+            continue
+        h = xxhash.xxh64(path).intdigest()
+        if h in unknown_hashes:
+            new_hashes[h] = path
+    return new_hashes
 
