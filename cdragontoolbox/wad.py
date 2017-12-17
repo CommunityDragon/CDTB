@@ -244,6 +244,8 @@ class Wad:
                 found_paths |= {m.group(1) for m in re.finditer(r'''["']([a-zA-Z0-9/_.-]+\.(?:png|jpg|webm|js|html|css|ttf|otf))\b''', data)}
                 # template ID to template path
                 found_paths |= {'%s/template.html' % m.group(1) for m in re.finditer(r'<template id="[^"]*-template-([^"]+)"', data)}
+                # JS maps
+                found_paths |= {m.group(1) for m in re.finditer(r'sourceMappingURL=(.*?\.js)\.map', data)}
 
         # hashed paths are always lowercased, do the same
         found_paths = {p.lower() for p in found_paths}
