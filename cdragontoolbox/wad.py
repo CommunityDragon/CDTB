@@ -299,7 +299,7 @@ class Wad:
         # add common names at root
         if default_path:
             resolved_paths |= {f"{default_path}/{name}" for name in (
-                'index.html', 'init.js', 'init.js.map', 'bundle.js', 'trans.js',
+                'index.html', 'init.js', 'init.js.map', 'bundle.js', 'trans.json',
                 'license.json',
             )}
             resolved_paths |= {f"{default_path}/{i}.bundle.js" for i in range(10)}
