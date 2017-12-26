@@ -18506,6 +18506,7 @@ f6209d0e2c22fe3d plugins/rcp-fe-lol-item-sets/global/zh_tw/trans.json
 b84dc213e6540682 plugins/rcp-fe-lol-karma/global/default/images/background.png
 a2fcba0e967e791f plugins/rcp-fe-lol-karma/global/default/images/basicneeds-logo.png
 973e8ebd5e016e77 plugins/rcp-fe-lol-karma/global/default/images/card-frame-long.png
+3a44acad5d8bc409 plugins/rcp-fe-lol-karma/global/default/images/card-frame.png
 125c371dce4faaed plugins/rcp-fe-lol-karma/global/default/images/honor1.png
 122ef6f942d4f4fd plugins/rcp-fe-lol-karma/global/default/images/honor2.png
 c7c67f457047455e plugins/rcp-fe-lol-karma/global/default/images/honor3.png
@@ -18669,6 +18670,7 @@ eb4322523fe593bd plugins/rcp-fe-lol-leagues/global/default/images/iconmask.png
 3c023ac58661928e plugins/rcp-fe-lol-leagues/global/default/images/leveling-art.png
 858ecdef069030c1 plugins/rcp-fe-lol-leagues/global/default/images/miniseries_big.png
 121bb51f2e1df35a plugins/rcp-fe-lol-leagues/global/default/images/miniseries_small.png
+82f9df3f4ffb7050 plugins/rcp-fe-lol-leagues/global/default/images/rank_status_icons.png
 7709c1f2150c43dd plugins/rcp-fe-lol-leagues/global/default/images/rewards-art.png
 a53b86cfc82884a9 plugins/rcp-fe-lol-leagues/global/default/images/runes-art.png
 f3941a69797b8115 plugins/rcp-fe-lol-leagues/global/default/images/spectate_icons.png
@@ -18679,7 +18681,21 @@ c4ee3b70dee25ee6 plugins/rcp-fe-lol-leagues/global/default/images/tier_frame.png
 b8d1877272a03bd0 plugins/rcp-fe-lol-leagues/global/default/images/title_background.png
 7bdcebc74bd7c573 plugins/rcp-fe-lol-leagues/global/default/index.html
 e112f32f4c969a28 plugins/rcp-fe-lol-leagues/global/default/license.json
+6c476c0e9db74244 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-challenger.ogg
+b31a4a5d445eb059 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-diamond.ogg
+d7989cd569f73403 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-gold.ogg
+9d6b5b3b53662878 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-master.ogg
+b726108eaed1e1cf plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-platinum.ogg
+db478d1f45d02a4f plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-silver.ogg
+518214e5e4b5cf1d plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-uikit-button-text-click.ogg
+91ce26ae18fc0117 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-uikit-click-generic.ogg
 2580da23e2bb6351 plugins/rcp-fe-lol-leagues/global/default/trans.json
+bde8ef4a72303d11 plugins/rcp-fe-lol-leagues/global/default/videos/celebration-ranked-promote-to-challenger.webm
+69d11fd52ad5ccb6 plugins/rcp-fe-lol-leagues/global/default/videos/celebration-ranked-promote-to-diamond.webm
+ce50e7107db6daa0 plugins/rcp-fe-lol-leagues/global/default/videos/celebration-ranked-promote-to-gold.webm
+fc3a1e658075fc0e plugins/rcp-fe-lol-leagues/global/default/videos/celebration-ranked-promote-to-master.webm
+6b09f356d8f17412 plugins/rcp-fe-lol-leagues/global/default/videos/celebration-ranked-promote-to-platinum.webm
+fa1ff2b66a834a32 plugins/rcp-fe-lol-leagues/global/default/videos/celebration-ranked-promote-to-silver.webm
 37b42e757c9372a9 plugins/rcp-fe-lol-leagues/global/el_gr/trans.json
 464157fe45c9c660 plugins/rcp-fe-lol-leagues/global/en_au/trans.json
 2eb9d17c3191b1fc plugins/rcp-fe-lol-leagues/global/en_gb/trans.json
@@ -18898,7 +18914,9 @@ fa74aa5c770380fd plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-re
 75a1ad47cc348eb6 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-text-click-small.ogg
 5c60e53fbc5fe821 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-tray-receive-material_key.ogg
 486ca352d651fe0c plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-tray-receive-material_rare.ogg
+62694849ee8b0afd plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-upgrade-bar-max.ogg
 c358c3fc83692044 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-upgrade-intro-idle.ogg
+eb5a1f239e454777 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-upgrade-outro.ogg
 31f0cc2052c75297 plugins/rcp-fe-lol-loot/global/default/assets/better_rewards_day_one_modal/blue_essence_fill.png
 3b8d97f0afe9080a plugins/rcp-fe-lol-loot/global/default/assets/better_rewards_day_one_modal/blue_essence_fill.webm
 6595cc4d830d9eae plugins/rcp-fe-lol-loot/global/default/assets/border_images/champion_token_6.png
