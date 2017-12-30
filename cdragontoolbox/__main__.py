@@ -185,7 +185,7 @@ def command_hashes_add(parser, args):
 
 
 def command_export(parser, args):
-    storage = Storage(args.storage)
+    storage = args.storage
 
     # retrieve target and previous patch versions
     patch = PatchVersion.version(storage, Version(args.patch))
