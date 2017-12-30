@@ -1,6 +1,7 @@
 import os
 import shutil
 import logging
+from typing import Optional
 from .storage import PatchVersion
 from .wad import Wad
 
@@ -59,7 +60,7 @@ def reduce_common_paths(paths1, paths2):
 class Exporter:
     """Handle export patch files to a directory"""
 
-    def __init__(self, output: str, patch: PatchVersion, previous_patch: PatchVersion):
+    def __init__(self, output: str, patch: PatchVersion, previous_patch: Optional[PatchVersion]):
         self.storage = patch.storage
         self.output = output
         self.patch = patch
@@ -68,7 +69,38 @@ class Exporter:
         self.previous_links = None
 
     def export(self):
-        """Export files to the output directory, set previous_links
+        if self.previous_patch is None:
+            self.export_full()
+        else:
+            self.export_with_previous()
+
+    def export_full(self):
+        """Export all files to the output directory"""
+
+        logger.info("exporting patch %s (full)", self.patch.version)
+
+        #XXX for now, only export files from league_client as lol_game_client is not well known yet
+        #patch.download(langs=True, latest=True)
+        for sv in self.patch.solutions(latest=True):
+            if sv.solution.name == 'league_client_sln':
+                sv.download(langs=True)
+
+        # iterate on project files
+        projects = {pv for sv in self.patch.solutions(latest=True) if sv.solution.name == 'league_client_sln' for pv in sv.projects(True)}
+        for pv in sorted(projects):
+            for pf in pv.package_files():
+                extract_path = pf.extract_path()
+                export_path = self.to_export_path(extract_path)
+                if extract_path.endswith('.wad'):
+                    wad = Wad(self.storage.fspath(extract_path))
+                    logger.info("exporting %d files from %s", len(wad.files), extract_path)
+                    #XXX guess extensions() before extract?
+                    wad.extract(self.output)
+                else:
+                    self.export_storage_file(extract_path, export_path)
+
+    def export_with_previous(self):
+        """Export modified files to the output directory, set previous_links
 
         Files that have changed from the previous patch are copied to the
         output directory.
@@ -163,6 +195,8 @@ class Exporter:
         shutil.copyfile(self.storage.fspath(storage_path), output_path)
 
     def write_links(self, path):
+        if not self.previous_links:
+            return
         with open(path, 'w') as f:
             for link in sorted(self.previous_links):
                 print(link, file=f)

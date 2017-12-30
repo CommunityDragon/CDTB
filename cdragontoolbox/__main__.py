@@ -191,7 +191,9 @@ def command_export(parser, args):
     patch = PatchVersion.version(storage, Version(args.patch))
     if patch is None:
         parser.error("patch not found: %s" % args.patch)
-    if args.previous:
+    if args.previous == 'none':
+        previous_patch = None
+    elif args.previous:
         previous_patch = PatchVersion.version(storage, Version(args.previous), stored=True)
         if previous_patch is None:
             parser.error("previous patch not found: %s" % args.patch)
@@ -338,6 +340,8 @@ def main():
                            help="directory for files to export (default: %(default)s)")
     subparser.add_argument('--previous',
                            help="previous patch version to compare with (default: guessed)")
+    subparser.add_argument('--full', dest='previous', action='store_const', const='none',
+                           help="export the whole patch (don't compare with a previous one)")
     subparser.add_argument('patch',
                            help="patch version to export")
 
