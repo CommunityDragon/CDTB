@@ -5,9 +5,13 @@ It can be used as a library or a command-line tool.
 
 ## Dependencies:
 
+To install dependencies, run:
 ```
-pip install requests hachoir3
+pip install requests hachoir3 xxhash zstd
 ```
+
+**Windows users:** precompiled packages for `xxhash` and `zstd` can be found [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/).
+
 
 ## Command-line examples
 
