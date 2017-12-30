@@ -451,50 +451,53 @@ class SolutionVersion:
     def patch_version(self) -> Optional[Version]:
         """Return patch version or None if it cannot be retrieved"""
 
-        if self.solution.name == 'league_client_sln':
-            # get patch version from system.yaml
-            for pv in self.projects(False):
-                if pv.project.name == 'league_client':
-                    break
-            else:
-                raise ValueError("league_client project not found for %s" % self)
-
-            for pkgfile in pv.package_files():
-                if pkgfile.extract_path().endswith('/system.yaml'):
-                    if not os.path.isfile(pkgfile.fspath()):
-                        pkgfile.package.extract()
-                    break
-            else:
-                raise ValueError("system.yaml not found for %s" % pv)
-            with open(pkgfile.fspath()) as f:
-                for line in f:
-                    #TODO do proper yaml parsing
-                    m = re.match(r"""^ *game-branch: ["']([0-9.]+)["']$""", line)
-                    if m:
-                        return Version(m.group(1))
+        try:
+            if self.solution.name == 'league_client_sln':
+                # get patch version from system.yaml
+                for pv in self.projects(False):
+                    if pv.project.name == 'league_client':
+                        break
                 else:
-                    raise ValueError("patch version not found in %s" % pkgfile.fspath())
+                    raise ValueError("league_client project not found for %s" % self)
 
-        elif self.solution.name == 'lol_game_client_sln':
-            # get patch version from .exe metadata
-            for pv in self.projects(False):
-                if pv.project.name == 'lol_game_client':
-                    break
+                for pkgfile in pv.package_files():
+                    if pkgfile.extract_path().endswith('/system.yaml'):
+                        if not os.path.isfile(pkgfile.fspath()):
+                            pkgfile.package.extract()
+                        break
+                else:
+                    raise ValueError("system.yaml not found for %s" % pv)
+                with open(pkgfile.fspath()) as f:
+                    for line in f:
+                        #TODO do proper yaml parsing
+                        m = re.match(r"""^ *game-branch: ["']([0-9.]+)["']$""", line)
+                        if m:
+                            return Version(m.group(1))
+                    else:
+                        raise ValueError("patch version not found in %s" % pkgfile.fspath())
+
+            elif self.solution.name == 'lol_game_client_sln':
+                # get patch version from .exe metadata
+                for pv in self.projects(False):
+                    if pv.project.name == 'lol_game_client':
+                        break
+                else:
+                    raise ValueError("league_client project not found for %s" % self)
+
+                for pkgfile in pv.package_files():
+                    if pkgfile.extract_path().endswith('/League of Legends.exe'):
+                        if not os.path.isfile(pkgfile.fspath()):
+                            pkgfile.package.extract()
+                        break
+                else:
+                    raise ValueError("'League of Legends.exe' not found for %s" % pv)
+                patch = get_exe_version(pkgfile.fspath())
+                return Version(patch.t[:2])
+
             else:
-                raise ValueError("league_client project not found for %s" % self)
-
-            for pkgfile in pv.package_files():
-                if pkgfile.extract_path().endswith('/League of Legends.exe'):
-                    if not os.path.isfile(pkgfile.fspath()):
-                        pkgfile.package.extract()
-                    break
-            else:
-                raise ValueError("'League of Legends.exe' not found for %s" % pv)
-            patch = get_exe_version(pkgfile.fspath())
-            return Version(patch.t[:2])
-
-        else:
-            logger.info("no known way to retrieve patch version for solution %s", self.solution.name)
+                logger.info("no known way to retrieve patch version for solution %s", self.solution.name)
+        except Exception as e:
+            logger.warning("failed to retrieve patch version for %s: %s", self, e)
 
 
 class PatchVersion:
