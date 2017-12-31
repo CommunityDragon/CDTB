@@ -197,7 +197,7 @@ class Exporter:
     def write_links(self, path):
         if not self.previous_links:
             return
-        with open(path, 'w') as f:
+        with open(path, 'w', newline='\n') as f:
             for link in sorted(self.previous_links):
                 print(link, file=f)
 
