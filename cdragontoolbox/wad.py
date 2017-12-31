@@ -143,13 +143,13 @@ class Wad:
             self.version = (version_major, version_minor)
 
             if version_major == 2:
-                parser.seek(88)
+                parser.seek(100)
             elif version_major == 3:
-                parser.seek(256)
+                parser.seek(268)
             else:
                 raise ValueError("unsupported WAD version: %d.%d" % (version_major, version_minor))
 
-            unk, entry_header_offset, entry_header_cell_size, entry_count = parser.unpack("<QHHI")
+            entry_count, = parser.unpack("<I")
             self.files = [WadFileHeader(*parser.unpack("<QIIIBBBBQ")) for _ in range(entry_count)]
 
     def resolve_paths(self, hashes=None):
