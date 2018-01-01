@@ -212,6 +212,7 @@ class ProjectVersion:
         self.path = f"{project.path}/{version}"
         self.project = project
         self.version = version
+        self._package_files = None  # {extract_path: BinPackageFile}
 
     def __str__(self):
         return f"{self.project}={self.version}"
@@ -237,43 +238,81 @@ class ProjectVersion:
                 return False
         return NotImplemented
 
-    def packages(self, force=False) -> List['BinPackage']:
-        """Return the list of packages"""
+    def _get_package_files(self) -> Dict[str, 'BinPackageFile']:
+        """Retrieve files from packagemanifest"""
 
-        files_path = f"{self.path}/packages/files"
-        manifest_path = f"{self.path}/packagemanifest"
-        manifest_urlpath = f"{self.path}/packages/files/packagemanifest"
-        self.project.storage.download(manifest_urlpath, manifest_path, force=force)
-        with open(self.project.storage.fspath(manifest_path)) as f:
-            lines = f.read().splitlines()
+        if self._package_files is None:
+            manifest_path = f"{self.path}/packagemanifest"
+            manifest_urlpath = f"{self.path}/packages/files/packagemanifest"
+            self.project.storage.download(manifest_urlpath, manifest_path)
+            files = BinPackageFile.from_package_manifest(self.project.storage.fspath(manifest_path))
+            self._package_files = {pf.extract_path: pf for pf in files}
+        return self._package_files
 
-        assert lines[0].startswith('PKG1'), "unexpected packagemanifest magic line"
-        packages = {}  # {path: BinPackage}
-        for line in lines[1:]:
-            file_path, package_name, offset, size, typ = line.split(',')
-            package_path = f"{files_path}/{package_name}"
-            if package_path not in packages:
-                packages[package_path] = BinPackage(self.project.storage, package_path, [])
-            packages[package_path].add_file(file_path, int(offset), int(size))
-        return list(packages.values())
+    def filepaths(self) -> Generator[str, None, None]:
+        """Generate the extract path of files in the project version"""
+        return self._get_package_files()
 
-    def package_files(self, force=False) -> Generator['BinPackageFile', None, None]:
-        """Generate a list of all package files"""
-        for package in self.packages(force=force):
-            yield from package.files
+    def extract(self, paths=None):
+        """Download packages and extract files
+
+        A subset of paths to extract can be provided (they must exist in the
+        project version).
+        """
+
+        all_files = self._get_package_files()
+        if paths is None:
+            extracted_files = all_files.values()
+        else:
+            extracted_files = [all_files[path] for path in paths]
+
+        # filter already extracted files
+        extracted_files = [pf for pf in extracted_files if not os.path.isfile(self.project.storage.fspath(pf.extract_path))]
+
+        # group files by package
+        files_by_package = {}
+        for pf in extracted_files:
+            files_by_package.setdefault(pf.package, []).append(pf)
+
+        package_files_path = f"{self.path}/packages/files"
+
+        for package, files in files_by_package.items():
+            with self.storage.stream(f"{package_files_path}/{package}") as reader:
+                # sort files by offset to extract while streaming the bin file
+                for pkgfile in sorted(self.files, key=lambda f: f.offset):
+                    logger.debug("extracting %s", pkgfile.path)
+                    reader.skip_to(pkgfile.offset)
+                    fspath = self.project.storage.fspath(pkgfile.extract_path)
+                    try:
+                        os.makedirs(os.path.dirname(fspath), exist_ok=True)
+                        with open(fspath, mode='wb') as fout:
+                            if pkgfile.compressed:
+                                zobj = zlib.decompressobj(zlib.MAX_WBITS|32)
+                                writer = lambda data: fout.write(zobj.decompress(data))
+                                reader.copy(writer, pkgfile.size)
+                                fout.write(zobj.flush())
+                            else:
+                                reader.copy(fout.write, pkgfile.size)
+                    except:
+                        # remove partially downloaded files
+                        try:
+                            os.remove(fspath)
+                        except OSError:
+                            pass
+                        raise
 
     def download(self, force=False, dry_run=False):
         """Download project version files"""
         logger.info("downloading project %s", self)
         self.project.storage.download(f"{self.path}/releasemanifest", None, force=force)
-        for package in self.packages(force):
-            if dry_run:
-                if package.missing_files():
-                    logger.info("package to extract: %s", package.path)
-                else:
-                    logger.debug("package already extracted: %s", package.path)
+        if dry_run:
+            paths = [p for p in self.filepaths() if not os.path.isfile(self.project.storage.fspath(p))]
+            if paths:
+                logger.info("files to extract: %d", len(paths))
             else:
-                package.extract()
+                logger.info("all files already extracted")
+        else:
+            self.extract()
 
 
 class Solution:
@@ -460,14 +499,15 @@ class SolutionVersion:
                 else:
                     raise ValueError("league_client project not found for %s" % self)
 
-                for pkgfile in pv.package_files():
-                    if pkgfile.extract_path().endswith('/system.yaml'):
-                        if not os.path.isfile(pkgfile.fspath()):
-                            pkgfile.package.extract()
+                for path in pv.filepaths():
+                    if path.endswith('/system.yaml'):
+                        fspath = self.solution.storage.fspath(path)
+                        if not os.path.isfile(path):
+                            pv.extract([path])
                         break
                 else:
                     raise ValueError("system.yaml not found for %s" % pv)
-                with open(pkgfile.fspath()) as f:
+                with open(fspath) as f:
                     for line in f:
                         #TODO do proper yaml parsing
                         m = re.match(r"""^ *game-branch: ["']([0-9.]+)["']$""", line)
@@ -484,14 +524,15 @@ class SolutionVersion:
                 else:
                     raise ValueError("league_client project not found for %s" % self)
 
-                for pkgfile in pv.package_files():
-                    if pkgfile.extract_path().endswith('/League of Legends.exe'):
-                        if not os.path.isfile(pkgfile.fspath()):
-                            pkgfile.package.extract()
+                for path in pv.filepaths():
+                    if path.endswith('/League of Legends.exe'):
+                        fspath = self.solution.storage.fspath(path)
+                        if not os.path.isfile(path):
+                            pv.extract([path])
                         break
                 else:
                     raise ValueError("'League of Legends.exe' not found for %s" % pv)
-                patch = get_exe_version(pkgfile.fspath())
+                patch = get_exe_version(fspath)
                 return Version(patch.t[:2])
 
             else:
@@ -624,94 +665,29 @@ class PatchVersion:
 class BinPackageFile:
     """A single file in a BIN package"""
 
-    def __init__(self, package, path, offset, size):
-        self.package = package
-        self.path = path.lstrip('/')
-        self.offset = offset
-        self.size = size
+    __slots__ = ('path', 'package', 'offset', 'size', 'compressed', 'extract_path')
+
+    def __init__(self, line):
+        path, self.package, offset, size, typ = line.split(',')
+        self.path = path[1:]  # remove leading '/'
+        self.offset = int(offset)
+        self.size = int(size)
+        self.compressed = self.path.endswith('.compressed')
+        if self.compressed:
+            self.extract_path = self.path[:-11]  # remove the '.compressed' suffix
+        else:
+            self.extract_path = self.path
 
     def __str__(self):
         return "<{} {!r}>".format(self.__class__.__name__, self.path)
 
-    def compressed(self) -> bool:
-        return self.path.endswith('.compressed')
-
-    def extract_path(self) -> str:
-        """Return the path of the extracted file"""
-        if self.compressed():
-            return os.path.splitext(self.path)[0]
-        else:
-            return self.path
-
-    def fspath(self) -> str:
-        return self.package.storage.fspath(self.extract_path())
-
-
-class BinPackage:
-    """
-    A BIN package with several files to extract in it
-    """
-
-    def __init__(self, storage: Storage, path, files: List[BinPackageFile]):
-        self.storage = storage
-        self.path = path
-        self.files = files
-
-    def __str__(self):
-        return "<{} {!r} files:{}>".format(self.__class__.__name__, self.path, len(self.files))
-
-    def add_file(self, path, offset, size):
-        self.files.append(BinPackageFile(self, path, offset, size))
-
-    def missing_files(self):
-        """Return files not already extracted"""
-        ret = []
-        for pkgfile in self.files:
-            if os.path.isfile(pkgfile.fspath()):
-                logger.debug("file already extracted: %s", pkgfile.path)
-            else:
-                ret.append(pkgfile)
-        return ret
-
-    def extract(self, force=False):
-        """Download and extract the package
-
-        If force is False, don't re-extract files already extracted.
-        """
-
-        if not force:
-            pkgfiles = self.missing_files()
-        else:
-            pkgfiles = self.files
-        if not pkgfiles:
-            logger.debug("nothing to extract from %s", self.path)
-            return
-
-        logger.info("extracting files from %s", self.path)
-
-        with self.storage.stream(self.path) as reader:
-            # sort files by offset to extract while streaming the bin file
-            for pkgfile in sorted(self.files, key=lambda f: f.offset):
-                logger.debug("extracting %s", pkgfile.path)
-                reader.skip_to(pkgfile.offset)
-                fspath = pkgfile.fspath()
-                try:
-                    os.makedirs(os.path.dirname(fspath), exist_ok=True)
-                    with open(fspath, mode='wb') as fout:
-                        if pkgfile.compressed():
-                            zobj = zlib.decompressobj(zlib.MAX_WBITS|32)
-                            writer = lambda data: fout.write(zobj.decompress(data))
-                            reader.copy(writer, pkgfile.size)
-                            fout.write(zobj.flush())
-                        else:
-                            reader.copy(fout.write, pkgfile.size)
-                except:
-                    # remove partially downloaded files
-                    try:
-                        os.remove(fspath)
-                    except OSError:
-                        pass
-                    raise
+    @classmethod
+    def from_package_manifest(cls, path) -> Generator['BinPackageFile', None, None]:
+        with open(path) as f:
+            line = f.readline()
+            assert line.startswith('PKG1'), "unexpected packagemanifest magic line"
+            for line in f:
+                yield cls(line)
 
 
 def get_exe_version(path) -> Version:

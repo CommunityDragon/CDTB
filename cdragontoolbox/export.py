@@ -88,16 +88,14 @@ class Exporter:
         # iterate on project files
         projects = {pv for sv in self.patch.solutions(latest=True) if sv.solution.name == 'league_client_sln' for pv in sv.projects(True)}
         for pv in sorted(projects):
-            for pf in pv.package_files():
-                extract_path = pf.extract_path()
-                export_path = self.to_export_path(extract_path)
-                if extract_path.endswith('.wad'):
-                    wad = Wad(self.storage.fspath(extract_path))
-                    logger.info("exporting %d files from %s", len(wad.files), extract_path)
+            for path in pv.filepaths():
+                if path.endswith('.wad'):
+                    wad = Wad(self.storage.fspath(path))
+                    logger.info("exporting %d files from %s", len(wad.files), path)
                     #XXX guess extensions() before extract?
                     wad.extract(self.output)
                 else:
-                    self.export_storage_file(extract_path, export_path)
+                    self.export_storage_file(path, self.to_export_path(path))
 
     def export_with_previous(self):
         """Export modified files to the output directory, set previous_links
@@ -129,12 +127,10 @@ class Exporter:
             # get export paths from previous package
             prev_extract_paths = {}  # {export_path: extract_path}
             if prev_pv:
-                for pf in prev_pv.package_files():
-                    path = pf.extract_path()
+                for path in prev_pv.filepaths():
                     prev_extract_paths[self.to_export_path(path)] = path
 
-            for pf in pv.package_files():
-                extract_path = pf.extract_path()
+            for extract_path in pv.filepaths():
                 export_path = self.to_export_path(extract_path)
                 prev_extract_path = prev_extract_paths.get(export_path)
                 # package files are identical if their extract paths are the same
@@ -177,13 +173,13 @@ class Exporter:
         # get all files from the previous patch to properly reduce the links
         previous_files = []
         for pv in (pv for sv in self.previous_patch.solutions(latest=True) for pv in sv.projects(True)):
-            for pf in pv.package_files():
-                fspath = pf.fspath()
+            for path in pv.filepaths():
+                fspath = self.storage.fspath(path)
                 if fspath.endswith('.wad'):
                     wad = Wad(fspath)
                     previous_files += [wf.export_path() for wf in wad.files]
                 else:
-                    previous_files.append(self.to_export_path(pf.extract_path()))
+                    previous_files.append(self.to_export_path(path))
 
         self.previous_links = reduce_common_paths(previous_links, previous_files)
 

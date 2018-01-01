@@ -177,7 +177,7 @@ def test_solution_get_versions(storage, monkeypatch):
     assert request_get.ncalls == 1
 
 
-def test_project_versions_packages(storage, monkeypatch):
+def test_project_versions_package_files(storage, monkeypatch):
     project_version = ProjectVersion(Project(storage, 'name'), V('1.2.3.4'))
 
     @count_calls
@@ -195,29 +195,20 @@ def test_project_versions_packages(storage, monkeypatch):
         return mock_response(data.encode())
     monkeypatch.setattr(storage, 'request_get', request_get)
 
-    exp_packages = [
-        ('projects/name/releases/1.2.3.4/packages/files/BIN_0001', [
-            ('some/path/to/file.json', 1234, 56),
-        ]),
-        ('projects/name/releases/1.2.3.4/packages/files/BIN_0002', [
-            ('another/path.compressed', 567, 89),
-        ]),
-        ('projects/name/releases/1.2.3.4/packages/files/BIN_0003', [
-            ('test3', 1300, 100),
-            ('test1', 0, 100),
-            ('test2', 100, 1200),
-        ]),
+    exp_package_files = [
+        ('some/path/to/file.json', 'BIN_0001', 1234, 56),
+        ('another/path', 'BIN_0002', 567, 89),
+        ('test3', 'BIN_0003', 1300, 100),
+        ('test1', 'BIN_0003', 0, 100),
+        ('test2', 'BIN_0003', 100, 1200),
     ]
 
-    packages = project_version.packages()
+    package_files = project_version._get_package_files()
     assert request_get.ncalls == 1
     assert os.path.isfile(storage.fspath("projects/name/releases/1.2.3.4/packagemanifest"))
 
-    got_packages = [(pkg.path, [(f.path, f.offset, f.size) for f in pkg.files]) for pkg in packages]
-    assert got_packages == exp_packages
-    for pkg in packages:
-        assert pkg.storage is storage
-        assert all(f.package is pkg for f in pkg.files)
+    got_package_files = [(f.extract_path, f.package, f.offset, f.size) for f in package_files.values()]
+    assert got_package_files == exp_package_files
 
 
 def test_solution_storage_versions(storage):

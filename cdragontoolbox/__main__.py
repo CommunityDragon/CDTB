@@ -93,17 +93,17 @@ def command_solutions(parser, args):
 def command_files(parser, args):
     component = parse_component_arg(parser, args.storage, args.component)
     if isinstance(component, ProjectVersion):
-        for pf in component.package_files(force=args.force):
-            print(pf.extract_path())
+        for path in component.filepaths():
+            print(path)
     elif isinstance(component, SolutionVersion):
         for pv in component.projects(args.langs):
-            for pf in pv.package_files(force=args.force):
-                print(pf.extract_path())
+            for path in pv.filepaths():
+                print(path)
     elif isinstance(component, PatchVersion):
         projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs, force=args.force)}
         for pv in sorted(projects):
-            for pf in pv.package_files(force=args.force):
-                print(pf.extract_path())
+            for path in pv.filepaths():
+                print(path)
     else:
         parser.error(f"command cannot be used on {component}")
 
