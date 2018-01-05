@@ -27,18 +27,18 @@ def paths_to_tree(paths):
         subtree[leaf] = None
     return tree
 
-def reduce_common_trees(parts, tree1, tree2):
+def reduce_common_trees(parts, tree1, tree2, excludes):
     """Recursive method for reducing paths"""
-    if tree1 is None or tree1 == tree2:
-        # leaf or common subtree
+    if tree1 is None or (tree1 == tree2 and excludes is None):
+        # leaf or common, non-excluded subtree
         yield '/'.join(parts)
         return
     for name in tree1:
         # non-common subtree, compare each subtree
         # tree2[name] must exist, since tree1 must be a subtree of tree2
-        yield from reduce_common_trees(parts + [name], tree1[name], tree2[name])
+        yield from reduce_common_trees(parts + [name], tree1[name], tree2[name], None if excludes is None else excludes.get(name))
 
-def reduce_common_paths(paths1, paths2):
+def reduce_common_paths(paths1, paths2, excludes):
     """Compare paths lists and return the most common subpaths
 
     Reduce directories in paths1 that are the same in paths2 so that the
@@ -50,7 +50,8 @@ def reduce_common_paths(paths1, paths2):
 
     tree1 = paths_to_tree(paths1)
     tree2 = paths_to_tree(paths2)
-    ret = list(reduce_common_trees([], tree1, tree2))
+    tree_excludes = paths_to_tree(excludes)
+    ret = list(reduce_common_trees([], tree1, tree2, tree_excludes))
     if len(ret) == 1 and ret[0] == '':
         # trees are identical
         return list(tree1)
@@ -123,6 +124,7 @@ class Exporter:
         prev_projects = {pv.project.name: pv for sv in self.previous_patch.solutions(latest=True) if sv.solution.name == 'league_client_sln' for pv in sv.projects(True)}
 
         previous_links = []
+        extracted_paths = []
         for pv, prev_pv in sorted((pv, prev_projects.get(pv.project.name)) for pv in projects):
             # get export paths from previous package
             prev_extract_paths = {}  # {export_path: extract_path}
@@ -157,6 +159,7 @@ class Exporter:
                                     wadfiles_to_extract.append(wf)
                             # change the files from the wad so it only extract these
                             wad.files = wadfiles_to_extract
+                            extracted_paths += [wf.export_path() for wf in wad.files]
                         logger.info("exporting %d files from %s", len(wad.files), extract_path)
                         #XXX guess extensions() before extract?
                         wad.extract(self.output)
@@ -168,6 +171,7 @@ class Exporter:
                         previous_links.append(export_path)
                     else:
                         logger.debug("modified file: %s", extract_path)
+                        extracted_paths.append(export_path)
                         self.export_storage_file(extract_path, export_path)
 
         # get all files from the previous patch to properly reduce the links
@@ -181,7 +185,7 @@ class Exporter:
                 else:
                     previous_files.append(self.to_export_path(path))
 
-        self.previous_links = reduce_common_paths(previous_links, previous_files)
+        self.previous_links = reduce_common_paths(previous_links, previous_files, extracted_paths)
 
 
     def export_storage_file(self, storage_path, export_path):
