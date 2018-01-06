@@ -488,57 +488,84 @@ class SolutionVersion:
             pv.download(dry_run=dry_run)
 
     def patch_version(self) -> Optional[Version]:
-        """Return patch version or None if it cannot be retrieved"""
+        """Return patch version or None if there is None
+
+        This method reads/writes version from/to cache.
+        """
+
+        cache = self.solution.storage.fspath(f"{self.path}/_patch_version")
+        if os.path.isfile(cache):
+            logger.debug("retrieving patch version for %s from cache", self)
+            with open(cache) as f:
+                version = f.read().strip()
+                version = Version(version) if version else None
+        else:
+            version = self._retrieve_patch_version()
+            with open(cache, 'w') as f:
+                f.write("%s\n" % ('' if version is None else version))
+        return version
+
+    def _retrieve_patch_version(self) -> Optional[Version]:
+        """Retrieve patch version from game files (no cache handling)
+
+        Return None if there is no patch version (because files are not
+        available anymore on Riot's CDN).
+        Raise an exception if patch version cannot be retrieved.
+        """
+
+        logger.debug("retrieving patch version for %s", self)
+
+        retrievers = {
+            # solution_name: (project_name, file_name, extractor)
+            'league_client_sln': (
+                'league_client',
+                'system.yaml',
+                get_system_yaml_version,
+            ),
+            'lol_game_client_sln': (
+                'lol_game_client',
+                'League of Legends.exe',
+                get_exe_version,
+            ),
+        }
 
         try:
-            if self.solution.name == 'league_client_sln':
-                # get patch version from system.yaml
-                for pv in self.projects(False):
-                    if pv.project.name == 'league_client':
-                        break
-                else:
-                    raise ValueError("league_client project not found for %s" % self)
+            project_name, file_name, extractor = retrievers[self.solution.name]
+        except KeyError:
+            raise RuntimeError("no known way to retrieve patch version for solution %s", self.solution.name)
 
-                for path in pv.filepaths():
-                    if path.endswith('/system.yaml'):
-                        fspath = self.solution.storage.fspath(path)
-                        if not os.path.isfile(path):
-                            pv.extract([path])
-                        break
-                else:
-                    raise ValueError("system.yaml not found for %s" % pv)
-                with open(fspath) as f:
-                    for line in f:
-                        #TODO do proper yaml parsing
-                        m = re.match(r"""^ *game-branch: ["']([0-9.]+)["']$""", line)
-                        if m:
-                            return Version(m.group(1))
-                    else:
-                        raise ValueError("patch version not found in %s" % pkgfile.fspath())
+        for pv in self.projects(False):
+            if pv.project.name == project_name:
+                break
+        else:
+            raise ValueError("%s project not found for %s" % (project_name, self))
 
-            elif self.solution.name == 'lol_game_client_sln':
-                # get patch version from .exe metadata
-                for pv in self.projects(False):
-                    if pv.project.name == 'lol_game_client':
-                        break
-                else:
-                    raise ValueError("league_client project not found for %s" % self)
+        try:
+            filepaths = pv.filepaths()
+        except requests.exceptions.HTTPError as e:
+            # some packagemanifest files are not available anymore
+            # for these project versions, there is no patch version
+            if e.response is not None and e.response.status_code == 404:
+                return None
+            raise
 
-                for path in pv.filepaths():
-                    if path.endswith('/League of Legends.exe'):
-                        fspath = self.solution.storage.fspath(path)
-                        if not os.path.isfile(path):
-                            pv.extract([path])
-                        break
-                else:
-                    raise ValueError("'League of Legends.exe' not found for %s" % pv)
-                patch = get_exe_version(fspath)
-                return Version(patch.t[:2])
+        path_suffix = '/%s' % file_name
+        for path in filepaths:
+            if path.endswith(path_suffix):
+                fspath = self.solution.storage.fspath(path)
+                if not os.path.isfile(path):
+                    pv.extract([path])
+                break
+        else:
+            # packagemanifest for league_client<=0.0.043 doesn't alway contain system.yaml
+            if pv.project.name == 'league_client' and pv.version <= Version('0.0.0.43'):
+                return None
+            raise ValueError("'%s' not found for %s" % (file_name, pv))
 
-            else:
-                logger.info("no known way to retrieve patch version for solution %s", self.solution.name)
-        except Exception as e:
-            logger.warning("failed to retrieve patch version for %s: %s", self, e)
+        version = extractor(fspath)
+        # truncate to first 2 numbers
+        return Version(version.t[:2])
+
 
 
 class PatchVersion:
@@ -688,6 +715,17 @@ class BinPackageFile:
             assert line.startswith('PKG1'), "unexpected packagemanifest magic line"
             for line in f:
                 yield cls(line)
+
+
+def get_system_yaml_version(path) -> Version:
+    with open(path) as f:
+        for line in f:
+            #TODO do proper yaml parsing
+            m = re.match(r"""^ *game-branch: ["']([0-9.]+)["']$""", line)
+            if m:
+                return Version(m.group(1))
+        else:
+            return None
 
 
 def get_exe_version(path) -> Version:
