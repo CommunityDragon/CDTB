@@ -188,9 +188,9 @@ class Project:
         listing = self.storage.request_text(f"{self.path}/releaselisting")
         return [ProjectVersion(self, Version(l)) for l in listing.splitlines()]
 
-    def download(self, force=False, dry_run=False):
+    def download(self, dry_run=False):
         for v in self.versions():
-            v.download(force=force, dry_run=dry_run)
+            v.download(dry_run=dry_run)
 
     @staticmethod
     def list(storage: Storage) -> List['Project']:
@@ -301,10 +301,10 @@ class ProjectVersion:
                             pass
                         raise
 
-    def download(self, force=False, dry_run=False):
+    def download(self, dry_run=False):
         """Download project version files"""
         logger.info("downloading project %s", self)
-        self.project.storage.download(f"{self.path}/releasemanifest", None, force=force)
+        self.project.storage.download(f"{self.path}/releasemanifest", None)
         if dry_run:
             paths = [p for p in self.filepaths() if not os.path.isfile(self.project.storage.fspath(p))]
             if paths:
@@ -368,9 +368,9 @@ class Solution:
             listing = self.storage.request_text(f"{self.path}/releaselisting").splitlines()
         return sorted(SolutionVersion(self, Version(l)) for l in listing)
 
-    def download(self, langs, force=False, dry_run=False):
+    def download(self, langs, dry_run=False):
         for v in self.versions():
-            v.download(langs, force=force, dry_run=dry_run)
+            v.download(langs, dry_run=dry_run)
 
     @staticmethod
     def list(storage: Storage) -> List['Solution']:
@@ -417,7 +417,7 @@ class SolutionVersion:
                 return False
         return NotImplemented
 
-    def dependencies(self, force=False) -> Dict[Union[str, None], List[ProjectVersion]]:
+    def dependencies(self) -> Dict[Union[str, None], List[ProjectVersion]]:
         """Parse dependencies from the solutionmanifest
 
         Return a map of project versions for each lang code.
@@ -427,7 +427,7 @@ class SolutionVersion:
         logger.debug("retrieve dependencies of %s", self)
 
         path = f"{self.path}/solutionmanifest"
-        self.solution.storage.download(path, path, force=force)
+        self.solution.storage.download(path, path)
         with open(self.solution.storage.fspath(path)) as f:
             lines = f.read().splitlines()
         assert lines[0] == "RADS Solution Manifest", "unexpected solutionmanifest magic line"
@@ -461,7 +461,7 @@ class SolutionVersion:
         langs[None] = list(projects[name] for name in required_projects)
         return langs
 
-    def projects(self, langs, force=False) -> List[ProjectVersion]:
+    def projects(self, langs) -> List[ProjectVersion]:
         """Return a list of projects for provided languages
 
         langs can have the following values:
@@ -480,12 +480,12 @@ class SolutionVersion:
         else:
             return list({pv for lang in langs for pv in dependencies[lang]})
 
-    def download(self, langs, force=False, dry_run=False):
+    def download(self, langs, dry_run=False):
         """Download solution version files"""
 
         logger.info("downloading solution %s", self)
-        for pv in self.projects(langs, force=force):
-            pv.download(force=force, dry_run=dry_run)
+        for pv in self.projects(langs):
+            pv.download(dry_run=dry_run)
 
     def patch_version(self) -> Optional[Version]:
         """Return patch version or None if it cannot be retrieved"""
@@ -589,9 +589,9 @@ class PatchVersion:
         else:
             return self._solutions
 
-    def download(self, langs=True, latest=False, force=False, dry_run=False):
+    def download(self, langs=True, latest=False, dry_run=False):
         for sv in self.solutions(latest=latest):
-            sv.download(langs, force=force, dry_run=dry_run)
+            sv.download(langs, dry_run=dry_run)
 
     @staticmethod
     def versions(storage: Storage, stored=False) -> Generator['PatchVersion', None, None]:

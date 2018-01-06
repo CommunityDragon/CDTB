@@ -34,11 +34,11 @@ def command_download(parser, args):
     components = [parse_component_arg(parser, args.storage, component) for component in args.component]
     for component in components:
         if isinstance(component, (Project, ProjectVersion)):
-            component.download(force=args.force, dry_run=args.dry_run)
+            component.download(dry_run=args.dry_run)
         elif isinstance(component, (Solution, SolutionVersion)):
-            component.download(args.langs, force=args.force, dry_run=args.dry_run)
+            component.download(args.langs, dry_run=args.dry_run)
         elif isinstance(component, PatchVersion):
-            component.download(langs=args.langs, latest=args.latest, force=args.force, dry_run=args.dry_run)
+            component.download(langs=args.langs, latest=args.latest, dry_run=args.dry_run)
         else:
             raise TypeError(component)
 
@@ -61,10 +61,10 @@ def command_versions(parser, args):
 def command_projects(parser, args):
     component = parse_component_arg(parser, args.storage, args.component)
     if isinstance(component, SolutionVersion):
-        for pv in sorted(component.projects(args.langs, force=args.force)):
+        for pv in sorted(component.projects(args.langs)):
             print(pv)
     elif isinstance(component, PatchVersion):
-        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs, force=args.force)}
+        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs)}
         for pv in sorted(projects):
             print(pv)
     else:
@@ -100,7 +100,7 @@ def command_files(parser, args):
             for path in pv.filepaths():
                 print(path)
     elif isinstance(component, PatchVersion):
-        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs, force=args.force)}
+        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs)}
         for pv in sorted(projects):
             for path in pv.filepaths():
                 print(path)
@@ -250,8 +250,6 @@ def main():
     component_parser = argparse.ArgumentParser(add_help=False)
     component_parser.add_argument('-s', '--storage', default='RADS',
                                   help="directory for downloaded files (default: %(default)s)")
-    component_parser.add_argument('-f', '--force', action='store_true',
-                                  help="force redownload of files")
     component_parser.add_argument('--no-lang', dest='langs', action='store_false', default=True,
                                   help="ignore language projects from solutions")
     component_parser.add_argument('--lang', dest='langs', nargs='*',
