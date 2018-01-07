@@ -211,8 +211,7 @@ def command_export(parser, args):
     exporter.write_links()
 
 
-def main():
-
+def create_parser():
     parser = argparse.ArgumentParser("cdratongtoolbox",
         description="Toolbox to work with League of Legends game files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -344,6 +343,11 @@ def main():
                            help="patch version to export")
 
 
+    return parser
+
+
+def main():
+    parser = create_parser()
     args = parser.parse_args()
 
     if args.verbose >= 3:
