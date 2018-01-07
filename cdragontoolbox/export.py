@@ -58,12 +58,12 @@ def reduce_common_paths(paths1, paths2, excludes):
     return ret
 
 
-class Exporter:
-    """Handle export patch files to a directory"""
+class PatchExporter:
+    """Handle export of patch files to a directory"""
 
     def __init__(self, output: str, patch: PatchVersion, previous_patch: Optional[PatchVersion]):
         self.storage = patch.storage
-        self.output = output
+        self.output = os.path.normpath(output)
         self.patch = patch
         self.previous_patch = previous_patch
         # list of export path to link from the previous patch, set in export()
@@ -194,9 +194,11 @@ class Exporter:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         shutil.copyfile(self.storage.fspath(storage_path), output_path)
 
-    def write_links(self, path):
+    def write_links(self, path=None):
         if not self.previous_links:
             return
+        if path is None:
+            path = self.output + '.links.txt'
         with open(path, 'w', newline='\n') as f:
             for link in sorted(self.previous_links):
                 print(link, file=f)

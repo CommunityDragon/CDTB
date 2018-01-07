@@ -18,7 +18,7 @@ from cdragontoolbox.wad import (
     discover_hashes,
 )
 from cdragontoolbox.export import (
-    Exporter,
+    PatchExporter,
 )
 
 
@@ -206,9 +206,9 @@ def command_export(parser, args):
         else:
             parser.error("cannot guess previous patch")
 
-    exporter = Exporter(args.output, patch, previous_patch)
+    exporter = PatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
     exporter.export()
-    exporter.write_links(args.output + '.links.txt')
+    exporter.write_links()
 
 
 def main():
@@ -331,7 +331,7 @@ def main():
     # export command
 
     subparser = subparsers.add_parser('export',
-                                      help="generate files to export")
+                                      help="export files to directories, separated by patch")
     subparser.add_argument('-s', '--storage', default='RADS',
                            help="directory for downloaded files (default: %(default)s)")
     subparser.add_argument('-o', '--output', default='export',
