@@ -176,7 +176,7 @@ class PatchExporter:
 
         # get all files from the previous patch to properly reduce the links
         previous_files = []
-        for pv in (pv for sv in self.previous_patch.solutions(latest=True) for pv in sv.projects(True)):
+        for pv in prev_projects.values():
             for path in pv.filepaths():
                 fspath = self.storage.fspath(path)
                 if fspath.endswith('.wad'):
