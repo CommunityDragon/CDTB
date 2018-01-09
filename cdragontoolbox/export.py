@@ -70,35 +70,6 @@ class PatchExporter:
         self.previous_links = None
 
     def export(self, overwrite=True):
-        if self.previous_patch is None:
-            self.export_full(overwrite=overwrite)
-        else:
-            self.export_with_previous(overwrite=overwrite)
-
-    def export_full(self, overwrite=True):
-        """Export all files to the output directory"""
-
-        logger.info("exporting patch %s (full)", self.patch.version)
-
-        #XXX for now, only export files from league_client as lol_game_client is not well known yet
-        #patch.download(langs=True, latest=True)
-        for sv in self.patch.solutions(latest=True):
-            if sv.solution.name == 'league_client_sln':
-                sv.download(langs=True)
-
-        # iterate on project files
-        projects = {pv for sv in self.patch.solutions(latest=True) if sv.solution.name == 'league_client_sln' for pv in sv.projects(True)}
-        for pv in sorted(projects):
-            for path in pv.filepaths():
-                if path.endswith('.wad'):
-                    wad = Wad(self.storage.fspath(path))
-                    logger.info("exporting %d files from %s", len(wad.files), path)
-                    #XXX guess extensions() before extract?
-                    wad.extract(self.output, overwrite=overwrite)
-                else:
-                    self.export_storage_file(path, self.to_export_path(path), overwrite=overwrite)
-
-    def export_with_previous(self, overwrite=True):
         """Export modified files to the output directory, set previous_links
 
         Files that have changed from the previous patch are copied to the
@@ -108,20 +79,28 @@ class PatchExporter:
         link entry.
         """
 
-        logger.info("exporting patch %s based on patch %s", self.patch.version, self.previous_patch.version)
+        if self.previous_patch:
+            logger.info("exporting patch %s based on patch %s", self.patch.version, self.previous_patch.version)
+        else:
+            logger.info("exporting patch %s based on (full)", self.patch.version)
 
-        #self.previous_patch.download(langs=True, latest=True)
-        for patch in (self.patch, self.previous_patch):
-            #XXX for now, only export files from league_client as lol_game_client is not well known yet
-            #patch.download(langs=True, latest=True)
-            for sv in patch.solutions(latest=True):
-                if sv.solution.name == 'league_client_sln':
-                    sv.download(langs=True)
+        #XXX for now, only export files from league_client as lol_game_client is not well known yet
+        patch_solutions = [sv for sv in self.patch.solutions(latest=True) if sv.solution.name == 'league_client_sln']
+        for sv in patch_solutions:
+            sv.download(langs=True)
+
+        if self.previous_patch:
+            prev_patch_solutions = [sv for sv in self.previous_patch.solutions(latest=True) if sv.solution.name == 'league_client_sln']
+            for sv in prev_patch_solutions:
+                sv.download(langs=True)
 
         # iterate on project files, compare files with previous patch
-        projects = {pv for sv in self.patch.solutions(latest=True) if sv.solution.name == 'league_client_sln' for pv in sv.projects(True)}
+        projects = {pv for sv in patch_solutions for pv in sv.projects(True)}
         # match projects with previous projects
-        prev_projects = {pv.project.name: pv for sv in self.previous_patch.solutions(latest=True) if sv.solution.name == 'league_client_sln' for pv in sv.projects(True)}
+        if self.previous_patch:
+            prev_projects = {pv.project.name: pv for sv in prev_patch_solutions for pv in sv.projects(True)}
+        else:
+            prev_projects = {}
 
         previous_links = []
         extracted_paths = []
@@ -174,18 +153,19 @@ class PatchExporter:
                         extracted_paths.append(export_path)
                         self.export_storage_file(extract_path, export_path, overwrite=overwrite)
 
-        # get all files from the previous patch to properly reduce the links
-        previous_files = []
-        for pv in prev_projects.values():
-            for path in pv.filepaths():
-                fspath = self.storage.fspath(path)
-                if fspath.endswith('.wad'):
-                    wad = Wad(fspath)
-                    previous_files += [wf.export_path() for wf in wad.files]
-                else:
-                    previous_files.append(self.to_export_path(path))
+        if self.previous_patch:
+            # get all files from the previous patch to properly reduce the links
+            previous_files = []
+            for pv in prev_projects.values():
+                for path in pv.filepaths():
+                    fspath = self.storage.fspath(path)
+                    if fspath.endswith('.wad'):
+                        wad = Wad(fspath)
+                        previous_files += [wf.export_path() for wf in wad.files]
+                    else:
+                        previous_files.append(self.to_export_path(path))
 
-        self.previous_links = reduce_common_paths(previous_links, previous_files, extracted_paths)
+            self.previous_links = reduce_common_paths(previous_links, previous_files, extracted_paths)
 
 
     def export_storage_file(self, storage_path, export_path, overwrite=True):
