@@ -69,13 +69,13 @@ class PatchExporter:
         # list of export path to link from the previous patch, set in export()
         self.previous_links = None
 
-    def export(self):
+    def export(self, overwrite=True):
         if self.previous_patch is None:
-            self.export_full()
+            self.export_full(overwrite=overwrite)
         else:
-            self.export_with_previous()
+            self.export_with_previous(overwrite=overwrite)
 
-    def export_full(self):
+    def export_full(self, overwrite=True):
         """Export all files to the output directory"""
 
         logger.info("exporting patch %s (full)", self.patch.version)
@@ -94,11 +94,11 @@ class PatchExporter:
                     wad = Wad(self.storage.fspath(path))
                     logger.info("exporting %d files from %s", len(wad.files), path)
                     #XXX guess extensions() before extract?
-                    wad.extract(self.output)
+                    wad.extract(self.output, overwrite=overwrite)
                 else:
-                    self.export_storage_file(path, self.to_export_path(path))
+                    self.export_storage_file(path, self.to_export_path(path), overwrite=overwrite)
 
-    def export_with_previous(self):
+    def export_with_previous(self, overwrite=True):
         """Export modified files to the output directory, set previous_links
 
         Files that have changed from the previous patch are copied to the
@@ -162,7 +162,7 @@ class PatchExporter:
                             extracted_paths += [wf.export_path() for wf in wad.files]
                         logger.info("exporting %d files from %s", len(wad.files), extract_path)
                         #XXX guess extensions() before extract?
-                        wad.extract(self.output)
+                        wad.extract(self.output, overwrite=overwrite)
 
                 else:
                     # normal file: link or copy
@@ -172,7 +172,7 @@ class PatchExporter:
                     else:
                         logger.debug("modified file: %s", extract_path)
                         extracted_paths.append(export_path)
-                        self.export_storage_file(extract_path, export_path)
+                        self.export_storage_file(extract_path, export_path, overwrite=overwrite)
 
         # get all files from the previous patch to properly reduce the links
         previous_files = []
@@ -188,9 +188,11 @@ class PatchExporter:
         self.previous_links = reduce_common_paths(previous_links, previous_files, extracted_paths)
 
 
-    def export_storage_file(self, storage_path, export_path):
-        logger.info("exporting %s", export_path)
+    def export_storage_file(self, storage_path, export_path, overwrite=True):
         output_path = os.path.join(self.output, export_path)
+        if overwrite and os.path.exists(output_path):
+            return
+        logger.info("exporting %s", export_path)
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         shutil.copyfile(self.storage.fspath(storage_path), output_path)
 
