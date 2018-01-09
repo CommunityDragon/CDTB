@@ -277,9 +277,9 @@ class ProjectVersion:
         package_files_path = f"{self.path}/packages/files"
 
         for package, files in files_by_package.items():
-            with self.storage.stream(f"{package_files_path}/{package}") as reader:
+            with self.project.storage.stream(f"{package_files_path}/{package}") as reader:
                 # sort files by offset to extract while streaming the bin file
-                for pkgfile in sorted(self.files, key=lambda f: f.offset):
+                for pkgfile in sorted(files, key=lambda f: f.offset):
                     logger.debug("extracting %s", pkgfile.path)
                     reader.skip_to(pkgfile.offset)
                     fspath = self.project.storage.fspath(pkgfile.extract_path)
