@@ -170,12 +170,14 @@ class Wad:
                     wadfile.ext = WadFileHeader.guess_extension(data)
 
 
-    def extract(self, output, unknown=None):
+    def extract(self, output, unknown=None, overwrite=True):
         """Extract WAD file
 
         If unknown is None, all files are extracted.
         If unknown is True, only unknown files are extracted.
         If unknown is False, only known files are extracted.
+
+        If overwrite is False, don't extract files that already exist on disk.
         """
 
         logger.info("extracting %s to %s", self.path, output)
@@ -195,14 +197,25 @@ class Wad:
                 path = wadfile.export_path()
                 output_path = os.path.join(output, path)
 
+                if not overwrite and os.path.exists(output_path):
+                    logger.debug("skipping %016x %s (already extracted)", wadfile.path_hash, path if path else '?')
+                    continue
                 logger.debug("extracting %016x %s", wadfile.path_hash, path if path else '?')
 
                 fwad.seek(wadfile.offset)
                 # assume files are small enough to fit in memory
                 data = wadfile.read_data(fwad)
                 os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                with open(output_path, 'wb') as fout:
-                    fout.write(data)
+                try:
+                    with open(output_path, 'wb') as fout:
+                        fout.write(data)
+                except:
+                    # remove partially downloaded file
+                    try:
+                        os.remove(output_path)
+                    except OSError:
+                        pass
+                    raise
 
     def guess_hashes(self, unknown_hashes):
         """Try to guess hashes"""
