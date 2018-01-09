@@ -1,7 +1,7 @@
 import os
 import shutil
 import logging
-from typing import Optional
+from typing import Optional, Generator
 from .storage import PatchVersion
 from .wad import Wad
 
@@ -102,6 +102,9 @@ class PatchExporter:
         else:
             prev_projects = {}
 
+        # get stored files, to remove superfluous ones
+        original_exported_files = set(self.exported_files())
+
         previous_links = []
         extracted_paths = []
         for pv, prev_pv in sorted((pv, prev_projects.get(pv.project.name)) for pv in projects):
@@ -138,7 +141,7 @@ class PatchExporter:
                                     wadfiles_to_extract.append(wf)
                             # change the files from the wad so it only extract these
                             wad.files = wadfiles_to_extract
-                            extracted_paths += [wf.export_path() for wf in wad.files]
+                        extracted_paths += [wf.export_path() for wf in wad.files]
                         logger.info("exporting %d files from %s", len(wad.files), extract_path)
                         #XXX guess extensions() before extract?
                         wad.extract(self.output, overwrite=overwrite)
@@ -152,6 +155,19 @@ class PatchExporter:
                         logger.debug("modified file: %s", extract_path)
                         extracted_paths.append(export_path)
                         self.export_storage_file(extract_path, export_path, overwrite=overwrite)
+
+        # remove extra files
+        dirs_to_remove = set()
+        for path in original_exported_files - set(extracted_paths):
+            logger.info("remove extra file: %s", path)
+            full_path = os.path.join(self.output, path)
+            os.remove(full_path)
+            dirs_to_remove.add(os.path.dirname(full_path))
+        for path in dirs_to_remove:
+            try:
+                os.removedirs(path)
+            except OSError:
+                pass
 
         if self.previous_patch:
             # get all files from the previous patch to properly reduce the links
@@ -175,6 +191,25 @@ class PatchExporter:
         logger.info("exporting %s", export_path)
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         shutil.copyfile(self.storage.fspath(storage_path), output_path)
+
+    def exported_files(self) -> Generator[str, None, None]:
+        """Generate a list of files on disk (even if not if patch files)
+
+        Generate paths with forward slashes on all platforms.
+        """
+
+        sep = os.path.sep
+        for root, dirs, files in os.walk(self.output):
+            if files:
+                base = os.path.relpath(root, self.output)
+                if base == '.':
+                    base = ''
+                else:
+                    if sep != '/':
+                        base = base.replace(sep, '/')
+                    base += '/'
+                for name in files:
+                    yield f"{base}{name}"
 
     def write_links(self, path=None):
         if not self.previous_links:
