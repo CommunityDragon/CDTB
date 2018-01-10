@@ -207,7 +207,7 @@ def command_export(parser, args):
             parser.error("cannot guess previous patch")
 
     exporter = PatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
-    exporter.export()
+    exporter.export(overwrite=not args.update)
     exporter.write_links()
 
 
@@ -335,6 +335,8 @@ def create_parser():
                            help="directory for downloaded files (default: %(default)s)")
     subparser.add_argument('-o', '--output', default='export',
                            help="directory for files to export (default: %(default)s)")
+    subparser.add_argument('-u', '--update', action='store_true',
+                           help="update the export, skip already extracted files")
     subparser.add_argument('--previous',
                            help="previous patch version to compare with (default: guessed)")
     subparser.add_argument('--full', dest='previous', action='store_const', const='none',
