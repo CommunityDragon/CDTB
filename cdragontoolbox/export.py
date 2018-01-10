@@ -147,6 +147,16 @@ class PatchExporter:
                         wad.extract(self.output, overwrite=overwrite)
 
                 else:
+                    # ignore description.json files
+                    # They may also also be in WADs (slightly different
+                    # though), which may result into files being both extracted
+                    # and symlinked.
+                    # Just use WAD ones, even if it leads to not having a
+                    # description.json at all. These files are not needed
+                    # anyway.
+                    if extract_path.endswith('/description.json'):
+                        continue
+
                     # normal file: link or copy
                     if extract_path == prev_extract_path:
                         logger.debug("unchanged file: %s", extract_path)
@@ -180,6 +190,12 @@ class PatchExporter:
                         previous_files += [wf.export_path() for wf in wad.files]
                     else:
                         previous_files.append(self.to_export_path(path))
+
+            # check for files both extracted and linked
+            # should not happen except in case of duplicated file
+            duplicates = set(previous_links) & set(extracted_paths)
+            if len(duplicates):
+                raise RuntimeError("duplicate files: %r" % duplicates)
 
             self.previous_links = reduce_common_paths(previous_links, previous_files, extracted_paths)
 
