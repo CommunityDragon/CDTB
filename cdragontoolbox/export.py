@@ -212,7 +212,7 @@ class PatchExporter:
                     yield f"{base}{name}"
 
     def write_links(self, path=None):
-        if not self.previous_links:
+        if self.previous_links is None:
             return
         if path is None:
             path = self.output + '.links.txt'
