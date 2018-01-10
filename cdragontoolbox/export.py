@@ -2,7 +2,7 @@ import os
 import shutil
 import logging
 from typing import Optional, Generator
-from .storage import PatchVersion
+from .storage import Version, Storage, PatchVersion
 from .wad import Wad
 
 logger = logging.getLogger(__name__)
@@ -56,6 +56,48 @@ def reduce_common_paths(paths1, paths2, excludes):
         # trees are identical
         return list(tree1)
     return ret
+
+
+class Exporter:
+    """Handle export of multiple patchs in the same directory"""
+
+    def __init__(self, storage: Storage, output: str, stored=True):
+        self.output = output
+
+        versions = set()
+        for path in os.listdir(output):
+            if not os.path.isdir(os.path.join(output, path)):
+                continue
+            try:
+                version = Version(path)
+            except TypeError:
+                continue
+            versions.add(version)
+
+        if not versions:
+            raise ValueError("no version directory found")
+
+        patches = []
+        for patch in PatchVersion.versions(storage, stored=stored):
+            if patch.version in versions:
+                patches.append(patch)
+                versions.remove(patch.version)
+                if not versions:
+                    break
+        else:
+            raise ValueError("versions not found: %r" % versions)
+
+        self.exporters = []
+        for patch, previous_patch in zip(patches, patches[1:] + [None]):
+            patch_output = os.path.join(output, str(patch.version))
+            self.exporters.append(PatchExporter(patch_output, patch, previous_patch))
+
+    def update(self):
+        """Update all patches of the directory"""
+
+        for exporter in self.exporters:
+            exporter.export(overwrite=False)
+            exporter.write_links()
 
 
 class PatchExporter:

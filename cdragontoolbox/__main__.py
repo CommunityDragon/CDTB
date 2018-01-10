@@ -18,6 +18,7 @@ from cdragontoolbox.wad import (
     discover_hashes,
 )
 from cdragontoolbox.export import (
+    Exporter,
     PatchExporter,
 )
 
@@ -187,28 +188,38 @@ def command_hashes_add(parser, args):
 def command_export(parser, args):
     storage = args.storage
 
-    # retrieve target and previous patch versions
-    patch = PatchVersion.version(storage, Version(args.patch))
-    if patch is None:
-        parser.error("patch not found: %s" % args.patch)
-    if args.previous == 'none':
-        previous_patch = None
-    elif args.previous:
-        previous_patch = PatchVersion.version(storage, Version(args.previous), stored=True)
-        if previous_patch is None:
-            parser.error("previous patch not found: %s" % args.patch)
+    if not args.patch:
+        # multiple patch (update only)
+        if not args.update:
+            parser.error("patch version required without --update")
+        if args.previous:
+            parser.error("patch version required with --previous or --full")
+        exporter = Exporter(storage, args.output)
+        exporter.update()
     else:
-        it = PatchVersion.versions(storage, stored=True)
-        for v in it:
-            if v.version == args.patch:
-                previous_patch = next(it)
-                break
+        # single patch
+        # retrieve target and previous patch versions
+        patch = PatchVersion.version(storage, Version(args.patch))
+        if patch is None:
+            parser.error("patch not found: %s" % args.patch)
+        if args.previous == 'none':
+            previous_patch = None
+        elif args.previous:
+            previous_patch = PatchVersion.version(storage, Version(args.previous), stored=True)
+            if previous_patch is None:
+                parser.error("previous patch not found: %s" % args.patch)
         else:
-            parser.error("cannot guess previous patch")
+            it = PatchVersion.versions(storage, stored=True)
+            for v in it:
+                if v.version == args.patch:
+                    previous_patch = next(it)
+                    break
+            else:
+                parser.error("cannot guess previous patch")
 
-    exporter = PatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
-    exporter.export(overwrite=not args.update)
-    exporter.write_links()
+        exporter = PatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
+        exporter.export(overwrite=not args.update)
+        exporter.write_links()
 
 
 def create_parser():
@@ -341,8 +352,8 @@ def create_parser():
                            help="previous patch version to compare with (default: guessed)")
     subparser.add_argument('--full', dest='previous', action='store_const', const='none',
                            help="export the whole patch (don't compare with a previous one)")
-    subparser.add_argument('patch',
-                           help="patch version to export")
+    subparser.add_argument('patch', nargs='?',
+                           help="patch version to export, can be omitted to update all exported patches")
 
 
     return parser
