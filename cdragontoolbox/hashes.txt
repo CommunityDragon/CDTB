@@ -8863,10 +8863,12 @@ d69020579e415faf plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/l
 6ecab22dbafa47fc plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_99_1.png
 2bb79864cd82d9bc plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_99_2.png
 325ccd79418fda5a plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_champion_mastery_2.png
+3b6bdf1d94265d6d plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_champion_mastery_3.png
 52c79dab1f4e6f58 plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_generic_1.png
 05d7a6206026b7cf plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_generic_2.png
 9595a184aa173781 plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_generic_3.png
 cf1bffbac31616f1 plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_generic_4.png
+5db544fe5f015a05 plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_generic_5.png
 e97dea030d482e45 plugins/rcp-be-lol-game-data/global/default/v1/hovertips.json
 96b3b61aedc7a4e7 plugins/rcp-be-lol-game-data/global/default/v1/items.json
 591f2c684b6e2962 plugins/rcp-be-lol-game-data/global/default/v1/loot.json
@@ -17173,6 +17175,7 @@ b71d7d78e2a5a92f plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/b
 ff9a77911256a57e plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-withdraw-down.png
 f10ce11f5df7d82e plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-withdraw-over.png
 2739716bdcd11b5d plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-withdraw.png
+07c24657c623470a plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-x-borderless-disabled.png
 204f4f0f53f2afaf plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-x-borderless-down.png
 7848eed201d05610 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-x-borderless-over.png
 a37662dcf5c02014 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-x-borderless.png
@@ -17410,8 +17413,11 @@ a67a4c8217f73276 plugins/rcp-fe-lol-clash/global/default/assets/images/roster/pl
 8e1b3a254549eda0 plugins/rcp-fe-lol-clash/global/default/assets/images/social/player_empty.png
 891e5fe8e774f62d plugins/rcp-fe-lol-clash/global/default/assets/images/social/player_joined.png
 afbde7efb40f3996 plugins/rcp-fe-lol-clash/global/default/assets/images/tickets/dropdown-prize.png
+18e983e5c1c1ea89 plugins/rcp-fe-lol-clash/global/default/assets/images/tickets/ticket-gold-max.png
+ca19ab1ad963030d plugins/rcp-fe-lol-clash/global/default/assets/images/tickets/ticket-gold-unselected.png
 30330d3fd4bb1d3c plugins/rcp-fe-lol-clash/global/default/assets/images/tickets/ticket-local-down.png
 867158e56f8f8a6c plugins/rcp-fe-lol-clash/global/default/assets/images/tickets/ticket-local-lockedin.png
+c4ccdd147f4543cd plugins/rcp-fe-lol-clash/global/default/assets/images/tickets/ticket-local-max.png
 8abbbcd97e2ba5f7 plugins/rcp-fe-lol-clash/global/default/assets/images/tickets/ticket-local-over.png
 8990b4b0c76a3398 plugins/rcp-fe-lol-clash/global/default/assets/images/tickets/ticket-local-unselected.png
 4d6c2580689118d9 plugins/rcp-fe-lol-clash/global/default/assets/images/tickets/ticket-local.png
@@ -18360,6 +18366,7 @@ d4c1c2e8703d90e9 plugins/rcp-fe-lol-honor/global/default/assets/celebration/2-3_
 1132b247cf02c575 plugins/rcp-fe-lol-honor/global/default/assets/celebration/2_levelup_loop.webm
 4f90567cadf4fc76 plugins/rcp-fe-lol-honor/global/default/assets/celebration/2_levelup_low_spec.png
 dce88836f8884dc2 plugins/rcp-fe-lol-honor/global/default/assets/celebration/2_levelup_low_spec_shadowless.png
+5b21bf9d640b0010 plugins/rcp-fe-lol-honor/global/default/assets/celebration/2_unlock.webm
 934f2ce37849dd55 plugins/rcp-fe-lol-honor/global/default/assets/celebration/3-1_checkpoint_intro.webm
 770bb1000eac38e5 plugins/rcp-fe-lol-honor/global/default/assets/celebration/3-1_checkpoint_loop.webm
 4fc9cded9ee1d8db plugins/rcp-fe-lol-honor/global/default/assets/celebration/3-1_checkpoint_low_spec.png
@@ -19090,6 +19097,7 @@ bed7b15bf285c105 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-bu
 c9a1ac3a23c442ca plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-button-generic-hover.ogg
 868679098ba80f38 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-button-purchase-chest-click.ogg
 82a38d0e2249aca3 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-crafter-button-click.ogg
+9de831b259364b74 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-disenchant-outro.ogg
 0654d10a6ad97f06 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-grid-click.ogg
 5aa48798cd138751 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-grid-hover.ogg
 2fa2532cd7978771 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-open_cm-idle.ogg
@@ -19342,6 +19350,7 @@ b2e03688897a7725 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/c
 7d296a8effc5f53f plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_generic.png
 db5333f6fe83711c plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_key_bundle.png
 46fe7cd880d0e9fa plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_promotion.png
+189708b1ca81cdf7 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/cm_chest_key_bundle.png
 2f4c19484e791ce7 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/currency_champion.png
 3afa2a35a603432e plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/currency_cosmetic.png
 3b30f46e382d7e6e plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/default.png
@@ -19432,6 +19441,7 @@ a41282e8ba1af841 plugins/rcp-fe-lol-loot/global/default/assets/rarity_icons/rari
 6e13108a0ef7b9e1 plugins/rcp-fe-lol-loot/global/default/assets/rarity_icons/rarity6.png
 28f62d3ad0154f8b plugins/rcp-fe-lol-loot/global/default/assets/rarity_icons/rarity7.png
 9a4ac7afbe839398 plugins/rcp-fe-lol-loot/global/default/assets/rarity_icons/rarity8.png
+87a86e3f3dfd4bb3 plugins/rcp-fe-lol-loot/global/default/assets/rarity_icons/rarity9.png
 84d8b4f319967ad8 plugins/rcp-fe-lol-loot/global/default/assets/rarity_icons/rarity_epic.png
 e2c863c41cffe9ad plugins/rcp-fe-lol-loot/global/default/assets/rarity_icons/rarity_legendary.png
 70dfd0c2f12f60aa plugins/rcp-fe-lol-loot/global/default/assets/rarity_icons/rarity_mythic.png
@@ -19482,6 +19492,8 @@ b057a2c0e4ec34ad plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/ani
 f09692399f3b5405 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/anim_reveal_rarity7_loop.webm
 f8de605081da2a75 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/anim_reveal_rarity8_intro.webm
 3cf5fc2453f0f6f6 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/anim_reveal_rarity8_loop.webm
+fc72e01ea0a012a0 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/anim_reveal_rarity9_intro.webm
+a1c7ca49fb1ad83a plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/anim_reveal_rarity9_loop.webm
 a086745e6ce5cec3 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/anim_reveal_rarity_epic_intro.webm
 b32e7ffb76c3cf94 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/anim_reveal_rarity_epic_loop.webm
 c81240756e5f34cd plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/anim_reveal_rarity_legendary_intro.webm
@@ -19510,6 +19522,7 @@ c97d11954f1ca58e plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/rar
 9de941ca69ecb93c plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/rarity/rarity6.png
 08dd99125b306661 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/rarity/rarity7.png
 b57facc64acd7006 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/rarity/rarity8.png
+9dbc53d7d063ac04 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/rarity/rarity9.png
 9d68f12a55ab4869 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/rarity/rarity_epic.png
 1824650d221addb2 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/rarity/rarity_legendary.png
 9a955278cd93ace7 plugins/rcp-fe-lol-loot/global/default/assets/reveal_redeem/rarity/rarity_mythic.png
@@ -19530,6 +19543,7 @@ a3fe50d21102c9b1 plugins/rcp-fe-lol-loot/global/default/assets/tooltips/rarity4.
 4a7b22fc99790d1d plugins/rcp-fe-lol-loot/global/default/assets/tooltips/rarity6.png
 d3c94c8bc04d3436 plugins/rcp-fe-lol-loot/global/default/assets/tooltips/rarity7.png
 466ac68fe64a18f2 plugins/rcp-fe-lol-loot/global/default/assets/tooltips/rarity8.png
+84485b3d61c47ec4 plugins/rcp-fe-lol-loot/global/default/assets/tooltips/rarity9.png
 dc907e856282a184 plugins/rcp-fe-lol-loot/global/default/assets/tooltips/rarity_epic.png
 0ab80d460ffa5475 plugins/rcp-fe-lol-loot/global/default/assets/tooltips/rarity_legendary.png
 fb62e86f71178487 plugins/rcp-fe-lol-loot/global/default/assets/tooltips/rarity_mythic.png
@@ -19553,7 +19567,9 @@ db6b9f5c2900f744 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/materi
 e71d841d8075c034 plugins/rcp-fe-lol-loot/global/default/assets/videos/background_ambient.webm
 ce01bb7c2bd1805b plugins/rcp-fe-lol-loot/global/default/assets/videos/crafter_slot_complete.webm
 2e66eeca4f68ce91 plugins/rcp-fe-lol-loot/global/default/assets/videos/disenchant_outro_currency_champion.webm
+87500a54b96e076d plugins/rcp-fe-lol-loot/global/default/assets/videos/disenchant_outro_currency_cosmetic.webm
 5387bba6f9c67d79 plugins/rcp-fe-lol-loot/global/default/assets/videos/large_permanent_intro.webm
+32936777103c92a4 plugins/rcp-fe-lol-loot/global/default/assets/videos/large_permanent_loop.webm
 095cd8bfe474a5ae plugins/rcp-fe-lol-loot/global/default/assets/videos/large_rental_intro.webm
 7aed0ea91d8a423b plugins/rcp-fe-lol-loot/global/default/assets/videos/large_rental_loop.webm
 bcbb5418dd32f5fe plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_images/level_milestone_crafter_large_image.png
@@ -19608,6 +19624,7 @@ f211f16abe09b8cb plugins/rcp-fe-lol-loot/global/default/assets/videos/resource_a
 787e722761574830 plugins/rcp-fe-lol-loot/global/default/assets/videos/resource_remove_material_key.webm
 fba12af0c24bceb3 plugins/rcp-fe-lol-loot/global/default/assets/videos/resource_remove_material_rare.webm
 8829fab1d47d2c1e plugins/rcp-fe-lol-loot/global/default/assets/videos/small_permanent_intro.webm
+857e3fda1759398f plugins/rcp-fe-lol-loot/global/default/assets/videos/small_permanent_loop.webm
 0c1e473b648302ea plugins/rcp-fe-lol-loot/global/default/assets/videos/small_rental_intro.webm
 0c29eb6929f45c3d plugins/rcp-fe-lol-loot/global/default/assets/videos/small_rental_loop.webm
 90b5474bffe2fd72 plugins/rcp-fe-lol-loot/global/default/back_click.png
@@ -19749,6 +19766,7 @@ c8f8dfa08d890f87 plugins/rcp-fe-lol-loyalty/global/ru_ru/trans.json
 c8efcd1bc657131f plugins/rcp-fe-lol-loyalty/global/zh_cn/trans.json
 336cead6441d6a5b plugins/rcp-fe-lol-loyalty/global/zh_my/trans.json
 f2c554680fd88331 plugins/rcp-fe-lol-loyalty/global/zh_tw/trans.json
+25b0ca58b631d253 plugins/rcp-fe-lol-mastery-panel/description.json
 80f07dfa849b3bcf plugins/rcp-fe-lol-mastery-panel/global/default/03e182a6be8fb1b1a55f039828bc32ea.png
 742b0681c1432923 plugins/rcp-fe-lol-mastery-panel/global/default/0590e4c67501e84711afff275402ba8e.png
 526a948fb2127479 plugins/rcp-fe-lol-mastery-panel/global/default/06c2089c920739ababa0256d370f5c7b.png
@@ -19844,8 +19862,10 @@ c7cca3553bdb1f2f plugins/rcp-fe-lol-mastery-panel/global/default/f04754046ed1198
 dfb4cefd939f96b3 plugins/rcp-fe-lol-mastery-panel/global/default/f8a3a768dbd4c902867d6593b2aab32c.png
 a2477f43e42c8876 plugins/rcp-fe-lol-mastery-panel/global/default/f8e6d04236c87ed5731ec46693f8bc13.png
 d4f2742858628afa plugins/rcp-fe-lol-mastery-panel/global/default/index.html
+7a67a1875c45b9aa plugins/rcp-fe-lol-mastery-panel/global/default/license.json
 4cc410257df4d4d9 plugins/rcp-fe-lol-mastery-panel/global/default/rcp-fe-lol-mastery-panel.js
 fb380adbc420fa27 plugins/rcp-fe-lol-mastery-panel/global/default/sounds/sfx-masteries-button-generic-click.ogg
+5b2c0771df604f56 plugins/rcp-fe-lol-mastery-panel/global/default/sounds/sfx-masteries-button-generic-hover.ogg
 8458674189b921ec plugins/rcp-fe-lol-mastery-panel/global/default/sounds/sfx-masteries-points-subtract-all.ogg
 86f82b640c814622 plugins/rcp-fe-lol-mastery-panel/global/default/sounds/sfx-masteries-points-subtract-single.ogg
 d524533c0a395d5f plugins/rcp-fe-lol-mastery-panel/global/default/sounds/sfx-masteries-tier1-keystone-pick.ogg
@@ -21931,6 +21951,7 @@ ec8c65dda6f11136 plugins/rcp-fe-lol-reward-notifications/global/vn_vn/trans.json
 073f2864812e8442 plugins/rcp-fe-lol-reward-notifications/global/zh_cn/trans.json
 2049be0cf6d6c577 plugins/rcp-fe-lol-reward-notifications/global/zh_my/trans.json
 872d88feda3d3ebc plugins/rcp-fe-lol-reward-notifications/global/zh_tw/trans.json
+7fb38577d21d302c plugins/rcp-fe-lol-runes/description.json
 d35f362536710104 plugins/rcp-fe-lol-runes/global/cs_cz/trans.json
 4edcfce8797fd169 plugins/rcp-fe-lol-runes/global/de_de/trans.json
 26d3885f2e7c4988 plugins/rcp-fe-lol-runes/global/default/back_click.png
@@ -22373,6 +22394,7 @@ bf014387ea266a54 plugins/rcp-fe-lol-runes/global/default/leftcompleted.png
 44665cb195c0b4a9 plugins/rcp-fe-lol-runes/global/default/leftdefault.png
 f9f79a6e1ae85e9f plugins/rcp-fe-lol-runes/global/default/leftdisabled.png
 6c0067ddb2c8dedd plugins/rcp-fe-lol-runes/global/default/lefthover.png
+bd6b9822f9509aa8 plugins/rcp-fe-lol-runes/global/default/license.json
 0e6ffc07c79618a4 plugins/rcp-fe-lol-runes/global/default/midclick.png
 3890ee547ba0402b plugins/rcp-fe-lol-runes/global/default/midcompleted.png
 a2812bc02bd165f8 plugins/rcp-fe-lol-runes/global/default/middefault.png
@@ -22684,11 +22706,14 @@ be84dd656ec5f99f plugins/rcp-fe-lol-social/global/default/sort_mask.png
 406ebe468935e64f plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-chat-rcvd-secondary.ogg
 a22e95a568603453 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-chat-rcvd.ogg
 43ef4e2ba1e44a97 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-chat-start-rcvd.ogg
+3c710620ed170b31 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-friendreq-rcvd.ogg
 e49f581be22c260d plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-gameinvite-rcvd.ogg
 102fd10566eb458e plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-ui-chatwindow-add-convo.ogg
 b479f3d298ba00f4 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-ui-chatwindow-close.ogg
 51d7a386b95fb0b0 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-ui-chatwindow-open.ogg
 06d8fd1b07d887a9 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-ui-click-generic.ogg
+298e9e7d06ce52a2 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-ui-statuswindow-close.ogg
+414216e9f9fc056b plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-ui-statuswindow-open.ogg
 481ec6d4d6825767 plugins/rcp-fe-lol-social/global/default/spinner.png
 71ac118718257447 plugins/rcp-fe-lol-social/global/default/status_mobile.png
 66b910d675b62e96 plugins/rcp-fe-lol-social/global/default/summonericon_30.png
@@ -23183,6 +23208,7 @@ a09f64d1e393e552 plugins/rcp-fe-lol-uikit/global/default/images/border-arrow-cli
 ac285082a2605b3b plugins/rcp-fe-lol-uikit/global/default/images/border-arrow-disabled.png
 b4b4f5be184ce746 plugins/rcp-fe-lol-uikit/global/default/images/border-arrow-hover.png
 7be8ce8b4bcf14d9 plugins/rcp-fe-lol-uikit/global/default/images/border-arrow-up.png
+d4fcdba95cce8a6a plugins/rcp-fe-lol-uikit/global/default/images/border.png
 332bc65f7482b116 plugins/rcp-fe-lol-uikit/global/default/images/btn_icon.png
 722213954dd50188 plugins/rcp-fe-lol-uikit/global/default/images/caret.png
 0287056b36a85b07 plugins/rcp-fe-lol-uikit/global/default/images/celebration-buttons-offset156.png
@@ -23246,6 +23272,7 @@ f02572d38fb36446 plugins/rcp-fe-lol-uikit/global/default/images/pip_unfilled.png
 a57d1f97b804c39d plugins/rcp-fe-lol-uikit/global/default/images/pointer-outro-01.png
 06ba3f28e5b56423 plugins/rcp-fe-lol-uikit/global/default/images/radio-input-selected.png
 23e20d3337e38c02 plugins/rcp-fe-lol-uikit/global/default/images/radio-input-unselected.png
+25e5b46932e3c8b3 plugins/rcp-fe-lol-uikit/global/default/images/ring.png
 fdda1fd53548990c plugins/rcp-fe-lol-uikit/global/default/images/scrollbar-thumb-body.png
 40a2af59678a644b plugins/rcp-fe-lol-uikit/global/default/images/scrollbar-thumb-bottom.png
 16ca56e85a721aaa plugins/rcp-fe-lol-uikit/global/default/images/scrollbar-thumb-top.png
