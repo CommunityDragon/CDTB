@@ -1,5 +1,7 @@
 import os
 import shutil
+import subprocess
+import time
 import logging
 from typing import Optional, Generator
 from .storage import Version, Storage, PatchVersion
@@ -58,6 +60,42 @@ def reduce_common_paths(paths1, paths2, excludes):
     return ret
 
 
+def interruptible_subprocess_run(args, check=False, **kwargs):
+    # on Windows, ^C does not work as expected and
+    # we have to complicate things a bit...
+    proc = subprocess.Popen(args, **kwargs)
+    try:
+        while proc.poll() is None:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        proc.terminate()
+        raise
+    ret = subprocess.CompletedProcess(args, proc.returncode)
+    if check:
+        ret.check_returncode()
+    return ret
+
+# requires the following variables: $patch, $prev
+# must run from export directory
+_update_symlinks_script = """
+set -e
+while read f; do
+  destf="$PWD/$patch/$f"
+  if [ -h "$destf" ]; then
+    continue  # already set
+  elif [ -e "$destf" ]; then
+    echo >&2 "symlink target already exists: $destf"
+    false
+  else
+    echo "create $destf"
+    mkdir -p "$(dirname "$destf")"
+    ln -rs "$(readlink -f "$PWD/$prev/$f")" "$destf"
+  fi
+done < "$PWD/$patch.links.txt"
+"""
+
+
+
 class Exporter:
     """Handle export of multiple patchs in the same directory"""
 
@@ -98,6 +136,13 @@ class Exporter:
         for exporter in self.exporters:
             exporter.export(overwrite=False)
             exporter.write_links()
+
+    def upload(self, target):
+        """Synchronize all patches to a remote storage"""
+
+        # sync in reverse order, because of symlinks dependencies
+        for exporter in self.exporters[::-1]:
+            exporter.upload(target)
 
 
 class PatchExporter:
@@ -283,4 +328,35 @@ class PatchExporter:
         """Compute path to which export the file from storage path"""
         # projects/<p_name>/releases/<p_version>/files/<export_path>
         return path.split('/', 5)[5].lower()
+
+    def upload(self, target):
+        """Synchronize the patch to a remote storage
+
+        Use rsync to synchronize the files, then update symlinks.
+        """
+
+        if ':' not in target:
+            raise ValueError("cannot extract host from target")
+        target_host, target_dir = target.rsplit(':', 1)
+        output_dir = self.output
+        # make sure to use only paths with forward slashes, even on Windows,
+        # since they are also used by the remote target
+        output_dir = self.output.replace(os.path.sep, '/')
+
+        logger.info("synchronize %s to %s", self.patch, target)
+
+        args = [
+            'rsync', '--progress', '--delete', '-rtOJ', '--size-only',
+            f"{output_dir}/", f"{target}/{self.patch.version}/",
+        ]
+        if self.previous_patch:
+            args += ['--exclude-from', f"{output_dir}.links.txt"]
+        interruptible_subprocess_run(args, check=True)
+
+        if self.previous_patch:
+            logger.info("copy %s.links.txt to %s", self.patch.version, target)
+            subprocess.run(['scp', f"{output_dir}.links.txt", f"{target}/"], check=True)
+
+            logger.info("update links for %s on %s", self.patch, target)
+            interruptible_subprocess_run(['ssh', target_host, f"patch={self.patch.version}\nprev={self.previous_patch.version}\ncd {target_dir}\n" + _update_symlinks_script])
 

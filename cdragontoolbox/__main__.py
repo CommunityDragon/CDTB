@@ -222,6 +222,13 @@ def command_export(parser, args):
         exporter.write_links()
 
 
+def command_upload(parser, args):
+    storage = args.storage
+
+    exporter = Exporter(storage, args.output)
+    exporter.upload(args.target)
+
+
 def create_parser():
     parser = argparse.ArgumentParser("cdratongtoolbox",
         description="Toolbox to work with League of Legends game files",
@@ -355,6 +362,14 @@ def create_parser():
     subparser.add_argument('patch', nargs='?',
                            help="patch version to export, can be omitted to update all exported patches")
 
+    subparser = subparsers.add_parser('upload',
+                                      help="synchronize exported files to a remote host")
+    subparser.add_argument('-s', '--storage', default='RADS',
+                           help="directory for downloaded files (default: %(default)s)")
+    subparser.add_argument('-o', '--output', default='export',
+                           help="directory of source exported files (default: %(default)s)")
+    subparser.add_argument('target',
+                           help="remote target and path, suitable for rsync")
 
     return parser
 
