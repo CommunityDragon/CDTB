@@ -44,6 +44,13 @@ class Parser:
         return self.f.read(length)
 
 
+# Cache for guessed extensions.
+# Caching is possible because the same hash should always have the same
+# extension. Since guessing extension requires to read file data, caching will
+# reduce I/Os
+_hash_to_guessed_extensions = {}
+
+
 class WadFileHeader:
     """
     Single file entry in a WAD archive
@@ -155,11 +162,24 @@ class Wad:
                 wadfile.ext = wadfile.path.split('.', 1)[1]
 
     def guess_extensions(self):
+        # avoid opening the file if not needed
+        unknown_ext = True
+        for wadfile in self.files:
+            if not wadfile.path and not wadfile.ext:
+                wadfile.ext = _hash_to_guessed_extensions.get(wadfile.path_hash)
+                if not wadfile.ext:
+                    unknown_ext = True
+        if not unknown_ext:
+            return  # all extensions are known
+
         with open(self.path, 'rb') as f:
             for wadfile in self.files:
                 if not wadfile.path and not wadfile.ext:
                     data = wadfile.read_data(f)
+                    if not data:
+                        continue
                     wadfile.ext = WadFileHeader.guess_extension(data)
+                    _hash_to_guessed_extensions[wadfile.path_hash] = wadfile.ext
 
     def set_unknown_paths(self, path):
         """Set a path for files without one"""
