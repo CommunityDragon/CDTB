@@ -1,4 +1,5 @@
 import os
+import re
 import shutil
 import subprocess
 import time
@@ -208,29 +209,30 @@ class PatchExporter:
 
                 if extract_path.endswith('.wad'):
                     # WAD file: link the whole archive or compare file by file using sha256
-                    wad = Wad(self.storage.fspath(extract_path))
+                    wad = self._open_wad(extract_path)
+
                     if extract_path == prev_extract_path:
                         logger.debug("unchanged WAD file: %s", extract_path)
-                        previous_links += [wf.export_path() for wf in wad.files]
+                        previous_links += [wf.path for wf in wad.files]
                     else:
                         logger.debug("modified WAD file: %s", extract_path)
                         if prev_extract_path:
                             # compare to the previous WAD based on sha256 hashes
-                            prev_wad = Wad(self.storage.fspath(prev_extract_path))
+                            # note: no need to use _open_wad(), file paths are not used
+                            prev_wad = Wad(self.storage.fspath(prev_extract_path), hashes={})
                             prev_sha256 = {wf.path_hash: wf.sha256 for wf in prev_wad.files}
                             wadfiles_to_extract = []
                             for wf in wad.files:
-                                export_path = wf.export_path()
                                 if wf.sha256 == prev_sha256.get(wf.path_hash):
                                     # same file, add a link
-                                    previous_links.append(export_path)
+                                    previous_links.append(wf.path)
                                 else:
                                     wadfiles_to_extract.append(wf)
                             # change the files from the wad so it only extract these
                             wad.files = wadfiles_to_extract
-                        extracted_paths += [wf.export_path() for wf in wad.files]
+                        extracted_paths += [wf.path for wf in wad.files]
+
                         logger.info("exporting %d files from %s", len(wad.files), extract_path)
-                        #XXX guess extensions() before extract?
                         wad.extract(self.output, overwrite=overwrite)
 
                 else:
@@ -271,10 +273,9 @@ class PatchExporter:
             previous_files = []
             for pv in prev_projects.values():
                 for path in pv.filepaths():
-                    fspath = self.storage.fspath(path)
-                    if fspath.endswith('.wad'):
-                        wad = Wad(fspath)
-                        previous_files += [wf.export_path() for wf in wad.files]
+                    if path.endswith('.wad'):
+                        wad = self._open_wad(path)
+                        previous_files += [wf.path for wf in wad.files]
                     else:
                         previous_files.append(self.to_export_path(path))
 
@@ -286,6 +287,19 @@ class PatchExporter:
 
             self.previous_links = reduce_common_paths(previous_links, previous_files, extracted_paths)
 
+    def _open_wad(self, extract_path: str) -> Wad:
+        """Open a WAD, guess extensions and resolve paths"""
+
+        wad = Wad(self.storage.fspath(extract_path))
+        wad.guess_extensions()
+        # set directory for unknown paths depending on WAD path
+        m = re.search(r'/(plugins/rcp-.+?)/[^/]*assets\.wad$', extract_path, re.I)
+        unknown_path = 'unknown'
+        if m is not None:
+            # LCU client: plugins/<plugin-name>
+            unknown_path = '%s/unknown' % m.group(1).lower()
+        wad.set_unknown_paths(unknown_path)
+        return wad
 
     def export_storage_file(self, storage_path, export_path, overwrite=True):
         output_path = os.path.join(self.output, export_path)

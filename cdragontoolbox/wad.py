@@ -89,14 +89,6 @@ class WadFileHeader:
             return zstd_decompress(data)
         raise ValueError("unsupported file type: %d" % self.type)
 
-    def export_path(self):
-        if self.path is not None:
-            return self.path
-        path = 'unknown/%016x' % self.path_hash
-        if self.ext:
-            path += '.%s' % self.ext
-        return path
-
     @staticmethod
     def guess_extension(data):
         # image type
@@ -153,7 +145,7 @@ class Wad:
             self.files = [WadFileHeader(*parser.unpack("<QIIIBBBBQ")) for _ in range(entry_count)]
 
     def resolve_paths(self, hashes=None):
-        """Guess path and/or extension of files"""
+        """Guess path of files"""
 
         if hashes is None:
             hashes = load_hashes()
@@ -169,6 +161,16 @@ class Wad:
                     data = wadfile.read_data(f)
                     wadfile.ext = WadFileHeader.guess_extension(data)
 
+    def set_unknown_paths(self, path):
+        """Set a path for files without one"""
+
+        for wadfile in self.files:
+            if not wadfile.path:
+                if wadfile.ext:
+                    wadfile.path = "%s/%016x.%s" % (path, wadfile.path_hash, wadfile.ext)
+                else:
+                    wadfile.path = "%s/%016x" % (path, wadfile.path_hash)
+
 
     def extract(self, output, overwrite=True):
         """Extract WAD file
@@ -178,15 +180,16 @@ class Wad:
 
         logger.info("extracting %s to %s", self.path, output)
 
+        self.set_unknown_paths('unknown')
+
         with open(self.path, 'rb') as fwad:
             for wadfile in self.files:
-                path = wadfile.export_path()
-                output_path = os.path.join(output, path)
+                output_path = os.path.join(output, wadfile.path)
 
                 if not overwrite and os.path.exists(output_path):
-                    logger.debug("skipping %016x %s (already extracted)", wadfile.path_hash, path if path else '?')
+                    logger.debug("skipping %016x %s (already extracted)", wadfile.path_hash, wadfile.path)
                     continue
-                logger.debug("extracting %016x %s", wadfile.path_hash, path if path else '?')
+                logger.debug("extracting %016x %s", wadfile.path_hash, wadfile.path)
 
                 fwad.seek(wadfile.offset)
                 # assume files are small enough to fit in memory
