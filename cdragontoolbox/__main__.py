@@ -119,8 +119,15 @@ def command_wad_extract(parser, args):
 
     hashes = load_hashes(args.hashes)
     wad = Wad(args.wad, hashes=hashes)
+    if args.unknown == 'yes':
+        pass # don't filter
+    elif args.unknown == 'only':
+        wad.files = [wf for wf in wad.files if wf.path is None]
+    elif args.unknown == 'no':
+        wad.files = [wf for wf in wad.files if wf.path is not None]
+
     wad.guess_extensions()
-    wad.extract(args.output, unknown={'yes': None, 'only': True, 'no': False}[args.unknown])
+    wad.extract(args.output)
 
 
 def command_wad_list(parser, args):

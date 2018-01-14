@@ -170,30 +170,16 @@ class Wad:
                     wadfile.ext = WadFileHeader.guess_extension(data)
 
 
-    def extract(self, output, unknown=None, overwrite=True):
+    def extract(self, output, overwrite=True):
         """Extract WAD file
-
-        If unknown is None, all files are extracted.
-        If unknown is True, only unknown files are extracted.
-        If unknown is False, only known files are extracted.
 
         If overwrite is False, don't extract files that already exist on disk.
         """
 
         logger.info("extracting %s to %s", self.path, output)
-        if unknown is None:
-            filter_unknown = lambda wf: True
-        elif unknown is True:
-            filter_unknown = lambda wf: wf.path is None
-        elif unknown is False:
-            filter_unknown = lambda wf: wf.path is not None
-        else:
-            raise ValueError("invalid unknown parameter value")
 
         with open(self.path, 'rb') as fwad:
             for wadfile in self.files:
-                if not filter_unknown(wadfile):
-                    continue
                 path = wadfile.export_path()
                 output_path = os.path.join(output, path)
 
