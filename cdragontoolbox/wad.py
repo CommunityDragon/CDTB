@@ -338,6 +338,15 @@ class Wad:
         langs = 'cs_cz de_de el_gr en_au en_gb en_ph en_sg en_us es_ar es_es es_mx fr_fr hu_hu id_id it_it ja_jp ko_kr ms_my pl_pl pt_br ro_ro ru_ru th_th tr_tr vn_vn zh_cn zh_my zh_tw'.split()
         re_plugin_region_lang = re.compile(r'^plugins/([^/]+)/([^/]+)/([^/]+)/')
 
+        champions = set()
+        re_tmp = re.compile(r'^plugins/rcp-be-lol-game-data/global/default/(?:assets|data)/characters/(.*?)/')
+        for path in known_hashes.values():
+            m = re_tmp.match(path)
+            if m:
+                champions.add(m.group(1))
+        champions = sorted(champions)
+
+
         new_paths = set()
 
         # ward skins
@@ -398,6 +407,24 @@ class Wad:
                     'plugins/rcp-fe-lol-skins-viewer/global/default/video/collection/%d.webm' % (cid * 1000 + skin_id),
                 }
 
+        recommended_suffixes = (
+            'beginner', 'sr', 'mid', 'top', 'support', 'srsupport', 'aram',
+            'tt', 'sg', 'cs', 'asc', 'firstblood', 'kingporo', 'bt', 'dm',
+            'map12t', 'pg', 'pr17', 'siege',
+        )
+        loadscreen_formats = ['plugins/rcp-be-lol-game-data/global/default/assets/characters/%s/skins/base/%sloadscreen.png']
+        loadscreen_formats += ['plugins/rcp-be-lol-game-data/global/default/assets/characters/%%s/skins/skin%02d/%%sloadscreen_%d.png' % (i, i) for i in range(100)]
+        loadscreen_formats += [s.replace('/assets/', '/data/') for s in loadscreen_formats]
+        for champion in champions:
+            # recommended item sets
+            new_paths.add('plugins/rcp-be-lol-game-data/global/default/data/characters/%s/recommended/beginner.json' % champion)
+            new_paths |= {
+                'plugins/rcp-be-lol-game-data/global/default/data/characters/%s/recommended/%s%s.json' % (champion, champion, s)
+                for s in recommended_suffixes
+            }
+            # loadscreens
+            new_paths |= {fmt % (champion, champion) for fmt in loadscreen_formats}
+
         # sanitizer
         paths = set()
         for i in range(5):
@@ -412,9 +439,6 @@ class Wad:
             paths |= {'%s.language.%s.txt' % (p, x.split('_')[0]) for x in langs}
         new_paths |= {'plugins/rcp-be-sanitizer/global/default/%s' % p for p in paths}
 
-        #TODO
-        # plugins/rcp-be-lol-game-data/global/default/data/characters/{name}/skins/skin{NN}/{name}loadscreen_{N}.png
-
         logger.info("building hashes for alternate regions and languages")
 
         for path in known_hashes.values():
@@ -427,7 +451,7 @@ class Wad:
                 new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/%s/\3/' % region, path) for region in regions}
 
         # try to find new hashes from these paths
-        return discover_hashes(unknown_hashes, new_paths)
+        return discover_hashes(unknown_hashes, new_paths - set(known_hashes.values()))
 
 
 _default_hashes = None  # cached
