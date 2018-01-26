@@ -268,11 +268,13 @@ def create_parser():
 
     subparsers = parser.add_subparsers(dest='command', help="command")
 
+    default_storage = os.environ.get('CDRAGONTOOLBOX_STORAGE', 'RADS')
+    default_export = os.environ.get('CDRAGONTOOLBOX_EXPORT', 'export')
 
     # component-based commands
 
     component_parser = argparse.ArgumentParser(add_help=False)
-    component_parser.add_argument('-s', '--storage', default='RADS',
+    component_parser.add_argument('-s', '--storage', default=default_storage,
                                   help="directory for downloaded files (default: %(default)s)")
     component_parser.add_argument('--no-lang', dest='langs', action='store_false', default=True,
                                   help="ignore language projects from solutions")
@@ -356,9 +358,9 @@ def create_parser():
 
     subparser = subparsers.add_parser('export',
                                       help="export files to directories, separated by patch")
-    subparser.add_argument('-s', '--storage', default='RADS',
+    subparser.add_argument('-s', '--storage', default=default_storage,
                            help="directory for downloaded files (default: %(default)s)")
-    subparser.add_argument('-o', '--output', default='export',
+    subparser.add_argument('-o', '--output', default=default_export,
                            help="directory for files to export (default: %(default)s)")
     subparser.add_argument('-u', '--update', action='store_true',
                            help="update the export, skip already extracted files")
@@ -371,9 +373,9 @@ def create_parser():
 
     subparser = subparsers.add_parser('upload',
                                       help="synchronize exported files to a remote host")
-    subparser.add_argument('-s', '--storage', default='RADS',
+    subparser.add_argument('-s', '--storage', default=default_storage,
                            help="directory for downloaded files (default: %(default)s)")
-    subparser.add_argument('-o', '--output', default='export',
+    subparser.add_argument('-o', '--output', default=default_export,
                            help="directory of source exported files (default: %(default)s)")
     subparser.add_argument('target',
                            help="remote target and path, suitable for rsync")
