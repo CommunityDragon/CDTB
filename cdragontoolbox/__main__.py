@@ -195,6 +195,12 @@ def command_hashes_add(parser, args):
 def command_export(parser, args):
     storage = args.storage
 
+    if args.symlinks:
+        # symlink are not supported on Windows because of the
+        # 'target_is_directory' parameter which requires extra handling
+        if os.name == 'nt' or not hasattr(os, 'symlink'):
+            parser.error("symlinks not supported on this platform")
+
     if not args.patch:
         # multiple patch (update only)
         if not args.update:
@@ -203,6 +209,8 @@ def command_export(parser, args):
             parser.error("patch version required with --previous or --full")
         exporter = Exporter(storage, args.output)
         exporter.update()
+        if args.symlinks:
+            exporter.create_symlinks()
     else:
         # single patch
         # retrieve target and previous patch versions
@@ -227,6 +235,8 @@ def command_export(parser, args):
         exporter = PatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
         exporter.export(overwrite=not args.update)
         exporter.write_links()
+        if args.symlinks:
+            exporter.create_symlinks()
 
 
 def command_upload(parser, args):
@@ -372,6 +382,8 @@ def create_parser():
                            help="directory for files to export (default: %(default)s)")
     subparser.add_argument('-u', '--update', action='store_true',
                            help="update the export, skip already extracted files")
+    subparser.add_argument('-L', '--symlinks', action='store_true',
+                           help="create symlinks (if supported by platform)")
     subparser.add_argument('--previous',
                            help="previous patch version to compare with (default: guessed)")
     subparser.add_argument('--full', dest='previous', action='store_const', const='none',

@@ -145,6 +145,13 @@ class Exporter:
         for exporter in self.exporters[::-1]:
             exporter.upload(target)
 
+    def create_symlinks(self):
+        """Create symlinks for all patches"""
+
+        # create in reverse order, because of chained symlinks
+        for exporter in self.exporters[::-1]:
+            exporter.create_symlinks()
+
 
 class PatchExporter:
     """Handle export of patch files to a directory"""
@@ -336,6 +343,25 @@ class PatchExporter:
         with open(path, 'w', newline='\n') as f:
             for link in sorted(self.previous_links):
                 print(link, file=f)
+
+    def create_symlinks(self):
+        if self.previous_links is None:
+            return
+        dst_output = self.output
+        src_output = os.path.join(os.path.dirname(self.output), str(self.previous_patch.version))
+
+        logger.info("creating symlinks for patch %s", self.patch.version)
+        for link in self.previous_links:
+            dst = os.path.join(dst_output, link)
+            if os.path.exists(dst):
+                if not os.path.islink(dst):
+                    raise RuntimeError("symlink target already exists: %s" % dst)
+                continue  # already set
+            dst_dir = os.path.dirname(dst)
+            os.makedirs(dst_dir, exist_ok=True)
+            src = os.path.relpath(os.path.realpath(os.path.join(src_output, link)), dst_dir)
+            logger.info("create symlink %s", dst)
+            os.symlink(src, dst)
 
     @staticmethod
     def to_export_path(path):
