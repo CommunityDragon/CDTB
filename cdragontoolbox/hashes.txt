@@ -953,6 +953,7 @@ dcb561e95837276d plugins/rcp-be-lol-game-data/global/default/assets/characters/g
 2a971b832e729054 plugins/rcp-be-lol-game-data/global/default/assets/characters/gragas/skins/skin07/gragasloadscreen_7.png
 83db818dd7da8cf1 plugins/rcp-be-lol-game-data/global/default/assets/characters/gragas/skins/skin08/gragasloadscreen_8.png
 3fd0b75d56964c22 plugins/rcp-be-lol-game-data/global/default/assets/characters/gragas/skins/skin09/gragasloadscreen_9.png
+e3a25010423416e1 plugins/rcp-be-lol-game-data/global/default/assets/characters/gragas/skins/skin10/gragasloadscreen_10.skins_gragas_skin10.png
 5abad5a0b4a2833f plugins/rcp-be-lol-game-data/global/default/assets/characters/heimerdinger/skins/base/heimerdingerloadscreen.png
 b92f7001268e7e8c plugins/rcp-be-lol-game-data/global/default/assets/characters/heimerdinger/skins/skin01/heimerdingerloadscreen_1.png
 af2bbbb48dba3878 plugins/rcp-be-lol-game-data/global/default/assets/characters/heimerdinger/skins/skin02/heimerdingerloadscreen_2.png
@@ -984,6 +985,7 @@ da10276ddf39d484 plugins/rcp-be-lol-game-data/global/default/assets/characters/j
 b9a78f6215ed07ed plugins/rcp-be-lol-game-data/global/default/assets/characters/jax/skins/skin07/jaxloadscreen_7.png
 faefad6799078f35 plugins/rcp-be-lol-game-data/global/default/assets/characters/jax/skins/skin08/jaxloadscreen_8.png
 95acd3eb1361f967 plugins/rcp-be-lol-game-data/global/default/assets/characters/jax/skins/skin12/jaxloadscreen_12.png
+78ad1dbaf1173f18 plugins/rcp-be-lol-game-data/global/default/assets/characters/jax/skins/skin13/jaxloadscreen_13.skins_jax_skin13.png
 25409a4ad79f5898 plugins/rcp-be-lol-game-data/global/default/assets/characters/jhin/skins/base/jhinloadscreen.png
 ccc5006828ac7fe8 plugins/rcp-be-lol-game-data/global/default/assets/characters/jhin/skins/skin01/jhinloadscreen_1.png
 ca1db7ddd9547706 plugins/rcp-be-lol-game-data/global/default/assets/characters/jhin/skins/skin02/jhinloadscreen_2.png
