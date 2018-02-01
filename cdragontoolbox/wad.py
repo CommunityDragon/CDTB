@@ -414,7 +414,7 @@ class Wad:
         )
         loadscreen_formats = ['plugins/rcp-be-lol-game-data/global/default/assets/characters/%(champion)s/skins/base/%(champion)sloadscreen.png']
         loadscreen_formats += ['plugins/rcp-be-lol-game-data/global/default/assets/characters/%%(champion)s/skins/skin%02d/%%(champion)sloadscreen_%d.png' % (i, i) for i in range(100)]
-        loadscreen_formats += ['plugins/rcp-be-lol-game-data/global/default/assets/characters/%%(champion)s/skins/skin%02d/%%(champion)sloadscreen_%d.skins_%%(champion)s_skin%d.png' % (i, i, i) for i in range(100)]
+        loadscreen_formats += ['plugins/rcp-be-lol-game-data/global/default/assets/characters/%%(champion)s/skins/skin%02d/%%(champion)sloadscreen_%d.skins_%%(champion)s_skin%02d.png' % (i, i, i) for i in range(100)]
         loadscreen_formats += [s.replace('/assets/', '/data/') for s in loadscreen_formats]
         for champion in champions:
             # recommended item sets
