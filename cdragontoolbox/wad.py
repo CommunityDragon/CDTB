@@ -251,8 +251,10 @@ class Wad:
 
                 if wadfile.ext == 'json':
                     jdata = json.loads(data)
-                    # retrieve plugin_name from description.json
-                    if 'pluginDependencies' in jdata and 'name' in jdata:
+                    if wadfile.path == 'plugins/rcp-fe-lol-loot/global/default/trans.json':
+                        found_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/%s.png' % k for k in jdata}
+                    elif 'pluginDependencies' in jdata and 'name' in jdata:
+                        # retrieve plugin_name from description.json
                         plugin_name = jdata['name']
 
                 # paths starting with /fe/ or /lol-plugin/
@@ -282,7 +284,11 @@ class Wad:
 
         # resolve parsed paths, using plugin name, known subdirs, ...
         for path in found_paths:
-            basename = posixpath.basename(path)
+
+            # plugins/...: no changes
+            if path.startswith('plugins/'):
+                resolved_paths.add(path)
+                continue
 
             # /fe/{plugin}/{subpath} -> plugins/rcp-[bf]e-{plugin}/global/default/{subpath}
             # /lol-{name}/{subpath}  -> plugins/rcp-[bf]e-lol-{name}/global/default/{subpath}
@@ -293,6 +299,11 @@ class Wad:
                     plugin = f"lol-{plugin}"
                 resolved_paths.add(f"plugins/rcp-fe-{plugin}/global/default/{subpath}")
                 resolved_paths.add(f"plugins/rcp-be-{plugin}/global/default/{subpath}")
+                if subpath.startswith('assets/'):
+                    # lol-game-data paths sometimes have an extra 'assets/'
+                    subpath = subpath[len('assets/'):]
+                    resolved_paths.add(f"plugins/rcp-fe-{plugin}/global/default/{subpath}")
+                    resolved_paths.add(f"plugins/rcp-be-{plugin}/global/default/{subpath}")
                 continue
 
             # starting with './' or '../' without extension, try node module file
@@ -303,6 +314,7 @@ class Wad:
                     resolved_paths |= {f"{prefix}{suffix}" for suffix in ('.js', '.js.map', '/index.js', '/index.js.map')}
 
             if default_path:
+                basename = posixpath.basename(path)
                 # known subdirectories
                 m = re.match(r'\b((?:data|assets|images|audio|components|sounds|video|css)/.+)', path)
                 if m:
@@ -359,12 +371,6 @@ class Wad:
         # ultimate skins
         new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/%d.jpg' % i for i in range(5000)}
         new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/%d.webm' % i for i in range(5000)}
-
-        # hextech
-        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/chest_%d.png' % i for i in range(1000)}
-        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/chest_%d_open.png' % i for i in range(1000)}
-        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_%d.png' % i for i in range(1000)}
-        new_paths |= {'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/loottable_chest_%d_%d.png' % (i, j) for i in range(1000) for j in range(4)}
 
         # loot
         new_paths |= {'plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_%d.png' % i for i in range(1000)}
