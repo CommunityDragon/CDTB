@@ -109,7 +109,7 @@ class Exporter:
                 continue
             try:
                 version = Version(path)
-            except TypeError:
+            except (ValueError, TypeError):
                 continue
             versions.add(version)
 
