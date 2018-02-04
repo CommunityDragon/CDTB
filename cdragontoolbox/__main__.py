@@ -255,7 +255,7 @@ def command_upload(parser, args):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser("cdratongtoolbox",
+    parser = argparse.ArgumentParser("cdragontoolbox",
         description="Toolbox to work with League of Legends game files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
