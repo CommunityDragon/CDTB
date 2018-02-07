@@ -165,33 +165,6 @@ def command_hashes_guess(parser, args):
         save_hashes(args.hashes, hashes)
 
 
-def command_hashes_add(parser, args):
-    hashes = load_hashes(args.hashes)
-
-    wads = [Wad(path) for path in args.wad]
-    unknown_hashes = set()
-    for wad in wads:
-        unknown_hashes |= set(wadfile.path_hash for wadfile in wad.files)
-    unknown_hashes -= set(hashes)
-
-    new_hashes = {}
-    if args.search:
-        for wad in wads:
-            new_hashes.update(wad.guess_hashes(unknown_hashes))
-    new_hashes.update(Wad.guess_hashes_from_known(hashes, unknown_hashes))
-
-    new_hashes = load_hashes(args.new_hashes)
-    # don't trust the hashes, rehash and compare
-    new_hashes = discover_hashes(unknown_hashes, set(new_hashes.values()))
-
-    for h, path in new_hashes.items():
-        print("%016x %s" % (h, path))
-
-    if not args.dry_run and new_hashes:
-        hashes.update(new_hashes)
-        save_hashes(args.hashes, hashes)
-
-
 def command_export(parser, args):
     storage = args.storage
 
@@ -361,15 +334,6 @@ def create_parser():
                            help="search for paths in WAD files")
     subparser.add_argument('wad', nargs='+',
                            help="WAD files to analyze")
-
-    subparser = subparsers.add_parser('hashes-add',
-                                      help="update hashes from a list or hashes")
-    subparser.add_argument('-H', '--hashes',
-                           help="hashes of known paths (JSON or plain text)")
-    subparser.add_argument('-n', '--dry-run', action='store_true',
-                           help="list new hashes but don't update the hashes file")
-    subparser.add_argument('hashes', nargs='+', metavar='new_hashes',
-                           help="hashes file (JSON or plain text)")
 
 
     # export command
