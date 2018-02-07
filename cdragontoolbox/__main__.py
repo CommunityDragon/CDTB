@@ -97,9 +97,8 @@ def command_files(parser, args):
         for path in component.filepaths():
             print(path)
     elif isinstance(component, SolutionVersion):
-        for pv in component.projects(args.langs):
-            for path in pv.filepaths():
-                print(path)
+        for path in component.filepaths(args.langs):
+            print(path)
     elif isinstance(component, PatchVersion):
         projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs)}
         for pv in sorted(projects):

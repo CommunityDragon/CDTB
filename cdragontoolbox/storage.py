@@ -480,6 +480,11 @@ class SolutionVersion:
         else:
             return list({pv for lang in langs for pv in dependencies[lang]})
 
+    def filepaths(self, langs) -> Generator[str, None, None]:
+        """Generate the extract path of files in the solution version"""
+        for pv in self.projects(langs):
+            yield from pv.filepaths()
+
     def download(self, langs, dry_run=False):
         """Download solution version files"""
 
