@@ -144,7 +144,30 @@ def command_wad_list(parser, args):
 def command_hashes_guess(parser, args):
     hashes = load_hashes(args.hashes)
 
-    wads = [Wad(path) for path in args.wad]
+    wad_paths = []
+    for path_or_component in args.wad:
+        try:
+            component = parse_component(args.storage, path_or_component)
+        except ValueError:
+            wad_paths.append(path_or_component)
+            continue
+        # component, get wad paths
+        if isinstance(component, ProjectVersion):
+            it = component.filepaths()
+        elif isinstance(component, SolutionVersion):
+            it = component.filepaths(langs=True)
+        elif isinstance(component, PatchVersion):
+            # there must be one solution
+            for sv in component.solutions(latest=True):
+                if sv.name == 'league_client_sln':
+                    it = sv.filepaths(langs=True)
+            else:
+                it = []
+        else:
+            parser.error(f"command cannot be used on {component}")
+        wad_paths.extend(args.storage.fspath(p) for p in it if p.endswith('.wad'))
+
+    wads = [Wad(path) for path in wad_paths]
     unknown_hashes = set()
     for wad in wads:
         unknown_hashes |= set(wadfile.path_hash for wadfile in wad.files)
@@ -325,6 +348,8 @@ def create_parser():
 
     subparser = subparsers.add_parser('hashes-guess',
                                       help="guess hashes from WAD content")
+    subparser.add_argument('-s', '--storage', default=default_storage,
+                           help="directory for downloaded files, when passing components (default: %(default)s)")
     subparser.add_argument('-H', '--hashes',
                            help="hashes of known paths (JSON or plain text)")
     subparser.add_argument('-n', '--dry-run', action='store_true',
@@ -332,7 +357,7 @@ def create_parser():
     subparser.add_argument('-g', '--search', action='store_true',
                            help="search for paths in WAD files")
     subparser.add_argument('wad', nargs='+',
-                           help="WAD files to analyze")
+                           help="WAD files or components to analyze")
 
 
     # export command
