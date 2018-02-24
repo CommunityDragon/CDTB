@@ -31,6 +31,26 @@ def parse_component_arg(parser, storage: Storage, component: str):
         parser.error(f"invalid component: {component}")
 
 
+def parse_storage_args(parser, args) -> Storage:
+    """Parse storage-related arguments into a Storage"""
+
+    default_path = os.environ.get('CDRAGONTOOLBOX_STORAGE')
+    default_cdn = os.environ.get('CDRAGONTOOLBOX_CDN', 'default')
+
+    cdn = default_cdn if args.cdn is None else args.cdn
+    # don't use CDRAGONTOOLBOX_STORAGE when using non-default --cdn is set to
+    # avoid mixing files from different CDNs
+    if cdn != default_cdn and default_path is not None and args.storage is None:
+        parser.error("--storage must be provided when changing --cdn value")
+
+    path = default_path if args.storage is None else args.storage
+    if path is None:
+        path = 'RADS' if cdn == 'default' else f"RADS.{cdn}"
+
+    storage_url = getattr(Storage, f"URL_{cdn}".upper())
+    return Storage(path, storage_url)
+
+
 def command_download(parser, args):
     components = [parse_component_arg(parser, args.storage, component) for component in args.component]
     for component in components:
@@ -281,14 +301,18 @@ def create_parser():
 
     subparsers = parser.add_subparsers(dest='command', help="command")
 
-    default_storage = os.environ.get('CDRAGONTOOLBOX_STORAGE', 'RADS')
     default_export = os.environ.get('CDRAGONTOOLBOX_EXPORT', 'export')
+
+    # storage arguments
+    storage_parser = argparse.ArgumentParser(add_help=False)
+    storage_parser.add_argument('-s', '--storage', default=None,
+                                help="directory for downloaded files")
+    storage_parser.add_argument('--cdn', choices=["default", "pbe", "kr"], default=None,
+                                help="use a different CDN")
 
     # component-based commands
 
-    component_parser = argparse.ArgumentParser(add_help=False)
-    component_parser.add_argument('-s', '--storage', default=default_storage,
-                                  help="directory for downloaded files (default: %(default)s)")
+    component_parser = argparse.ArgumentParser(add_help=False, parents=[storage_parser])
     component_parser.add_argument('--no-lang', dest='langs', action='store_false', default=True,
                                   help="ignore language projects from solutions")
     component_parser.add_argument('--lang', dest='langs', nargs='*',
@@ -346,10 +370,8 @@ def create_parser():
     subparser.add_argument('wad',
                            help="WAD file to list")
 
-    subparser = subparsers.add_parser('hashes-guess',
+    subparser = subparsers.add_parser('hashes-guess', parents=[storage_parser],
                                       help="guess hashes from WAD content")
-    subparser.add_argument('-s', '--storage', default=default_storage,
-                           help="directory for downloaded files, when passing components (default: %(default)s)")
     subparser.add_argument('-H', '--hashes',
                            help="hashes of known paths (JSON or plain text)")
     subparser.add_argument('-n', '--dry-run', action='store_true',
@@ -362,10 +384,8 @@ def create_parser():
 
     # export command
 
-    subparser = subparsers.add_parser('export',
+    subparser = subparsers.add_parser('export', parents=[storage_parser],
                                       help="export files to directories, separated by patch")
-    subparser.add_argument('-s', '--storage', default=default_storage,
-                           help="directory for downloaded files (default: %(default)s)")
     subparser.add_argument('-o', '--output', default=default_export,
                            help="directory for files to export (default: %(default)s)")
     subparser.add_argument('-u', '--update', action='store_true',
@@ -379,10 +399,8 @@ def create_parser():
     subparser.add_argument('patch', nargs='?',
                            help="patch version to export, can be omitted to update all exported patches")
 
-    subparser = subparsers.add_parser('upload',
+    subparser = subparsers.add_parser('upload', parents=[storage_parser],
                                       help="synchronize exported files to a remote host")
-    subparser.add_argument('-s', '--storage', default=default_storage,
-                           help="directory for downloaded files (default: %(default)s)")
     subparser.add_argument('-o', '--output', default=default_export,
                            help="directory of source exported files (default: %(default)s)")
     subparser.add_argument('target',
@@ -417,7 +435,7 @@ def main():
         logger.setLevel(logging.INFO)
 
     if hasattr(args, 'storage'):
-        args.storage = Storage(args.storage)
+        args.storage = parse_storage_args(parser, args)
 
     globals()["command_%s" % args.command.replace('-', '_')](parser, args)
 

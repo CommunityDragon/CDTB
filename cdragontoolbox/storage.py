@@ -17,7 +17,11 @@ class Version:
     def __init__(self, v: Union[str, tuple]):
         if isinstance(v, str):
             self.s = v
-            self.t = tuple(int(x) for x in v.split('.'))
+            if v == 'main':
+                # make it comparable, but only with itself
+                self.t = 'main'
+            else:
+                self.t = tuple(int(x) for x in v.split('.'))
         elif isinstance(v, tuple):
             self.s = '.'.join(str(x) for x in v)
             self.t = v
@@ -96,10 +100,17 @@ class Storage:
     # region is ignored here (it is not actually needed)
     DOWNLOAD_URL = "l3cdn.riotgames.com"
     DOWNLOAD_PATH = "/releases/live"
+    DOWNLOAD_PATH_KR = "/KR_CBT"
+    DOWNLOAD_PATH_PBE = "/releases/pbe"
+
+    URL_DEFAULT = f"http://{DOWNLOAD_URL}{DOWNLOAD_PATH}/"
+    URL_DEFAULT = f"http://{DOWNLOAD_URL}{DOWNLOAD_PATH}/"
+    URL_KR = f"http://{DOWNLOAD_URL}{DOWNLOAD_PATH_KR}/"
+    URL_PBE = f"http://{DOWNLOAD_URL}{DOWNLOAD_PATH_PBE}/"
 
     def __init__(self, path, url=None):
         if url is None:
-            url = f"http://{self.DOWNLOAD_URL}{self.DOWNLOAD_PATH}/"
+            url = self.URL_DEFAULT
         self.url = url
         self.path = path
         self.s = requests.session()
@@ -498,6 +509,10 @@ class SolutionVersion:
         This method reads/writes version from/to cache.
         """
 
+        # for PBE: version is always "main"
+        if self.solution.storage.url == Storage.URL_PBE:
+            return Version("main")
+
         cache = self.solution.storage.fspath(f"{self.path}/_patch_version")
         if os.path.isfile(cache):
             logger.debug("retrieving patch version for %s from cache", self)
@@ -637,6 +652,8 @@ class PatchVersion:
 
         Note: patch versions are assumed to be monotonous in successive
         solution versions (they never decrease).
+
+        For PBE, patch version is always 'main'.
         """
 
         solution_names = ('league_client_sln', 'lol_game_client_sln')

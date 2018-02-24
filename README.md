@@ -47,6 +47,12 @@ python3 -m cdragontoolbox wad-list path/to/assets.wad
 # export files of patch 7.23 into export/7.23
 # (files unchanged from 7.22 files are listed into 7.23.links.txt)
 python3 -m cdragontoolbox export -o export 7.23
+
+# download Korean files of league client
+python3 -m cdragontoolbox download --cdn kr league_client_ko_kr=
+
+# export files from PBE
+python3 -m cdragontoolbox export --cdn pbe --full main
 ```
 
 ## Components
@@ -83,6 +89,8 @@ retrieved from downloaded files
 
 Patch version changes independently from solution and project versions.
 
+**Note:** PBE use a single patch version: `main`.
+
 
 ## WAD files
 
@@ -95,4 +103,13 @@ lot of unresolved hashes.
 
 An hash list is provided and regularly updated with new hashes as they are
 discovered, especially after client updates.
+
+
+## PBE and Korean files
+
+PBE and Korean game files have their own download URLs.
+Use `--cdn pbe` or `--cdn kr` to fetch PBE or Korean files.
+
+Note that they should not be mixed with files from the default CDN. By default,
+PBE files are downloaded to `RADS.pbe` and Korean files to `RADS.kr`.
 
