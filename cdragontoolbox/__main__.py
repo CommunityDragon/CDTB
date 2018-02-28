@@ -229,7 +229,7 @@ def command_export(parser, args):
     else:
         # single patch
         # retrieve target and previous patch versions
-        patch = PatchVersion.version(storage, Version(args.patch))
+        patch = PatchVersion.version(storage, None if args.patch == "latest" else Version(args.patch))
         if patch is None:
             parser.error("patch not found: %s" % args.patch)
         if args.previous == 'none':
@@ -237,11 +237,11 @@ def command_export(parser, args):
         elif args.previous:
             previous_patch = PatchVersion.version(storage, Version(args.previous), stored=True)
             if previous_patch is None:
-                parser.error("previous patch not found: %s" % args.patch)
+                parser.error("previous patch not found: %s" % patch.version)
         else:
             it = PatchVersion.versions(storage, stored=True)
             for v in it:
-                if v.version == args.patch:
+                if v.version == patch.version:
                     previous_patch = next(it)
                     break
             else:
@@ -397,7 +397,7 @@ def create_parser():
     subparser.add_argument('--full', dest='previous', action='store_const', const='none',
                            help="export the whole patch (don't compare with a previous one)")
     subparser.add_argument('patch', nargs='?',
-                           help="patch version to export, can be omitted to update all exported patches")
+                           help="patch version to export or 'latest', can be omitted to update all exported patches")
 
     subparser = subparsers.add_parser('upload', parents=[storage_parser],
                                       help="synchronize exported files to a remote host")
