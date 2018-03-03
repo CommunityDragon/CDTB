@@ -122,7 +122,7 @@ class Storage:
     def list_projects(self) -> List['Project']:
         """List projects present in storage"""
         ret = []
-        base = self.fspath('projects')
+        base = self.fspath("projects")
         for name in os.listdir(base):
             if os.path.isdir(f"{base}/{name}/releases"):
                 ret.append(Project(self, name))
@@ -131,7 +131,7 @@ class Storage:
     def list_solutions(self) -> List['Solution']:
         """List solutions present in storage"""
         ret = []
-        base = self.fspath('solutions')
+        base = self.fspath("solutions")
         for name in os.listdir(base):
             if os.path.isdir(f"{base}/{name}/releases"):
                 ret.append(Solution(self, name))
@@ -317,9 +317,9 @@ class SolutionVersion:
         This method reads/writes version from/to cache.
         """
 
-        # for PBE: version is always 'main'
+        # for PBE: version is always "main"
         if self.solution.storage.url == Storage.URL_PBE:
-            return Version('main')
+            return Version("main")
 
         cache = self.solution.storage.fspath(f"{self.path}/_patch_version")
         if os.path.isfile(cache):
@@ -377,7 +377,7 @@ class SolutionVersion:
                 return None
             raise
 
-        path_suffix = f"/{file_name}"
+        path_suffix = f'/{file_name}'
         for path in filepaths:
             if path.endswith(path_suffix):
                 fspath = self.solution.storage.fspath(path)

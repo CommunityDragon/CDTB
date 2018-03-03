@@ -214,7 +214,7 @@ class PatchExporter:
                 prev_extract_path = prev_extract_paths.get(export_path)
                 # package files with identical extract paths are the same
 
-                if extract_path.endswith(".wad"):
+                if extract_path.endswith('.wad'):
                     # WAD file: link the whole archive or compare file by file using sha256
                     wad = self._open_wad(extract_path)
 
@@ -280,7 +280,7 @@ class PatchExporter:
             previous_files = []
             for pv in prev_projects.values():
                 for path in pv.filepaths():
-                    if path.endswith(".wad"):
+                    if path.endswith('.wad'):
                         wad = self._open_wad(path)
                         previous_files += [wf.path for wf in wad.files]
                     else:
@@ -411,11 +411,11 @@ class PatchExporter:
         logger.info(f"synchronize {self.patch} to {target}")
 
         args = [
-            "rsync", "--progress", "--delete", "-rtOJ", "--size-only",
+            'rsync', '--progress', '--delete', '-rtOJ', '--size-only',
             f"{output_dir}/", f"{target}/{self.patch.version}/",
         ]
         if self.previous_patch:
-            args += ["--exclude-from", f"{output_dir}.links.txt"]
+            args += ['--exclude-from', f"{output_dir}.links.txt"]
         interruptible_subprocess_run(args, check=True)
 
         if self.previous_patch:

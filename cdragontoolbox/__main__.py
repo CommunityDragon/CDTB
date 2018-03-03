@@ -184,7 +184,7 @@ def command_hashes_guess(parser, args):
                 it = []
         else:
             parser.error(f"command cannot be used on {component}")
-        wad_paths.extend(args.storage.fspath(p) for p in it if p.endswith(".wad"))
+        wad_paths.extend(args.storage.fspath(p) for p in it if p.endswith('.wad'))
 
     wads = [Wad(path) for path in wad_paths]
     unknown_hashes = set()
@@ -304,7 +304,7 @@ def create_parser():
     storage_parser = argparse.ArgumentParser(add_help=False)
     storage_parser.add_argument('-s', '--storage', default=None,
                                 help="directory for downloaded files")
-    storage_parser.add_argument('--cdn', choices=['default', 'pbe', 'kr'], default=None,
+    storage_parser.add_argument('--cdn', choices=["default", "pbe", "kr"], default=None,
                                 help="use a different CDN")
 
     # component-based commands
