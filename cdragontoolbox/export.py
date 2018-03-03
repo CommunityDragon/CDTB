@@ -197,11 +197,10 @@ class PatchExporter:
         else:
             prev_projects = {}
 
-        # get stored files, to remove superfluous ones
-        original_exported_files = set(self.exported_files())
-
-        previous_links = []
-        extracted_paths = []
+        logger.info("build list of files to extract or link")
+        new_symlinks = []
+        new_extracts = []
+        to_extract = []  # (extract, export) or Wad instances with wad.files correctly filled
         for pv, prev_pv in sorted((pv, prev_projects.get(pv.project.name)) for pv in projects):
             # get export paths from previous package
             prev_extract_paths = {}  # {export_path: extract_path}
@@ -212,7 +211,7 @@ class PatchExporter:
             for extract_path in pv.filepaths():
                 export_path = self.to_export_path(extract_path)
                 prev_extract_path = prev_extract_paths.get(export_path)
-                # package files are identical if their extract paths are the same
+                # package files with identical extract paths are the same
 
                 if extract_path.endswith('.wad'):
                     # WAD file: link the whole archive or compare file by file using sha256
@@ -220,7 +219,7 @@ class PatchExporter:
 
                     if extract_path == prev_extract_path:
                         logger.debug("unchanged WAD file: %s", extract_path)
-                        previous_links += [wf.path for wf in wad.files]
+                        new_symlinks += [wf.path for wf in wad.files]
                     else:
                         logger.debug("modified WAD file: %s", extract_path)
                         if prev_extract_path:
@@ -232,16 +231,13 @@ class PatchExporter:
                             for wf in wad.files:
                                 if wf.sha256 == prev_sha256.get(wf.path_hash):
                                     # same file, add a link
-                                    previous_links.append(wf.path)
+                                    new_symlinks.append(wf.path)
                                 else:
                                     wadfiles_to_extract.append(wf)
                             # change the files from the wad so it only extract these
                             wad.files = wadfiles_to_extract
-                        extracted_paths += [wf.path for wf in wad.files]
-
-                        logger.info("exporting %d files from %s", len(wad.files), extract_path)
-                        wad.extract(self.output, overwrite=False)
-
+                        new_extracts += [wf.path for wf in wad.files]
+                        to_extract.append(wad)
                 else:
                     # ignore description.json files
                     # They may also also be in WADs (slightly different
@@ -256,27 +252,30 @@ class PatchExporter:
                     # normal file: link or copy
                     if extract_path == prev_extract_path:
                         logger.debug("unchanged file: %s", extract_path)
-                        previous_links.append(export_path)
+                        new_symlinks.append(export_path)
                     else:
                         logger.debug("modified file: %s", extract_path)
-                        extracted_paths.append(export_path)
-                        self.export_storage_file(extract_path, export_path)
+                        new_extracts.append(export_path)
+                        to_extract.append((extract_path, export_path))
 
-        # remove extra files
-        dirs_to_remove = set()
-        for path in original_exported_files - set(extracted_paths):
-            logger.info("remove extra file: %s", path)
+        # convert to sets now (we will need it later)
+        new_extracts = set(new_extracts)
+        new_symlinks = set(new_symlinks)
+
+        # get stored files, to remove superfluous ones
+        old_extracts = set()
+        old_symlinks = set()
+        for path in self.exported_files():
             full_path = os.path.join(self.output, path)
-            os.remove(full_path)
-            dirs_to_remove.add(os.path.dirname(full_path))
-        for path in dirs_to_remove:
-            try:
-                os.removedirs(path)
-            except OSError:
-                pass
+            if os.path.islink(full_path):
+                old_symlinks.add(path)
+            elif os.path.isfile(full_path):
+                old_extracts.add(path)
+            else:
+                raise ValueError(f"unexpected directory: {full_path}")
 
+        # build the reduced list of new symlinks (self.previous_links)
         if self.previous_patch:
-            # get all files from the previous patch to properly reduce the links
             previous_files = []
             for pv in prev_projects.values():
                 for path in pv.filepaths():
@@ -288,11 +287,36 @@ class PatchExporter:
 
             # check for files both extracted and linked
             # should not happen except in case of duplicated file
-            duplicates = set(previous_links) & set(extracted_paths)
-            if len(duplicates):
+            duplicates = new_symlinks & new_extracts
+            if duplicates:
                 raise RuntimeError("duplicate files: %r" % duplicates)
 
-            self.previous_links = reduce_common_paths(previous_links, previous_files, extracted_paths)
+            self.previous_links = reduce_common_paths(new_symlinks, previous_files, new_extracts)
+        else:
+            assert not new_symlinks
+            self.previous_links = None
+
+        # remove extra files and their parent directories (if empty)
+        # note: symlinks are assumed to point to the right location
+        dirs_to_remove = set()
+        for path in list(old_extracts - new_extracts) + list(old_symlinks - new_symlinks):
+            logger.info("remove extra file or symlink: %s", path)
+            full_path = os.path.join(self.output, path)
+            os.remove(full_path)
+            dirs_to_remove.add(os.path.dirname(full_path))
+        for path in dirs_to_remove:
+            try:
+                os.removedirs(path)
+            except OSError:
+                pass
+
+        # extract files, finally
+        for elem in to_extract:
+            if isinstance(elem, Wad):
+                elem.extract(self.output, overwrite=False)
+            else:
+                self.export_storage_file(*elem)
+
 
     def _open_wad(self, extract_path: str) -> Wad:
         """Open a WAD, guess extensions and resolve paths"""
@@ -310,14 +334,14 @@ class PatchExporter:
 
     def export_storage_file(self, storage_path, export_path):
         output_path = os.path.join(self.output, export_path)
-        if os.path.exists(output_path):
+        if os.path.lexists(output_path):
             return
         logger.info("exporting %s", export_path)
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         shutil.copyfile(self.storage.fspath(storage_path), output_path)
 
-    def exported_files(self) -> Generator[str, None, None]:
-        """Generate a list of files on disk (even if not if patch files)
+    def exported_files(self):
+        """Output a list of Generate a list of files on disk (even if not if patch files)
 
         Generate paths with forward slashes on all platforms.
         """
