@@ -1,35 +1,8 @@
 from enum import Enum
 
 
-class Region(Enum):
-    BR = 'br'
-    CN = 'cn'
-    EUN = 'eun'
-    EUNE = 'eune'
-    EUW = 'euw'
-    GARENA2 = 'garena2'
-    GARENA3 = 'garena3'
-    ID = 'id'
-    JP = 'jp'
-    KR = 'kr'
-    LA = 'la'
-    LA1 = 'la1'
-    LA2 = 'la2'
-    LAN = 'lan'
-    LAS = 'las'
-    NA = 'na'
-    OC = 'oc'
-    OC1 = 'oc1'
-    OCE = 'oce'
-    PBE = 'pbe'
-    PH = 'ph'
-    RU = 'ru'
-    SG = 'sg'
-    TENCENT = 'tencent'
-    TH = 'th'
-    TR = 'tr'
-    TW = 'tw'
-    VN = 'vn'
+REGIONS = ['br', 'cn', 'eun', 'eune', 'euw', 'garena2', 'garena3', 'id', 'jp', 'kr', 'la', 'la1', 'la2', 'lan', 'las',
+           'na', 'oc', 'oc1', 'oce', 'pbe', 'ph', 'ru', 'sg', 'tencent', 'th', 'tr', 'tw', 'vn']
 
 class Language(Enum):
     cs_cz = 'cs_cz'

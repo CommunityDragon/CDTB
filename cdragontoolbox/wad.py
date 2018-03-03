@@ -15,7 +15,7 @@ if hasattr(zstd, 'decompress'):
 else:
     zstd_decompress = zstd.ZstdDecompressor().decompress
 
-from .data import Region, Language
+from .data import REGIONS, Language
 
 HashMap = Dict[int, str]
 
@@ -53,9 +53,7 @@ _hash_to_guessed_extensions = {}
 
 
 class WadFileHeader:
-    """
-    Single file entry in a WAD archive
-    """
+    """Single file entry in a WAD archive"""
 
     _magic_numbers_ext = {
         b'OggS': 'ogg',
@@ -120,8 +118,9 @@ class WadFileHeader:
 
 
 class Wad:
-    """
-    A WAD archive is a file that contains other files. It has a header that describes the format. There are multiple
+    """A WAD archive is a file that contains other files.
+
+    It has a header that describes the format. There are multiple
     formats that Riot uses depending on the version of the WAD file, which can be read from the header.
     The files contained in a WAD file generally are all related to one "idea".
 
@@ -351,7 +350,7 @@ class Wad:
     def guess_hashes_from_known(known_hashes, unknown_hashes):
         logger.info("guessing hashes from known path patterns")
 
-        regions = [r.value for r in Region]
+        regions = [r.value for r in REGIONS]
         langs = [l.value for l in Language]
         re_plugin_region_lang = re.compile(r'^plugins/([^/]+)/([^/]+)/([^/]+)/')
 

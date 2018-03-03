@@ -7,7 +7,6 @@ from cdragontoolbox.storage import (
     Project, ProjectVersion,
     Solution, SolutionVersion,
     PatchVersion,
-    parse_component,
 )
 from cdragontoolbox.wad import (
     Wad,

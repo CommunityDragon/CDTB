@@ -48,9 +48,7 @@ class RequestStreamReader:
 
 
 class Storage:
-    """
-    Download and store game files
-    """
+    """Download and store game files"""
 
     # all available values are in system.yaml
     # values in use are in RADS/system/system.cfg
@@ -139,9 +137,11 @@ class Storage:
 
 
 class Solution:
-    """
+    """A Solution has multiple versions and contains many Projects.
+
     The Riot Application Distribution System (RADS) has two Solutions: `league_client_sln` and `lol_game_client_sln`.
     The 'league_client_sln' contains data the client (LCU), and the `lol_game_client_sln` contains data for the game client.
+    These classes will likely work with other solutions, although some functionality may need to be extended.
 
     There are multiple versions of a given solution, which can be accessed via the `.versions()` method.
     All versions of a solution can be downloaded and extracted via the `.download()` method.
@@ -704,7 +704,7 @@ class Version:
             raise TypeError(v)
 
     def __repr__(self):
-        return f"{self.__class__.__qualname__}({repr(self.s)})"
+        return f"{self.__class__.__qualname__}({self.s!r})"
 
     def __str__(self):
         return self.s
@@ -756,7 +756,7 @@ class BinPackageFile:
             self.extract_path = self.path
 
     def __str__(self):
-        return f"<{self.__class__.__name__} {repr(self.path)}>"
+        return f"<{self.__class__.__name__} {self.path!r}>"
 
     @classmethod
     def from_package_manifest(cls, path) -> Generator['BinPackageFile', None, None]:

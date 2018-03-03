@@ -125,7 +125,7 @@ class Exporter:
                 if not versions:
                     break
         else:
-            raise ValueError(f"versions not found: {repr(versions)}")
+            raise ValueError(f"versions not found: {versions!r}")
 
         self.exporters = []
         for patch, previous_patch in zip(patches, patches[1:] + [None]):
@@ -290,7 +290,7 @@ class PatchExporter:
             # should not happen except in case of duplicated file
             duplicates = new_symlinks & new_extracts
             if duplicates:
-                raise RuntimeError(f"duplicate files: {repr(duplicates)}")
+                raise RuntimeError(f"duplicate files: {duplicates!r}")
 
             self.previous_links = reduce_common_paths(new_symlinks, previous_files, new_extracts)
         else:
