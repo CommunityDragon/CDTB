@@ -95,7 +95,7 @@ class WadFileHeader:
             return gzip.decompress(data)
         elif self.type == 3:
             return zstd_decompress(data)
-        raise ValueError(f'unsupported file type: {self.type}')
+        raise ValueError(f"unsupported file type: {self.type}")
 
     @staticmethod
     def guess_extension(data):
@@ -140,12 +140,12 @@ class Wad:
     def parse_headers(self):
         """Parse version and file list"""
 
-        logger.debug(f'parse headers of {self.path}')
+        logger.debug(f"parse headers of {self.path}")
         with open(self.path, 'rb') as f:
             parser = Parser(f)
             magic, version_major, version_minor = parser.unpack('<2sBB')
             if magic != b'RW':
-                raise ValueError('invalid magic code')
+                raise ValueError("invalid magic code")
             self.version = (version_major, version_minor)
 
             if version_major == 2:
@@ -153,7 +153,7 @@ class Wad:
             elif version_major == 3:
                 parser.seek(268)
             else:
-                raise ValueError(f'unsupported WAD version: {version_major}.{version_minor}')
+                raise ValueError(f"unsupported WAD version: {version_major}.{version_minor}")
 
             entry_count, = parser.unpack('<I')
             self.files = [WadFileHeader(*parser.unpack('<QIIIBBBBQ')) for _ in range(entry_count)]
@@ -194,9 +194,9 @@ class Wad:
         for wadfile in self.files:
             if not wadfile.path:
                 if wadfile.ext:
-                    wadfile.path = f'{path}/{wadfile.path_hash:016x}.{wadfile.ext}'
+                    wadfile.path = f"{path}/{wadfile.path_hash:016x}.{wadfile.ext}"
                 else:
-                    wadfile.path = f'{path}/{wadfile.path_hash:016x}'
+                    wadfile.path = f"{path}/{wadfile.path_hash:016x}"
 
     def extract(self, output, overwrite=True):
         """Extract WAD file
@@ -204,18 +204,18 @@ class Wad:
         If overwrite is False, don't extract files that already exist on disk.
         """
 
-        logger.info(f'extracting {self.path} to {output}')
+        logger.info(f"extracting {self.path} to {output}")
 
-        self.set_unknown_paths('unknown')
+        self.set_unknown_paths("unknown")
 
         with open(self.path, 'rb') as fwad:
             for wadfile in self.files:
                 output_path = os.path.join(output, wadfile.path)
 
                 if not overwrite and os.path.exists(output_path):
-                    logger.debug(f'skipping {wadfile.path_hash:016x} {wadfile.path} (already extracted)')
+                    logger.debug(f"skipping {wadfile.path_hash:016x} {wadfile.path} (already extracted)")
                     continue
-                logger.debug(f'extracting {wadfile.path_hash:016x} {wadfile.path}')
+                logger.debug(f"extracting {wadfile.path_hash:016x} {wadfile.path}")
 
                 fwad.seek(wadfile.offset)
                 # assume files are small enough to fit in memory
@@ -235,7 +235,7 @@ class Wad:
     def guess_hashes(self, unknown_hashes):
         """Try to guess hashes"""
 
-        logger.info(f'guessing hashes from {self.path}')
+        logger.info(f"guessing hashes from {self.path}")
 
         resolved_paths = set()
         found_paths = set()  # candidate paths
@@ -257,11 +257,11 @@ class Wad:
 
                 if wadfile.ext == 'json':
                     jdata = json.loads(data)
-                    if wadfile.path == 'plugins/rcp-fe-lol-loot/global/default/trans.json':
-                        found_paths |= {f'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/{k}.png' for k in jdata}
-                    elif 'pluginDependencies' in jdata and 'name' in jdata:
+                    if wadfile.path == "plugins/rcp-fe-lol-loot/global/default/trans.json":
+                        found_paths |= {f"plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/{k}.png" for k in jdata}
+                    elif "pluginDependencies" in jdata and "name" in jdata:
                         # retrieve plugin_name from description.json
-                        plugin_name = jdata['name']
+                        plugin_name = jdata["name"]
 
                 # paths starting with /fe/ or /lol-plugin/
                 found_paths |= {m.group(1) for m in re.finditer(r'((?:/fe/|/lol-)[a-zA-Z0-9/_.@-]+)', data)}
@@ -273,7 +273,7 @@ class Wad:
                 # paths with known extension
                 found_paths |= {m.group(1) for m in re.finditer(r'''["']([a-zA-Z0-9/_.-]+\.(?:png|jpg|webm|js|html|css|ttf|otf))\b''', data)}
                 # template ID to template path
-                found_paths |= {f'{m.group(1)}/template.html' for m in re.finditer(r'<template id="[^"]*-template-([^"]+)"', data)}
+                found_paths |= {f"{m.group(1)}/template.html" for m in re.finditer(r'<template id="[^"]*-template-([^"]+)"', data)}
                 # JS maps
                 found_paths |= {m.group(1) for m in re.finditer(r'sourceMappingURL=(.*?\.js)\.map', data)}
 
@@ -284,15 +284,15 @@ class Wad:
             # try to guess plugin_name from path
             # this will work when loading a wad in a RADS tree
             plugin_name = os.path.basename(os.path.dirname(os.path.abspath(self.path)))
-            if not plugin_name.startswith('rcp-'):
+            if not plugin_name.startswith("rcp-"):
                 plugin_name = None
-        default_path = f'plugins/{plugin_name}/global/default' if plugin_name else None
+        default_path = f"plugins/{plugin_name}/global/default" if plugin_name else None
 
         # resolve parsed paths, using plugin name, known subdirs, ...
         for path in found_paths:
 
             # plugins/...: no changes
-            if path.startswith('plugins/'):
+            if path.startswith("plugins/"):
                 resolved_paths.add(path)
                 continue
 
@@ -301,15 +301,15 @@ class Wad:
             m = re.match(r'/(fe/|lol-)([^/]+)/(.*)', path)
             if m:
                 prefix, plugin, subpath = m.groups()
-                if prefix == 'lol-':
-                    plugin = f'lol-{plugin}'
-                resolved_paths.add(f'plugins/rcp-fe-{plugin}/global/default/{subpath}')
-                resolved_paths.add(f'plugins/rcp-be-{plugin}/global/default/{subpath}')
-                if subpath.startswith('assets/'):
-                    # lol-game-data paths sometimes have an extra 'assets/'
-                    subpath = subpath[len('assets/'):]
-                    resolved_paths.add(f'plugins/rcp-fe-{plugin}/global/default/{subpath}')
-                    resolved_paths.add(f'plugins/rcp-be-{plugin}/global/default/{subpath}')
+                if prefix == "lol-":
+                    plugin = f"lol-{plugin}"
+                resolved_paths.add(f"plugins/rcp-fe-{plugin}/global/default/{subpath}")
+                resolved_paths.add(f"plugins/rcp-be-{plugin}/global/default/{subpath}")
+                if subpath.startswith("assets/"):
+                    # lol-game-data paths sometimes have an extra "assets/"
+                    subpath = subpath[len("assets/"):]
+                    resolved_paths.add(f"plugins/rcp-fe-{plugin}/global/default/{subpath}")
+                    resolved_paths.add(f"plugins/rcp-be-{plugin}/global/default/{subpath}")
                 continue
 
             # starting with './' or '../' without extension, try node module file
@@ -324,12 +324,12 @@ class Wad:
                 m = re.match(r'\b((?:data|assets|images|audio|components|sounds|video|css)/.+)', path)
                 if m:
                     subpath = m.group(1)
-                    resolved_paths.add(f'{default_path}/{subpath}')
-                    resolved_paths.add(f'{default_path}/{posixpath.dirname(subpath)}')
+                    resolved_paths.add(f"{default_path}/{subpath}")
+                    resolved_paths.add(f"{default_path}/{posixpath.dirname(subpath)}")
                 # combine basename and subpath with known directories
                 for subpath in (basename, path.lstrip('./')):
-                    resolved_paths.add(f'{default_path}/{subpath}')
-                    resolved_paths |= {f'{default_path}/{subdir}/{subpath}' for subdir in (
+                    resolved_paths.add(f"{default_path}/{subpath}")
+                    resolved_paths |= {f"{default_path}/{subdir}/{subpath}" for subdir in (
                         'components', 'components/elements', 'components/dropdowns', 'components/components',
                         'images', 'audio', 'sounds', 'video', 'mograph', 'css',
                         'assets', 'assets/images', 'assets/audio', 'assets/sounds', 'assets/video', 'assets/mograph',
@@ -337,19 +337,19 @@ class Wad:
 
         # add common names at root
         if default_path:
-            resolved_paths |= {f'{default_path}/{name}' for name in (
+            resolved_paths |= {f"{default_path}/{name}" for name in (
                 'index.html', 'init.js', 'init.js.map', 'bundle.js', 'trans.json',
                 'css/main.css', 'license.json',
             )}
-            resolved_paths |= {f'{default_path}/{i}.bundle.js' for i in range(10)}
-            resolved_paths.add(f'plugins/{plugin_name}/description.json')
+            resolved_paths |= {f"{default_path}/{i}.bundle.js" for i in range(10)}
+            resolved_paths.add(f"plugins/{plugin_name}/description.json")
 
         # try to find new hashes from these paths
         return discover_hashes(unknown_hashes, resolved_paths)
 
     @staticmethod
     def guess_hashes_from_known(known_hashes, unknown_hashes):
-        logger.info('guessing hashes from known path patterns')
+        logger.info("guessing hashes from known path patterns")
 
         regions = [r.value for r in Region]
         langs = [l.value for l in Language]
@@ -366,55 +366,55 @@ class Wad:
         new_paths = set()
 
         # ward skins
-        new_paths |= {f'plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/wardskinimages/wardhero_{i}.png' for i in range(1000)}
-        new_paths |= {f'plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/wardskinimages/wardheroshadow_{i}.png' for i in range(1000)}
+        new_paths |= {f"plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/wardskinimages/wardhero_{i}.png" for i in range(1000)}
+        new_paths |= {f"plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/wardskinimages/wardheroshadow_{i}.png" for i in range(1000)}
 
         # summoner icons
-        new_paths |= {f'plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/{i}.jpg' for i in range(5000)}
+        new_paths |= {f"plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/{i}.jpg" for i in range(5000)}
 
         # ultimate skins
-        new_paths |= {f'plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/{i}.jpg' for i in range(5000)}
-        new_paths |= {f'plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/{i}.webm' for i in range(5000)}
+        new_paths |= {f"plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/{i}.jpg" for i in range(5000)}
+        new_paths |= {f"plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/{i}.webm" for i in range(5000)}
 
         # loot
-        new_paths |= {f'plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_{i}.png' for i in range(1000)}
-        new_paths |= {f'plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_{i}_open.png' for i in range(1000)}
-        new_paths |= {f'plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/material_{i}.png' for i in range(1000)}
+        new_paths |= {f"plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_{i}.png" for i in range(1000)}
+        new_paths |= {f"plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_{i}_open.png" for i in range(1000)}
+        new_paths |= {f"plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/material_{i}.png" for i in range(1000)}
 
         # runes (perks)
         for i in range(8000, 8500, 100):
-            new_paths |= {f'plugins/rcp-fe-lol-perks/global/default/images/inventory-card/{i}/p{i}_s{j}_k{k}.jpg'
+            new_paths |= {f"plugins/rcp-fe-lol-perks/global/default/images/inventory-card/{i}/p{i}_s{j}_k{k}.jpg"
                           for j in [0] + list(range(8000, 8500, 100))
                           for k in [0] + list(range(8000, 8500))
                          }
-            paths = ['environment.jpg', 'construct.png']
-            paths += [f'keystones/{j}.png' for j in range(8000, 8500)]
-            paths += [f'second/{j}.png' for j in range(8000, 8500)]
-            new_paths |= {f'plugins/rcp-fe-lol-perks/global/default/images/construct/{i}/{p}' for p in paths}
+            paths = ["environment.jpg", "construct.png"]
+            paths += [f"keystones/{j}.png" for j in range(8000, 8500)]
+            paths += [f"second/{j}.png" for j in range(8000, 8500)]
+            new_paths |= {f"plugins/rcp-fe-lol-perks/global/default/images/construct/{i}/{p}" for p in paths}
 
         # spells
-        new_paths |= {f'plugins/rcp-fe-lol-champ-select/global/default/sounds/sfx-spellchoose-{i}.ogg' for i in range(100)}
+        new_paths |= {f"plugins/rcp-fe-lol-champ-select/global/default/sounds/sfx-spellchoose-{i}.ogg" for i in range(100)}
 
         # champion resources
         for cid in range(1000):
             new_paths |= {
-                f'plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{cid}.jpg',
-                f'plugins/rcp-be-lol-game-data/global/default/v1/champion-ban-vo/{cid}.ogg',
-                f'plugins/rcp-be-lol-game-data/global/default/v1/champion-choose-vo/{cid}.ogg',
-                f'plugins/rcp-be-lol-game-data/global/default/v1/champion-sfx-audio/{cid}.ogg',
-                f'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/{cid}/metadata.json',
+                f"plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{cid}.jpg",
+                f"plugins/rcp-be-lol-game-data/global/default/v1/champion-ban-vo/{cid}.ogg",
+                f"plugins/rcp-be-lol-game-data/global/default/v1/champion-choose-vo/{cid}.ogg",
+                f"plugins/rcp-be-lol-game-data/global/default/v1/champion-sfx-audio/{cid}.ogg",
+                f"plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/{cid}/metadata.json",
             }
             # skins and chromas
             for skin_id in range(cid * 1000, (cid + 1) * 1000):
                 new_paths |= {
-                    f'plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/{cid}/{skin_id}.jpg',
-                    f'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/{cid}/{skin_id}.jpg',
-                    f'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/{cid}/{skin_id}.jpg',
-                    f'plugins/rcp-be-lol-game-data/global/default/v1/champion-chroma-images/{cid}/{skin_id}.png',
-                    f'plugins/rcp-be-lol-game-data/global/default/v1/champion-splash-videos/{cid}/{skin_id}.webm',
-                    f'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/champion_skin_{skin_id}.png',
-                    f'plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/champion_skin_rental_{skin_id}.png',
-                    f'plugins/rcp-fe-lol-skins-viewer/global/default/video/collection/{cid * 1000 + skin_id}.webm',
+                    f"plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/{cid}/{skin_id}.jpg",
+                    f"plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/{cid}/{skin_id}.jpg",
+                    f"plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/{cid}/{skin_id}.jpg",
+                    f"plugins/rcp-be-lol-game-data/global/default/v1/champion-chroma-images/{cid}/{skin_id}.png",
+                    f"plugins/rcp-be-lol-game-data/global/default/v1/champion-splash-videos/{cid}/{skin_id}.webm",
+                    f"plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/champion_skin_{skin_id}.png",
+                    f"plugins/rcp-be-lol-game-data/global/default/v1/hextech-images/champion_skin_rental_{skin_id}.png",
+                    f"plugins/rcp-fe-lol-skins-viewer/global/default/video/collection/{cid * 1000 + skin_id}.webm",
                 }
 
         recommended_suffixes = (
@@ -422,15 +422,15 @@ class Wad:
             'tt', 'sg', 'cs', 'asc', 'firstblood', 'kingporo', 'bt', 'dm',
             'map12t', 'pg', 'pr17', 'siege',
         )
-        loadscreen_formats = ['plugins/rcp-be-lol-game-data/global/default/assets/characters/%(champion)s/skins/base/%(champion)sloadscreen.png']
-        loadscreen_formats += ['plugins/rcp-be-lol-game-data/global/default/assets/characters/%%(champion)s/skins/skin%02d/%%(champion)sloadscreen_%d.png' % (i, i) for i in range(100)]
-        loadscreen_formats += ['plugins/rcp-be-lol-game-data/global/default/assets/characters/%%(champion)s/skins/skin%02d/%%(champion)sloadscreen_%d.skins_%%(champion)s_skin%02d.png' % (i, i, i) for i in range(100)]
-        loadscreen_formats += [s.replace('/assets/', '/data/') for s in loadscreen_formats]
+        loadscreen_formats = ["plugins/rcp-be-lol-game-data/global/default/assets/characters/%(champion)s/skins/base/%(champion)sloadscreen.png"]
+        loadscreen_formats += ["plugins/rcp-be-lol-game-data/global/default/assets/characters/%%(champion)s/skins/skin%02d/%%(champion)sloadscreen_%d.png" % (i, i) for i in range(100)]
+        loadscreen_formats += ["plugins/rcp-be-lol-game-data/global/default/assets/characters/%%(champion)s/skins/skin%02d/%%(champion)sloadscreen_%d.skins_%%(champion)s_skin%02d.png" % (i, i, i) for i in range(100)]
+        loadscreen_formats += [s.replace("/assets/", "/data/") for s in loadscreen_formats]
         for champion in champions:
             # recommended item sets
-            new_paths.add(f'plugins/rcp-be-lol-game-data/global/default/data/characters/{champion}/recommended/beginner.json')
+            new_paths.add(f"plugins/rcp-be-lol-game-data/global/default/data/characters/{champion}/recommended/beginner.json")
             new_paths |= {
-                f'plugins/rcp-be-lol-game-data/global/default/data/characters/{champion}/recommended/{champion}{s}.json'
+                f"plugins/rcp-be-lol-game-data/global/default/data/characters/{champion}/recommended/{champion}{s}.json"
                 for s in recommended_suffixes
             }
             # loadscreens
@@ -440,33 +440,33 @@ class Wad:
         paths = set()
         for i in range(5):
             for action in ('filter', 'unfilter'):
-                paths |= {f'{i}.{action}.csv'}
-                paths |= {f'{i}.{action}.language.{x.split("_")[0]}.csv' for x in langs}
-                paths |= {f'{i}.{action}.country.{x.split("_")[1]}.csv' for x in langs}
-                paths |= {f'{i}.{action}.region.{x}c.csv' for x in regions}
-                paths |= {f'{i}.{action}.locale.{x}.csv' for x in langs}
+                paths |= {f"{i}.{action}.csv"}
+                paths |= {f"{i}.{action}.language.{x.split('_')[0]}.csv" for x in langs}
+                paths |= {f"{i}.{action}.country.{x.split('_')[1]}.csv" for x in langs}
+                paths |= {f"{i}.{action}.region.{x}c.csv" for x in regions}
+                paths |= {f"{i}.{action}.locale.{x}.csv" for x in langs}
         for p in 'allowedchars breakingchars projectedchars projectedchars1337 punctuationchars variantaliases'.split():
-            paths |= {f'{p}.locale.{x}.txt' for x in langs}
-            paths |= {f'{p}.language.{x.split("_")[0]}.txt' for x in langs}
-        new_paths |= {f'plugins/rcp-be-sanitizer/global/default/{p}' for p in paths}
+            paths |= {f"{p}.locale.{x}.txt" for x in langs}
+            paths |= {f"{p}.language.{x.split('_')[0]}.txt" for x in langs}
+        new_paths |= {f"plugins/rcp-be-sanitizer/global/default/{p}" for p in paths}
 
-        logger.info('building hashes for alternate regions and languages')
+        logger.info("building hashes for alternate regions and languages")
 
         for path in known_hashes.values():
             ext = path.rsplit('.', 1)[1]
             if ext in ('json', 'ogg', 'js', 'txt'):
                 # try language variants
-                new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/\2/%s/' % lang, path) for lang in langs}
+                new_paths |= {re_plugin_region_lang.sub(r"plugins/\1/\2/%s/" % lang, path) for lang in langs}
             elif ext in ('png', 'jpg', 'webm'):
                 # try region variants
-                new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/%s/\3/' % region, path) for region in regions}
+                new_paths |= {re_plugin_region_lang.sub(r"plugins/\1/%s/\3/" % region, path) for region in regions}
 
         # try to find new hashes from these paths
         return discover_hashes(unknown_hashes, new_paths - set(known_hashes.values()))
 
 
 _default_hashes = None  # cached
-_default_hashes_path = os.path.join(os.path.dirname(__file__), 'hashes.txt')
+_default_hashes_path = os.path.join(os.path.dirname(__file__), "hashes.txt")
 
 
 def load_hashes(fname=None) -> HashMap:

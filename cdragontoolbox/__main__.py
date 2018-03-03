@@ -27,7 +27,7 @@ def parse_component_arg(parser, storage: Storage, component: str):
     try:
         return parse_component(storage, component)
     except ValueError:
-        parser.error(f'invalid component: {component}')
+        parser.error(f"invalid component: {component}")
 
 
 def parse_storage_args(parser, args) -> Storage:
@@ -40,13 +40,13 @@ def parse_storage_args(parser, args) -> Storage:
     # don't use CDRAGONTOOLBOX_STORAGE when using non-default --cdn is set to
     # avoid mixing files from different CDNs
     if cdn != default_cdn and default_path is not None and args.storage is None:
-        parser.error('--storage must be provided when changing --cdn value')
+        parser.error("--storage must be provided when changing --cdn value")
 
     path = default_path if args.storage is None else args.storage
     if path is None:
-        path = 'RADS' if cdn == 'default' else f'RADS.{cdn}'
+        path = "RADS" if cdn == 'default' else f"RADS.{cdn}"
 
-    storage_url = getattr(Storage, f'URL_{cdn}'.upper())
+    storage_url = getattr(Storage, f"URL_{cdn}".upper())
     return Storage(path, storage_url)
 
 
@@ -75,7 +75,7 @@ def command_versions(parser, args):
         for pv in component.versions():
             print(pv.version)
     else:
-        parser.error(f'command cannot be used on {component}')
+        parser.error(f"command cannot be used on {component}")
 
 
 def command_projects(parser, args):
@@ -88,7 +88,7 @@ def command_projects(parser, args):
         for pv in sorted(projects):
             print(pv)
     else:
-        parser.error(f'command cannot be used on {component}')
+        parser.error(f"command cannot be used on {component}")
 
 
 def command_solutions(parser, args):
@@ -107,7 +107,7 @@ def command_solutions(parser, args):
         for sv in component.solutions(latest=args.latest):
             print(sv)
     else:
-        parser.error(f'command cannot be used on {component}')
+        parser.error(f"command cannot be used on {component}")
 
 
 def command_files(parser, args):
@@ -124,16 +124,16 @@ def command_files(parser, args):
             for path in pv.filepaths():
                 print(path)
     else:
-        parser.error(f'command cannot be used on {component}')
+        parser.error(f"command cannot be used on {component}")
 
 
 def command_wad_extract(parser, args):
     if not os.path.isfile(args.wad):
-        parser.error('WAD file does not exist')
+        parser.error("WAD file does not exist")
     if not args.output:
         args.output = os.path.splitext(args.wad)[0]
     if os.path.exists(args.output) and not os.path.isdir(args.output):
-        parser.error('output is not a directory')
+        parser.error("output is not a directory")
 
     hashes = load_hashes(args.hashes)
     wad = Wad(args.wad, hashes=hashes)
@@ -150,14 +150,14 @@ def command_wad_extract(parser, args):
 
 def command_wad_list(parser, args):
     if not os.path.isfile(args.wad):
-        parser.error('WAD file does not exist')
+        parser.error("WAD file does not exist")
 
     hashes = load_hashes(args.hashes)
     wad = Wad(args.wad, hashes=hashes)
 
     wadfiles = [(wf.path or ('?.%s' % wf.ext if wf.ext else '?'), wf.path_hash) for wf in wad.files]
     for path, h in sorted(wadfiles):
-        print(f'{h:016x} {path}')
+        print(f"{h:016x} {path}")
 
 
 def command_hashes_guess(parser, args):
@@ -183,8 +183,8 @@ def command_hashes_guess(parser, args):
             else:
                 it = []
         else:
-            parser.error(f'command cannot be used on {component}')
-        wad_paths.extend(args.storage.fspath(p) for p in it if p.endswith('.wad'))
+            parser.error(f"command cannot be used on {component}")
+        wad_paths.extend(args.storage.fspath(p) for p in it if p.endswith(".wad"))
 
     wads = [Wad(path) for path in wad_paths]
     unknown_hashes = set()
@@ -199,7 +199,7 @@ def command_hashes_guess(parser, args):
     new_hashes.update(Wad.guess_hashes_from_known(hashes, unknown_hashes))
 
     for h, path in new_hashes.items():
-        print(f'{h:016x} {path}')
+        print(f"{h:016x} {path}")
 
     if not args.dry_run and new_hashes:
         hashes.update(new_hashes)
@@ -213,12 +213,12 @@ def command_export(parser, args):
         # symlink are not supported on Windows because of the
         # 'target_is_directory' parameter which requires extra handling
         if os.name == 'nt' or not hasattr(os, 'symlink'):
-            parser.error('symlinks not supported on this platform')
+            parser.error("symlinks not supported on this platform")
 
     if not args.patch:
         # multiple patch (update only)
         if args.previous:
-            parser.error('patch version required with --previous or --full')
+            parser.error("patch version required with --previous or --full")
         exporter = Exporter(storage, args.output)
         exporter.update()
         if args.symlinks:
@@ -228,13 +228,13 @@ def command_export(parser, args):
         # retrieve target and previous patch versions
         patch = PatchVersion.version(storage, None if args.patch == 'latest' else Version(args.patch))
         if patch is None:
-            parser.error(f'patch not found: {args.patch}')
+            parser.error(f"patch not found: {args.patch}")
         if args.previous == 'none':
             previous_patch = None
         elif args.previous:
             previous_patch = PatchVersion.version(storage, Version(args.previous), stored=True)
             if previous_patch is None:
-                parser.error(f'previous patch not found: {patch.version}')
+                parser.error(f"previous patch not found: {patch.version}")
         else:
             it = PatchVersion.versions(storage, stored=True)
             for v in it:
@@ -242,7 +242,7 @@ def command_export(parser, args):
                     previous_patch = next(it)
                     break
             else:
-                parser.error('cannot guess previous patch')
+                parser.error("cannot guess previous patch")
 
         exporter = PatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
         exporter.export()
@@ -262,13 +262,13 @@ def command_upload(parser, args):
                 exporter = e
                 break
         else:
-            parser.error('patch version not found')
+            parser.error("patch version not found")
     exporter.upload(args.target)
 
 
 def create_parser():
     parser = argparse.ArgumentParser('cdragontoolbox',
-        description='Toolbox to work with League of Legends game files',
+        description="Toolbox to work with League of Legends game files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
             The following formats are used for components:
@@ -432,8 +432,8 @@ def main():
     if hasattr(args, 'storage'):
         args.storage = parse_storage_args(parser, args)
 
-    globals()[f'command_{args.command.replace("-", "_")}'](parser, args)
+    globals()[f"command_{args.command.replace('-', '_')}"](parser, args)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

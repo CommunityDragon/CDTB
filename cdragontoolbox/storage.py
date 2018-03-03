@@ -55,14 +55,14 @@ class Storage:
     # all available values are in system.yaml
     # values in use are in RADS/system/system.cfg
     # region is ignored here (it is not actually needed)
-    DOWNLOAD_URL = 'l3cdn.riotgames.com'
-    DOWNLOAD_PATH = '/releases/live'
-    DOWNLOAD_PATH_KR = '/KR_CBT'
-    DOWNLOAD_PATH_PBE = '/releases/pbe'
+    DOWNLOAD_URL = "l3cdn.riotgames.com"
+    DOWNLOAD_PATH = "/releases/live"
+    DOWNLOAD_PATH_KR = "/KR_CBT"
+    DOWNLOAD_PATH_PBE = "/releases/pbe"
 
-    URL_DEFAULT = f'http://{DOWNLOAD_URL}{DOWNLOAD_PATH}/'
-    URL_KR = f'http://{DOWNLOAD_URL}{DOWNLOAD_PATH_KR}/'
-    URL_PBE = f'http://{DOWNLOAD_URL}{DOWNLOAD_PATH_PBE}/'
+    URL_DEFAULT = f"http://{DOWNLOAD_URL}{DOWNLOAD_PATH}/"
+    URL_KR = f"http://{DOWNLOAD_URL}{DOWNLOAD_PATH_KR}/"
+    URL_PBE = f"http://{DOWNLOAD_URL}{DOWNLOAD_PATH_PBE}/"
 
     def __init__(self, path, url=None):
         if url is None:
@@ -97,7 +97,7 @@ class Storage:
         if not force and os.path.isfile(fspath):
             return
 
-        logger.debug(f'download file: {path}')
+        logger.debug(f"download file: {path}")
         try:
             os.makedirs(os.path.dirname(fspath), exist_ok=True)
             r = self.request_get(urlpath)
@@ -124,7 +124,7 @@ class Storage:
         ret = []
         base = self.fspath('projects')
         for name in os.listdir(base):
-            if os.path.isdir(f'{base}/{name}/releases'):
+            if os.path.isdir(f"{base}/{name}/releases"):
                 ret.append(Project(self, name))
         return ret
 
@@ -133,7 +133,7 @@ class Storage:
         ret = []
         base = self.fspath('solutions')
         for name in os.listdir(base):
-            if os.path.isdir(f'{base}/{name}/releases'):
+            if os.path.isdir(f"{base}/{name}/releases"):
                 ret.append(Solution(self, name))
         return ret
 
@@ -151,14 +151,14 @@ class Solution:
 
     def __init__(self, storage: Storage, name):
         self.storage = storage
-        self.path = f'solutions/{name}/releases'
+        self.path = f"solutions/{name}/releases"
         self.name = name
 
     def __str__(self):
-        return f's:{self.name}'
+        return f"s:{self.name}"
 
     def __repr__(self):
-        return f'<{self.__class__.__qualname__} {self.name}>'
+        return f"<{self.__class__.__qualname__} {self.name}>"
 
     def __eq__(self, other):
         if isinstance(other, Solution):
@@ -189,8 +189,8 @@ class Solution:
                     continue
                 listing.append(path)
         else:
-            logger.debug(f'retrieve versions of {self}')
-            listing = self.storage.request_text(f'{self.path}/releaselisting').splitlines()
+            logger.debug(f"retrieve versions of {self}")
+            listing = self.storage.request_text(f"{self.path}/releaselisting").splitlines()
         return sorted(SolutionVersion(self, Version(l)) for l in listing)
 
     def download(self, langs, dry_run=False):
@@ -208,15 +208,15 @@ class SolutionVersion:
     """
 
     def __init__(self, solution: Solution, version: 'Version'):
-        self.path = f'{solution.path}/{version}'
+        self.path = f"{solution.path}/{version}"
         self.solution = solution
         self.version = version
 
     def __str__(self):
-        return f'{self.solution}={self.version}'
+        return f"{self.solution}={self.version}"
 
     def __repr__(self):
-        return f'<{self.__class__.__qualname__} {self.solution.name}={self.version}>'
+        return f"<{self.__class__.__qualname__} {self.solution.name}={self.version}>"
 
     def __eq__(self, other):
         if isinstance(other, SolutionVersion):
@@ -243,16 +243,16 @@ class SolutionVersion:
         The entry None is set to all required project versions.
         """
 
-        logger.debug(f'retrieve dependencies of {self}')
+        logger.debug(f"retrieve dependencies of {self}")
 
-        path = f'{self.path}/solutionmanifest'
+        path = f"{self.path}/solutionmanifest"
         self.solution.storage.download(path, path)
         with open(self.solution.storage.fspath(path)) as f:
             lines = f.read().splitlines()
-        assert lines[0] == 'RADS Solution Manifest', 'unexpected solutionmanifest magic line'
-        assert lines[1] == '1.0.0.0', 'unexpected solutionmanifest version'
-        assert lines[2] == self.solution.name, 'solution name mismatch in solutionmanifest header'
-        assert lines[3] == self.version, 'solution version mismatch in solutionmanifest header'
+        assert lines[0] == "RADS Solution Manifest", "unexpected solutionmanifest magic line"
+        assert lines[1] == "1.0.0.0", "unexpected solutionmanifest version"
+        assert lines[2] == self.solution.name, "solution name mismatch in solutionmanifest header"
+        assert lines[3] == self.version, "solution version mismatch in solutionmanifest header"
         idx = 4
 
         required_projects = []  # [name, ...]
@@ -307,7 +307,7 @@ class SolutionVersion:
     def download(self, langs, dry_run=False):
         """Download solution version files"""
 
-        logger.info(f'downloading solution {self}')
+        logger.info(f"downloading solution {self}")
         for pv in self.projects(langs):
             pv.download(dry_run=dry_run)
 
@@ -321,16 +321,16 @@ class SolutionVersion:
         if self.solution.storage.url == Storage.URL_PBE:
             return Version('main')
 
-        cache = self.solution.storage.fspath(f'{self.path}/_patch_version')
+        cache = self.solution.storage.fspath(f"{self.path}/_patch_version")
         if os.path.isfile(cache):
-            logger.debug(f'retrieving patch version for {self} from cache')
+            logger.debug(f"retrieving patch version for {self} from cache")
             with open(cache) as f:
                 version = f.read().strip()
                 version = Version(version) if version else None
         else:
             version = self._retrieve_patch_version()
             with open(cache, 'w') as f:
-                f.write(f'{"" if version is None else version}\n')
+                f.write(f"{'' if version is None else version}\n")
         return version
 
     def _retrieve_patch_version(self) -> Optional['Version']:
@@ -341,7 +341,7 @@ class SolutionVersion:
         Raise an exception if patch version cannot be retrieved.
         """
 
-        logger.debug(f'retrieving patch version for {self}')
+        logger.debug(f"retrieving patch version for {self}")
 
         retrievers = {
             # solution_name: (project_name, file_name, extractor)
@@ -360,13 +360,13 @@ class SolutionVersion:
         try:
             project_name, file_name, extractor = retrievers[self.solution.name]
         except KeyError:
-            raise RuntimeError(f'no known way to retrieve patch version for solution {self.solution.name}')
+            raise RuntimeError(f"no known way to retrieve patch version for solution {self.solution.name}")
 
         for pv in self.projects(False):
             if pv.project.name == project_name:
                 break
         else:
-            raise ValueError(f'{project_name} project not found for {self}')
+            raise ValueError(f"{project_name} project not found for {self}")
 
         try:
             filepaths = pv.filepaths()
@@ -377,7 +377,7 @@ class SolutionVersion:
                 return None
             raise
 
-        path_suffix = f'/{file_name}'
+        path_suffix = f"/{file_name}"
         for path in filepaths:
             if path.endswith(path_suffix):
                 fspath = self.solution.storage.fspath(path)
@@ -405,14 +405,14 @@ class Project:
 
     def __init__(self, storage: Storage, name):
         self.storage = storage
-        self.path = f'projects/{name}/releases'
+        self.path = f"projects/{name}/releases"
         self.name = name
 
     def __str__(self):
-        return f'p:{self.name}'
+        return f"p:{self.name}"
 
     def __repr__(self):
-        return f'<{self.__class__.__qualname__} {self.name}>'
+        return f"<{self.__class__.__qualname__} {self.name}>"
 
     def __eq__(self, other):
         if isinstance(other, Project):
@@ -429,8 +429,8 @@ class Project:
 
     def versions(self) -> List['ProjectVersion']:
         """Retrieve the list of versions of this project"""
-        logger.debug(f'retrieve versions of {self}')
-        listing = self.storage.request_text(f'{self.path}/releaselisting')
+        logger.debug(f"retrieve versions of {self}")
+        listing = self.storage.request_text(f"{self.path}/releaselisting")
         return [ProjectVersion(self, Version(l)) for l in listing.splitlines()]
 
     def download(self, dry_run=False):
@@ -446,16 +446,16 @@ class ProjectVersion:
     """
 
     def __init__(self, project: Project, version: 'Version'):
-        self.path = f'{project.path}/{version}'
+        self.path = f"{project.path}/{version}"
         self.project = project
         self.version = version
         self._package_files = None  # {extract_path: BinPackageFile}
 
     def __str__(self):
-        return f'{self.project}={self.version}'
+        return f"{self.project}={self.version}"
 
     def __repr__(self):
-        return f'<{self.__class__.__qualname__} {self.project.name}={self.version}>'
+        return f"<{self.__class__.__qualname__} {self.project.name}={self.version}>"
 
     def __eq__(self, other):
         if isinstance(other, ProjectVersion):
@@ -479,8 +479,8 @@ class ProjectVersion:
         """Retrieve files from packagemanifest"""
 
         if self._package_files is None:
-            manifest_path = f'{self.path}/packagemanifest'
-            manifest_urlpath = f'{self.path}/packages/files/packagemanifest'
+            manifest_path = f"{self.path}/packagemanifest"
+            manifest_urlpath = f"{self.path}/packages/files/packagemanifest"
             self.project.storage.download(manifest_urlpath, manifest_path)
             files = BinPackageFile.from_package_manifest(self.project.storage.fspath(manifest_path))
             self._package_files = {pf.extract_path: pf for pf in files}
@@ -510,13 +510,13 @@ class ProjectVersion:
         for pf in extracted_files:
             files_by_package[pf.package].append(pf)
 
-        package_files_path = f'{self.path}/packages/files'
+        package_files_path = f"{self.path}/packages/files"
 
         for package, files in files_by_package.items():
-            with self.project.storage.stream(f'{package_files_path}/{package}') as reader:
+            with self.project.storage.stream(f"{package_files_path}/{package}") as reader:
                 # sort files by offset to extract while streaming the bin file
                 for pkgfile in sorted(files, key=lambda f: f.offset):
-                    logger.debug(f'extracting {pkgfile.path}')
+                    logger.debug(f"extracting {pkgfile.path}")
                     reader.skip_to(pkgfile.offset)
                     fspath = self.project.storage.fspath(pkgfile.extract_path)
                     try:
@@ -540,14 +540,14 @@ class ProjectVersion:
 
     def download(self, dry_run=False):
         """Download project version files"""
-        logger.info(f'downloading project {self}')
-        self.project.storage.download(f'{self.path}/releasemanifest', None)
+        logger.info(f"downloading project {self}")
+        self.project.storage.download(f"{self.path}/releasemanifest", None)
         if dry_run:
             paths = [p for p in self.filepaths() if not os.path.isfile(self.project.storage.fspath(p))]
             if paths:
-                logger.info(f'files to extract: {len(paths)}')
+                logger.info(f"files to extract: {len(paths)}")
             else:
-                logger.info('all files already extracted')
+                logger.info("all files already extracted")
         else:
             self.extract()
 
@@ -569,10 +569,10 @@ class PatchVersion:
         self._solutions = sorted(solutions)
 
     def __str__(self):
-        return f'patch={self.version}'
+        return f"patch={self.version}"
 
     def __repr__(self):
-        return f'<{self.__class__.__qualname__} {self.version}>'
+        return f"<{self.__class__.__qualname__} {self.version}>"
 
     def __eq__(self, other):
         if isinstance(other, PatchVersion):
@@ -704,7 +704,7 @@ class Version:
             raise TypeError(v)
 
     def __repr__(self):
-        return f'{self.__class__.__qualname__}({repr(self.s)})'
+        return f"{self.__class__.__qualname__}({repr(self.s)})"
 
     def __str__(self):
         return self.s
@@ -756,13 +756,13 @@ class BinPackageFile:
             self.extract_path = self.path
 
     def __str__(self):
-        return f'<{self.__class__.__name__} {repr(self.path)}>'
+        return f"<{self.__class__.__name__} {repr(self.path)}>"
 
     @classmethod
     def from_package_manifest(cls, path) -> Generator['BinPackageFile', None, None]:
         with open(path) as f:
             line = f.readline()
-            assert line.startswith('PKG1'), 'unexpected packagemanifest magic line'
+            assert line.startswith('PKG1'), "unexpected packagemanifest magic line"
             for line in f:
                 yield cls(line)
 
@@ -791,7 +791,7 @@ def parse_component(storage: Storage, component: str):
 
     m = re.match(r'^(?:([sp]):)?(\w+)(?:=(|[0-9]+(?:\.[0-9]+)*)?)?$', component)
     if not m:
-        raise ValueError(f'invalid component: {component}')
+        raise ValueError(f"invalid component: {component}")
     typ, name, version = m.group(1, 2, 3)
     if not typ:
         if name == 'patch':
@@ -820,7 +820,7 @@ def parse_component(storage: Storage, component: str):
             return SolutionVersion(solution, version)
     elif typ == 'patch':
         if version is None:
-            raise ValueError(f'patch requires a version')
+            raise ValueError(f"patch requires a version")
         elif version == '':
             return PatchVersion.version(storage, None)
         else:

@@ -115,7 +115,7 @@ class Exporter:
             versions.add(version)
 
         if not versions:
-            raise ValueError('no version directory found')
+            raise ValueError("no version directory found")
 
         patches = []
         for patch in PatchVersion.versions(storage, stored=stored):
@@ -125,7 +125,7 @@ class Exporter:
                 if not versions:
                     break
         else:
-            raise ValueError(f'versions not found: {repr(versions)}')
+            raise ValueError(f"versions not found: {repr(versions)}")
 
         self.exporters = []
         for patch, previous_patch in zip(patches, patches[1:] + [None]):
@@ -176,9 +176,9 @@ class PatchExporter:
         """
 
         if self.previous_patch:
-            logger.info(f'exporting patch {self.patch.version} based on patch {self.previous_patch.version}')
+            logger.info(f"exporting patch {self.patch.version} based on patch {self.previous_patch.version}")
         else:
-            logger.info(f'exporting patch {self.patch.version} based on (full)')
+            logger.info(f"exporting patch {self.patch.version} based on (full)")
 
         #XXX for now, only export files from league_client as lol_game_client is not well known yet
         patch_solutions = [sv for sv in self.patch.solutions(latest=True) if sv.solution.name == 'league_client_sln']
@@ -198,7 +198,7 @@ class PatchExporter:
         else:
             prev_projects = {}
 
-        logger.info('build list of files to extract or link')
+        logger.info("build list of files to extract or link")
         new_symlinks = []
         new_extracts = []
         to_extract = []  # (extract, export) or Wad instances with wad.files correctly filled
@@ -214,15 +214,15 @@ class PatchExporter:
                 prev_extract_path = prev_extract_paths.get(export_path)
                 # package files with identical extract paths are the same
 
-                if extract_path.endswith('.wad'):
+                if extract_path.endswith(".wad"):
                     # WAD file: link the whole archive or compare file by file using sha256
                     wad = self._open_wad(extract_path)
 
                     if extract_path == prev_extract_path:
-                        logger.debug(f'unchanged WAD file: {extract_path}')
+                        logger.debug(f"unchanged WAD file: {extract_path}")
                         new_symlinks += [wf.path for wf in wad.files]
                     else:
-                        logger.debug(f'modified WAD file: {extract_path}')
+                        logger.debug(f"modified WAD file: {extract_path}")
                         if prev_extract_path:
                             # compare to the previous WAD based on sha256 hashes
                             # note: no need to use _open_wad(), file paths are not used
@@ -247,15 +247,15 @@ class PatchExporter:
                     # Just use WAD ones, even if it leads to not having a
                     # description.json at all. These files are not needed
                     # anyway.
-                    if extract_path.endswith('/description.json'):
+                    if extract_path.endswith("/description.json"):
                         continue
 
                     # normal file: link or copy
                     if extract_path == prev_extract_path:
-                        logger.debug(f'unchanged file: {extract_path}')
+                        logger.debug(f"unchanged file: {extract_path}")
                         new_symlinks.append(export_path)
                     else:
-                        logger.debug(f'modified file: {extract_path}')
+                        logger.debug(f"modified file: {extract_path}")
                         new_extracts.append(export_path)
                         to_extract.append((extract_path, export_path))
 
@@ -273,14 +273,14 @@ class PatchExporter:
             elif os.path.isfile(full_path):
                 old_extracts.add(path)
             else:
-                raise ValueError(f'unexpected directory: {full_path}')
+                raise ValueError(f"unexpected directory: {full_path}")
 
         # build the reduced list of new symlinks (self.previous_links)
         if self.previous_patch:
             previous_files = []
             for pv in prev_projects.values():
                 for path in pv.filepaths():
-                    if path.endswith('.wad'):
+                    if path.endswith(".wad"):
                         wad = self._open_wad(path)
                         previous_files += [wf.path for wf in wad.files]
                     else:
@@ -290,7 +290,7 @@ class PatchExporter:
             # should not happen except in case of duplicated file
             duplicates = new_symlinks & new_extracts
             if duplicates:
-                raise RuntimeError(f'duplicate files: {repr(duplicates)}')
+                raise RuntimeError(f"duplicate files: {repr(duplicates)}")
 
             self.previous_links = reduce_common_paths(new_symlinks, previous_files, new_extracts)
         else:
@@ -301,7 +301,7 @@ class PatchExporter:
         # note: symlinks are assumed to point to the right location
         dirs_to_remove = set()
         for path in list(old_extracts - new_extracts) + list(old_symlinks - new_symlinks):
-            logger.info(f'remove extra file or symlink: {path}')
+            logger.info(f"remove extra file or symlink: {path}")
             full_path = os.path.join(self.output, path)
             os.remove(full_path)
             dirs_to_remove.add(os.path.dirname(full_path))
@@ -326,10 +326,10 @@ class PatchExporter:
         wad.guess_extensions()
         # set directory for unknown paths depending on WAD path
         m = re.search(r'/(plugins/rcp-.+?)/[^/]*assets\.wad$', extract_path, re.I)
-        unknown_path = 'unknown'
+        unknown_path = "unknown"
         if m is not None:
             # LCU client: plugins/<plugin-name>
-            unknown_path = f'{m.group(1).lower()}/unknown'
+            unknown_path = f"{m.group(1).lower()}/unknown"
         wad.set_unknown_paths(unknown_path)
         return wad
 
@@ -337,7 +337,7 @@ class PatchExporter:
         output_path = os.path.join(self.output, export_path)
         if os.path.lexists(output_path):
             return
-        logger.info(f'exporting {export_path}')
+        logger.info(f"exporting {export_path}")
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         shutil.copyfile(self.storage.fspath(storage_path), output_path)
 
@@ -358,13 +358,13 @@ class PatchExporter:
                         base = base.replace(sep, '/')
                     base += '/'
                 for name in files:
-                    yield f'{base}{name}'
+                    yield f"{base}{name}"
 
     def write_links(self, path=None):
         if self.previous_links is None:
             return
         if path is None:
-            path = self.output + '.links.txt'
+            path = self.output + ".links.txt"
         with open(path, 'w', newline='\n') as f:
             for link in sorted(self.previous_links):
                 print(link, file=f)
@@ -375,17 +375,17 @@ class PatchExporter:
         dst_output = self.output
         src_output = os.path.join(os.path.dirname(self.output), str(self.previous_patch.version))
 
-        logger.info(f'creating symlinks for patch {self.patch.version}')
+        logger.info(f"creating symlinks for patch {self.patch.version}")
         for link in self.previous_links:
             dst = os.path.join(dst_output, link)
             if os.path.exists(dst):
                 if not os.path.islink(dst):
-                    raise RuntimeError(f'symlink target already exists: {dst}')
+                    raise RuntimeError(f"symlink target already exists: {dst}")
                 continue  # already set
             dst_dir = os.path.dirname(dst)
             os.makedirs(dst_dir, exist_ok=True)
             src = os.path.relpath(os.path.realpath(os.path.join(src_output, link)), dst_dir)
-            logger.info(f'create symlink {dst}')
+            logger.info(f"create symlink {dst}")
             os.symlink(src, dst)
 
     @staticmethod
@@ -401,26 +401,26 @@ class PatchExporter:
         """
 
         if ':' not in target:
-            raise ValueError('cannot extract host from target')
+            raise ValueError("cannot extract host from target")
         target_host, target_dir = target.rsplit(':', 1)
         output_dir = self.output
         # make sure to use only paths with forward slashes, even on Windows,
         # since they are also used by the remote target
         output_dir = self.output.replace(os.path.sep, '/')
 
-        logger.info(f'synchronize {self.patch} to {target}')
+        logger.info(f"synchronize {self.patch} to {target}")
 
         args = [
-            'rsync', '--progress', '--delete', '-rtOJ', '--size-only',
-            f'{output_dir}/', f'{target}/{self.patch.version}/',
+            "rsync", "--progress", "--delete", "-rtOJ", "--size-only",
+            f"{output_dir}/", f"{target}/{self.patch.version}/",
         ]
         if self.previous_patch:
-            args += ['--exclude-from', f'{output_dir}.links.txt']
+            args += ["--exclude-from", f"{output_dir}.links.txt"]
         interruptible_subprocess_run(args, check=True)
 
         if self.previous_patch:
-            logger.info(f'copy {self.patch.version}.links.txt to {target}')
-            subprocess.run(['scp', f'{output_dir}.links.txt', f'{target}/'], check=True)
+            logger.info(f"copy {self.patch.version}.links.txt to {target}")
+            subprocess.run(["scp", f"{output_dir}.links.txt", f"{target}/"], check=True)
 
-            logger.info(f'update links for {self.patch} on {target}')
-            interruptible_subprocess_run(['ssh', target_host, f'patch={self.patch.version}\nprev={self.previous_patch.version}\ncd {target_dir}\n' + _update_symlinks_script])
+            logger.info(f"update links for {self.patch} on {target}")
+            interruptible_subprocess_run(["ssh", target_host, f"patch={self.patch.version}\nprev={self.previous_patch.version}\ncd {target_dir}\n" + _update_symlinks_script])
