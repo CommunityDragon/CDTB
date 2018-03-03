@@ -135,7 +135,7 @@ class Exporter:
         """Update all patches of the directory"""
 
         for exporter in self.exporters:
-            exporter.export(overwrite=False)
+            exporter.export()
             exporter.write_links()
 
     def upload(self, target):
@@ -164,7 +164,7 @@ class PatchExporter:
         # list of export path to link from the previous patch, set in export()
         self.previous_links = None
 
-    def export(self, overwrite=True):
+    def export(self):
         """Export modified files to the output directory, set previous_links
 
         Files that have changed from the previous patch are copied to the
@@ -240,7 +240,7 @@ class PatchExporter:
                         extracted_paths += [wf.path for wf in wad.files]
 
                         logger.info("exporting %d files from %s", len(wad.files), extract_path)
-                        wad.extract(self.output, overwrite=overwrite)
+                        wad.extract(self.output, overwrite=False)
 
                 else:
                     # ignore description.json files
@@ -260,7 +260,7 @@ class PatchExporter:
                     else:
                         logger.debug("modified file: %s", extract_path)
                         extracted_paths.append(export_path)
-                        self.export_storage_file(extract_path, export_path, overwrite=overwrite)
+                        self.export_storage_file(extract_path, export_path)
 
         # remove extra files
         dirs_to_remove = set()
@@ -308,9 +308,9 @@ class PatchExporter:
         wad.set_unknown_paths(unknown_path)
         return wad
 
-    def export_storage_file(self, storage_path, export_path, overwrite=True):
+    def export_storage_file(self, storage_path, export_path):
         output_path = os.path.join(self.output, export_path)
-        if overwrite and os.path.exists(output_path):
+        if os.path.exists(output_path):
             return
         logger.info("exporting %s", export_path)
         os.makedirs(os.path.dirname(output_path), exist_ok=True)

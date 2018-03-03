@@ -218,8 +218,6 @@ def command_export(parser, args):
 
     if not args.patch:
         # multiple patch (update only)
-        if not args.update:
-            parser.error("patch version required without --update")
         if args.previous:
             parser.error("patch version required with --previous or --full")
         exporter = Exporter(storage, args.output)
@@ -248,7 +246,7 @@ def command_export(parser, args):
                 parser.error("cannot guess previous patch")
 
         exporter = PatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
-        exporter.export(overwrite=not args.update)
+        exporter.export()
         exporter.write_links()
         if args.symlinks:
             exporter.create_symlinks()
@@ -388,8 +386,6 @@ def create_parser():
                                       help="export files to directories, separated by patch")
     subparser.add_argument('-o', '--output', default=default_export,
                            help="directory for files to export (default: %(default)s)")
-    subparser.add_argument('-u', '--update', action='store_true',
-                           help="update the export, skip already extracted files")
     subparser.add_argument('-L', '--symlinks', action='store_true',
                            help="create symlinks (if supported by platform)")
     subparser.add_argument('--previous',
