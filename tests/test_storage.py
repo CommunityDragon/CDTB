@@ -1,6 +1,6 @@
 import os
 import pytest
-from .tools import *
+from tools import *
 from cdragontoolbox.storage import (
     Version,
     Storage,
