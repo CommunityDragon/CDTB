@@ -41,7 +41,7 @@ def runner(tmpdir):
 def test_cli_export_versions(runner, monkeypatch, mocker, args, version, previous_version, overwrite):
     def patch_versions(storage, stored=False):
         for v in ('7.25', '7.24', '7.23', '7.22'):
-            yield PatchVersion(storage, Version(v), [])
+            yield PatchVersion._create(storage, Version(v), [])
     monkeypatch.setattr(PatchVersion, 'versions', patch_versions)
 
     with mocker.patch('cdragontoolbox.__main__.PatchExporter'):
@@ -49,8 +49,8 @@ def test_cli_export_versions(runner, monkeypatch, mocker, args, version, previou
         mock.return_value = mock_instance = mocker.Mock()
         runner("export " + args)
 
-        patch = PatchVersion(None, version, [])
-        previous_patch = None if previous_version is None else PatchVersion(None, previous_version, [])
+        patch = PatchVersion._create(None, version, [])
+        previous_patch = None if previous_version is None else PatchVersion._create(None, previous_version, [])
         mock.assert_called_once_with(os.path.join('export', '7.24'), patch, previous_patch)
 
         mock_instance.export.assert_called_once_with(overwrite=overwrite)

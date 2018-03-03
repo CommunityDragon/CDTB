@@ -1,6 +1,6 @@
 import os
 import pytest
-from tools import *
+from .tools import *
 from cdragontoolbox.storage import (
     Version,
     Storage,
@@ -50,7 +50,7 @@ def test_parse_component_patch(storage, monkeypatch, arg, str_value):
     def gen_versions(storage, stored):
         assert stored == False
         for v in ('7.23', '7.21', '7.20', '7.19'):
-            yield PatchVersion(storage, Version(v), [])
+            yield PatchVersion._create(storage, Version(v), [])
     monkeypatch.setattr(PatchVersion, 'versions', gen_versions)
 
     component = parse_component(storage, arg)
