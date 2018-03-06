@@ -15,7 +15,6 @@ from cdragontoolbox.storage import (
 from cdragontoolbox.wad import (
     Wad,
     load_hashes, save_hashes,
-    discover_hashes,
 )
 from cdragontoolbox.export import (
     Exporter,
@@ -45,7 +44,7 @@ def parse_storage_args(parser, args) -> Storage:
 
     path = default_path if args.storage is None else args.storage
     if path is None:
-        path = 'RADS' if cdn == 'default' else f"RADS.{cdn}"
+        path = "RADS" if cdn == 'default' else f"RADS.{cdn}"
 
     storage_url = getattr(Storage, f"URL_{cdn}".upper())
     return Storage(path, storage_url)
@@ -95,12 +94,12 @@ def command_projects(parser, args):
 def command_solutions(parser, args):
     component = parse_component_arg(parser, args.storage, args.component)
     if isinstance(component, Project):
-        for sln in Solution.list(args.storage):
+        for sln in args.storage.list_solutions():
             for sv in sln.versions(stored=True):
                 if component in (pv.project for pv in sv.projects(True)):
                     print(sv)
     elif isinstance(component, ProjectVersion):
-        for sln in Solution.list(args.storage):
+        for sln in args.storage.list_solutions():
             for sv in sln.versions(stored=True):
                 if component in sv.projects(True):
                     print(sv)
@@ -139,7 +138,7 @@ def command_wad_extract(parser, args):
     hashes = load_hashes(args.hashes)
     wad = Wad(args.wad, hashes=hashes)
     if args.unknown == 'yes':
-        pass # don't filter
+        pass  # don't filter
     elif args.unknown == 'only':
         wad.files = [wf for wf in wad.files if wf.path is None]
     elif args.unknown == 'no':
@@ -158,7 +157,7 @@ def command_wad_list(parser, args):
 
     wadfiles = [(wf.path or ('?.%s' % wf.ext if wf.ext else '?'), wf.path_hash) for wf in wad.files]
     for path, h in sorted(wadfiles):
-        print("%016x %s" % (h, path))
+        print(f"{h:016x} {path}")
 
 
 def command_hashes_guess(parser, args):
@@ -200,7 +199,7 @@ def command_hashes_guess(parser, args):
     new_hashes.update(Wad.guess_hashes_from_known(hashes, unknown_hashes))
 
     for h, path in new_hashes.items():
-        print("%016x %s" % (h, path))
+        print(f"{h:016x} {path}")
 
     if not args.dry_run and new_hashes:
         hashes.update(new_hashes)
@@ -227,15 +226,15 @@ def command_export(parser, args):
     else:
         # single patch
         # retrieve target and previous patch versions
-        patch = PatchVersion.version(storage, None if args.patch == "latest" else Version(args.patch))
+        patch = PatchVersion.version(storage, None if args.patch == 'latest' else Version(args.patch))
         if patch is None:
-            parser.error("patch not found: %s" % args.patch)
+            parser.error(f"patch not found: {args.patch}")
         if args.previous == 'none':
             previous_patch = None
         elif args.previous:
             previous_patch = PatchVersion.version(storage, Version(args.previous), stored=True)
             if previous_patch is None:
-                parser.error("previous patch not found: %s" % patch.version)
+                parser.error(f"previous patch not found: {patch.version}")
         else:
             it = PatchVersion.versions(storage, stored=True)
             for v in it:
@@ -268,7 +267,7 @@ def command_upload(parser, args):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser("cdragontoolbox",
+    parser = argparse.ArgumentParser('cdragontoolbox',
         description="Toolbox to work with League of Legends game files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
@@ -433,7 +432,7 @@ def main():
     if hasattr(args, 'storage'):
         args.storage = parse_storage_args(parser, args)
 
-    globals()["command_%s" % args.command.replace('-', '_')](parser, args)
+    globals()[f"command_{args.command.replace('-', '_')}"](parser, args)
 
 
 if __name__ == "__main__":
