@@ -396,6 +396,7 @@ class Wad:
         # champion resources
         for cid in range(1000):
             new_paths |= {
+                f'plugins/rcp-be-lol-game-data/global/default/v1/champions/{cid}.json',
                 f'plugins/rcp-be-lol-game-data/global/default/v1/champion-icons/{cid}.jpg',
                 f'plugins/rcp-be-lol-game-data/global/default/v1/champion-ban-vo/{cid}.ogg',
                 f'plugins/rcp-be-lol-game-data/global/default/v1/champion-choose-vo/{cid}.ogg',
