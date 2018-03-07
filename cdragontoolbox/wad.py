@@ -262,8 +262,8 @@ class Wad:
                         # retrieve plugin_name from description.json
                         plugin_name = jdata['name']
 
-                # paths starting with /fe/ or /lol-plugin/
-                found_paths |= {m.group(1) for m in re.finditer(r'((?:/fe/|/lol-)[a-zA-Z0-9/_.@-]+)', data)}
+                # paths starting with /fe/, /lol-plugin/, /DATA/
+                found_paths |= {m.group(1) for m in re.finditer(r'((?:/fe/|/lol-|/DATA/)[a-zA-Z0-9/_.@-]+)', data)}
                 # relative path starting with ./ or ../ (e.g. require() use)
                 relpaths = {m.group(1) for m in re.finditer(r'[^a-zA-Z0-9/_.\\-]((?:\.|\.\.)/[a-zA-Z0-9/_.-]+)', data)}
                 found_paths |= relpaths
