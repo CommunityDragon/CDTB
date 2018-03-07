@@ -262,6 +262,13 @@ class Wad:
                     elif 'pluginDependencies' in jdata and 'name' in jdata:
                         # retrieve plugin_name from description.json
                         plugin_name = jdata['name']
+                    elif 'musicVolume' in jdata and 'files' in jdata:
+                        # splash config
+                        # try to guess subdirectory name (names should only contain one element)
+                        names = {s for path in jdata['files'].values() for s in re.findall(r'-splash-([^.]+)', path)}
+                        found_paths |= {f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/config.json" for name in names}
+                        found_paths |= {f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/{path}" for name in names for path in jdata['files'].values()}
+                        continue  # should not contain other data
 
                 # paths starting with /fe/, /lol-plugin/, /DATA/
                 found_paths |= {m.group(1) for m in re.finditer(r'((?:/fe/|/lol-|/DATA/)[a-zA-Z0-9/_.@-]+)', data)}

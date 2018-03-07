@@ -196,6 +196,7 @@ def command_hashes_guess(parser, args):
     new_hashes = {}
     if args.search:
         for wad in wads:
+            wad.guess_extensions()
             new_hashes.update(wad.guess_hashes(unknown_hashes))
     new_hashes.update(Wad.guess_hashes_from_known(hashes, unknown_hashes))
 
