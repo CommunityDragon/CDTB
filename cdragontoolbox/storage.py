@@ -567,6 +567,7 @@ class PatchVersion:
         self.storage = storage
         self.version = version
         self._solutions = sorted(solutions)
+        return self
 
     def __str__(self):
         return f"patch={self.version}"
