@@ -66,6 +66,7 @@ class WadFileHeader:
         b'<!-- Elements -->': 'template.html',
         b'DDS ': 'dds',
         b'r3d2Mesh': 'scb',
+        b'<svg': 'svg',
     }
 
     def __init__(self, path_hash, offset, compressed_size, size, type, duplicate, unk0, unk1, sha256):
