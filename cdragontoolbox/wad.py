@@ -350,7 +350,6 @@ class Wad:
     def guess_hashes_from_known(known_hashes, unknown_hashes):
         logger.info("guessing hashes from known path patterns")
 
-        regions = [r.value for r in REGIONS]
         langs = [l.value for l in Language]
         re_plugin_region_lang = re.compile(r'^plugins/([^/]+)/([^/]+)/([^/]+)/')
 
@@ -442,7 +441,7 @@ class Wad:
                 paths |= {f'{i}.{action}.csv'}
                 paths |= {f'{i}.{action}.language.{x.split("_")[0]}.csv' for x in langs}
                 paths |= {f'{i}.{action}.country.{x.split("_")[1]}.csv' for x in langs}
-                paths |= {f'{i}.{action}.region.{x}c.csv' for x in regions}
+                paths |= {f'{i}.{action}.region.{x}c.csv' for x in REGIONS}
                 paths |= {f'{i}.{action}.locale.{x}.csv' for x in langs}
         for p in 'allowedchars breakingchars projectedchars projectedchars1337 punctuationchars variantaliases'.split():
             paths |= {f'{p}.locale.{x}.txt' for x in langs}
@@ -458,7 +457,7 @@ class Wad:
                 new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/\2/%s/' % lang, path) for lang in langs}
             elif ext in ('png', 'jpg', 'webm'):
                 # try region variants
-                new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/%s/\3/' % region, path) for region in regions}
+                new_paths |= {re_plugin_region_lang.sub(r'plugins/\1/%s/\3/' % region, path) for region in REGIONS}
 
         # try to find new hashes from these paths
         return discover_hashes(unknown_hashes, new_paths - set(known_hashes.values()))
