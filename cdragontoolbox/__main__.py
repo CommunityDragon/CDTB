@@ -178,8 +178,9 @@ def command_hashes_guess(parser, args):
         elif isinstance(component, PatchVersion):
             # there must be one solution
             for sv in component.solutions(latest=True):
-                if sv.name == 'league_client_sln':
+                if sv.solution.name == 'league_client_sln':
                     it = sv.filepaths(langs=True)
+                    break
             else:
                 it = []
         else:
