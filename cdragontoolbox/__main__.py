@@ -249,6 +249,7 @@ def command_export(parser, args):
         exporter = PatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
         exporter.export()
         exporter.write_links()
+        exporter.write_unknown()
         if args.symlinks:
             exporter.create_symlinks()
 

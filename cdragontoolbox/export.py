@@ -4,7 +4,7 @@ import shutil
 import subprocess
 import time
 import logging
-from typing import Optional
+from typing import Optional, List
 
 from .storage import Version, Storage, PatchVersion
 from .wad import Wad
@@ -138,6 +138,7 @@ class Exporter:
         for exporter in self.exporters:
             exporter.export()
             exporter.write_links()
+            exporter.write_unknown()
 
     def upload(self, target):
         """Synchronize all patches to a remote storage"""
@@ -164,9 +165,13 @@ class PatchExporter:
         self.previous_patch = previous_patch
         # list of export path to link from the previous patch, set in export()
         self.previous_links = None
+        # list of all unknown hashes, sorted (including those linked from previous patch)
+        self.unknown_hashes = None
 
     def export(self):
-        """Export modified files to the output directory, set previous_links
+        """Export modified files to the output directory
+
+        Set previous_links and unknown_hashes.
 
         Files that have changed from the previous patch are copied to the
         output directory.
@@ -201,6 +206,7 @@ class PatchExporter:
         logger.info("build list of files to extract or link")
         new_symlinks = []
         new_extracts = []
+        unknown_hashes = []
         to_extract = []  # (extract, export) or Wad instances with wad.files correctly filled
         for pv, prev_pv in sorted((pv, prev_projects.get(pv.project.name)) for pv in projects):
             # get export paths from previous package
@@ -216,7 +222,7 @@ class PatchExporter:
 
                 if extract_path.endswith('.wad'):
                     # WAD file: link the whole archive or compare file by file using sha256
-                    wad = self._open_wad(extract_path)
+                    wad = self._open_wad(extract_path, unknown_hashes)
 
                     if extract_path == prev_extract_path:
                         logger.debug(f"unchanged WAD file: {extract_path}")
@@ -262,6 +268,10 @@ class PatchExporter:
         # convert to sets now (we will need it later)
         new_extracts = set(new_extracts)
         new_symlinks = set(new_symlinks)
+
+        # set unknown_hashes
+        # filter duplicates, even if there should be none
+        self.unknown_hashes = sorted(set(unknown_hashes))
 
         # get stored files, to remove superfluous ones
         old_extracts = set()
@@ -319,11 +329,16 @@ class PatchExporter:
                 self.export_storage_file(*elem)
 
 
-    def _open_wad(self, extract_path: str) -> Wad:
-        """Open a WAD, guess extensions and resolve paths"""
+    def _open_wad(self, extract_path: str, unknown: Optional[List]=None) -> Wad:
+        """Open a WAD, guess extensions and resolve paths
+
+        If unknown is set, unknown hashes are appended to it.
+        """
 
         wad = Wad(self.storage.fspath(extract_path))
         wad.guess_extensions()
+        if unknown is not None:
+            unknown += [wf.path_hash for wf in wad.files if not wf.path]
         # set directory for unknown paths depending on WAD path
         m = re.search(r'/(plugins/rcp-.+?)/[^/]*assets\.wad$', extract_path, re.I)
         unknown_path = "unknown"
@@ -368,6 +383,15 @@ class PatchExporter:
         with open(path, 'w', newline='\n') as f:
             for link in sorted(self.previous_links):
                 print(link, file=f)
+
+    def write_unknown(self, path=None):
+        if self.unknown_hashes is None:
+            return
+        if path is None:
+            path = self.output + ".unknown.txt"
+        with open(path, 'w', newline='\n') as f:
+            for h in self.unknown_hashes:
+                print(f"{h:016x}", file=f)
 
     def create_symlinks(self):
         if self.previous_links is None:

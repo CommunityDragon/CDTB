@@ -54,6 +54,7 @@ def test_cli_export_versions(runner, monkeypatch, mocker, args, version, previou
 
         mock_instance.export.assert_called_once_with()
         mock_instance.write_links.assert_called_once_with()
+        mock_instance.write_unknown.assert_called_once_with()
 
 @pytest.mark.parametrize("arg_storage, arg_cdn, env_storage, env_cdn, path, url", [
     # basic cases
