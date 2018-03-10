@@ -412,7 +412,7 @@ class Wad:
                 f'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/{cid}/metadata.json',
             }
             # skins and chromas
-            for skin_id in range(cid * 1000, (cid + 1) * 1000):
+            for skin_id in range(cid * 1000, cid * 1000 + 50):
                 new_paths |= {
                     f'plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/{cid}/{skin_id}.jpg',
                     f'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/{cid}/{skin_id}.jpg',
