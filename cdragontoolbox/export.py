@@ -357,23 +357,21 @@ class PatchExporter:
         shutil.copyfile(self.storage.fspath(storage_path), output_path)
 
     def exported_files(self):
-        """Output a list of Generate a list of files on disk (even if not if patch files)
+        """Generate a list of files on disk (even if not if patch files)
 
         Generate paths with forward slashes on all platforms.
         """
-
-        sep = os.path.sep
-        for root, dirs, files in os.walk(self.output):
-            if files:
-                base = os.path.relpath(root, self.output)
-                if base == '.':
-                    base = ''
-                else:
-                    if sep != '/':
-                        base = base.replace(sep, '/')
-                    base += '/'
-                for name in files:
-                    yield f"{base}{name}"
+        # os.walk() handles symlinked directories as directories
+        # due to this, it's simpler (and faster) to recurse ourselves
+        to_visit = ['']
+        while to_visit:
+            base = to_visit.pop()
+            with os.scandir(f"{self.output}/{base}") as scan_it:
+                for entry in scan_it:
+                    if entry.is_symlink() or entry.is_file(follow_symlinks=False):
+                        yield f"{base}{entry.name}"
+                    elif entry.is_dir():
+                        to_visit.append(f"{base}{entry.name}/")
 
     def write_links(self, path=None):
         if self.previous_links is None:
