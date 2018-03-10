@@ -310,7 +310,7 @@ class PatchExporter:
         # remove extra files and their parent directories (if empty)
         # note: symlinks are assumed to point to the right location
         dirs_to_remove = set()
-        for path in list(old_extracts - new_extracts) + list(old_symlinks - new_symlinks):
+        for path in list(old_extracts - new_extracts) + list(old_symlinks - set(self.previous_links or [])):
             logger.info(f"remove extra file or symlink: {path}")
             full_path = os.path.join(self.output, path)
             os.remove(full_path)
