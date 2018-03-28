@@ -790,7 +790,7 @@ def get_exe_version(path) -> Version:
 def parse_component(storage: Storage, component: str):
     """Parse a component string representation to an object"""
 
-    m = re.match(r'^(?:([sp]):)?(\w+)(?:=(|[0-9]+(?:\.[0-9]+)*)?)?$', component)
+    m = re.match(r'^(?:([sp]):)?(\w+)(?:=(|[0-9]+(?:\.[0-9]+)*|main)?)?$', component)
     if not m:
         raise ValueError(f"invalid component: {component}")
     typ, name, version = m.group(1, 2, 3)
