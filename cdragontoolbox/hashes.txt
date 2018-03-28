@@ -12084,6 +12084,8 @@ ce63603b47426c86 plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdro
 016d14baa7fd4753 plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/1435.webm
 5b51d1db6c181627 plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/1644.jpg
 ea5b7895773e7990 plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/1644.webm
+b3675b9f43431f24 plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/3370.jpg
+e6c72001d1fb6a26 plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/3370.webm
 4239fdd3d7f16c13 plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/3371.jpg
 32d043267f5f2515 plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/3371.webm
 4f188ad12bf973e1 plugins/rcp-be-lol-game-data/global/default/v1/summoner-backdrops/3372.jpg
