@@ -363,6 +363,8 @@ class PatchExporter:
         """
         # os.walk() handles symlinked directories as directories
         # due to this, it's simpler (and faster) to recurse ourselves
+        if not os.path.exists(self.output):
+            return
         to_visit = ['']
         while to_visit:
             base = to_visit.pop()
