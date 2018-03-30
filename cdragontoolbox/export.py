@@ -402,7 +402,7 @@ class PatchExporter:
         logger.info(f"creating symlinks for patch {self.patch.version}")
         for link in self.previous_links:
             dst = os.path.join(dst_output, link)
-            if os.path.exists(dst):
+            if os.path.lexists(dst):
                 if not os.path.islink(dst):
                     raise RuntimeError(f"symlink target already exists: {dst}")
                 continue  # already set
