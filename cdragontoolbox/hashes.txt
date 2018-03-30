@@ -19404,6 +19404,7 @@ f68a644f030eed5d plugins/rcp-be-sanitizer/global/default/1.filter.language.pt.cs
 b25862dfb9e74ae4 plugins/rcp-be-sanitizer/global/default/1.filter.language.ro.csv
 2c141749acd8b78e plugins/rcp-be-sanitizer/global/default/1.filter.language.ru.csv
 9865d7826a55e0e1 plugins/rcp-be-sanitizer/global/default/1.filter.language.tr.csv
+17517020c9413eac plugins/rcp-be-sanitizer/global/default/1.filter.language.vi.csv
 3095fc7e98e3276f plugins/rcp-be-sanitizer/global/default/1.unfilter.country.br.csv
 d0f2274299353c90 plugins/rcp-be-sanitizer/global/default/1.unfilter.country.es.csv
 f6a560ce1af0a14a plugins/rcp-be-sanitizer/global/default/1.unfilter.country.hu.csv
@@ -20706,6 +20707,7 @@ c1cd1b71633725ac plugins/rcp-fe-lol-clash/global/default/assets/images/overview/
 a9fe3726ffc15f72 plugins/rcp-fe-lol-clash/global/default/assets/images/overview/toggle-button-over.png
 d91666131979a1b8 plugins/rcp-fe-lol-clash/global/default/assets/images/overview/toggle-button.png
 7e6f233ddb27e63e plugins/rcp-fe-lol-clash/global/default/assets/images/overview/top_header_bar.svg
+6a6538f8fb5479ae plugins/rcp-fe-lol-clash/global/default/assets/images/overview/trophy_frame_loss.png
 16b8d11a64c15de5 plugins/rcp-fe-lol-clash/global/default/assets/images/overview/trophy_frame_win.png
 3d99d5fafb383c3a plugins/rcp-fe-lol-clash/global/default/assets/images/roster-icons/0/0.png
 0a29a740dba81bc7 plugins/rcp-fe-lol-clash/global/default/assets/images/roster-icons/0/1.png
@@ -27402,6 +27404,8 @@ bfbcb9978ca1afbf plugins/rcp-fe-lol-uikit/global/default/sfx-uikit-dropdown-sele
 4cee647e3cddfac0 plugins/rcp-fe-lol-uikit/global/default/sfx-uikit-radio-click.ogg
 e8510c483c1ccf52 plugins/rcp-fe-lol-uikit/global/default/sfx-uikit-reward-toast.ogg
 9a348abc35af5e0a plugins/rcp-fe-lol-uikit/global/default/sfx-uikit-text-click-small.ogg
+7a54816386eccc94 plugins/rcp-fe-lol-uikit/global/default/sfx-vignette-celebration-intro.ogg
+7b014db11f637a8b plugins/rcp-fe-lol-uikit/global/default/sfx-vignette-celebration-outro.ogg
 663b622e07966e89 plugins/rcp-fe-lol-uikit/global/default/videos/celebration-bg-magic.webm
 5cdd40a3469481e8 plugins/rcp-fe-lol-uikit/global/default/videos/left-rune-hover.webm
 8bbfe58cd246a874 plugins/rcp-fe-lol-uikit/global/default/videos/left-rune-intro.webm
