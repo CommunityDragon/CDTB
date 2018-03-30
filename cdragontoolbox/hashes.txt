@@ -19476,7 +19476,6 @@ ef04286090302545 plugins/rcp-fe-app-controls/global/it_it/trans.json
 4644c1f00c3c86b4 plugins/rcp-fe-app-controls/global/pl_pl/trans.json
 7bc68d3a54d77105 plugins/rcp-fe-app-controls/global/pt_br/trans.json
 160c3b4b41aa0f8f plugins/rcp-fe-app-controls/global/ro_ro/trans.json
-5b7e2c22654f7d43 plugins/rcp-fe-app-controls/global/ro_ro/trans.json
 f1938eaed66b3766 plugins/rcp-fe-app-controls/global/ru_ru/trans.json
 c7d73bb5b2ca4f9b plugins/rcp-fe-app-controls/global/th_th/trans.json
 3bbe4ad0cea47098 plugins/rcp-fe-app-controls/global/tr_tr/trans.json
