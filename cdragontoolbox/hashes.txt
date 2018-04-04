@@ -1182,6 +1182,16 @@ aac8edc41e9fb738 plugins/rcp-be-lol-game-data/global/default/assets/characters/e
 c3ee77c7f80adfdf plugins/rcp-be-lol-game-data/global/default/assets/characters/ekko/skins/skin03/ekkoloadscreen_3.jpg
 4dc6bea48e47b765 plugins/rcp-be-lol-game-data/global/default/assets/characters/ekko/skins/skin03/ekkoloadscreen_3_le.jpg
 aa93c025cb6a3dd2 plugins/rcp-be-lol-game-data/global/default/assets/characters/ekko/skins/skin11/ekkoloadscreen_11.jpg
+bc5f0e1ae463755c plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/hud/icons2d/elisehumane.png
+77c816795a51d3d7 plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/hud/icons2d/elisehumanq.png
+3821126e7073fd77 plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/hud/icons2d/elisehumanw.png
+6ea4a03e77109f94 plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/hud/icons2d/eliser.png
+a56217cc3c129520 plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/skins/base/eliseloadscreen.jpg
+e4ce58c23935d2bc plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/skins/skin01/eliseloadscreen_1.jpg
+d71f0ebfff50b749 plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/skins/skin02/eliseloadscreen_2.jpg
+777df834a4bc65e1 plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/skins/skin03/eliseloadscreen_3.jpg
+1ef07cc7ed197838 plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/skins/skin04/eliseloadscreen_4.jpg
+3d48d44274a7cbec plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/skins/skin05/eliseloadscreen_5.jpg
 1897ec62da3a00ef plugins/rcp-be-lol-game-data/global/default/assets/characters/evelynn/skins/base/evelynnloadscreen.evelynnvgu.png
 b5c697343ae3ad8f plugins/rcp-be-lol-game-data/global/default/assets/characters/evelynn/skins/base/evelynnloadscreen.jpg
 52c7dde7c85622cb plugins/rcp-be-lol-game-data/global/default/assets/characters/evelynn/skins/base/evelynnloadscreen.png
@@ -25392,6 +25402,8 @@ b132c4965c769155 plugins/rcp-fe-lol-premade-voice/global/default/f2681bde43d49b2
 9c80870cf71d40fc plugins/rcp-fe-lol-premade-voice/global/default/index.html
 6f50ed640d0493fd plugins/rcp-fe-lol-premade-voice/global/default/init.js
 982942d1359efa92 plugins/rcp-fe-lol-premade-voice/global/default/license.json
+cf77f36e7904e58c plugins/rcp-fe-lol-premade-voice/global/default/sfx-soc-ui-chatwindow-close.ogg
+e535f3a0f4821677 plugins/rcp-fe-lol-premade-voice/global/default/sfx-soc-ui-chatwindow-open.ogg
 216915c30c5047a6 plugins/rcp-fe-lol-premade-voice/global/default/sfx-voicechat-notif-join.ogg
 5eb331b33cd8bfd9 plugins/rcp-fe-lol-premade-voice/global/default/sfx-voicechat-notif-leave.ogg
 e353ab2823dfa15b plugins/rcp-fe-lol-premade-voice/global/default/trans.json
