@@ -375,6 +375,20 @@ class PatchExporter:
                     elif entry.is_dir():
                         to_visit.append(f"{base}{entry.name}/")
 
+    def all_exported_paths(self):
+        """Generate a list of all files exported by a full export"""
+
+        patch_solutions = [sv for sv in self.patch.solutions(latest=True) if sv.solution.name == 'league_client_sln']
+        for pv in sorted(pv for sv in patch_solutions for pv in sv.projects(True)):
+            for extract_path in pv.filepaths():
+                export_path = self.to_export_path(extract_path)
+                if extract_path.endswith('.wad'):
+                    wad = self._open_wad(extract_path)
+                    yield from (wf.path for wf in wad.files)
+                else:
+                    yield export_path
+
+
     def write_links(self, path=None):
         if self.previous_links is None:
             return
