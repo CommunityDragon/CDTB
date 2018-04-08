@@ -92,6 +92,11 @@ class WadFileHeader:
             return data
         elif self.type == 1:
             return gzip.decompress(data)
+        elif self.type == 2:
+            n, = struct.unpack('<L', data[:4])
+            target = data[4:4+n].rstrip(b'\0').decode('utf-8')
+            logger.debug(f"file redirection: {target}")
+            return None
         elif self.type == 3:
             return zstd_decompress(data)
         raise ValueError(f"unsupported file type: {self.type}")
@@ -220,6 +225,8 @@ class Wad:
                 fwad.seek(wadfile.offset)
                 # assume files are small enough to fit in memory
                 data = wadfile.read_data(fwad)
+                if not data:
+                    continue
                 os.makedirs(os.path.dirname(output_path), exist_ok=True)
                 try:
                     with open(output_path, 'wb') as fout:
