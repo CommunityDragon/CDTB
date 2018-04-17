@@ -329,8 +329,11 @@ class SolutionVersion:
                 version = Version(version) if version else None
         else:
             version = self._retrieve_patch_version()
-            with open(cache, 'w') as f:
-                f.write(f"{'' if version is None else version}\n")
+            if version is None:
+                logger.warning(f"failed to retrieve patch version for {self}")
+            else:
+                with open(cache, 'w') as f:
+                    f.write(f"{version}\n")
         return version
 
     def _retrieve_patch_version(self) -> Optional['Version']:
