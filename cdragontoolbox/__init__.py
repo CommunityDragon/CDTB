@@ -10,7 +10,6 @@ from cdragontoolbox.storage import (
 )
 from cdragontoolbox.wad import (
     Wad,
-    load_hashes, save_hashes,
     discover_hashes,
 )
 from cdragontoolbox.export import (

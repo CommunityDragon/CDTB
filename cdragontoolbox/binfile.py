@@ -13,20 +13,7 @@ def _repr_indent_list(values):
     return "[\n%s]" % ''.join("%s\n" % textwrap.indent(repr(v), '  ') for v in values)
 
 
-_default_hashes = None  # cached
-_default_hashes_path = os.path.join(os.path.dirname(__file__), "binhashes.txt")
-
-def load_hashes(fname=None) -> HashMap:
-    if fname is None:
-        global _default_hashes
-        if _default_hashes is None:
-            _default_hashes = load_hashes(_default_hashes_path)
-        return _default_hashes
-
-    with open(fname) as f:
-        hashes = dict(l.strip().split(' ', 1) for l in f)
-    return {int(h, 16): path for h, path in hashes.items()}
-
+hashfile_bin = HashFile(os.path.join(os.path.dirname(__file__), "binhashes.txt"), hash_size=8)
 
 def compute_binhash(s):
     """Compute a hash used in BIN files
@@ -39,15 +26,12 @@ def compute_binhash(s):
     return h
 
 
-_all_hashes = set()
-
 class BinHash:
     """Hash value is in bin files"""
 
     def __init__(self, h):
-        _all_hashes.add(h)
         self.h = h
-        self.s = load_hashes().get(h)
+        self.s = hashfile_bin.load().get(h)
 
     def __repr__(self):
         if self.s is not None:
@@ -381,5 +365,4 @@ class BinReader:
         BinType.MAP: read_field_map,
         BinType.PADDING: read_field_basic,
     }
-
 

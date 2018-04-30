@@ -16,8 +16,7 @@ else:
     zstd_decompress = zstd.ZstdDecompressor().decompress
 
 from .data import REGIONS, Language
-
-HashMap = Dict[int, str]
+from .hashes import HashFile
 
 logger = logging.getLogger(__name__)
 
@@ -169,7 +168,7 @@ class Wad:
         """Guess path of files"""
 
         if hashes is None:
-            hashes = load_hashes()
+            hashes = hashfile_lcu.load()
         for wadfile in self.files:
             if wadfile.path_hash in hashes:
                 wadfile.path = hashes[wadfile.path_hash]
@@ -481,38 +480,10 @@ class Wad:
         return discover_hashes(unknown_hashes, new_paths - set(known_hashes.values()))
 
 
-_default_hashes = None  # cached
-_default_hashes_path = os.path.join(os.path.dirname(__file__), "hashes.txt")
-
-def load_hashes(fname=None) -> HashMap:
-    if fname is None:
-        global _default_hashes
-        if _default_hashes is None:
-            _default_hashes = load_hashes(_default_hashes_path)
-        return _default_hashes
-
-    if fname.endswith('.json'):
-        with open(fname) as f:
-            hashes = json.load(f)
-    else:
-        with open(fname) as f:
-            hashes = dict(l.strip().split(' ', 1) for l in f)
-    return {int(h, 16): path for h, path in hashes.items()}
+hashfile_lcu = HashFile(os.path.join(os.path.dirname(__file__), "hashes.txt"))
 
 
-def save_hashes(fname, hashes: HashMap) -> None:
-    if fname is None:
-        fname = _default_hashes_path
-    if fname.endswith('.json'):
-        with open(fname, 'w', newline='') as f:
-            json.dump(hashes, f)
-    else:
-        with open(fname, 'w', newline='') as f:
-            for h, path in sorted(hashes.items(), key=lambda kv: kv[1]):
-                print(f"{h:016x} {path}", file=f)
-
-
-def discover_hashes(unknown_hashes: HashMap, paths: Iterable[str]) -> HashMap:
+def discover_hashes(unknown_hashes, paths: Iterable[str]):
     """Find new paths from a list and return them"""
     new_hashes = {}
     for path in paths:

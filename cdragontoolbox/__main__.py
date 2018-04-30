@@ -14,11 +14,14 @@ from cdragontoolbox.storage import (
 )
 from cdragontoolbox.wad import (
     Wad,
-    load_hashes, save_hashes,
+    hashfile_lcu,
 )
 from cdragontoolbox.export import (
     Exporter,
     PatchExporter,
+)
+from cdragontoolbox.hashes import (
+    HashFile,
 )
 
 
@@ -135,8 +138,11 @@ def command_wad_extract(parser, args):
     if os.path.exists(args.output) and not os.path.isdir(args.output):
         parser.error("output is not a directory")
 
-    hashes = load_hashes(args.hashes)
-    wad = Wad(args.wad, hashes=hashes)
+    if args.hashes is None:
+        hashfile = hashfile_lcu
+    else:
+        hashfile = HashFile(args.hashes)
+    wad = Wad(args.wad, hashes=hashfile.load())
     if args.unknown == 'yes':
         pass  # don't filter
     elif args.unknown == 'only':
@@ -152,8 +158,11 @@ def command_wad_list(parser, args):
     if not os.path.isfile(args.wad):
         parser.error("WAD file does not exist")
 
-    hashes = load_hashes(args.hashes)
-    wad = Wad(args.wad, hashes=hashes)
+    if args.hashes is None:
+        hashfile = hashfile_lcu
+    else:
+        hashfile = HashFile(args.hashes)
+    wad = Wad(args.wad, hashes=hashfile.load())
 
     wadfiles = [(wf.path or ('?.%s' % wf.ext if wf.ext else '?'), wf.path_hash) for wf in wad.files]
     for path, h in sorted(wadfiles):
@@ -161,7 +170,10 @@ def command_wad_list(parser, args):
 
 
 def command_hashes_guess(parser, args):
-    hashes = load_hashes(args.hashes)
+    if args.hashes is None:
+        hashfile = hashfile_lcu
+    else:
+        hashfile = HashFile(args.hashes)
 
     wad_paths = []
     for path_or_component in args.wad:
@@ -187,6 +199,8 @@ def command_hashes_guess(parser, args):
             parser.error(f"command cannot be used on {component}")
         wad_paths.extend(args.storage.fspath(p) for p in it if p.endswith('.wad'))
 
+    hashes = hashfile.load()
+
     wads = [Wad(path) for path in wad_paths]
     unknown_hashes = set()
     for wad in wads:
@@ -205,7 +219,7 @@ def command_hashes_guess(parser, args):
 
     if not args.dry_run and new_hashes:
         hashes.update(new_hashes)
-        save_hashes(args.hashes, hashes)
+        hashfile.save()
 
 
 def command_export(parser, args):
@@ -357,7 +371,7 @@ def create_parser():
     subparser.add_argument('-o', '--output',
                            help="extract directory")
     subparser.add_argument('-H', '--hashes',
-                           help="hashes of known paths (JSON or plain text)")
+                           help="hashes of known paths")
     subparser.add_argument('-u', '--unknown', choices=('yes', 'only', 'no'), default='yes',
                            help="control extract of unknown files (default: %(default)s)")
     subparser.add_argument('wad',
@@ -366,14 +380,14 @@ def create_parser():
     subparser = subparsers.add_parser('wad-list',
                                       help="list WAD content")
     subparser.add_argument('-H', '--hashes',
-                           help="hashes of known paths (JSON or plain text)")
+                           help="hashes of known paths")
     subparser.add_argument('wad',
                            help="WAD file to list")
 
     subparser = subparsers.add_parser('hashes-guess', parents=[storage_parser],
                                       help="guess hashes from WAD content")
     subparser.add_argument('-H', '--hashes',
-                           help="hashes of known paths (JSON or plain text)")
+                           help="hashes of known paths")
     subparser.add_argument('-n', '--dry-run', action='store_true',
                            help="list new hashes but don't update the hashes file")
     subparser.add_argument('-g', '--search', action='store_true',
