@@ -25071,6 +25071,7 @@ e9fd5e023957cc64 plugins/rcp-fe-lol-missions/global/default/events/images/eog/re
 a08617cc66e3f7ac plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/emotes/tier2championemote.png
 e1320fe985736770 plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/emotes/tier3conqueroremote.png
 025cfceac50446f3 plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/emotes/xp.png
+58d371651f69d687 plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/features/clash_ticket.png
 7537b32ca4266c3f plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/features/epicmysteryskinbox.png
 83ff2fd131414396 plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/features/xp.png
 0abe00e5fd299ebc plugins/rcp-fe-lol-missions/global/default/events/images/missions/aprilfools18/aprilfools_inductionsplashart_sm.png
@@ -25143,6 +25144,8 @@ e5a84783bf992199 plugins/rcp-fe-lol-missions/global/default/events/images/missio
 98f0777d6913f957 plugins/rcp-fe-lol-missions/global/default/events/images/missions/ss18/ss18_mission_lucian_post.png
 2c82b200ea6bc9a0 plugins/rcp-fe-lol-missions/global/default/events/images/missions/ss18/ss18_mission_poppy_pre.png
 d521a7edff098411 plugins/rcp-fe-lol-missions/global/default/events/images/missions/tournaments/tournament_cup.png
+4c084cce524d7e1a plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/versus_chain_lion.png
+0f1d7c20118a8c34 plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/versus_daily.png
 ca498400e3a57f8e plugins/rcp-fe-lol-missions/global/default/events/images/missions/worlds17/courage.jpg
 d1674ee95ee51189 plugins/rcp-fe-lol-missions/global/default/events/images/missions/worlds17/resilience.jpg
 6ae74b1a9904cf1b plugins/rcp-fe-lol-missions/global/default/events/images/missions/worlds17/skill.jpg
