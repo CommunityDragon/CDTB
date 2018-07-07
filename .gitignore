@@ -1,4 +1,9 @@
 .cache
+venv/
+.idea/
+.env
+.vscode/
+.pytest_cache/
 versions.json
 *.exe
 __pycache__/
