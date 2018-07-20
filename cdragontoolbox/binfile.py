@@ -13,7 +13,7 @@ def _repr_indent_list(values):
     return "[\n%s]" % ''.join("%s\n" % textwrap.indent(repr(v), '  ') for v in values)
 
 
-hashfile_bin = HashFile(os.path.join(os.path.dirname(__file__), "binhashes.txt"), hash_size=8)
+hashfile_bin = HashFile(os.path.join(os.path.dirname(__file__), "hashes.bin.txt"), hash_size=8)
 
 def compute_binhash(s):
     """Compute a hash used in BIN files

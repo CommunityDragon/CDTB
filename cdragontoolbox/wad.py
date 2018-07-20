@@ -480,7 +480,7 @@ class Wad:
         return discover_hashes(unknown_hashes, new_paths - set(known_hashes.values()))
 
 
-hashfile_lcu = HashFile(os.path.join(os.path.dirname(__file__), "hashes.txt"))
+hashfile_lcu = HashFile(os.path.join(os.path.dirname(__file__), "hashes.lcu.txt"))
 
 
 def discover_hashes(unknown_hashes, paths: Iterable[str]):
