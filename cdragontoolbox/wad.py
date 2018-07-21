@@ -241,12 +241,17 @@ class Wad:
                 try:
                     with open(output_path, 'wb') as fout:
                         fout.write(data)
-                except:
+                except Exception as e:
                     # remove partially downloaded file
                     try:
                         os.remove(output_path)
                     except OSError:
                         pass
+                    # Windows does not support path components longer than 255
+                    # ignore such files
+                    if isinstance(e, OSError) and e.errno == os.errno.EINVAL:
+                        logger.warning(f"ignore file with invalid path: {wadfile.path}")
+                        continue
                     raise
 
     def guess_hashes(self, unknown_hashes):
