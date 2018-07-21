@@ -168,7 +168,7 @@ class Wad:
         """Guess path of files"""
 
         if hashes is None:
-            hashes = hashfile_lcu.load()
+            hashes = default_hashfile(self.path).load()
         for wadfile in self.files:
             if wadfile.path_hash in hashes:
                 wadfile.path = hashes[wadfile.path_hash]
@@ -481,6 +481,16 @@ class Wad:
 
 
 hashfile_lcu = HashFile(os.path.join(os.path.dirname(__file__), "hashes.lcu.txt"))
+hashfile_game = HashFile(os.path.join(os.path.dirname(__file__), "hashes.game.txt"))
+
+def default_hashfile(path):
+    """Return the default hashfile for the given WAD file"""
+    if path.endswith(".wad.client"):
+        return hashfile_game
+    elif path.endswith(".wad"):
+        return hashfile_lcu
+    else:
+        raise ValueError(f"no default hashes for WAD file '{path}'")
 
 
 def discover_hashes(unknown_hashes, paths: Iterable[str]):

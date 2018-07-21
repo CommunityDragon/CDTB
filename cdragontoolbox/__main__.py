@@ -14,7 +14,7 @@ from cdragontoolbox.storage import (
 )
 from cdragontoolbox.wad import (
     Wad,
-    hashfile_lcu,
+    default_hashfile,
 )
 from cdragontoolbox.export import (
     Exporter,
@@ -139,7 +139,7 @@ def command_wad_extract(parser, args):
         parser.error("output is not a directory")
 
     if args.hashes is None:
-        hashfile = hashfile_lcu
+        hashfile = default_hashfile(args.wad)
     else:
         hashfile = HashFile(args.hashes)
     wad = Wad(args.wad, hashes=hashfile.load())
@@ -159,7 +159,7 @@ def command_wad_list(parser, args):
         parser.error("WAD file does not exist")
 
     if args.hashes is None:
-        hashfile = hashfile_lcu
+        hashfile = default_hashfile(args.wad)
     else:
         hashfile = HashFile(args.hashes)
     wad = Wad(args.wad, hashes=hashfile.load())
@@ -171,7 +171,7 @@ def command_wad_list(parser, args):
 
 def command_hashes_guess(parser, args):
     if args.hashes is None:
-        hashfile = hashfile_lcu
+        hashfile = default_hashfile(args.wad)
     else:
         hashfile = HashFile(args.hashes)
 
