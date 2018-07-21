@@ -64,10 +64,17 @@ class WadFileHeader:
         b'<template ': 'template.html',
         b'<!-- Elements -->': 'template.html',
         b'DDS ': 'dds',
-        b'r3d2Mesh': 'scb',
         b'<svg': 'svg',
         b'PROP': 'bin',
         b'BKHD': 'bkhd',
+        b'r3d2Mesh': 'scb',
+        b'r3d2anmd': 'anm',
+        b'r3d2canm': 'anm',
+        b'r3d2sklt': 'skl',
+        b'\x33\x22\x11\x00': 'skn',
+        #b'\x1bLua': ?,
+        #b'[ObjectBegin]': ?,
+        #TODO .troybin
     }
 
     def __init__(self, path_hash, offset, compressed_size, size, type, duplicate, unk0, unk1, sha256):
@@ -108,6 +115,8 @@ class WadFileHeader:
         typ = imghdr.what(None, h=data)
         if typ == 'jpeg':
             return 'jpg'
+        elif typ == 'xbm':
+            pass  # some HLSL files are recognized as xbm
         elif typ is not None:
             return typ
 
