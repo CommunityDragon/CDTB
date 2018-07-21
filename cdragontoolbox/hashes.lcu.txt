@@ -24607,6 +24607,7 @@ e57fbddf4b5a8b4e plugins/rcp-fe-lol-loot/global/default/assets/help_images/rarit
 b031863a5c6854dd plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/capsule_16.png
 c1547e8a750aa725 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/capsule_4.png
 001f914b31797bf5 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/capsule_8.png
+725feb73cf79a014 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/capsule_tickets.png
 eb4cc39d61a9a513 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest.png
 210836a5400cceb4 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_106.png
 c331cacd72648a09 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/chest_107.png
@@ -25583,6 +25584,7 @@ c14c19136cb5ae9e plugins/rcp-fe-lol-missions/global/default/events/images/missio
 9ae0a74aae2a19f9 plugins/rcp-fe-lol-missions/global/default/events/images/missions/aprilfools18/aprilfools_missionthumbnails_timetoendthis.png
 057a3d8714613c1f plugins/rcp-fe-lol-missions/global/default/events/images/missions/arcade/arcade_blitzcrank.png
 150b7ea28b1c53ff plugins/rcp-fe-lol-missions/global/default/events/images/missions/arcade/arcade_brand.png
+4ae548f9260e42dc plugins/rcp-fe-lol-missions/global/default/events/images/missions/arcade/arcade_daily.png
 9bd9b73ea44e3e21 plugins/rcp-fe-lol-missions/global/default/events/images/missions/arcade/arcade_malzahar.png
 753372614007143a plugins/rcp-fe-lol-missions/global/default/events/images/missions/arcade/arcade_question.png
 c0f4567651d26c1f plugins/rcp-fe-lol-missions/global/default/events/images/missions/arcade/arcade_veigar.png
@@ -25646,6 +25648,7 @@ e5a84783bf992199 plugins/rcp-fe-lol-missions/global/default/events/images/missio
 2c82b200ea6bc9a0 plugins/rcp-fe-lol-missions/global/default/events/images/missions/ss18/ss18_mission_poppy_pre.png
 d521a7edff098411 plugins/rcp-fe-lol-missions/global/default/events/images/missions/tournaments/tournament_cup.png
 4c084cce524d7e1a plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/versus_chain_lion.png
+6280e84952d47092 plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/versus_chain_wolf.png
 0f1d7c20118a8c34 plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/versus_daily.png
 ca498400e3a57f8e plugins/rcp-fe-lol-missions/global/default/events/images/missions/worlds17/courage.jpg
 d1674ee95ee51189 plugins/rcp-fe-lol-missions/global/default/events/images/missions/worlds17/resilience.jpg
@@ -25929,6 +25932,7 @@ dc85c6a4f0f804f5 plugins/rcp-fe-lol-new-player-experience/global/default/c634bf7
 8123238c8c226039 plugins/rcp-fe-lol-new-player-experience/global/default/cd7e2e69ae9367559cee508b6fac9c20.png
 63e93ab88cb2f27d plugins/rcp-fe-lol-new-player-experience/global/default/cda2cad118075a9e5ae5f53c6b7f9611.png
 8a11aec39ab3065c plugins/rcp-fe-lol-new-player-experience/global/default/celebrations_genericmagicbg.png
+b6f287e73198b7f7 plugins/rcp-fe-lol-new-player-experience/global/default/checkmark-hover.png
 ba425d633710b3f3 plugins/rcp-fe-lol-new-player-experience/global/default/d72bec42d86f77c7d3601e6c4aa4fead.png
 69a42b5917b6c63e plugins/rcp-fe-lol-new-player-experience/global/default/e4d6a5a4402f88555fd11fe3c5bb9d6e.png
 f027f9d01685d130 plugins/rcp-fe-lol-new-player-experience/global/default/e5519879f462a1aacc812a0443c8772a.png
@@ -25950,7 +25954,11 @@ a6bbaa4424102889 plugins/rcp-fe-lol-new-player-experience/global/default/f85b992
 ea36cc302d7c07c7 plugins/rcp-fe-lol-new-player-experience/global/default/index.html
 54c857468bebd2a3 plugins/rcp-fe-lol-new-player-experience/global/default/init.js
 ca7230afe6029ffd plugins/rcp-fe-lol-new-player-experience/global/default/license.json
+a08346c16dc2f7f9 plugins/rcp-fe-lol-new-player-experience/global/default/lock-hover.png
+d3648894d51d376e plugins/rcp-fe-lol-new-player-experience/global/default/pip-capsule.png
 5832b9396530653a plugins/rcp-fe-lol-new-player-experience/global/default/pip-click.png
+650b4c3cd789da90 plugins/rcp-fe-lol-new-player-experience/global/default/pip-default.png
+51ae7cc6ff4de789 plugins/rcp-fe-lol-new-player-experience/global/default/pip-disabled.png
 84f8e3cb3a5ce791 plugins/rcp-fe-lol-new-player-experience/global/default/pip-hover.png
 05ef20740d1f4cf0 plugins/rcp-fe-lol-new-player-experience/global/default/pip-selected.png
 4fe38ee94ad3c837 plugins/rcp-fe-lol-new-player-experience/global/default/rewardicons_xp.png
