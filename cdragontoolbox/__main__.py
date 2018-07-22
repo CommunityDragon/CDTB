@@ -151,7 +151,7 @@ def command_wad_extract(parser, args):
         wad.files = [wf for wf in wad.files if wf.path is not None]
 
     wad.guess_extensions()
-    wad.extract(args.output)
+    wad.extract(args.output, overwrite=not args.lazy)
 
 
 def command_wad_list(parser, args):
@@ -374,6 +374,8 @@ def create_parser():
                            help="hashes of known paths")
     subparser.add_argument('-u', '--unknown', choices=('yes', 'only', 'no'), default='yes',
                            help="control extract of unknown files (default: %(default)s)")
+    subparser.add_argument('--lazy', action='store_true',
+                           help="don't overwrite files, assume they are already correctly extracted")
     subparser.add_argument('wad',
                            help="WAD file to extract")
 
