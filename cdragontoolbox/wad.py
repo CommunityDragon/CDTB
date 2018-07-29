@@ -232,7 +232,6 @@ class Wad:
                     continue
                 logger.debug(f"extracting {wadfile.path_hash:016x} {wadfile.path}")
 
-                fwad.seek(wadfile.offset)
                 # assume files are small enough to fit in memory
                 data = wadfile.read_data(fwad)
                 if not data:
