@@ -109,6 +109,35 @@ class WadFileHeader:
             return zstd_decompress(data)
         raise ValueError(f"unsupported file type: {self.type}")
 
+    def extract(self, fwad, output_path):
+        """Read data, convert it if needed, and write it to a file
+
+        On error, partially retrieved files are removed.
+        File redirections are skipped.
+        """
+
+        data = self.read_data(fwad)
+        if not data:
+            return
+
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        try:
+            with open(output_path, 'wb') as fout:
+                fout.write(data)
+        except Exception as e:
+            # remove partially downloaded file
+            try:
+                os.remove(output_path)
+            except OSError:
+                pass
+            # Windows does not support path components longer than 255
+            # ignore such files
+            if isinstance(e, OSError) and e.errno == os.errno.EINVAL:
+                logger.warning(f"ignore file with invalid path: {wadfile.path}")
+            else:
+                raise
+
+
     @staticmethod
     def guess_extension(data):
         # image type
@@ -231,27 +260,7 @@ class Wad:
                     logger.debug(f"skipping {wadfile.path_hash:016x} {wadfile.path} (already extracted)")
                     continue
                 logger.debug(f"extracting {wadfile.path_hash:016x} {wadfile.path}")
-
-                # assume files are small enough to fit in memory
-                data = wadfile.read_data(fwad)
-                if not data:
-                    continue
-                os.makedirs(os.path.dirname(output_path), exist_ok=True)
-                try:
-                    with open(output_path, 'wb') as fout:
-                        fout.write(data)
-                except Exception as e:
-                    # remove partially downloaded file
-                    try:
-                        os.remove(output_path)
-                    except OSError:
-                        pass
-                    # Windows does not support path components longer than 255
-                    # ignore such files
-                    if isinstance(e, OSError) and e.errno == os.errno.EINVAL:
-                        logger.warning(f"ignore file with invalid path: {wadfile.path}")
-                        continue
-                    raise
+                wadfile.extract(fwad, output_path)
 
     def guess_hashes(self, unknown_hashes):
         """Try to guess hashes"""
