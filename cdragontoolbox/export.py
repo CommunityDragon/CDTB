@@ -4,7 +4,9 @@ import shutil
 import subprocess
 import time
 import logging
+from io import BytesIO
 from typing import Optional, List
+from PIL import Image
 
 from .storage import Version, Storage, PatchVersion
 from .wad import Wad
@@ -142,13 +144,12 @@ class PatchExporter:
         else:
             logger.info(f"exporting patch {self.patch.version} based on (full)")
 
-        #XXX for now, only export files from league_client as lol_game_client is not well known yet
-        patch_solutions = [sv for sv in self.patch.solutions(latest=True) if sv.solution.name == 'league_client_sln']
+        patch_solutions = self.patch.solutions(latest=True)
         for sv in patch_solutions:
             sv.download(langs=True)
 
         if self.previous_patch:
-            prev_patch_solutions = [sv for sv in self.previous_patch.solutions(latest=True) if sv.solution.name == 'league_client_sln']
+            prev_patch_solutions = self.previous_patch.solutions(latest=True)
             for sv in prev_patch_solutions:
                 sv.download(langs=True)
 
@@ -159,13 +160,17 @@ class PatchExporter:
             prev_projects = {pv.project.name: pv for sv in prev_patch_solutions for pv in sv.projects(True)}
         else:
             prev_projects = {}
+        #XXX for now, exclude lol_game_client language projects
+        projects = {pv for pv in projects if not pv.project.name.startswith('lol_game_client_')}
+        prev_projects = {name: pv for name, pv in prev_projects.items() if not name.startswith('lol_game_client_')}
 
         logger.info("build list of files to extract or link")
         new_symlinks = []
         new_extracts = []
         unknown_hashes = []
-        to_extract = []  # (extract, export) or Wad instances with wad.files correctly filled
+        to_extract = []  # StorageFile or Wad instances (with wad.files correctly filled)
         for pv, prev_pv in sorted((pv, prev_projects.get(pv.project.name)) for pv in projects):
+            is_game = pv.project.name.startswith('lol_game_client')
             # get export paths from previous package
             prev_extract_paths = {}  # {export_path: extract_path}
             if prev_pv:
@@ -177,10 +182,9 @@ class PatchExporter:
                 prev_extract_path = prev_extract_paths.get(export_path)
                 # package files with identical extract paths are the same
 
-                if extract_path.endswith('.wad'):
+                if extract_path.endswith('.wad') or extract_path.endswith('.wad.client'):
                     # WAD file: link the whole archive or compare file by file using sha256
                     wad = self._open_wad(extract_path, unknown_hashes)
-
                     if extract_path == prev_extract_path:
                         logger.debug(f"unchanged WAD file: {extract_path}")
                         new_symlinks += [wf.path for wf in wad.files]
@@ -203,24 +207,17 @@ class PatchExporter:
                         new_extracts += [wf.path for wf in wad.files]
                         to_extract.append(wad)
                 else:
-                    # ignore description.json files
-                    # They may also also be in WADs (slightly different
-                    # though), which may result into files being both extracted
-                    # and symlinked.
-                    # Just use WAD ones, even if it leads to not having a
-                    # description.json at all. These files are not needed
-                    # anyway.
-                    if extract_path.endswith("/description.json"):
+                    # normal file, retrieved directly from storage
+                    storage_file = self._storage_file(extract_path, export_path, is_game)
+                    if not storage_file:
                         continue
-
-                    # normal file: link or copy
                     if extract_path == prev_extract_path:
                         logger.debug(f"unchanged file: {extract_path}")
-                        new_symlinks.append(export_path)
+                        new_symlinks.append(storage_file.export_path)
                     else:
                         logger.debug(f"modified file: {extract_path}")
-                        new_extracts.append(export_path)
-                        to_extract.append((extract_path, export_path))
+                        new_extracts.append(storage_file.export_path)
+                        to_extract.append(storage_file)
 
         # convert to sets now (we will need it later)
         new_extracts = set(new_extracts)
@@ -247,7 +244,7 @@ class PatchExporter:
             previous_files = []
             for pv in prev_projects.values():
                 for path in pv.filepaths():
-                    if path.endswith('.wad'):
+                    if path.endswith('.wad') or path.endswith('.wad.client'):
                         wad = self._open_wad(path)
                         previous_files += [wf.path for wf in wad.files]
                     else:
@@ -282,12 +279,14 @@ class PatchExporter:
         for elem in to_extract:
             if isinstance(elem, Wad):
                 elem.extract(self.output, overwrite=False)
+            elif isinstance(elem, StorageFile):
+                elem.export(self.output)
             else:
-                self.export_storage_file(*elem)
+                raise TypeError(f"unexpected element to extract: {elem!r}")
 
 
     def _open_wad(self, extract_path: str, unknown: Optional[List]=None) -> Wad:
-        """Open a WAD, guess extensions and resolve paths
+        """Open a WAD, guess extensions, resolve paths, setup conversions.
 
         If unknown is set, unknown hashes are appended to it.
         """
@@ -296,22 +295,63 @@ class PatchExporter:
         wad.guess_extensions()
         if unknown is not None:
             unknown += [wf.path_hash for wf in wad.files if not wf.path]
-        # set directory for unknown paths depending on WAD path
-        m = re.search(r'/(plugins/rcp-.+?)/[^/]*assets\.wad$', extract_path, re.I)
-        unknown_path = "unknown"
-        if m is not None:
-            # LCU client: plugins/<plugin-name>
-            unknown_path = f"{m.group(1).lower()}/unknown"
-        wad.set_unknown_paths(unknown_path)
+
+        if extract_path.endswith('.wad.client'):
+            # lol_game_client
+            wad.set_unknown_paths("unknown")
+            new_files = []
+            for wf in wad.files:
+                # convert .dds to .png
+                if wf.ext == 'dds':
+                    wf.save_method = save_image_to_png
+                    wf.ext = 'png'
+                    wf.path = wf.path[:-3] + 'png'
+                # keep only image files
+                if wf.ext != 'png':
+                    continue
+                # export in 'game/' subdirectory
+                wf.path = f"game/{wf.path}"
+                new_files.append(wf)
+            wad.files = new_files
+        else:
+            # league_client: extract everything, unknown path depends on WAD path
+            m = re.search(r'/(plugins/rcp-.+?)/[^/]*assets\.wad$', extract_path, re.I)
+            if m is not None:
+                # LCU client: plugins/<plugin-name>
+                unknown_path = f"{m.group(1).lower()}/unknown"
+            else:
+                unknown_path = "unknown"
+            wad.set_unknown_paths(unknown_path)
         return wad
 
-    def export_storage_file(self, storage_path, export_path):
-        output_path = os.path.join(self.output, export_path)
-        if os.path.lexists(output_path):
-            return
-        logger.info(f"exporting {export_path}")
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        shutil.copyfile(self.storage.fspath(storage_path), output_path)
+    def _storage_file(self, extract_path, export_path, is_game):
+        """Create a StorageFile instance, return None if the file must be ignored"""
+
+        save_method = None
+        if is_game:
+            # convert .dds to .png
+            if export_path.endswith('.dds'):
+                export_path = export_path[-3:] + 'png'
+                save_method = save_image_to_png
+            if not export_path.endswith('.png'):
+                return None
+            # export in 'game/' subdirectory
+            export_path = f"game/{export_path}"
+        else:
+            # ignore description.json files
+            # They may also also be in WADs (slightly different
+            # though), which may result into files being both extracted
+            # and symlinked.
+            # Just use WAD ones, even if it leads to not having a
+            # description.json at all. These files are not needed
+            # anyway.
+            if export_path.endswith('/descriptions.json'):
+                return None
+
+        storage_file = StorageFile(self.storage, extract_path, export_path)
+        storage_file.save_method = save_method
+        return storage_file
+
 
     def exported_files(self):
         """Generate a list of files on disk (even if not if patch files)
@@ -335,15 +375,22 @@ class PatchExporter:
     def all_exported_paths(self):
         """Generate a list of all files exported by a full export"""
 
-        patch_solutions = [sv for sv in self.patch.solutions(latest=True) if sv.solution.name == 'league_client_sln']
-        for pv in sorted(pv for sv in patch_solutions for pv in sv.projects(True)):
+        patch_solutions = self.patch.solutions(latest=True)
+        projects = {pv for sv in patch_solutions for pv in sv.projects(True)}
+        #XXX for now, exclude lol_game_client language projects
+        projects = {pv for pv in projects if not pv.project.name.startswith('lol_game_client_')}
+
+        for pv in sorted(projects):
+            is_game = pv.project.name.startswith('lol_game_client')
             for extract_path in pv.filepaths():
                 export_path = self.to_export_path(extract_path)
-                if extract_path.endswith('.wad'):
+                if extract_path.endswith('.wad') or extract_path.endswith('.wad.client'):
                     wad = self._open_wad(extract_path)
                     yield from (wf.path for wf in wad.files)
                 else:
-                    yield export_path
+                    storage_file = self._storage_file(extract_path, export_path, is_game)
+                    if storage_file:
+                        yield storage_file.export_path
 
 
     def write_links(self, path=None):
@@ -388,4 +435,55 @@ class PatchExporter:
         """Compute path to which export the file from storage path"""
         # projects/<p_name>/releases/<p_version>/files/<export_path>
         return path.split('/', 5)[5].lower()
+
+    @staticmethod
+    def game_export_path(path):
+        if not path.endswith('.dds'):
+            return None
+        return f"game/{path[:-3]}png"
+
+
+class StorageFile:
+    """Single exported file from storage"""
+
+    def __init__(self, storage, storage_path, export_path):
+        self.source_path = storage.fspath(storage_path)
+        self.export_path = export_path
+        self.save_method = None
+
+    def export(self, output):
+        """Export the file, do nothing if it already exists"""
+
+        output_path = os.path.join(output, self.export_path)
+        if os.path.lexists(output_path):
+            return
+        logger.info(f"exporting {self.export_path}")
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+        try:
+            if self.save_method is None:
+                shutil.copyfile(self.source_path, output_path)
+            else:
+                with open(self.source_path, 'rb') as fin:
+                    with open(output_path, 'wb') as fout:
+                        self.save_method(fin, fout)
+        except Exception as e:
+            # remove partially exported file
+            try:
+                os.remove(output_path)
+            except OSError:
+                pass
+            if isinstance(e, ValueError):
+                logger.warning(f"cannot convert file '{self.source_path}': {e}")
+            else:
+                raise
+
+
+def save_image_to_png(data_or_file, fout):
+    if isinstance(data_or_file, bytes):
+        data_or_file = BytesIO(data_or_file)
+    try:
+        im = Image.open(data_or_file)
+        im.save(fout)
+    except NotImplementedError:
+        raise ValueError("cannot convert image to PNG")
 

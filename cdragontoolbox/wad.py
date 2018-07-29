@@ -89,6 +89,8 @@ class WadFileHeader:
         # values that can be guessed
         self.path = None
         self.ext = None
+        # method used to save the file, converting it if needed
+        self.save_method = self.save_default
 
     def read_data(self, f):
         """Retrieve (uncompressed) data from WAD file object"""
@@ -123,9 +125,9 @@ class WadFileHeader:
         os.makedirs(os.path.dirname(output_path), exist_ok=True)
         try:
             with open(output_path, 'wb') as fout:
-                fout.write(data)
+                self.save_method(data, fout)
         except Exception as e:
-            # remove partially downloaded file
+            # remove partially extracted file
             try:
                 os.remove(output_path)
             except OSError:
@@ -133,10 +135,11 @@ class WadFileHeader:
             # Windows does not support path components longer than 255
             # ignore such files
             if isinstance(e, OSError) and e.errno == os.errno.EINVAL:
-                logger.warning(f"ignore file with invalid path: {wadfile.path}")
+                logger.warning(f"ignore file with invalid path: {self.path}")
+            elif isinstance(e, ValueError):
+                logger.warning(f"cannot convert file '{self.path}': {e}")
             else:
                 raise
-
 
     @staticmethod
     def guess_extension(data):
@@ -160,6 +163,10 @@ class WadFileHeader:
         for prefix, ext in WadFileHeader._magic_numbers_ext.items():
             if data.startswith(prefix):
                 return ext
+
+    @staticmethod
+    def save_default(data, fout):
+        fout.write(data)
 
 
 class Wad:

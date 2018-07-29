@@ -2,3 +2,4 @@ requests
 hachoir3
 xxhash
 zstd
+Pillow
