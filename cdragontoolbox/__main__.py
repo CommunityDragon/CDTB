@@ -268,21 +268,6 @@ def command_export(parser, args):
             exporter.create_symlinks()
 
 
-def command_upload(parser, args):
-    storage = args.storage
-
-    exporter = Exporter(storage, args.output)
-    if args.patch:
-        version = Version(args.patch)
-        for e in exporter.exporters:
-            if e.patch.version == version:
-                exporter = e
-                break
-        else:
-            parser.error("patch version not found")
-    exporter.upload(args.target)
-
-
 def create_parser():
     parser = argparse.ArgumentParser('cdragontoolbox',
         description="Toolbox to work with League of Legends game files",
@@ -412,15 +397,6 @@ def create_parser():
                            help="export the whole patch (don't compare with a previous one)")
     subparser.add_argument('patch', nargs='?',
                            help="patch version to export or 'latest', can be omitted to update all exported patches")
-
-    subparser = subparsers.add_parser('upload', parents=[storage_parser],
-                                      help="synchronize exported files to a remote host")
-    subparser.add_argument('-o', '--output', default=default_export,
-                           help="directory of source exported files (default: %(default)s)")
-    subparser.add_argument('target',
-                           help="remote target and path, suitable for rsync")
-    subparser.add_argument('patch', nargs='?',
-                           help="patch version to export, can be omitted to update all exported patches")
 
     return parser
 
