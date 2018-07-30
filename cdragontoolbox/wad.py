@@ -217,7 +217,7 @@ class Wad:
         for wadfile in self.files:
             if wadfile.path_hash in hashes:
                 wadfile.path = hashes[wadfile.path_hash]
-                wadfile.ext = wadfile.path.split('.', 1)[1]
+                wadfile.ext = wadfile.path.rsplit('.', 1)[1]
 
     def guess_extensions(self):
         # avoid opening the file if not needed
