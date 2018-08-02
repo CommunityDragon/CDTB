@@ -235,11 +235,13 @@ def command_export(parser, args):
         # multiple patch (update only)
         if args.previous:
             parser.error("patch version required with --previous or --full")
-        exporter = Exporter(storage, args.output)
+        exporter = Exporter(storage, args.output, Version(args.first))
         exporter.update()
         if args.symlinks:
             exporter.create_symlinks()
     else:
+        if args.first:
+            parser.error("--from cannot be used when providing a patch")
         # single patch
         # retrieve target and previous patch versions
         patch = PatchVersion.version(storage, None if args.patch == 'latest' else Version(args.patch))
@@ -395,6 +397,8 @@ def create_parser():
                            help="previous patch version to compare with (default: guessed)")
     subparser.add_argument('--full', dest='previous', action='store_const', const='none',
                            help="export the whole patch (don't compare with a previous one)")
+    subparser.add_argument('--from', dest='first',
+                           help="if a patch is not provided, update all exported patches starting from this one")
     subparser.add_argument('patch', nargs='?',
                            help="patch version to export or 'latest', can be omitted to update all exported patches")
 

@@ -67,7 +67,7 @@ def reduce_common_paths(paths1, paths2, excludes):
 class Exporter:
     """Handle export of multiple patchs in the same directory"""
 
-    def __init__(self, storage: Storage, output: str, stored=True):
+    def __init__(self, storage: Storage, output: str, first: Version=None, stored=True):
         self.output = output
 
         versions = set()
@@ -85,6 +85,8 @@ class Exporter:
 
         patches = []
         for patch in PatchVersion.versions(storage, stored=stored):
+            if first and patch.version < first:
+                break
             if patch.version in versions:
                 patches.append(patch)
                 versions.remove(patch.version)
