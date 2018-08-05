@@ -252,11 +252,12 @@ class PatchExporter:
                     else:
                         previous_files.append(self.to_export_path(path))
 
-            # check for files both extracted and linked
-            # should not happen except in case of duplicated file
-            duplicates = new_symlinks & new_extracts
-            if duplicates:
-                raise RuntimeError(f"duplicate files: {duplicates!r}")
+            # Check for files both extracted and linked, which should only
+            # happen for duplicated files. Game files can contain duplicates,
+            # so don't fail and ignore symlinks; this will avoid errors later.
+            for duplicate in sorted(new_symlinks & new_extracts):
+                logger.warning(f"duplicate file: {duplicate}")
+                new_symlinks.remove(duplicate)
 
             self.previous_links = reduce_common_paths(new_symlinks, previous_files, new_extracts)
         else:
