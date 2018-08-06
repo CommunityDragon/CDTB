@@ -479,6 +479,7 @@ def save_image_to_png(data_or_file, fout):
     try:
         im = Image.open(data_or_file)
         im.save(fout)
-    except NotImplementedError:
+    except (OSError, NotImplementedError):
+        # "OSError: cannot identify image file" happen for some files with a wrong extension
         raise ValueError("cannot convert image to PNG")
 
