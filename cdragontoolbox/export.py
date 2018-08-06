@@ -243,14 +243,7 @@ class PatchExporter:
 
         # build the reduced list of new symlinks (self.previous_links)
         if self.previous_patch:
-            previous_files = []
-            for pv in prev_projects.values():
-                for path in pv.filepaths():
-                    if path.endswith('.wad') or path.endswith('.wad.client'):
-                        wad = self._open_wad(path)
-                        previous_files += [wf.path for wf in wad.files]
-                    else:
-                        previous_files.append(self.to_export_path(path))
+            previous_files = list(self._exported_paths_for_projects(prev_projects.values()))
 
             # Check for files both extracted and linked, which should only
             # happen for duplicated files. Game files can contain duplicates,
@@ -383,18 +376,7 @@ class PatchExporter:
         projects = {pv for sv in patch_solutions for pv in sv.projects(True)}
         #XXX for now, exclude lol_game_client language projects
         projects = {pv for pv in projects if not pv.project.name.startswith('lol_game_client_')}
-
-        for pv in sorted(projects):
-            is_game = pv.project.name.startswith('lol_game_client')
-            for extract_path in pv.filepaths():
-                export_path = self.to_export_path(extract_path)
-                if extract_path.endswith('.wad') or extract_path.endswith('.wad.client'):
-                    wad = self._open_wad(extract_path)
-                    yield from (wf.path for wf in wad.files)
-                else:
-                    storage_file = self._storage_file(extract_path, export_path, is_game)
-                    if storage_file:
-                        yield storage_file.export_path
+        yield from self._exported_paths_for_projects(sorted(projects))
 
 
     def write_links(self, path=None):
@@ -440,12 +422,20 @@ class PatchExporter:
         # projects/<p_name>/releases/<p_version>/files/<export_path>
         return path.split('/', 5)[5].lower()
 
-    @staticmethod
-    def game_export_path(path):
-        base, ext = os.path.splitext(path)
-        if ext not in ('.dds', '.tga', '.png'):
-            return None
-        return f"game/{base}.png"
+    def _exported_paths_for_projects(self, projects):
+        """Generate exported paths for a list of projects"""
+
+        for pv in projects:
+            is_game = pv.project.name.startswith('lol_game_client')
+            for extract_path in pv.filepaths():
+                if extract_path.endswith('.wad') or extract_path.endswith('.wad.client'):
+                    wad = self._open_wad(extract_path)
+                    yield from (wf.path for wf in wad.files)
+                else:
+                    export_path = self.to_export_path(extract_path)
+                    storage_file = self._storage_file(extract_path, export_path, is_game)
+                    if storage_file:
+                        yield storage_file.export_path
 
 
 class StorageFile:
