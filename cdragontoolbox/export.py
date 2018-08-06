@@ -304,8 +304,8 @@ class PatchExporter:
             wad.set_unknown_paths("unknown")
             new_files = []
             for wf in wad.files:
-                # convert .dds to .png
-                if wf.ext == 'dds':
+                # convert some image formats to .png
+                if wf.ext in ('dds', 'tga'):
                     wf.save_method = save_image_to_png
                     wf.ext = 'png'
                     wf.path = wf.path[:-3] + 'png'
@@ -332,11 +332,12 @@ class PatchExporter:
 
         save_method = None
         if is_game:
-            # convert .dds to .png
-            if export_path.endswith('.dds'):
-                export_path = export_path[-3:] + 'png'
+            # convert some image formats to .png
+            base, ext = os.path.splitext(export_path)
+            if ext in ('.dds', '.tga'):
+                export_path = base + '.png'
                 save_method = save_image_to_png
-            if not export_path.endswith('.png'):
+            elif ext != '.png':
                 return None
             # export in 'game/' subdirectory
             export_path = f"game/{export_path}"
@@ -441,9 +442,10 @@ class PatchExporter:
 
     @staticmethod
     def game_export_path(path):
-        if not path.endswith('.dds'):
+        base, ext = os.path.splitext(path)
+        if ext not in ('.dds', '.tga', '.png'):
             return None
-        return f"game/{path[:-3]}png"
+        return f"game/{base}.png"
 
 
 class StorageFile:

@@ -283,7 +283,7 @@ class Wad:
             for wadfile in self.files:
                 # only process text files
                 # skip non-text files as soon as possible
-                if wadfile.ext in ('png', 'jpg', 'ttf', 'webm', 'ogg', 'dds'):
+                if wadfile.ext in ('png', 'jpg', 'ttf', 'webm', 'ogg', 'dds', 'tga'):
                     continue
                 try:
                     data = wadfile.read_data(f).decode('utf-8-sig')
