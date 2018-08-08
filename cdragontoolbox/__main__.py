@@ -171,7 +171,7 @@ def command_wad_list(parser, args):
 
 def command_hashes_guess(parser, args):
     if args.hashes is None:
-        hashfile = default_hashfile(args.wad)
+        hashfile = default_hashfile(args.wad[0])
     else:
         hashfile = HashFile(args.hashes)
 
