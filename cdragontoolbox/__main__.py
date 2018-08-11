@@ -14,7 +14,7 @@ from cdragontoolbox.storage import (
 )
 from cdragontoolbox.wad import (
     Wad,
-    default_hashfile,
+    wads_from_component,
 )
 from cdragontoolbox.export import (
     Exporter,
@@ -22,6 +22,9 @@ from cdragontoolbox.export import (
 )
 from cdragontoolbox.hashes import (
     HashFile,
+    default_hashfile,
+    LcuHashGuesser,
+    GameHashGuesser,
 )
 
 
@@ -170,56 +173,94 @@ def command_wad_list(parser, args):
 
 
 def command_hashes_guess(parser, args):
-    if args.hashes is None:
-        hashfile = default_hashfile(args.wad[0])
-    else:
-        hashfile = HashFile(args.hashes)
+    all_methods = [
+        ("grep", "search for hashes in WAD files"),
+        ("numbers", "substitute numbers in basenames"),
+        ("words", "substitute known words in basenames"),
+        ("ext", "substitute extensions"),
+        ("regionlang", "substitute region and lang (LCU only)"),
+        ("plugin", "substitute plugin name (LCU only)"),
+        ("skin-num", "substitute skinNN numbers (game only)"),
+        ("character", "substitute character name (game only)"),
+        ("lang", "substitute lang (game only)"),
+    ]
+    all_method_names = [name for name, _ in all_methods]
 
-    wad_paths = []
+    if args.list_methods:
+        name_width = max(len(name) for name in all_method_names)
+        for name, desc in all_methods:
+            print(f"  {name:{name_width}}  {desc}")
+        return
+
+    if not args.methods:
+        method_names = all_method_names
+    else:
+        method_names = [s.strip() for s in args.methods.split(',')]
+        for name in method_names:
+            if name not in all_method_names:
+                parser.error(f"unknown guessing method: {name}")
+
+    # collect WAD paths
+    wads = []
     for path_or_component in args.wad:
         try:
             component = parse_component(args.storage, path_or_component)
         except ValueError:
-            wad_paths.append(path_or_component)
+            wads.append(Wad(path_or_component))
             continue
-        # component, get wad paths
-        if isinstance(component, ProjectVersion):
-            it = component.filepaths()
-        elif isinstance(component, SolutionVersion):
-            it = component.filepaths(langs=True)
-        elif isinstance(component, PatchVersion):
-            # there must be one solution
-            for sv in component.solutions(latest=True):
-                if sv.solution.name == 'league_client_sln':
-                    it = sv.filepaths(langs=True)
-                    break
-            else:
-                it = []
-        else:
-            parser.error(f"command cannot be used on {component}")
-        wad_paths.extend(args.storage.fspath(p) for p in it if p.endswith('.wad'))
+        wads += wads_from_component(component)
 
-    hashes = hashfile.load()
+    # guess LCU hashes
+    guesser = LcuHashGuesser.from_wads(wads)
+    if guesser.unknown:
+        nunknown = len(guesser.unknown)
+        if "grep" in method_names:
+            for wad in guesser.wads:
+                wad.guess_extensions()
+                guesser.grep_wad(wad)
+        if "numbers" in method_names:
+            guesser.substitute_numbers()
+        if "words" in method_names:
+            guesser.substitute_basename_words()
+        if "ext" in method_names:
+            guesser.substitute_extensions()
+        if "regionlang" in method_names:
+            guesser.substitute_region_lang()
+        if "plugin" in method_names:
+            guesser.substitute_plugin()
 
-    wads = [Wad(path) for path in wad_paths]
-    unknown_hashes = set()
-    for wad in wads:
-        unknown_hashes |= set(wadfile.path_hash for wadfile in wad.files)
-    unknown_hashes -= set(hashes)
+        nfound = nunknown - len(guesser.unknown)
+        if nfound:
+            print(f"found LCU hashes: {nfound}")
+            if not args.dry_run:
+                guesser.save()
 
-    new_hashes = {}
-    if args.search:
-        for wad in wads:
-            wad.guess_extensions()
-            new_hashes.update(wad.guess_hashes(unknown_hashes))
-    new_hashes.update(Wad.guess_hashes_from_known(hashes, unknown_hashes))
+    # guess game hashes
+    guesser = GameHashGuesser.from_wads(wads)
+    if guesser.unknown:
+        nunknown = len(guesser.unknown)
+        if "grep" in method_names:
+            for wad in guesser.wads:
+                wad.guess_extensions()
+                guesser.grep_wad(wad)
+        if "numbers" in method_names:
+            guesser.substitute_numbers()
+        if "words" in method_names:
+            guesser.substitute_basename_words()
+        if "ext" in method_names:
+            guesser.substitute_extensions()
+        if "skin-num" in method_names:
+            guesser.substitute_skin_numbers()
+        if "character" in method_names:
+            guesser.substitute_character()
+        if "lang" in method_names:
+            guesser.substitute_lang()
 
-    for h, path in new_hashes.items():
-        print(f"{h:016x} {path}")
-
-    if not args.dry_run and new_hashes:
-        hashes.update(new_hashes)
-        hashfile.save()
+        nfound = nunknown - len(guesser.unknown)
+        if nfound:
+            print(f"found game hashes: {nfound}")
+            if not args.dry_run:
+                guesser.save()
 
 
 def command_export(parser, args):
@@ -375,13 +416,13 @@ def create_parser():
 
     subparser = subparsers.add_parser('hashes-guess', parents=[storage_parser],
                                       help="guess hashes from WAD content")
-    subparser.add_argument('-H', '--hashes',
-                           help="hashes of known paths")
     subparser.add_argument('-n', '--dry-run', action='store_true',
                            help="list new hashes but don't update the hashes file")
-    subparser.add_argument('-g', '--search', action='store_true',
-                           help="search for paths in WAD files")
-    subparser.add_argument('wad', nargs='+',
+    subparser.add_argument('-m', '--methods',
+                           help="list of guessing methods to run, comma-separated (default: all)")
+    subparser.add_argument('--list-methods', action='store_true',
+                           help="display a list of valid guessing methods and exit")
+    subparser.add_argument('wad', nargs='*',
                            help="WAD files or components to analyze")
 
 
