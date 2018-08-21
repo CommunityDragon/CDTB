@@ -1187,6 +1187,7 @@ c59dea782371892f plugins/rcp-be-lol-game-data/global/default/assets/characters/c
 3fca8f634e88f33e plugins/rcp-be-lol-game-data/global/default/assets/characters/caitlyn/skins/skin10/caitlynloadscreen_10.png
 ab3102437daf6f6b plugins/rcp-be-lol-game-data/global/default/assets/characters/caitlyn/skins/skin11/caitlynloadscreen_11.jpg
 3bc8a261d1d1ad8d plugins/rcp-be-lol-game-data/global/default/assets/characters/caitlyn/skins/skin11/caitlynloadscreen_11.png
+f2eff5d46b7b780c plugins/rcp-be-lol-game-data/global/default/assets/characters/caitlyn/skins/skin13/caitlynloadscreen_13.jpg
 3dd7cc93ee9a063b plugins/rcp-be-lol-game-data/global/default/assets/characters/caitlyn/skins/skin13/caitlynloadscreen_13.skins_caitlyn_skin13.jpg
 d1d4f4a418810b03 plugins/rcp-be-lol-game-data/global/default/assets/characters/camille/hud/icons2d/camille_e.png
 94a8ccc3c68bdb86 plugins/rcp-be-lol-game-data/global/default/assets/characters/camille/hud/icons2d/camille_passive.png
@@ -1456,6 +1457,7 @@ aca5d2dd67234fc1 plugins/rcp-be-lol-game-data/global/default/assets/characters/g
 8fc737174b898724 plugins/rcp-be-lol-game-data/global/default/assets/characters/gangplank/skins/skin06/gangplankloadscreen_6.jpg
 ce12ed6e93e77124 plugins/rcp-be-lol-game-data/global/default/assets/characters/gangplank/skins/skin07/gangplankloadscreen_7.jpg
 cf6a6cb1541d423b plugins/rcp-be-lol-game-data/global/default/assets/characters/gangplank/skins/skin08/gangplankloadscreen_8.jpg
+24cc00f11d3f2fcc plugins/rcp-be-lol-game-data/global/default/assets/characters/gangplank/skins/skin14/gangplankloadscreen_14.jpg
 c69e1e68dd192420 plugins/rcp-be-lol-game-data/global/default/assets/characters/gangplank/skins/skin14/gangplankloadscreen_14.skins_gangplank_skin14.jpg
 e3714fe414206ec4 plugins/rcp-be-lol-game-data/global/default/assets/characters/garen/hud/icons2d/garen_e1.png
 611d420b14bbc946 plugins/rcp-be-lol-game-data/global/default/assets/characters/garen/hud/icons2d/garen_passive.png
@@ -1659,7 +1661,9 @@ b2863dada73b4f1f plugins/rcp-be-lol-game-data/global/default/assets/characters/j
 a559be239308ff92 plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/skins/skin06/jarvanivloadscreen_6.png
 e09d9fbb8428a78e plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/skins/skin07/jarvanivloadscreen_7.jpg
 c77f41cc4f4166b3 plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/skins/skin07/jarvanivloadscreen_7.skins_jarvaniv_skin07.png
+8975e910e0c2f394 plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/skins/skin08/jarvanivloadscreen_8.jpg
 99ff5aa7cd8694ec plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/skins/skin08/jarvanivloadscreen_8.skins_jarvaniv_skin08.jpg
+b7f04ffeb05cc92d plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/skins/skin08/jarvanivloadscreen_8_le.jpg
 ca6d0143e3c16808 plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/skins/skin08/jarvanivloadscreen_8_le.skins_jarvaniv_skin08.jpg
 5e6f876bc6e008df plugins/rcp-be-lol-game-data/global/default/assets/characters/jax/hud/icons2d/armsmaster_coupdegrace.png
 fee50c7a483aca8e plugins/rcp-be-lol-game-data/global/default/assets/characters/jax/hud/icons2d/armsmaster_disarm.png
@@ -3143,6 +3147,7 @@ bf0d3bae4990a28d plugins/rcp-be-lol-game-data/global/default/assets/characters/z
 d3d9fae674e6acd8 plugins/rcp-be-lol-game-data/global/default/assets/characters/zoe/skins/skin01/zoeloadscreen_1.champ138_mage.png
 d65253144c2ada1c plugins/rcp-be-lol-game-data/global/default/assets/characters/zoe/skins/skin01/zoeloadscreen_1.jpg
 0e1b9484f8cda0b8 plugins/rcp-be-lol-game-data/global/default/assets/characters/zoe/skins/skin01/zoeloadscreen_1.png
+404a943425ff651b plugins/rcp-be-lol-game-data/global/default/assets/characters/zoe/skins/skin02/zoeloadscreen_2.jpg
 a8abe745df5b121f plugins/rcp-be-lol-game-data/global/default/assets/characters/zoe/skins/skin02/zoeloadscreen_2.skins_zoe_skin02.jpg
 ea19c35f7800c13e plugins/rcp-be-lol-game-data/global/default/assets/characters/zyra/hud/icons2d/zyrae.png
 b024dc9de2c62eb1 plugins/rcp-be-lol-game-data/global/default/assets/characters/zyra/hud/icons2d/zyrap.png
@@ -31179,6 +31184,10 @@ d36e20400e30c4fa plugins/rcp-fe-lol-splash/global/default/splash-assets/heimer/c
 c603fb08fb415b6d plugins/rcp-fe-lol-splash/global/default/splash-assets/heimer/image-splash-heimer.jpg
 31594e3807cc55c2 plugins/rcp-fe-lol-splash/global/default/splash-assets/heimer/music-splash-heimer.ogg
 2809b8339f19ad3f plugins/rcp-fe-lol-splash/global/default/splash-assets/heimer/video-splash-heimer.webm
+99854fd4396394bb plugins/rcp-fe-lol-splash/global/default/splash-assets/highnoon2018/config.json
+40527507b65099f9 plugins/rcp-fe-lol-splash/global/default/splash-assets/highnoon2018/image-splash-highnoon2018.jpg
+ae25225385874b23 plugins/rcp-fe-lol-splash/global/default/splash-assets/highnoon2018/music-splash-highnoon2018.ogg
+bdbd99560d843d04 plugins/rcp-fe-lol-splash/global/default/splash-assets/highnoon2018/video-splash-highnoon2018.webm
 bbb3068a5de9a8e8 plugins/rcp-fe-lol-splash/global/default/splash-assets/irelia/config.json
 c03cbdd5bc351a7d plugins/rcp-fe-lol-splash/global/default/splash-assets/irelia/image-splash-irelia.jpg
 fbd87d5933be44ac plugins/rcp-fe-lol-splash/global/default/splash-assets/irelia/music-splash-irelia.ogg
@@ -31198,6 +31207,11 @@ c3df1db2aeced2c2 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/
 5ec07f2459c6c555 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/intro-video-splash-msi2018.webm
 d1ae2e639fd17f61 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/music-splash-msi2018.ogg
 3a679b37c071a5d4 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/video-splash-msi2018.webm
+9609469bc2f17c11 plugins/rcp-fe-lol-splash/global/default/splash-assets/nunu/config.json
+25a8587244626a6f plugins/rcp-fe-lol-splash/global/default/splash-assets/nunu/image-splash-nunu.jpg
+783445e511ed25d3 plugins/rcp-fe-lol-splash/global/default/splash-assets/nunu/intro-sound-splash-nunu.ogg
+25f6e073722e13b1 plugins/rcp-fe-lol-splash/global/default/splash-assets/nunu/music-splash-nunu.ogg
+b4e7a951959d6f06 plugins/rcp-fe-lol-splash/global/default/splash-assets/nunu/video-splash-nunu.webm
 3563385fec952650 plugins/rcp-fe-lol-splash/global/default/splash-assets/poolparty2018/config.json
 e7a0a4ab383e3c7e plugins/rcp-fe-lol-splash/global/default/splash-assets/poolparty2018/image-splash-poolparty2018.jpg
 b51eccfdb4f62632 plugins/rcp-fe-lol-splash/global/default/splash-assets/poolparty2018/music-splash-poolparty2018.ogg
