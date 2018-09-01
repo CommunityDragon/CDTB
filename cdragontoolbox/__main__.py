@@ -20,6 +20,9 @@ from cdragontoolbox.export import (
     Exporter,
     PatchExporter,
 )
+from cdragontoolbox.binfile import (
+    BinFile,
+)
 from cdragontoolbox.hashes import (
     HashFile,
     default_hashfile,
@@ -311,6 +314,16 @@ def command_export(parser, args):
             exporter.create_symlinks()
 
 
+def command_bin_dump(parser, args):
+    if not os.path.isfile(args.bin):
+        parser.error("BIN file does not exist")
+
+    with open(args.bin, 'rb') as f:
+        binfile = BinFile(f)
+    for entry in binfile.entries:
+        print(entry)
+
+
 def create_parser():
     parser = argparse.ArgumentParser('cdragontoolbox',
         description="Toolbox to work with League of Legends game files",
@@ -442,6 +455,15 @@ def create_parser():
                            help="if a patch is not provided, update all exported patches starting from this one")
     subparser.add_argument('patch', nargs='?',
                            help="patch version to export or 'latest', can be omitted to update all exported patches")
+
+
+    # bin files commands
+
+    subparser = subparsers.add_parser('bin-dump',
+                                      help="dump a BIN file as a text tree")
+    subparser.add_argument('bin',
+                           help="BIN file to extract")
+
 
     return parser
 
