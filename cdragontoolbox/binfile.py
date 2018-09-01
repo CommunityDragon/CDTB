@@ -176,25 +176,8 @@ class BinFile:
         if f.read(4) != b'PROP':
             raise ValueError("missing magic code")
         reader = BinReader(f)
-
-        # parse header
-        self.version, = reader.read_fmt('<L')
-        if self.version >= 2:
-            n, = reader.read_fmt('<L')
-            self.linked_files = [reader.read_string() for _ in range(n)]
-        else:
-            self.linked_files = None
-        entry_count, = reader.read_fmt('<L')
-        entry_types = list(reader.read_fmt(f"<{entry_count}L"))
-
-        # parse entries
-        self.entries = []
-        for etype in entry_types:
-            pos = reader.f.tell() + 4  # skip 'length' size
-            length, ehash, count = reader.read_fmt('<LLH')
-            values = [reader.read_field() for _ in range(count)]
-            self.entries.append(BinFileEntry(BinHash(ehash), etype, values))
-            assert reader.f.tell() - pos == length
+        self.version, self.linked_files, entry_types = reader.read_binfile_header()
+        self.entries = [reader.read_binfile_entry(etype) for etype in entry_types]
 
 
 class BinReader:
@@ -204,6 +187,28 @@ class BinReader:
     def read_fmt(self, fmt):
         length = struct.calcsize(fmt)
         return struct.unpack(fmt, self.f.read(length))
+
+    def read_binfile_header(self):
+        """Return a (version, linked_files, entry_types) tuple"""
+        version, = self.read_fmt('<L')
+        if version >= 2:
+            n, = self.read_fmt('<L')
+            linked_files = [self.read_string() for _ in range(n)]
+        else:
+            linked_files = None
+        entry_count, = self.read_fmt('<L')
+        entry_types = list(self.read_fmt(f"<{entry_count}L"))
+        return version, linked_files, entry_types
+
+    def read_binfile_entry(self, etype):
+        """Read a single binfile entry"""
+
+        pos = self.f.tell() + 4  # skip 'length' size
+        length, ehash, count = self.read_fmt('<LLH')
+        values = [self.read_field() for _ in range(count)]
+        entry = BinFileEntry(BinHash(ehash), etype, values)
+        assert self.f.tell() - pos == length
+        return entry
 
 
     def read_bvalue(self, vtype):
