@@ -3,6 +3,7 @@ from enum import IntEnum
 import struct
 import textwrap
 from typing import Dict
+from .hashes import HashFile
 
 HashMap = Dict[int, str]
 
