@@ -80,7 +80,7 @@ class BinStruct:
         return f"<STRUCT {self.ehash} {self.entry} {sfields}>"
 
 class BinEmbedded:
-    """Embeddedured binary value"""
+    """Embedded binary value"""
 
     def __init__(self, ehash, entry, fields):
         self.ehash = ehash
@@ -307,7 +307,7 @@ class BinReader:
         return BinStructField(fhash, self.read_bvalue(ftype))
 
     def read_field_embedded(self, fhash, ftype):
-        return BinStructField(fhash, self.read_bvalue(ftype))
+        return BinEmbeddedField(fhash, self.read_bvalue(ftype))
 
     def read_field_array(self, fhash, ftype):
         vtype, count = self.read_fmt('<BB')
@@ -315,7 +315,7 @@ class BinReader:
         return BinArrayField(fhash, vtype, [self.read_bvalue(vtype) for _ in range(count)])
 
     def read_field_map(self, fhash, ftype):
-        ktype, vtype, size, count = self.read_fmt('<BBLL')
+        ktype, vtype, _, count = self.read_fmt('<BBLL')
         ktype, vtype = BinType(ktype), BinType(vtype)
         # assume key type is hashable
         values = dict((self.read_bvalue(ktype), self.read_bvalue(vtype)) for _ in range(count))
