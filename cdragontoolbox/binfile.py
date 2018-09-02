@@ -173,6 +173,8 @@ class BinFileEntry:
 
 class BinFile:
     def __init__(self, f):
+        if isinstance(f, str):
+            f = open(f, 'rb')
         if f.read(4) != b'PROP':
             raise ValueError("missing magic code")
         reader = BinReader(f)
