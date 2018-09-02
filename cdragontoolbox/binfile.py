@@ -70,26 +70,24 @@ class BinType(IntEnum):
 class BinStruct:
     """Structured binary value"""
 
-    def __init__(self, ehash, entry, fields):
+    def __init__(self, ehash, fields):
         self.ehash = ehash
-        self.entry = entry
         self.fields = fields
 
     def __repr__(self):
         sfields = _repr_indent_list(self.fields)
-        return f"<STRUCT {self.ehash} {self.entry} {sfields}>"
+        return f"<STRUCT {self.ehash} {sfields}>"
 
 class BinEmbedded:
     """Embedded binary value"""
 
-    def __init__(self, ehash, entry, fields):
+    def __init__(self, ehash, fields):
         self.ehash = ehash
-        self.entry = entry
         self.fields = fields
 
     def __repr__(self):
         sfields = _repr_indent_list(self.fields)
-        return f"<EMBEDDED {self.ehash} {self.entry} {sfields}>"
+        return f"<EMBEDDED {self.ehash} {sfields}>"
 
 class BinField:
     """Base class for binary fields
@@ -127,7 +125,7 @@ class BinStructField(BinField):
 
     def __repr__(self):
         sfields = _repr_indent_list(self.value.fields)
-        return f"<{self.fhash} STRUCT {self.value.ehash} {self.value.entry} {sfields}>"
+        return f"<{self.fhash} STRUCT {self.value.ehash} {sfields}>"
 
 class BinEmbeddedField(BinField):
     def __init__(self, fhash, value):
@@ -136,7 +134,7 @@ class BinEmbeddedField(BinField):
 
     def __repr__(self):
         sfields = _repr_indent_list(self.value.fields)
-        return f"<{self.fhash} EMBEDDED {self.value.ehash} {self.value.entry} {sfields}>"
+        return f"<{self.fhash} EMBEDDED {self.value.ehash} {sfields}>"
 
 class BinArrayField(BinField):
     def __init__(self, fhash, vtype, values):
@@ -280,15 +278,15 @@ class BinReader:
         ehash, = self.read_fmt('<L')
         if ehash == 0:
             return None
-        entry, count = self.read_fmt('<LH')
-        return BinStruct(BinHash(ehash), entry, [self.read_field() for _ in range(count)])
+        _, count = self.read_fmt('<LH')
+        return BinStruct(BinHash(ehash), [self.read_field() for _ in range(count)])
 
     def read_embedded(self):
         ehash, = self.read_fmt('<L')
         if ehash == 0:
             return None
-        entry, count = self.read_fmt('<LH')
-        return BinEmbedded(BinHash(ehash), entry, [self.read_field() for _ in range(count)])
+        _, count = self.read_fmt('<LH')
+        return BinEmbedded(BinHash(ehash), [self.read_field() for _ in range(count)])
 
     def read_field(self):
         fhash, ftype = self.read_fmt('<LB')
