@@ -14821,6 +14821,9 @@ d394ac7e518c121b plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/36
 f6ec1c27c2b6e2d9 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3621.jpg
 2bd265f6b72561d0 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3622.jpg
 a9a6b59d5ca8a182 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3623.jpg
+af9ba5816cae22d8 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3625.jpg
+37bab89f8e046ecb plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3627.jpg
+8951caba7798874b plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3628.jpg
 8e689f671de31d69 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3630.jpg
 8728d13d74c7e09d plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3631.jpg
 c0caf1e7ad1e45d2 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3632.jpg
@@ -14969,6 +14972,7 @@ c5c6fa9de792fcdf plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/37
 1c840418e92dff48 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3775.jpg
 584b52d8fd583c0c plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3776.jpg
 50cc9b2ac6da9e05 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3777.jpg
+160749af31270f52 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3778.jpg
 a70c00fcf8b5cfef plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/4.jpg
 e6403044cebc1d72 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/5.jpg
 99692a45d94b2617 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/50.jpg
