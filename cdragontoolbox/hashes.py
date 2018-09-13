@@ -246,6 +246,18 @@ class HashGuesser:
         for prefix in progress_iterator(sorted(prefixes)):
             self.check_iter(prefix + ext for ext in extensions)
 
+    def guess_from_game_hashes(self):
+        """Guess LCU hashes from game hashes"""
+
+        base = 'plugins/rcp-be-lol-game-data/global/default'
+        for path in hashfile_game.load().values():
+            prefix, ext = os.path.splitext(path)
+            if ext == '.dds':
+                self.check(f"{base}/{prefix}.png")
+                self.check(f"{base}/{prefix}.jpg")
+            elif ext == '.json':
+                self.check(f"{base}/{path}")
+
     def wad_text_files(self, wad):
         """Iterate over wad files, generate text file data"""
 
@@ -540,6 +552,20 @@ class GameHashGuesser(HashGuesser):
                 for p in itertools.combinations(str_skins, n+1):
                     s = ''.join(p)
                     self.check(f"data/{char}{s}.bin")
+
+    def guess_from_lcu_hashes(self):
+        """Guess game hashes from LCU hashes"""
+
+        re_data = re.compile(r"^plugins/rcp-be-lol-game-data/global/default/((?:assets|data)/.*)\.(png|jpg|json)$")
+        for path in hashfile_lcu.load().values():
+            m = re_data.match(path)
+            if not m:
+                continue
+            prefix, ext = m.groups()
+            if ext in ('png', 'jpg'):
+                self.check(f"{prefix}.dds")
+            else:
+                self.check(f"{prefix}.{ext}")
 
     def grep_wad(self, wad):
         """Find hashes from a wad file"""
