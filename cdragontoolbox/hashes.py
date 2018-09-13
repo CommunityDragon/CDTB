@@ -218,10 +218,19 @@ class HashGuesser:
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt % s for s in words)
 
-    def _substitute_numbers(self, paths, nmax=10000, fmt='%d'):
+    def _substitute_numbers(self, paths, nmax=10000, digits=None):
         """Guess hashes by changing numbers in basenames"""
 
-        re_extract = re.compile(r'([0-9]+)(?=[^/]*\.[^/]+$)')
+        if digits is True:
+            # guess digits count from nmax
+            digits = len(str(nmax - 1))
+        if digits is None:
+            fmt = '%d'
+            re_extract = re.compile(r'([0-9]+)(?=[^/]*\.[^/]+$)')
+        else:
+            fmt = f"%0{digits}d"
+            re_extract = re.compile(r'([0-9]{%d})(?=[^/]*\.[^/]+$)' % digits)
+
         formats = set()
         for path in paths:
             for m in re_extract.finditer(path):
@@ -313,7 +322,7 @@ class LcuHashGuesser(HashGuesser):
     def substitute_basename_words(self):
         super()._substitute_basename_words(self.build_wordlist())
 
-    def substitute_numbers(self, nmax=10000, fmt='%d'):
+    def substitute_numbers(self, nmax=10000, digits=None):
         re_filter = re.compile(r"""(?:
             ^(?:plugins/rcp-be-lol-game-data/[^/]+/[^/]+/v1/champion-
               | plugins/rcp-be-lol-game-data/global/default/(?:data|assets)/characters/
@@ -323,7 +332,7 @@ class LcuHashGuesser(HashGuesser):
             | /[0-9a-f]{32}\.
             )""", re.VERBOSE)
         paths = (p for p in self.known.values() if not re_filter.search(p))
-        super()._substitute_numbers(paths, nmax, fmt)
+        super()._substitute_numbers(paths, nmax, digits)
 
     def substitute_plugin(self):
         """Guess hashes by changing plugin name"""
@@ -468,9 +477,9 @@ class GameHashGuesser(HashGuesser):
     def build_wordlist(self):
         return build_wordlist(self.known.values())
 
-    def substitute_numbers(self, nmax=100, fmt='%d'):
+    def substitute_numbers(self, nmax=100, digits=None):
         paths = self.known.values()
-        super()._substitute_numbers(paths, nmax, fmt)
+        super()._substitute_numbers(paths, nmax, digits)
 
     def substitute_basename_words(self):
         super()._substitute_basename_words(self.build_wordlist())
