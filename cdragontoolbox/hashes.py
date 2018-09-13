@@ -284,9 +284,10 @@ class LcuHashGuesser(HashGuesser):
         regex = re.compile(r'^plugins/([^/]+)/[^/]+/[^/]+/')
         logger.info(f"substitute region and lang")
         region_lang_list = [(r, l) for r in regions for l in langs]
-        for region_lang in progress_iterator(region_lang_list, lambda r,l: f"{r}/{l}"):
+        known = list(self.known.values())
+        for region_lang in progress_iterator(region_lang_list, lambda rl: f"{rl[0]}/{rl[1]}"):
             replacement = r'plugins/\1/%s/%s/' % region_lang
-            self.check_iter(regex.sub(replacement, p) for p in self.known.values())
+            self.check_iter(regex.sub(replacement, p) for p in known)
 
     def substitute_basename_words(self):
         super()._substitute_basename_words(self.build_wordlist())
