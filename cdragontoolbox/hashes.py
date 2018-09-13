@@ -196,6 +196,15 @@ class HashGuesser:
             self.__directory_list = dirs
         return self.__directory_list
 
+    def substitute_basenames(self):
+        """Check all basenames in each subdirectory"""
+
+        names = set(os.path.basename(p) for p in self.known.values())
+        dirs = self.directory_list()
+        logger.info(f"substitute basenames: {len(names)} basenames, {len(dirs)} directories")
+        for name in progress_iterator(sorted(names)):
+            self.check_iter(f"{d}/{name}" for d in dirs)
+
     def _substitute_basename_words(self, words):
         """Replace all words in known basename"""
 
