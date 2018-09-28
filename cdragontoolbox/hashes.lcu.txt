@@ -4088,6 +4088,7 @@ bce79b1f00ec4390 plugins/rcp-be-lol-game-data/global/default/assets/loot/odyssey
 29156a35f0d20ac6 plugins/rcp-be-lol-game-data/global/default/assets/loot/odyssey-token-490px.png
 678a1f3f14c6fef4 plugins/rcp-be-lol-game-data/global/default/assets/loot/relicbead-icon-490px.png
 8df8dcbc1f03e3b0 plugins/rcp-be-lol-game-data/global/default/assets/loot/riven-border-icon-490px.png
+3ac2ae6644ce93cf plugins/rcp-be-lol-game-data/global/default/assets/loot/riven-gold-chroma-490pxfinal.png
 753d6faf25964350 plugins/rcp-be-lol-game-data/global/default/assets/loot/riven-gold-chroma2-490px.png
 a87543024745605d plugins/rcp-be-lol-game-data/global/default/assets/loot/shyvana-border-icon-490px.png
 17273a1f99b9bccc plugins/rcp-be-lol-game-data/global/default/assets/loot/shyvana-gold-chroma-490px.png
