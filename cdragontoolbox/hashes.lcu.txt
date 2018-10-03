@@ -3235,8 +3235,6 @@ be4b84f29b6d62e9 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/ody
 8eda44bb9a02b1d6 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/emptyaugmentslot.png
 a3b0dc99f1d15428 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/missioninductionCard_odyssey-lg.png
 06be60f6fdfdd6ce plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/missioninductionCard_odyssey-sm.png
-43487aac2cd682c6 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/onslaughtdifficulty.png
-19f56c15e87fb527 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/ziggs-shard.png
 31104c4a4aff9045 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/odyssey-1.jpg
 7a2bc64304ed21d1 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/odyssey-10.jpg
 bb8288a3a032d2eb plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/odyssey-2.jpg
@@ -3249,6 +3247,8 @@ d2e70f4486f23587 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/ody
 2264ae9f6e9d1543 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/odyssey-9.jpg
 0c50677fa1cd0232 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/odyssey_mission_reward_icon_512x512.png
 8bfd0beff53b7c3b plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/odyssey_missionsbg.jpg
+43487aac2cd682c6 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/onslaughtdifficulty.png
+19f56c15e87fb527 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/missionrewards/ziggs-shard.png
 fe373247b9968eb2 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/odysseyaugments_jinxe_1.mnms_odyssey.png
 63cdb7dd96165bbc plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/odysseyaugments_jinxe_2.mnms_odyssey.png
 95db0047e75ac840 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/odysseyaugments/odysseyaugments_jinxe_3.mnms_odyssey.png
@@ -26695,6 +26695,7 @@ d60de8fbb54a1c6b plugins/rcp-fe-lol-hover-card/global/default/init.js
 f9115c19e66780ae plugins/rcp-fe-lol-hover-card/global/default/license.json
 06527ee5417ef947 plugins/rcp-fe-lol-hover-card/global/default/master.png
 9243b5867f16f00b plugins/rcp-fe-lol-hover-card/global/default/note_grey.png
+75aea31d1ef8cf9b plugins/rcp-fe-lol-hover-card/global/default/note_mask.png
 05d15ded2c1e7b5f plugins/rcp-fe-lol-hover-card/global/default/platinum.png
 1aa8efdb82cfd8d7 plugins/rcp-fe-lol-hover-card/global/default/playerobject_l.png
 3c8f1952b9eb37dc plugins/rcp-fe-lol-hover-card/global/default/playerobject_l_inactive.png
@@ -28419,6 +28420,7 @@ e1320fe985736770 plugins/rcp-fe-lol-missions/global/default/events/images/eog/re
 58d371651f69d687 plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/features/clash_ticket.png
 7537b32ca4266c3f plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/features/epicmysteryskinbox.png
 83ff2fd131414396 plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/features/xp.png
+de3d4a66cf67bc44 plugins/rcp-fe-lol-missions/global/default/events/images/missions/aprilfools18/aprilfools_inductionsplashart_lg.png
 0abe00e5fd299ebc plugins/rcp-fe-lol-missions/global/default/events/images/missions/aprilfools18/aprilfools_inductionsplashart_sm.png
 9c2ffe79b114e484 plugins/rcp-fe-lol-missions/global/default/events/images/missions/aprilfools18/aprilfools_missionthumbnails_afoolserrand.png
 c14c19136cb5ae9e plugins/rcp-fe-lol-missions/global/default/events/images/missions/aprilfools18/aprilfools_missionthumbnails_forallforoneforall.png
@@ -29140,6 +29142,7 @@ fb44e9265574b92e plugins/rcp-fe-lol-npe-who-to-play/global/default/hover.png
 ebe52188a57545b0 plugins/rcp-fe-lol-npe-who-to-play/global/default/images/role-icon-marksman.png
 8ec67c60ab0f47d1 plugins/rcp-fe-lol-npe-who-to-play/global/default/images/role-icon-support.png
 d89de7bac4696bad plugins/rcp-fe-lol-npe-who-to-play/global/default/images/role-icon-tank.png
+0f970d80c00e91c2 plugins/rcp-fe-lol-npe-who-to-play/global/default/images/spinner.png
 3869c0b2e7151314 plugins/rcp-fe-lol-npe-who-to-play/global/default/index.html
 e171ef645cb5f618 plugins/rcp-fe-lol-npe-who-to-play/global/default/leftclick.png
 56cf946b82a3429a plugins/rcp-fe-lol-npe-who-to-play/global/default/leftcompleted.png
@@ -30706,6 +30709,7 @@ dfc547b4aca7f851 plugins/rcp-fe-lol-postgame/global/default/images/icon-add-frie
 c2bbfc06cf6e78a8 plugins/rcp-fe-lol-postgame/global/default/images/icon-dice.png
 90b56cfc76423d49 plugins/rcp-fe-lol-postgame/global/default/images/icon-exclamation.png
 22d231f0a1fb54c1 plugins/rcp-fe-lol-postgame/global/default/images/icon-fwotd.png
+f0a8ae9266d8b60f plugins/rcp-fe-lol-postgame/global/default/images/icon-help.png
 0321e857787ae5e2 plugins/rcp-fe-lol-postgame/global/default/images/icon-loyalty-rewards.png
 bca3ba9c4ec535c1 plugins/rcp-fe-lol-postgame/global/default/images/icon-party-invite.png
 668d61c87d6ab7bd plugins/rcp-fe-lol-postgame/global/default/images/icon-target.png
