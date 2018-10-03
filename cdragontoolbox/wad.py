@@ -1,13 +1,9 @@
 import os
-import re
 import struct
 import gzip
 import json
 import imghdr
 import logging
-import posixpath
-from typing import Dict, Iterable
-import xxhash
 import zstd
 # support both zstd and zstandard implementations
 if hasattr(zstd, 'decompress'):
@@ -15,7 +11,6 @@ if hasattr(zstd, 'decompress'):
 else:
     zstd_decompress = zstd.ZstdDecompressor().decompress
 
-from .data import REGIONS, Language
 from .hashes import default_hashfile
 from .storage import (
     PatchVersion,
