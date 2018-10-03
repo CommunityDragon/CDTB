@@ -3,14 +3,14 @@
 A toolbox to work with League of Legends game files and export files for CDragon.
 It can be used as a library or a command-line tool.
 
-## Dependencies:
+## Dependencies
 
 To install dependencies, run:
 ```
-pip install requests hachoir3 xxhash zstd
+pip install -r requirements.txt
 ```
 
-**Windows users:** precompiled packages for `xxhash` and `zstd` can be found [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/).
+**Windows users:** precompiled packages can be found [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/).
 
 
 ## Command-line examples
