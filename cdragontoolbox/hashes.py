@@ -396,7 +396,7 @@ class LcuHashGuesser(HashGuesser):
                             for m in re.finditer(r"/DATA/([a-zA-Z0-9/_.@-]+)", data))
             # /lol-game-data/assets/{subpath} -> plugins/rcp-be-lol-game-data/global/default/{subpath}
             self.check_iter(f"plugins/rcp-be-lol-game-data/global/default/{m.group(1)}".lower()
-                            for m in re.finditer(r"/lol-game-data/assets/([a-zA-Z0-9/_.@-]+)", data))
+                            for m in re.finditer(r'[/"]lol-game-data/assets/([a-zA-Z0-9/_.@-]+)', data))
 
             # relative path starting with ./ or ../ (e.g. require() use)
             relpaths |= {m.group(1) for m in re.finditer(r'[^a-zA-Z0-9/_.\\-]((?:\.|\.\.)/[a-zA-Z0-9/_.-]+)', data)}
