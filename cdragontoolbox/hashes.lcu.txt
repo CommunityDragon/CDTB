@@ -484,6 +484,11 @@ e0f90127d4f70225 plugins/rcp-be-lol-game-data/global/cs_cz/v1/summoner-icon-sets
 ee099f0a76a7094a plugins/rcp-be-lol-game-data/global/cs_cz/v1/universes.json
 6b0ca2374e6f7af3 plugins/rcp-be-lol-game-data/global/cs_cz/v1/ward-skin-sets.json
 00bbf18704e0f6c2 plugins/rcp-be-lol-game-data/global/cs_cz/v1/ward-skins.json
+119ffdb8dcc0ecaf plugins/rcp-be-lol-game-data/global/de_de/content/src/leagueclient/clashvo/de_de/vo-anncr-fem1-tournaments-lockin-10min-01.ogg
+1ba0ebac66b43dc1 plugins/rcp-be-lol-game-data/global/de_de/content/src/leagueclient/clashvo/de_de/vo-anncr-fem1-tournaments-lockin-3min-01.ogg
+8f817e6ae90528b8 plugins/rcp-be-lol-game-data/global/de_de/content/src/leagueclient/clashvo/de_de/vo-anncr-fem1-tournaments-lockin-5min-01.ogg
+1b002cf2e5d61445 plugins/rcp-be-lol-game-data/global/de_de/content/src/leagueclient/clashvo/de_de/vo-anncr-fem1-tournaments-round-start-01.ogg
+7205acf1cd4b4a53 plugins/rcp-be-lol-game-data/global/de_de/content/src/leagueclient/clashvo/de_de/vo-anncr-fem1-tournaments-win-bracket-generic-01.ogg
 4a1f601b12ad570a plugins/rcp-be-lol-game-data/global/de_de/v1/champion-ban-vo/1.ogg
 6179a072a50e9cd7 plugins/rcp-be-lol-game-data/global/de_de/v1/champion-ban-vo/10.ogg
 3037e0ca740918d4 plugins/rcp-be-lol-game-data/global/de_de/v1/champion-ban-vo/101.ogg
