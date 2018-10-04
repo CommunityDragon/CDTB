@@ -24549,6 +24549,11 @@ bf95cd9a1047dfec plugins/rcp-fe-lol-clash/global/default/assets/images/celebrati
 5778ee41973db7af plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/black-circle.png
 72f631cce8719cc9 plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/bonus-vp-ticks.svg
 533368a100ee367a plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/celebration-background-default.png
+caf06168bbc18e3c plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/frames/banner_frame_tier_1.png
+76952b16dcf29935 plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/frames/banner_frame_tier_2.png
+2766eb30754696c7 plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/frames/banner_frame_tier_3.png
+8cb680903f1f48d8 plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/frames/banner_frame_tier_4.png
+a1d02a215a552583 plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/frames/banner_frame_tier_5.png
 93c90ca3fd141f79 plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/reward_complete_checkmark.png
 dee4e28c108ced37 plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/vp_progression_frame.png
 69d9f11fb84eda3c plugins/rcp-fe-lol-clash/global/default/assets/images/celebration/vp_progression_frame_mask.png
