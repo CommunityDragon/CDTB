@@ -24304,6 +24304,10 @@ a33da1b8681dc911 plugins/rcp-fe-lol-chat-settings/global/zh_my/trans.json
 345d5a3c94d13e39 plugins/rcp-fe-lol-clash/description.json
 f7bd8e47bb715834 plugins/rcp-fe-lol-clash/global/cs_cz/trans.json
 cc832202ca46bf00 plugins/rcp-fe-lol-clash/global/de_de/trans.json
+26c4108c4a47a239 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/dashes/images/img_0.png
+305c8ba4ca5dfaa1 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/trophy/images/gradient_matte.png
+86a814dbaa8eb980 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/trophy/images/sheen_line.png
+55a0b760fbf19020 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/trophy/images/trophyasset.png
 9b669ddb321c4c32 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/capsule-grant-bracket16_0.json
 b190758ce28617bc plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/capsule-grant-bracket16_1.json
 99e98d0820a129d6 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/capsule-grant-bracket16_2.json
@@ -24329,8 +24333,11 @@ b0ef2fb2833f1e59 plugins/rcp-fe-lol-clash/global/default/assets/animations/lotti
 de8bbaac986e2e0d plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/images/whiteflash.png
 59e553caad1bf4d0 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/overview-toggle-button.json
 f9aec8ddb11c7caf plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/roster/animatedstroke/data.json
+8174787cdb658922 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/roster/animatedstroke/images/img_0.png
 ab5e8e45f1a53da7 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/roster/ticket_entry/1ticket.json
 6a8475014c12172a plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/roster/ticket_entry/5ticket.json
+3cc8e05a7e11ed3c plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/roster/ticket_entry/images/img_0.png
+7801a5ed0060d43a plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/roster/ticket_entry/images/img_1.png
 302c0b5e56dcf41b plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/scouting-start.json
 4ab4f73880c19c7e plugins/rcp-fe-lol-clash/global/default/assets/animations/videos/brackets/checkmark_large_blue.webm
 bbfe29ed255f1883 plugins/rcp-fe-lol-clash/global/default/assets/animations/videos/brackets/xmark_large.webm
@@ -24603,6 +24610,11 @@ cd9b0dc11a4ad390 plugins/rcp-fe-lol-clash/global/default/assets/images/hub/curre
 35107c3e6be1fd61 plugins/rcp-fe-lol-clash/global/default/assets/images/hub/in-progress.png
 055ad5f89eed35e3 plugins/rcp-fe-lol-clash/global/default/assets/images/hub/pending.png
 96d3812da18e3bef plugins/rcp-fe-lol-clash/global/default/assets/images/hub/ticket-icon.png
+749ebe1ded71eb4d plugins/rcp-fe-lol-clash/global/default/assets/images/hub/trophies/trophy_0.png
+c9a4511f417aaf81 plugins/rcp-fe-lol-clash/global/default/assets/images/hub/trophies/trophy_1.png
+8542557e7248b51a plugins/rcp-fe-lol-clash/global/default/assets/images/hub/trophies/trophy_2.png
+31dbc5806cd9c88d plugins/rcp-fe-lol-clash/global/default/assets/images/hub/trophies/trophy_3.png
+4299df3be9b2bba1 plugins/rcp-fe-lol-clash/global/default/assets/images/hub/trophies/trophy_4.png
 257bc4c455d1af78 plugins/rcp-fe-lol-clash/global/default/assets/images/hub/vp-progress-mask.png
 8fd013b2b5c7d8a1 plugins/rcp-fe-lol-clash/global/default/assets/images/hub/vp-progress-reward-mask.png
 ab56073842dc105f plugins/rcp-fe-lol-clash/global/default/assets/images/hub/vp-progress.png
