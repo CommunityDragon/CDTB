@@ -24312,6 +24312,13 @@ cf7104f540a40ac7 plugins/rcp-fe-lol-clash/global/default/assets/animations/lotti
 610a4ba7fc449365 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/capsule-upgrade-bracket4.json
 5e7783e80b13fb27 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/capsule-upgrade-bracket8.json
 ac37e2ee3acbc702 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/frame-reward-grant.json
+2c5ccbf34e93643a plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/images/matte_faded01.png
+710a57fbc56db06c plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/images/opponent_logo.png
+617e2d6618f4e60b plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/images/opponent_vignette.png
+b0ef2fb2833f1e59 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/images/player_logo.png
+5a10a56a72a9343f plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/images/vp_new.png
+8539a415090540cf plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/images/vp_old.png
+de8bbaac986e2e0d plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/images/whiteflash.png
 59e553caad1bf4d0 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/overview-toggle-button.json
 f9aec8ddb11c7caf plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/roster/animatedstroke/data.json
 ab5e8e45f1a53da7 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/roster/ticket_entry/1ticket.json
