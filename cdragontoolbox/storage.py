@@ -3,9 +3,9 @@ import re
 import zlib
 from contextlib import contextmanager
 from typing import List, Dict, Union, Optional, Generator, Iterable
+from collections import defaultdict
 import logging
 import requests
-from collections import defaultdict
 import hachoir.parser
 import hachoir.metadata
 
