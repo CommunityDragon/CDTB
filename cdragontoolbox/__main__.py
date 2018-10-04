@@ -2,6 +2,7 @@
 import os
 import argparse
 import textwrap
+import fnmatch
 import logging
 import cdragontoolbox
 from cdragontoolbox.storage import (
@@ -155,6 +156,9 @@ def command_wad_extract(parser, args):
         wad.files = [wf for wf in wad.files if wf.path is None]
     elif args.unknown == 'no':
         wad.files = [wf for wf in wad.files if wf.path is not None]
+
+    if args.pattern:
+        wad.files = [wf for wf in wad.files if any(fnmatch.fnmatchcase(wf.path, p) for p in args.pattern)]
 
     wad.guess_extensions()
     wad.extract(args.output, overwrite=not args.lazy)
@@ -413,6 +417,8 @@ def create_parser():
                            help="extract directory")
     subparser.add_argument('-H', '--hashes',
                            help="hashes of known paths")
+    subparser.add_argument('-p', '--pattern', action='append',
+                           help="extract only files matching pattern with shell-like wildcards")
     subparser.add_argument('-u', '--unknown', choices=('yes', 'only', 'no'), default='yes',
                            help="control extract of unknown files (default: %(default)s)")
     subparser.add_argument('--lazy', action='store_true',
