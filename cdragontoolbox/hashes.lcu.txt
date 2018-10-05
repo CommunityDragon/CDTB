@@ -32699,6 +32699,10 @@ bd85c8dc209612a0 plugins/rcp-fe-lol-splash/global/default/splash-assets/swain/co
 da7406479c8b891a plugins/rcp-fe-lol-splash/global/default/splash-assets/swain/image-splash-swain.jpg
 5d51f2d616bfd786 plugins/rcp-fe-lol-splash/global/default/splash-assets/swain/music-splash-swain.ogg
 75c0d0a0d9218d5c plugins/rcp-fe-lol-splash/global/default/splash-assets/swain/video-splash-swain.webm
+9bf9d8557ab58be9 plugins/rcp-fe-lol-splash/global/default/splash-assets/turkeychamp2018/config.json
+12f3cb0af75c42f1 plugins/rcp-fe-lol-splash/global/default/splash-assets/turkeychamp2018/image-splash-turkeychamp2018.jpg
+743d659396e6a046 plugins/rcp-fe-lol-splash/global/default/splash-assets/turkeychamp2018/music-splash-turkeychamp2018.ogg
+1bb9f5bb273f3f62 plugins/rcp-fe-lol-splash/global/default/splash-assets/turkeychamp2018/video-splash-turkeychamp2018.webm
 f8cc2e8bbf0a2f36 plugins/rcp-fe-lol-splash/global/default/splash-assets/worlds2017/config.json
 b8b0171f0f77f338 plugins/rcp-fe-lol-splash/global/default/splash-assets/worlds2017/image-splash-worlds2017.jpg
 a2e3e02a3971c7d6 plugins/rcp-fe-lol-splash/global/default/splash-assets/worlds2017/intro-video-splash-worlds2017.webm
