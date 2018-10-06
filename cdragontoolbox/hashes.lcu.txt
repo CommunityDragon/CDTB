@@ -23387,6 +23387,7 @@ d1f139e2a1dcf86d plugins/rcp-fe-lol-account-verification/global/default/country-
 5a54ac66d9b8c485 plugins/rcp-fe-lol-account-verification/global/default/country-flags/bm.png
 f90b9992453c2eab plugins/rcp-fe-lol-account-verification/global/default/country-flags/bn.png
 f26858e86afba566 plugins/rcp-fe-lol-account-verification/global/default/country-flags/bo.png
+49f6b949b0a5920f plugins/rcp-fe-lol-account-verification/global/default/country-flags/bq.png
 9d4272681b7ef0fa plugins/rcp-fe-lol-account-verification/global/default/country-flags/br.png
 f69746e1e3418e43 plugins/rcp-fe-lol-account-verification/global/default/country-flags/bs.png
 e92acf8560f35dab plugins/rcp-fe-lol-account-verification/global/default/country-flags/bt.png
@@ -23407,6 +23408,7 @@ d4edb8e72cea9937 plugins/rcp-fe-lol-account-verification/global/default/country-
 6774de45c57c9bad plugins/rcp-fe-lol-account-verification/global/default/country-flags/cr.png
 bc83e8c898f6e30c plugins/rcp-fe-lol-account-verification/global/default/country-flags/cu.png
 6c57d9c624445e3a plugins/rcp-fe-lol-account-verification/global/default/country-flags/cv.png
+f525b52730fe6a9b plugins/rcp-fe-lol-account-verification/global/default/country-flags/cw.png
 890158903e7d5cac plugins/rcp-fe-lol-account-verification/global/default/country-flags/cy.png
 0ba700bc8ee980bc plugins/rcp-fe-lol-account-verification/global/default/country-flags/cz.png
 9c233f3891fe654e plugins/rcp-fe-lol-account-verification/global/default/country-flags/de.png
@@ -23414,6 +23416,7 @@ bc83e8c898f6e30c plugins/rcp-fe-lol-account-verification/global/default/country-
 eba3f842e6abe982 plugins/rcp-fe-lol-account-verification/global/default/country-flags/dk.png
 ceceabef1f13e479 plugins/rcp-fe-lol-account-verification/global/default/country-flags/dm.png
 daf788d31e863bf9 plugins/rcp-fe-lol-account-verification/global/default/country-flags/do.png
+293a82be7838741d plugins/rcp-fe-lol-account-verification/global/default/country-flags/dz.png
 bb21d6d7bb32168d plugins/rcp-fe-lol-account-verification/global/default/country-flags/ec.png
 307a11018e1aa07a plugins/rcp-fe-lol-account-verification/global/default/country-flags/ee.png
 0e7e1e01bb5ad642 plugins/rcp-fe-lol-account-verification/global/default/country-flags/eg.png
@@ -23452,6 +23455,7 @@ ed82bbd60460244f plugins/rcp-fe-lol-account-verification/global/default/country-
 baca4994006bd3d4 plugins/rcp-fe-lol-account-verification/global/default/country-flags/ie.png
 4f95a47020a2d519 plugins/rcp-fe-lol-account-verification/global/default/country-flags/il.png
 49f8c1ca01099d80 plugins/rcp-fe-lol-account-verification/global/default/country-flags/in.png
+19d19a4189cc7d4d plugins/rcp-fe-lol-account-verification/global/default/country-flags/io.png
 fc9bb4c5568e5bed plugins/rcp-fe-lol-account-verification/global/default/country-flags/iq.png
 2a923ce664d4a154 plugins/rcp-fe-lol-account-verification/global/default/country-flags/ir.png
 770959c9f46df917 plugins/rcp-fe-lol-account-verification/global/default/country-flags/is.png
@@ -23553,6 +23557,7 @@ ba2ec679be0c0133 plugins/rcp-fe-lol-account-verification/global/default/country-
 5773592dff93d173 plugins/rcp-fe-lol-account-verification/global/default/country-flags/ss.png
 89ed8d577d27a322 plugins/rcp-fe-lol-account-verification/global/default/country-flags/st.png
 f99927b2736ee03d plugins/rcp-fe-lol-account-verification/global/default/country-flags/sv.png
+ad8e962ca79a5ac9 plugins/rcp-fe-lol-account-verification/global/default/country-flags/sx.png
 a228a1a7fb8b4bf2 plugins/rcp-fe-lol-account-verification/global/default/country-flags/sy.png
 fee7b457a976b902 plugins/rcp-fe-lol-account-verification/global/default/country-flags/sz.png
 16aef6d03436e207 plugins/rcp-fe-lol-account-verification/global/default/country-flags/tc.png
@@ -28050,7 +28055,7 @@ f53343dd5fadde46 plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_i
 562bd9fa1e010e2a plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_images/open_capsule_4_0_image.png
 27e2e0e427df7347 plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_images/open_capsule_4_1_image.png
 751996d6d32ea980 plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_images/open_capsule_4_2_image.png
-c520d4b38083bca0 plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_images/open_capsule_4_image.png
+d0e4fd5186dc6fdd plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_images/open_capsule_4_image.png
 70fd5341f417b67d plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_images/open_capsule_8_0_image.png
 8bcc602eecc770d9 plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_images/open_capsule_8_1_image.png
 85796a90e75a081c plugins/rcp-fe-lol-loot/global/default/assets/videos/low_spec_images/open_capsule_8_2_image.png
