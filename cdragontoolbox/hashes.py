@@ -255,18 +255,6 @@ class HashGuesser:
         for prefix in progress_iterator(sorted(prefixes)):
             self.check_iter(prefix + ext for ext in extensions)
 
-    def guess_from_game_hashes(self):
-        """Guess LCU hashes from game hashes"""
-
-        base = 'plugins/rcp-be-lol-game-data/global/default'
-        for path in hashfile_game.load().values():
-            prefix, ext = os.path.splitext(path)
-            if ext == '.dds':
-                self.check(f"{base}/{prefix}.png")
-                self.check(f"{base}/{prefix}.jpg")
-            elif ext == '.json':
-                self.check(f"{base}/{path}")
-
     def wad_text_files(self, wad):
         """Iterate over wad files, generate text file data"""
 
@@ -408,6 +396,18 @@ class LcuHashGuesser(HashGuesser):
             relpaths |= {m.group(1) for m in re.finditer(r'sourceMappingURL=(.*?\.js)\.map', data)}
 
         self.check_basenames(p.lower() for p in relpaths)
+
+    def guess_from_game_hashes(self):
+        """Guess LCU hashes from game hashes"""
+
+        base = 'plugins/rcp-be-lol-game-data/global/default'
+        for path in hashfile_game.load().values():
+            prefix, ext = os.path.splitext(path)
+            if ext == '.dds':
+                self.check(f"{base}/{prefix}.png")
+                self.check(f"{base}/{prefix}.jpg")
+            elif ext == '.json':
+                self.check(f"{base}/{path}")
 
     def guess_patterns(self):
         """Guess from known path patterns"""
