@@ -528,12 +528,13 @@ class GameHashGuesser(HashGuesser):
         """Guess hashes from lang variants"""
 
         langs = [l.value for l in Language]
-        langs.remove('en_us')
-        formats = [p for p in self.known.values() if 'en_us' in p]
+        langs_re = re.compile(r'(%s)' % '|'.join(langs))
+        formats = {langs_re.sub('{}', p) for p in self.known.values() if langs_re.search(p)}
 
+        print(len(formats))
         logger.info(f"substitute lang: {len(formats)} formats, {len(langs)} langs")
         for fmt in progress_iterator(sorted(formats)):
-            self.check_iter(fmt.replace('en_us', l) for l in langs)
+            self.check_iter(fmt.replace('{}', l) for l in langs)
 
     def guess_skin_groups_bin(self):
         """Guess 'skin*.bin' with long filenames"""
