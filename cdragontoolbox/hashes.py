@@ -536,6 +536,33 @@ class GameHashGuesser(HashGuesser):
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt.replace('{}', l) for l in langs)
 
+    def guess_skin_groups_bin_using_chromas(self):
+        """Guess 'skin*.bin' with long filenames using chroma groups"""
+
+        # retrieve chromas from cdragon
+        import requests
+        data = requests.get('http://raw.communitydragon.org/pbe/plugins/rcp-be-lol-game-data/global/default/v1/skins.json').json()
+
+        char_to_skin_groups = {}
+        char_name_re = re.compile(r'^/lol-game-data/assets/assets/characters/([^/]+)/skins/')
+        for skin_id, skin_data in data.items():
+            char_name = char_name_re.match(skin_data['loadScreenPath'].lower()).group(1)
+
+            group_skin_ids = [skin_id]
+            if skin_data.get('chromas'):
+                group_skin_ids.extend(d['id'] for d in skin_data['chromas'])
+            char_to_skin_groups.setdefault(char_name, []).append([int(i) % 1000 for i in group_skin_ids])
+
+        logger.info(f"find skin groups .bin files using chroma groups")
+        for char, groups in progress_iterator(char_to_skin_groups.items(), lambda v: v[0]):
+            str_groups = [[f"_skins_skin{i}" for i in group] for group in groups]
+            for n in range(len(str_groups)):
+                for p in itertools.combinations(str_groups, n+1):
+                    # note: skins are in lexicographic order: skin11 is before skin2
+                    s = ''.join(sorted(s for g in p for s in g))
+                    self.check(f"data/{char}{s}.bin")
+
+
     def guess_skin_groups_bin(self):
         """Guess 'skin*.bin' with long filenames"""
 
