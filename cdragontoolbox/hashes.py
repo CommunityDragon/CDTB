@@ -166,6 +166,9 @@ class HashGuesser:
     def check_iter(self, paths):
         """Check paths from an iterable"""
 
+        # failsafe for common dumb error
+        if isinstance(paths, str):
+            raise TypeError("expected iterable of strings, got a string")
         c = self.check
         for p in paths:
             c(p)
