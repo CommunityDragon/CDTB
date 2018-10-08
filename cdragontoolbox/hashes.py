@@ -380,7 +380,7 @@ class LcuHashGuesser(HashGuesser):
 
             # search for known paths formats
             # /fe/{plugin}/{subpath} -> plugins/rcp-fe-{plugin}/global/default/{subpath}
-            self.check_iter(f"plugins/rcp-fe-{m.group(1)}/{m.group(2)}".lower()
+            self.check_iter(f"plugins/rcp-fe-{m.group(1)}/global/default/{m.group(2)}".lower()
                             for m in re.finditer(r"/fe/([^/]+)/([a-zA-Z0-9/_.@-]+)", data))
             # /DATA/{subpath} -> plugins/rcp-be-lol-game-data/global/default/data/{subpath}
             self.check_iter(f"plugins/rcp-be-lol-game-data/global/default/data/{m.group(1)}".lower()
