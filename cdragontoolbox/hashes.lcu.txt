@@ -31005,8 +31005,11 @@ d659c69689dbfd89 plugins/rcp-fe-lol-postgame/global/default/index.html
 c02ea38b853c4066 plugins/rcp-fe-lol-postgame/global/default/leaver_icon.png
 f73602519a600a12 plugins/rcp-fe-lol-postgame/global/default/license.json
 8cbedc3012894a9b plugins/rcp-fe-lol-postgame/global/default/lottie/images/meter_complete.png
+104d3145b9eaa327 plugins/rcp-fe-lol-postgame/global/default/lottie/images/meter_emptybg.png
 d410fbd7bc2d78e4 plugins/rcp-fe-lol-postgame/global/default/lottie/images/meter_frame.png
 cb807ad004da4323 plugins/rcp-fe-lol-postgame/global/default/lottie/images/meter_mask.png
+207aa7722b5c62ff plugins/rcp-fe-lol-postgame/global/default/lottie/images/meter_newprogress.png
+95109346e7f5ddfa plugins/rcp-fe-lol-postgame/global/default/lottie/images/meter_oldprogress.png
 3e8855e228a06e46 plugins/rcp-fe-lol-postgame/global/default/lottie/secondary-meter-animation.json
 0f26f484ff23f863 plugins/rcp-fe-lol-postgame/global/default/mask-icon-cs.png
 6158672b7ce39929 plugins/rcp-fe-lol-postgame/global/default/mask-icon-gold.png
