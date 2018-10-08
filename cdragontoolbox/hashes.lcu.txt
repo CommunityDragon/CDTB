@@ -31636,6 +31636,11 @@ ef4fbfb74ec831d8 plugins/rcp-fe-lol-rgm-augments/description.json
 a419a06dfc7c0864 plugins/rcp-fe-lol-rgm-augments/global/cs_cz/trans.json
 d3097b35225e91ba plugins/rcp-fe-lol-rgm-augments/global/de_de/trans.json
 e5ae6b7becb65ca4 plugins/rcp-fe-lol-rgm-augments/global/default/audio/sfx-ui-odyssey-champ-tab-select.ogg
+ededf2b39069038f plugins/rcp-fe-lol-rgm-augments/global/default/audio/sfx-ui-odyssey-drag-aug.ogg
+6bea578c55e8102e plugins/rcp-fe-lol-rgm-augments/global/default/audio/sfx-ui-odyssey-equip-aug.ogg
+fbe3c33987107b32 plugins/rcp-fe-lol-rgm-augments/global/default/audio/sfx-ui-odyssey-unequip-aug.ogg
+70093f256c56edf4 plugins/rcp-fe-lol-rgm-augments/global/default/audio/sfx-ui-odyssey-save-button-clicked.ogg
+e2802288486e7365 plugins/rcp-fe-lol-rgm-augments/global/default/audio/sfx-ui-odyssey-save-button-hover.ogg
 944d041d7a8b20e7 plugins/rcp-fe-lol-rgm-augments/global/default/back_click.png
 6dc5992a7cfc87d4 plugins/rcp-fe-lol-rgm-augments/global/default/back_default.png
 e994b08c97123412 plugins/rcp-fe-lol-rgm-augments/global/default/back_disabled.png
@@ -31660,7 +31665,9 @@ b30093bf34b71ea3 plugins/rcp-fe-lol-rgm-augments/global/default/exit_hover.png
 9df08e7c750dbf40 plugins/rcp-fe-lol-rgm-augments/global/default/footermetaldecorationright.png
 25f31bfee13487f6 plugins/rcp-fe-lol-rgm-augments/global/default/hover.png
 2f1e744781567940 plugins/rcp-fe-lol-rgm-augments/global/default/images/augment_new.png
+e6d51cd8828fefea plugins/rcp-fe-lol-rgm-augments/global/default/images/augment_new_glow.png
 a54b48e0f510a6d2 plugins/rcp-fe-lol-rgm-augments/global/default/images/augment_selected.png
+0ed1abe61ed0e0ff plugins/rcp-fe-lol-rgm-augments/global/default/images/augment_slot_drag.png
 2178565da60388ca plugins/rcp-fe-lol-rgm-augments/global/default/images/augments_slots_bg.png
 2fac53f514ecfae9 plugins/rcp-fe-lol-rgm-augments/global/default/images/champion_nameplate_bg.png
 a8a30e2b3eb9dbd2 plugins/rcp-fe-lol-rgm-augments/global/default/images/champion_nameplate_fill.png
@@ -31675,6 +31682,7 @@ bffdc8fee1d056a3 plugins/rcp-fe-lol-rgm-augments/global/default/images/nav/siden
 82484fe9d0336ccc plugins/rcp-fe-lol-rgm-augments/global/default/images/nav/sidenav_54.png
 040a823101011391 plugins/rcp-fe-lol-rgm-augments/global/default/images/odyssey_bg.png
 b8ef32220e3a9a7a plugins/rcp-fe-lol-rgm-augments/global/default/images/save_button.png
+4d9622f1914f5a3a plugins/rcp-fe-lol-rgm-augments/global/default/images/save_button_hover.png
 c7306d12efcd41a6 plugins/rcp-fe-lol-rgm-augments/global/default/images/spinner.png
 17c284ca77913d18 plugins/rcp-fe-lol-rgm-augments/global/default/images/splash_115.png
 f210e6cc8809ab86 plugins/rcp-fe-lol-rgm-augments/global/default/images/splash_157.png
