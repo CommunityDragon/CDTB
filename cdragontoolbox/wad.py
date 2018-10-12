@@ -18,6 +18,12 @@ from .storage import (
     SolutionVersion,
 )
 
+def test_jpeg_photoshop(h, f):
+    if h[:4] == b'\xff\xd8\xff\xe1':
+        return 'jpeg'
+
+imghdr.tests.append(test_jpeg_photoshop)
+
 
 logger = logging.getLogger(__name__)
 
