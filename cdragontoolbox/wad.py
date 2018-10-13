@@ -1,4 +1,5 @@
 import os
+import errno
 import struct
 import gzip
 import json
@@ -141,7 +142,7 @@ class WadFileHeader:
                 pass
             # Windows does not support path components longer than 255
             # ignore such files
-            if isinstance(e, OSError) and e.errno == os.errno.EINVAL:
+            if isinstance(e, OSError) and e.errno == errno.EINVAL:
                 logger.warning(f"ignore file with invalid path: {self.path}")
             elif isinstance(e, ValueError):
                 logger.warning(f"cannot convert file '{self.path}': {e}")
