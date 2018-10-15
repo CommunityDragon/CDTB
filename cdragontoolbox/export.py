@@ -127,7 +127,7 @@ class PatchExporter:
         # list of all unknown hashes, sorted (including those linked from previous patch)
         self.unknown_hashes = None
 
-    def export(self):
+    def export(self, overwrite=True):
         """Export modified files to the output directory
 
         Set previous_links and unknown_hashes.
@@ -137,6 +137,8 @@ class PatchExporter:
         Files that didn't changed are added to self.previous_links. It's
         content is reduced so that identical directories result into a single
         link entry.
+
+        If overwrite is False, don't extract files that already exist on disk.
         """
 
         if self.previous_patch:
@@ -272,7 +274,7 @@ class PatchExporter:
         # extract files, finally
         for elem in to_extract:
             if isinstance(elem, Wad):
-                elem.extract(self.output, overwrite=False)
+                elem.extract(self.output, overwrite=overwrite)
             elif isinstance(elem, StorageFile):
                 elem.export(self.output)
             else:
