@@ -185,7 +185,6 @@ class Wad:
     The files contained in a WAD file generally are all related to one "idea".
 
     This class has one major purpose: to extract the individual files in a specific WAD archive for further analysis.
-    The parsing can be done using the `WAD.extract(...)` method.
     """
 
     def __init__(self, path, hashes=None):
