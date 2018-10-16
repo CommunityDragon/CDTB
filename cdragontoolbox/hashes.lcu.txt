@@ -24132,6 +24132,7 @@ c2a8f5afa2b1beb2 plugins/rcp-fe-lol-champ-select/global/default/images/summoner-
 eba4bccc8268c431 plugins/rcp-fe-lol-champ-select/global/default/images/summoner-object/player-object-picksnipe-bg.png
 e27a957151c222f6 plugins/rcp-fe-lol-champ-select/global/default/images/summoner-object/player-object-picksnipe-ring.png
 930d16baededc94b plugins/rcp-fe-lol-champ-select/global/default/images/summoner-object/player-object-picksnipe-spinner.png
+12c4e9926db8dc0f plugins/rcp-fe-lol-champ-select/global/default/images/summoner-object/player-object-ring-obfuscated.png
 8b189ee38f34817a plugins/rcp-fe-lol-champ-select/global/default/images/summoner-object/player-object-ring.png
 1344ff7545ae16a2 plugins/rcp-fe-lol-champ-select/global/default/images/summoner-object/player-object-spinner-blue.png
 eefe361771e2a4cb plugins/rcp-fe-lol-champ-select/global/default/images/summoner-object/player-object-spinner-gold.png
@@ -24586,6 +24587,8 @@ f9f59ce7f796b9ad plugins/rcp-fe-lol-clash/global/default/assets/animations/lotti
 8560636f28c64034 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/matchup_intro/images/img_2.png
 664958c8986c5179 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/matchup_intro/matchup_intro_loss.json
 0329513c064ad35f plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/matchup_intro/matchup_intro_win.json
+65424d16634f1fa9 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/round/images/img_0.png
+e8d61a7ac9f51811 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/round/round.json
 305c8ba4ca5dfaa1 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/trophy/images/gradient_matte.png
 86a814dbaa8eb980 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/trophy/images/sheen_line.png
 55a0b760fbf19020 plugins/rcp-fe-lol-clash/global/default/assets/animations/lottie/brackets/trophy/images/trophyasset.png
@@ -24785,6 +24788,10 @@ c64666c98694786d plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/b
 137f99be734d6267 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-bg-down.png
 f0120f22cfc21fc7 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-bg-over.png
 276b7bcc7f53bc42 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-bg.png
+cab1bac40f237b1f plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-downarrow-disabled.png
+c95343ea7da2f10c plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-downarrow-down.png
+590a49ac2dd3ed29 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-downarrow-over.png
+fe6bf5db9116417b plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-downarrow.png
 652e497a9f574052 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-edit-down.png
 c13d5e5b7cbeb6b2 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-edit-icon-disabled.png
 07f53762acd1522e plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-edit-icon-down.png
@@ -24810,6 +24817,10 @@ d0a142fa4b92898e plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/b
 4634a67aaab9739e plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-search-down.png
 b71d7d78e2a5a92f plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-search-over.png
 99c2b69338aae099 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-search-up.png
+3df7e235483d7157 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-uparrow-disabled.png
+fec5526650958406 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-uparrow-down.png
+dae4e21680b11a11 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-uparrow-over.png
+145ca7b9a7a3df12 plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-uparrow.png
 ff9a77911256a57e plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-withdraw-down.png
 f10ce11f5df7d82e plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-withdraw-over.png
 2739716bdcd11b5d plugins/rcp-fe-lol-clash/global/default/assets/images/buttons/button-withdraw.png
@@ -29798,6 +29809,7 @@ a6ad553e9f599372 plugins/rcp-fe-lol-parties/global/default/3acd12df5c751ebfdf255
 ddf5986705fa9899 plugins/rcp-fe-lol-parties/global/default/3cb1f053ee2f3dde02f39e35f1c246cb.ogg
 d70bdbbe19d565e1 plugins/rcp-fe-lol-parties/global/default/3d61cde51cc54ee907a6acb4f54e1234.webm
 4dff5a54f98fa639 plugins/rcp-fe-lol-parties/global/default/3e83da8408acd62028c8218c5da2bbee.png
+37de13d8efc19ed3 plugins/rcp-fe-lol-parties/global/default/3f680f4740b1433a6cb4505f3d93bf04.png
 4a6f696eea678502 plugins/rcp-fe-lol-parties/global/default/403e67df44906523c8c60b777b56433e.png
 8b9ff4f22bb9eda0 plugins/rcp-fe-lol-parties/global/default/4067e4a7275102fb74f318e0eea12335.png
 ac1d35f374127fd1 plugins/rcp-fe-lol-parties/global/default/4069e5962a5dab8509abe18eda7c9573.png
@@ -31175,6 +31187,7 @@ ea516d6818274079 plugins/rcp-fe-lol-postgame/global/default/icon-fwotd.png
 1e179b0ca2839d7a plugins/rcp-fe-lol-postgame/global/default/icon-loyalty-rewards.png
 0a436dd536850312 plugins/rcp-fe-lol-postgame/global/default/icon-target.png
 3a53fb085b809eda plugins/rcp-fe-lol-postgame/global/default/icon-teamwork.png
+099d13cb0515a1dc plugins/rcp-fe-lol-postgame/global/default/images/alpha-logo.png
 12433265b579e7ae plugins/rcp-fe-lol-postgame/global/default/images/back.png
 cf515da615bf8648 plugins/rcp-fe-lol-postgame/global/default/images/back_click.png
 8034805db711e38b plugins/rcp-fe-lol-postgame/global/default/images/back_default.png
@@ -31241,6 +31254,7 @@ bca3ba9c4ec535c1 plugins/rcp-fe-lol-postgame/global/default/images/icon-party-in
 d069c07a6bd26e60 plugins/rcp-fe-lol-postgame/global/default/images/icon-position-bottom.png
 27e7bcf9df025e95 plugins/rcp-fe-lol-postgame/global/default/images/icon-position-jungle.png
 8ea80c444eb8ec99 plugins/rcp-fe-lol-postgame/global/default/images/icon-position-middle.png
+c17a66adbc79e215 plugins/rcp-fe-lol-postgame/global/default/images/icon-position-swap.png
 09df4c72feb4a29a plugins/rcp-fe-lol-postgame/global/default/images/icon-position-top.png
 c6d93eba78e02f48 plugins/rcp-fe-lol-postgame/global/default/images/icon-position-utility.png
 668d61c87d6ab7bd plugins/rcp-fe-lol-postgame/global/default/images/icon-target.png
@@ -31475,12 +31489,14 @@ dbd7a503f0a7e1ba plugins/rcp-fe-lol-profiles/global/default/2411c6f09baf3c86fcd9
 fe9329b5c4f099b3 plugins/rcp-fe-lol-profiles/global/default/2af6dbdb7e4fdca5ac8937ac2e724442.png
 8c5bf691d3c3a151 plugins/rcp-fe-lol-profiles/global/default/2d04fbd1aa61cd9d2152163a3f4f514c.png
 683dba9f810ec602 plugins/rcp-fe-lol-profiles/global/default/2dfdffc7e34334f1ac9d14d712a6a6e9.png
+81fbfe3c6399fb0b plugins/rcp-fe-lol-profiles/global/default/2ef9ed5bf6d6b051735134688fdadf2f.png
 a10e9c0355eb81a0 plugins/rcp-fe-lol-profiles/global/default/3189902183881d6709dd0a841f820c51.png
 0d631041465f1f28 plugins/rcp-fe-lol-profiles/global/default/31d4f19a91a751b0acd6cc6a712af5e3.png
 418bcc8d7cc0a19c plugins/rcp-fe-lol-profiles/global/default/32ee515a100a89fc745ac19d3c2396d4.png
 44d71edccc1ca216 plugins/rcp-fe-lol-profiles/global/default/399164f8a34e88c7a1ab042e79111446.png
 2ff553ff41059f58 plugins/rcp-fe-lol-profiles/global/default/3ed8bd01f052472d9960765ee5cb1ce3.png
 c61e46dd1797a79d plugins/rcp-fe-lol-profiles/global/default/3fedabd5403faf5c62fbb7ee7bd5c13e.png
+3c2ef3de787210c4 plugins/rcp-fe-lol-profiles/global/default/40aed260bb449137388d1c71cc760750.png
 0529745520725fbc plugins/rcp-fe-lol-profiles/global/default/40de454d27208f00e977b2c127e2d575.png
 02c4ea7f9e7aa025 plugins/rcp-fe-lol-profiles/global/default/4260ce2072997ec56d70bcc82587125b.png
 6896650fefa46f77 plugins/rcp-fe-lol-profiles/global/default/431b970a277de30014de093287ab46ad.png
@@ -31506,13 +31522,16 @@ fb03fbbcb969f261 plugins/rcp-fe-lol-profiles/global/default/5c626c50149bab23dd2b
 400fc217ef8bce0d plugins/rcp-fe-lol-profiles/global/default/6702c2fd465e7ccaa47f08373a6880c5.png
 2c52d472423213a6 plugins/rcp-fe-lol-profiles/global/default/675bd2b5f8eb381119368f15ee97425b.png
 976a9597f2c7096b plugins/rcp-fe-lol-profiles/global/default/6ad7fec556ffea6d3b8d5d6cb407929f.png
+f7c6cf4b30a0fbc1 plugins/rcp-fe-lol-profiles/global/default/6c09916b43a81eba644598c359490166.png
 5200088953ee2459 plugins/rcp-fe-lol-profiles/global/default/6cd925c94b89247a44aa860716e689ce.png
+045bb6cb15fe00ae plugins/rcp-fe-lol-profiles/global/default/6de20f491a8fbf5297ec393b9aa45e05.png
 aadcb79aee2f6262 plugins/rcp-fe-lol-profiles/global/default/6dfb8a9096ac59305f9b2c2a8afa3d1a.png
 3a96b90f311d75ac plugins/rcp-fe-lol-profiles/global/default/70917057ff04b61d3a3620ec5b1a2b59.png
 01077f3f73d31ffe plugins/rcp-fe-lol-profiles/global/default/70b032718fef18b0b992164c26fd802a.png
 388b008158af2867 plugins/rcp-fe-lol-profiles/global/default/7409aa6d06e7f1ba8ecc41e406400cba.png
 e498b8db3cccebc8 plugins/rcp-fe-lol-profiles/global/default/755dd68cfefe5da1437a37be0b5303c8.png
 247c03f516e9740d plugins/rcp-fe-lol-profiles/global/default/762bce64775b4041bf8b67bcddc14fd7.png
+c9bbd60009fa24b8 plugins/rcp-fe-lol-profiles/global/default/76a6cfdb712388255acd1064634af47f.png
 41dfb5783e7be607 plugins/rcp-fe-lol-profiles/global/default/7741e0f21b6eb45df76861e94222ed10.png
 df57dc6e72725420 plugins/rcp-fe-lol-profiles/global/default/796a4a3d6efb65bbb18881ce4dff7b6d.png
 0f686cd12e7083c1 plugins/rcp-fe-lol-profiles/global/default/79cee499b6564f223a656031f5afd330.png
@@ -31530,6 +31549,7 @@ e67a98b200f88c26 plugins/rcp-fe-lol-profiles/global/default/7e9e626f7b5760d47fbb
 849123e934d366b5 plugins/rcp-fe-lol-profiles/global/default/8d989216cb31cb8c6166a7c6bdc71398.png
 4fa11147a657e012 plugins/rcp-fe-lol-profiles/global/default/8dc26408e519bf1fb87a6bf334baa0ae.png
 b8d15ffb166ffbf8 plugins/rcp-fe-lol-profiles/global/default/8f0894d96ab83b3ada4d82cc17c0d272.png
+dd12fa2b54b165e7 plugins/rcp-fe-lol-profiles/global/default/904e37aa4190a549d0a14c3b0e9443d2.png
 dbe884e7224eab3c plugins/rcp-fe-lol-profiles/global/default/9173846b5a416aabb9adc345da936f8e.png
 d8ec99c21324a81f plugins/rcp-fe-lol-profiles/global/default/94159d3d80a937cc12ceb606b4a916ad.png
 7a424cca09e9879c plugins/rcp-fe-lol-profiles/global/default/95c252cc8549599c3a356c5367e2df5d.png
@@ -31540,6 +31560,7 @@ ef0cb6e2a82e6907 plugins/rcp-fe-lol-profiles/global/default/98ca1e9a34a284ffbc86
 83067b6d461e31c3 plugins/rcp-fe-lol-profiles/global/default/99a7a3a4ae93f6194e2f6a14f0206776.png
 1a018e75a01e17ce plugins/rcp-fe-lol-profiles/global/default/9a3cf49262c7c68f14a949d0ffea54f6.png
 7ba3c37dfdbbc49f plugins/rcp-fe-lol-profiles/global/default/9d8c6053914a777089aecccb237ab7e6.png
+1c439384a4f970f7 plugins/rcp-fe-lol-profiles/global/default/9e4738023cfa3a8bc027412f846228f7.png
 c0e11cc715afc0b5 plugins/rcp-fe-lol-profiles/global/default/9fcfb6787c81086163a9ecd241584cd4.png
 1006ee9f66f89d57 plugins/rcp-fe-lol-profiles/global/default/a1ddadf04598e8ef2aefb44cbf11d3e3.png
 ab0d5d2b1cbd0ad5 plugins/rcp-fe-lol-profiles/global/default/a3ad352475d8104f121f0892ca524119.png
@@ -32745,6 +32766,8 @@ eff6e9d21956b449 plugins/rcp-fe-lol-skins-viewer/global/default/images/showcase/
 04e4081992d0512b plugins/rcp-fe-lol-skins-viewer/global/default/images/showcase/magnifier-hover.png
 903a7d653ab0ec15 plugins/rcp-fe-lol-skins-viewer/global/default/images/showcase/magnifier.png
 4559338430c01098 plugins/rcp-fe-lol-skins-viewer/global/default/images/showcase/screen-shader.png
+6a2dbdb4ac1bea34 plugins/rcp-fe-lol-skins-viewer/global/default/images/skin-carousel/skin-carousel-locked-hover.png
+c85d830b3139b87a plugins/rcp-fe-lol-skins-viewer/global/default/images/skin-carousel/skin-carousel-locked.png
 d420cadc4d9dec58 plugins/rcp-fe-lol-skins-viewer/global/default/images/spinner.png
 ba0c83b3fb149c6c plugins/rcp-fe-lol-skins-viewer/global/default/images/universe/arrow-slider.png
 687b04010cb7d308 plugins/rcp-fe-lol-skins-viewer/global/default/index.html
@@ -32884,6 +32907,7 @@ a22e95a568603453 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-c
 43ef4e2ba1e44a97 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-chat-start-rcvd.ogg
 3c710620ed170b31 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-friendreq-rcvd.ogg
 e49f581be22c260d plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-gameinvite-rcvd.ogg
+12cd66d3490f3305 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-player-leave-lobby.ogg
 1a6521f030cef624 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-notif-success.ogg
 102fd10566eb458e plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-ui-chatwindow-add-convo.ogg
 b479f3d298ba00f4 plugins/rcp-fe-lol-social/global/default/sounds/sfx-soc-ui-chatwindow-close.ogg
