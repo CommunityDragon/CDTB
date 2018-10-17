@@ -1366,6 +1366,7 @@ c3ee77c7f80adfdf plugins/rcp-be-lol-game-data/global/default/assets/characters/e
 4dc6bea48e47b765 plugins/rcp-be-lol-game-data/global/default/assets/characters/ekko/skins/skin03/ekkoloadscreen_3_le.jpg
 aa93c025cb6a3dd2 plugins/rcp-be-lol-game-data/global/default/assets/characters/ekko/skins/skin11/ekkoloadscreen_11.jpg
 5585e28f5b475ec8 plugins/rcp-be-lol-game-data/global/default/assets/characters/ekko/skins/skin12/ekkoloadscreen_12.skins_ekko_skin12.jpg
+ecae76f653472ffa plugins/rcp-be-lol-game-data/global/default/assets/characters/ekko/skins/skin12/ekkoloadscreen_12_le.skins_ekko_skin12.jpg
 bc5f0e1ae463755c plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/hud/icons2d/elisehumane.png
 77c816795a51d3d7 plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/hud/icons2d/elisehumanq.png
 3821126e7073fd77 plugins/rcp-be-lol-game-data/global/default/assets/characters/elise/hud/icons2d/elisehumanw.png
@@ -1700,6 +1701,7 @@ d53bf1f0c41f40af plugins/rcp-be-lol-game-data/global/default/assets/characters/j
 da3eb341bbb25a35 plugins/rcp-be-lol-game-data/global/default/assets/characters/janna/skins/skin07/jannaloadscreen_7.jpg
 709eaa50ee091f54 plugins/rcp-be-lol-game-data/global/default/assets/characters/janna/skins/skin08/jannaloadscreen_8.jpg
 e6a8e2edc295b158 plugins/rcp-be-lol-game-data/global/default/assets/characters/janna/skins/skin13/jannaloadscreen_13.skins_janna_skin13.jpg
+ab87ca13690d6441 plugins/rcp-be-lol-game-data/global/default/assets/characters/janna/skins/skin13/jannaloadscreen_13_le.skins_janna_skin13.jpg
 76752b21092f82f1 plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/hud/icons2d/jarvaniv_cataclysm.png
 fecac2739682f3af plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/hud/icons2d/jarvaniv_demacianstandard.png
 497012ad8bc90a3d plugins/rcp-be-lol-game-data/global/default/assets/characters/jarvaniv/hud/icons2d/jarvaniv_dragonstrike.png
@@ -1978,6 +1980,7 @@ e69a3c4b03b8a0bc plugins/rcp-be-lol-game-data/global/default/assets/characters/k
 fa11baea44e97ea7 plugins/rcp-be-lol-game-data/global/default/assets/characters/kled/skins/base/kledloadscreen.jpg
 14e0e453c070c923 plugins/rcp-be-lol-game-data/global/default/assets/characters/kled/skins/skin01/kledloadscreen_1.jpg
 f14498abde7e10cf plugins/rcp-be-lol-game-data/global/default/assets/characters/kled/skins/skin02/kledloadscreen_2.skins_kled_skin02.jpg
+44af9a6c0289ce1d plugins/rcp-be-lol-game-data/global/default/assets/characters/kled/skins/skin02/kledloadscreen_2_le.skins_kled_skin02.jpg
 3bb0cd32a894eb81 plugins/rcp-be-lol-game-data/global/default/assets/characters/kogmaw/hud/icons2d/kogmaw_bioarcanebarrage.png
 99142a3752df75db plugins/rcp-be-lol-game-data/global/default/assets/characters/kogmaw/hud/icons2d/kogmaw_causticspittle.png
 36f4e5415c733c13 plugins/rcp-be-lol-game-data/global/default/assets/characters/kogmaw/hud/icons2d/kogmaw_icathiansurprise.png
@@ -10469,12 +10472,14 @@ f0a5718c0d96f991 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashe
 cb0cd0065f6ad9f0 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/24/metadata.json
 65686c2ebe08fdee plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/240/240000.jpg
 cd4cdd8bfac11047 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/240/240001.jpg
+06c7e384a82c8c2d plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/240/240002.jpg
 05d274250ce4475d plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/240/metadata.json
 aac5d012249b20aa plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/245/245000.jpg
 03693c98ce473faa plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/245/245001.jpg
 3b1852dc3dbf2c7c plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/245/245002.jpg
 787ea2ee16e58bd7 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/245/245003.jpg
 87ca2b24e81e69fa plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/245/245011.jpg
+6e7b3d595084bad6 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/245/245012.jpg
 8cb8b1eec4239aca plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/245/metadata.json
 e80db17986b93553 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/25/25000.jpg
 95e12d3856d486d2 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/25/25001.jpg
@@ -10671,6 +10676,7 @@ de78e69845ce4e1b plugins/rcp-be-lol-game-data/global/default/v1/champion-splashe
 0584db2f13f624a2 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/40/40006.jpg
 b88a4d4a0513192e plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/40/40007.jpg
 73e1ef6db22f867c plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/40/40008.jpg
+afa9bfcc17a14fdb plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/40/40013.jpg
 d44794b81d1663c0 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/40/metadata.json
 f44fec7cc99efede plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/41/41000.jpg
 f323448e0c8ca64b plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/41/41001.jpg
@@ -11577,11 +11583,13 @@ acc3e44c3bcedcc4 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashe
 0a983d8ec2e99825 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/24/24013.jpg
 a5f39a9c23a780cb plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/240/240000.jpg
 df78d00600dbc599 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/240/240001.jpg
+e0de7f7480c4cbfc plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/240/240002.jpg
 5f35c5dbebf5427b plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/245/245000.jpg
 6a9b1632ff65eb09 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/245/245001.jpg
 cb934418eda9c322 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/245/245002.jpg
 51f73f468f9104fd plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/245/245003.jpg
 67dd6195ff215f83 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/245/245011.jpg
+7b3c3127dba85cc1 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/245/245012.jpg
 be2e91161b1e251f plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/25/25000.jpg
 2ebdf21c4876ede5 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/25/25001.jpg
 56d322d8888f062e plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/25/25002.jpg
@@ -11756,6 +11764,7 @@ feae42903341bb86 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashe
 7ec2836e9f235cdf plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/40/40006.jpg
 15ecfbc56c4c6a50 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/40/40007.jpg
 bb7606f066d48ec5 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/40/40008.jpg
+4a8ba59a16c297e1 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/40/40013.jpg
 18369509d00bde5c plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/41/41000.jpg
 6ba3b30835713a98 plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/41/41001.jpg
 4079b9ec7bf61d8a plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/uncentered/41/41002.jpg
@@ -12603,11 +12612,13 @@ be4e51752371a394 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/2
 b99bf708475bc5a4 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/24/24013.jpg
 5294ea5234d515e0 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/240/240000.jpg
 985d66783bdf106f plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/240/240001.jpg
+44b6b864aefaf0ea plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/240/240002.jpg
 4dc3c90e748d6f2a plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/245/245000.jpg
 b7b70655da453a9d plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/245/245001.jpg
 2d0c7e65852f59f9 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/245/245002.jpg
 64160657b27420ca plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/245/245003.jpg
 eec8075bdf5a3aba plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/245/245011.jpg
+a60e4c86c139ae2c plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/245/245012.jpg
 f05f7e0c86a9f60f plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/25/25000.jpg
 5b5c13cc8b59c935 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/25/25001.jpg
 526d920dfc6ab65e plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/25/25002.jpg
@@ -12782,6 +12793,7 @@ eee71ca5adc0ab6e plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/4
 e9c3075a01727c25 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/40/40006.jpg
 0606f530dca886c6 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/40/40007.jpg
 944c69b3dd945dcb plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/40/40008.jpg
+e120a5fef5782472 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/40/40013.jpg
 eb9b3f3d2ea1d388 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/41/41000.jpg
 5bddacc5ccab72a7 plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/41/41001.jpg
 122463e94e421b6a plugins/rcp-be-lol-game-data/global/default/v1/champion-tiles/41/41002.jpg
