@@ -154,7 +154,7 @@ class HashGuesser:
         if h in self.unknown:
             self._add_known(h, p)
 
-    def is_known(p):
+    def is_known(self, p):
         """Check a path, return True if it is known"""
 
         h = xxh64(p).intdigest()
