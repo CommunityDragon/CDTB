@@ -23995,6 +23995,7 @@ d88cd4369b9c9882 plugins/rcp-fe-lol-battle-training/global/zh_tw/trans.json
 685ac0b9c6361b2d plugins/rcp-fe-lol-block-list-settings/global/de_de/trans.json
 2f55a06ef3f42cfb plugins/rcp-fe-lol-block-list-settings/global/default/blocked-summoner.html
 122cd20dfcb68308 plugins/rcp-fe-lol-block-list-settings/global/default/blocked-summoners.html
+f8cc59af3e8959cc plugins/rcp-fe-lol-block-list-settings/global/default/images/.ds_store
 3085dcdbb0e8eecc plugins/rcp-fe-lol-block-list-settings/global/default/images/poro_smile.png
 f54caf47d3d6b66c plugins/rcp-fe-lol-block-list-settings/global/default/images/x_mask.png
 553436215cd7e7ac plugins/rcp-fe-lol-block-list-settings/global/default/index.html
@@ -29581,6 +29582,7 @@ f2aa4635675837ab plugins/rcp-fe-lol-new-player-intro/global/zh_cn/trans.json
 c9fa0b1d6d3aff5d plugins/rcp-fe-lol-new-player-intro/global/zh_my/trans.json
 18481a28fef3ec40 plugins/rcp-fe-lol-new-player-intro/global/zh_tw/trans.json
 d5477b09f3a08f87 plugins/rcp-fe-lol-notification-settings/description.json
+989e51ebe328943a plugins/rcp-fe-lol-notification-settings/global/.ds_store
 fc7c63852d90dc9e plugins/rcp-fe-lol-notification-settings/global/cs_cz/trans.json
 27d29594e717db22 plugins/rcp-fe-lol-notification-settings/global/de_de/trans.json
 e6471c89c808f753 plugins/rcp-fe-lol-notification-settings/global/default/bundle.js
@@ -32026,6 +32028,7 @@ d86bde2e88dea265 plugins/rcp-fe-lol-regalia/global/default/license.json
 28047ae2e3ca5f7b plugins/rcp-fe-lol-regalia/global/es_mx/trans.json
 8f34bb9f434cc5bc plugins/rcp-fe-lol-regalia/sounds/sfx-profile-summoner-big-click.ogg
 f28104ec37accd10 plugins/rcp-fe-lol-replays-settings/description.json
+164182f07a1e7f98 plugins/rcp-fe-lol-replays-settings/global/.ds_store
 eea90eb80ed83a57 plugins/rcp-fe-lol-replays-settings/global/cs_cz/trans.json
 cdc58188b6a4a99d plugins/rcp-fe-lol-replays-settings/global/de_de/trans.json
 9d7b50b34e32c97a plugins/rcp-fe-lol-replays-settings/global/default/icon-edit-click.png
@@ -34004,6 +34007,7 @@ c3a5cb99ab1e7210 plugins/rcp-fe-lol-user-experience-settings/global/vn_vn/trans.
 39cd6ffe739db357 plugins/rcp-fe-lol-user-experience-settings/global/zh_my/trans.json
 8fa2de359c413cbd plugins/rcp-fe-lol-user-experience-settings/global/zh_tw/trans.json
 71868a323653305b plugins/rcp-fe-lol-voice-settings/description.json
+6884fe4799f70752 plugins/rcp-fe-lol-voice-settings/global/.ds_store
 b7bcff4f7c10d7c8 plugins/rcp-fe-lol-voice-settings/global/cs_cz/trans.json
 ba7cef4e721a49f2 plugins/rcp-fe-lol-voice-settings/global/de_de/trans.json
 c78374532ced4af0 plugins/rcp-fe-lol-voice-settings/global/default/9d4a45486abb00d01f7ddf19536f1141.png
