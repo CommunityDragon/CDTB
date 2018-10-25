@@ -1,4 +1,5 @@
 import os
+import json
 import re
 import shutil
 import logging
@@ -8,6 +9,7 @@ from PIL import Image
 
 from .storage import Version, Storage, PatchVersion
 from .wad import Wad
+from .binfile import BinFile
 
 logger = logging.getLogger(__name__)
 
@@ -510,6 +512,22 @@ class ImageConverter(FileConverter):
             # "OSError: cannot identify image file" happen for some files with a wrong extension
             raise ValueError("cannot convert image to PNG")
 
+class BinConverter(FileConverter):
+    def __init__(self, regex):
+        self.regex = regex
+
+    def handle_path(self, path):
+        if self.regex.match(path):
+            return path + '.json'
+        return None
+
+    def convert_to_file(self, data_or_file, fout):
+        if isinstance(data_or_file, bytes):
+            data_or_file = BytesIO(data_or_file)
+        binfile = BinFile(data_or_file)
+        fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
+
 _game_converters = [
     ImageConverter(('.dds', '.tga')),
+    BinConverter(re.compile(r'^data/characters/[^/.]*/[^/.]*\.bin$')),
 ]
