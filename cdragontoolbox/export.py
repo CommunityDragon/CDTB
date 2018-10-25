@@ -335,7 +335,7 @@ class PatchExporter:
                 converted_path = converter.handle_path(export_path)
                 if converted_path is not None:
                     export_path = converted_path
-                    save_method = converer.convert_to_file
+                    save_method = converter.convert_to_file
                     break
             else:
                 # only export converted files
