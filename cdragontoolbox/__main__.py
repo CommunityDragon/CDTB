@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import os
+import sys
 import argparse
+import json
 import textwrap
 import fnmatch
 import logging
@@ -324,8 +326,11 @@ def command_bin_dump(parser, args):
 
     with open(args.bin, 'rb') as f:
         binfile = BinFile(f)
-    for entry in binfile.entries:
-        print(entry)
+    if args.json:
+        json.dump(binfile.to_serializable(), sys.stdout)
+    else:
+        for entry in binfile.entries:
+            print(entry)
 
 
 def create_parser():
@@ -467,6 +472,8 @@ def create_parser():
 
     subparser = subparsers.add_parser('bin-dump',
                                       help="dump a BIN file as a text tree")
+    subparser.add_argument('-j', '--json', action='store_true',
+                           help="extract to JSON")
     subparser.add_argument('bin',
                            help="BIN file to extract")
 

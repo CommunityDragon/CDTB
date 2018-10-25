@@ -39,6 +39,8 @@ class BinHash:
             return self.s
         return f"{{{self.h:08x}}}"
 
+    to_serializable = __repr__
+
 
 class BinType(IntEnum):
     VEC3_U16 = 0
@@ -78,6 +80,10 @@ class BinStruct:
         sfields = _repr_indent_list(self.fields)
         return f"<STRUCT {self.ehash} {sfields}>"
 
+    def to_serializable(self):
+        return dict(f.to_serializable() for f in self.fields)
+
+
 class BinEmbedded:
     """Embedded binary value"""
 
@@ -88,6 +94,9 @@ class BinEmbedded:
     def __repr__(self):
         sfields = _repr_indent_list(self.fields)
         return f"<EMBEDDED {self.ehash} {sfields}>"
+
+    def to_serializable(self):
+        return dict(f.to_serializable() for f in self.fields)
 
 class BinField:
     """Base class for binary fields
@@ -108,6 +117,9 @@ class BinBasicField(BinField):
     def __repr__(self):
         return f"<{self.fhash} {self.vtype.name} {self.value!r}>"
 
+    def to_serializable(self):
+        return (self.fhash.to_serializable(), _to_serializable(self.value))
+
 class BinContainerField(BinField):
     def __init__(self, fhash, vtype, values):
         super().__init__(fhash)
@@ -118,6 +130,9 @@ class BinContainerField(BinField):
         svalues = _repr_indent_list(self.values)
         return f"<{self.fhash} CONTAINER({self.vtype.name}) {svalues}>"
 
+    def to_serializable(self):
+        return (self.fhash.to_serializable(), [_to_serializable(v) for v in self.values])
+
 class BinStructField(BinField):
     def __init__(self, fhash, value):
         super().__init__(fhash)
@@ -126,6 +141,9 @@ class BinStructField(BinField):
     def __repr__(self):
         sfields = _repr_indent_list(self.value.fields)
         return f"<{self.fhash} STRUCT {self.value.ehash} {sfields}>"
+
+    def to_serializable(self):
+        return (self.fhash.to_serializable(), self.value.to_serializable())
 
 class BinEmbeddedField(BinField):
     def __init__(self, fhash, value):
@@ -136,6 +154,9 @@ class BinEmbeddedField(BinField):
         sfields = _repr_indent_list(self.value.fields)
         return f"<{self.fhash} EMBEDDED {self.value.ehash} {sfields}>"
 
+    def to_serializable(self):
+        return (self.fhash.to_serializable(), self.value.to_serializable())
+
 class BinArrayField(BinField):
     def __init__(self, fhash, vtype, values):
         super().__init__(fhash)
@@ -145,6 +166,9 @@ class BinArrayField(BinField):
     def __repr__(self):
         svalues = _repr_indent_list(self.values)
         return f"<{self.fhash} ARRAY({self.vtype.name}) {svalues}>"
+
+    def to_serializable(self):
+        return (self.fhash.to_serializable(), [_to_serializable(v) for v in self.values])
 
 class BinMapField(BinField):
     def __init__(self, fhash, ktype, vtype, values):
@@ -158,6 +182,9 @@ class BinMapField(BinField):
         svalues = textwrap.indent(svalues, '  ')
         return f"<{self.fhash} MAP({self.ktype.name},{self.vtype.name}) {{\n{svalues}}}>"
 
+    def to_serializable(self):
+        return (self.fhash.to_serializable(), {_to_serializable(k): _to_serializable(v) for k,v in self.values.items()})
+
 
 class BinFileEntry:
     def __init__(self, ehash, etype, values):
@@ -169,6 +196,9 @@ class BinFileEntry:
         svalues = _repr_indent_list(self.values)
         return f"<BinFileEntry {self.ehash} {self.etype:08x} {svalues}>"
 
+    def to_serializable(self):
+        return [v.to_serializable() for v in self.values]
+
 class BinFile:
     def __init__(self, f):
         if isinstance(f, str):
@@ -178,6 +208,9 @@ class BinFile:
         reader = BinReader(f)
         self.version, self.linked_files, entry_types = reader.read_binfile_header()
         self.entries = [reader.read_binfile_entry(etype) for etype in entry_types]
+
+    def to_serializable(self):
+        return {entry.ehash.to_serializable(): entry.to_serializable() for entry in self.entries}
 
 
 class BinReader:
@@ -372,3 +405,6 @@ class BinReader:
         BinType.PADDING: read_field_basic,
     }
 
+
+def _to_serializable(v):
+    return v.to_serializable() if hasattr(v, 'to_serializable') else v
