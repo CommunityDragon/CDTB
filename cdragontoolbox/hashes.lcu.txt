@@ -4206,6 +4206,7 @@ a87543024745605d plugins/rcp-be-lol-game-data/global/default/assets/loot/shyvana
 af5eb1d6237ebd14 plugins/rcp-be-lol-game-data/global/default/assets/loot/skinpermanent_256x256.png
 7cfe95a8c3e8a7c9 plugins/rcp-be-lol-game-data/global/default/assets/loot/skinpermanent_490x490.png
 73cee6a32c10c102 plugins/rcp-be-lol-game-data/global/default/assets/loot/sona-icon-border-490px.png
+c8954e3c08822aef plugins/rcp-be-lol-game-data/global/default/assets/loot/summonerscrowncapsule_490x490.png
 1e66f167eea4659f plugins/rcp-be-lol-game-data/global/default/assets/loot/support-orb-256px.png
 2fe8cfaaabd61fb0 plugins/rcp-be-lol-game-data/global/default/assets/loot/support-orb-490px.png
 ef6897bd6aa00724 plugins/rcp-be-lol-game-data/global/default/assets/loot/support-pumpkin-490px.png
