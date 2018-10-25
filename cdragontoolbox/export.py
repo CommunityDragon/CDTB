@@ -297,13 +297,16 @@ class PatchExporter:
             wad.set_unknown_paths("unknown")
             new_files = []
             for wf in wad.files:
-                # convert some image formats to .png
-                if wf.ext in ('dds', 'tga'):
-                    wf.save_method = save_image_to_png
-                    wf.ext = 'png'
-                    wf.path = wf.path[:-3] + 'png'
-                # keep only image files
-                if wf.ext != 'png':
+                # check for converter
+                for converter in _game_converters:
+                    converted_path = converter.handle_path(wf.path)
+                    if converted_path is not None:
+                        wf.path = converted_path
+                        wf.ext = wf.path.rsplit('.', 1)[1]
+                        wf.save_method = converter.convert_to_file
+                        break
+                else:
+                    # only export converted files
                     continue
                 # export in 'game/' subdirectory
                 wf.path = f"game/{wf.path}"
@@ -325,12 +328,15 @@ class PatchExporter:
 
         save_method = None
         if is_game:
-            # convert some image formats to .png
-            base, ext = os.path.splitext(export_path)
-            if ext in ('.dds', '.tga'):
-                export_path = base + '.png'
-                save_method = save_image_to_png
-            elif ext != '.png':
+            # check for converter
+            for converter in _game_converters:
+                converted_path = converter.handle_path(export_path)
+                if converted_path is not None:
+                    export_path = converted_path
+                    save_method = converer.convert_to_file
+                    break
+            else:
+                # only export converted files
                 return None
             # export in 'game/' subdirectory
             export_path = f"game/{export_path}"
@@ -473,13 +479,37 @@ class StorageFile:
                 raise
 
 
-def save_image_to_png(data_or_file, fout):
-    if isinstance(data_or_file, bytes):
-        data_or_file = BytesIO(data_or_file)
-    try:
-        im = Image.open(data_or_file)
-        im.save(fout)
-    except (OSError, NotImplementedError):
-        # "OSError: cannot identify image file" happen for some files with a wrong extension
-        raise ValueError("cannot convert image to PNG")
+class FileConverter:
+    """Base class for file conversions"""
 
+    def handle_path(self, path):
+        """Return the path of the converted path or None if not handled"""
+        raise NotImplementedError()
+
+    def convert_to_file(self, data_or_file, fout):
+        """Convert data or file object content and save it to given file object"""
+        raise NotImplementedError()
+
+class ImageConverter(FileConverter):
+    def __init__(self, extensions):
+        self.extensions = extensions
+
+    def handle_path(self, path):
+        base, ext = os.path.splitext(path)
+        if ext in self.extensions:
+            return base + '.png'
+        return None
+
+    def convert_to_file(self, data_or_file, fout):
+        if isinstance(data_or_file, bytes):
+            data_or_file = BytesIO(data_or_file)
+        try:
+            im = Image.open(data_or_file)
+            im.save(fout)
+        except (OSError, NotImplementedError):
+            # "OSError: cannot identify image file" happen for some files with a wrong extension
+            raise ValueError("cannot convert image to PNG")
+
+_game_converters = [
+    ImageConverter(('.dds', '.tga')),
+]
