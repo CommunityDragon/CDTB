@@ -10,6 +10,7 @@ import hachoir.parser
 import hachoir.metadata
 
 from .data import Language
+from .tools import write_file_or_remove
 
 logger = logging.getLogger(__name__)
 
@@ -96,19 +97,10 @@ class Storage:
             return
 
         logger.debug(f"download file: {path}")
-        try:
-            os.makedirs(os.path.dirname(fspath), exist_ok=True)
-            r = self.request_get(urlpath)
-            r.raise_for_status()
-            with open(fspath, 'wb') as f:
-                f.write(r.content)
-        except:
-            # remove partially downloaded file
-            try:
-                os.remove(fspath)
-            except OSError:
-                pass
-            raise
+        r = self.request_get(urlpath)
+        r.raise_for_status()
+        with write_file_or_remove(fspath) as f:
+            f.write(r.content)
 
     @contextmanager
     def stream(self, urlpath) -> RequestStreamReader:
@@ -522,24 +514,15 @@ class ProjectVersion:
                     logger.debug(f"extracting {pkgfile.path}")
                     reader.skip_to(pkgfile.offset)
                     fspath = self.project.storage.fspath(pkgfile.extract_path)
-                    try:
-                        os.makedirs(os.path.dirname(fspath), exist_ok=True)
-                        with open(fspath, mode='wb') as fout:
-                            if pkgfile.compressed:
-                                zobj = zlib.decompressobj(zlib.MAX_WBITS | 32)
-                                def writer(data):
-                                    return fout.write(zobj.decompress(data))
-                                reader.copy(writer, pkgfile.size)
-                                fout.write(zobj.flush())
-                            else:
-                                reader.copy(fout.write, pkgfile.size)
-                    except:
-                        # remove partially downloaded files
-                        try:
-                            os.remove(fspath)
-                        except OSError:
-                            pass
-                        raise
+                    with write_file_or_remove(fspath) as fout:
+                        if pkgfile.compressed:
+                            zobj = zlib.decompressobj(zlib.MAX_WBITS | 32)
+                            def writer(data):
+                                return fout.write(zobj.decompress(data))
+                            reader.copy(writer, pkgfile.size)
+                            fout.write(zobj.flush())
+                        else:
+                            reader.copy(fout.write, pkgfile.size)
 
     def download(self, dry_run=False):
         """Download project version files"""

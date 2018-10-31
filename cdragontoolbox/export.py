@@ -1,15 +1,16 @@
 import os
+import errno
 import json
 import re
 import shutil
 import logging
 from io import BytesIO
-from typing import Optional, List
 from PIL import Image
 
 from .storage import Version, Storage, PatchVersion
 from .wad import Wad
 from .binfile import BinFile
+from .tools import write_file_or_remove
 
 logger = logging.getLogger(__name__)
 
@@ -65,301 +66,33 @@ def reduce_common_paths(paths1, paths2, excludes):
 
 
 class Exporter:
-    """Handle export of multiple patchs in the same directory"""
+    """Export files and WADs to a directory"""
 
-    def __init__(self, storage: Storage, output: str, first: Version=None, stored=True):
-        self.output = output
-
-        versions = set()
-        for path in os.listdir(output):
-            if not os.path.isdir(os.path.join(output, path)):
-                continue
-            try:
-                version = Version(path)
-            except (ValueError, TypeError):
-                continue
-            versions.add(version)
-
-        if not versions:
-            raise ValueError("no version directory found")
-
-        patches = []
-        for patch in PatchVersion.versions(storage, stored=stored):
-            if first and patch.version < first:
-                break
-            if patch.version in versions:
-                patches.append(patch)
-                versions.remove(patch.version)
-                if not versions:
-                    break
-        else:
-            raise ValueError(f"versions not found: {versions!r}")
-
-        self.exporters = []
-        for patch, previous_patch in zip(patches, patches[1:] + [None]):
-            patch_output = os.path.join(output, str(patch.version))
-            self.exporters.append(PatchExporter(patch_output, patch, previous_patch))
-
-    def update(self):
-        """Update all patches of the directory"""
-
-        for exporter in self.exporters:
-            exporter.export()
-            exporter.write_links()
-            exporter.write_unknown()
-
-    def create_symlinks(self):
-        """Create symlinks for all patches"""
-
-        # create in reverse order, because of chained symlinks
-        for exporter in self.exporters[::-1]:
-            exporter.create_symlinks()
-
-
-class PatchExporter:
-    """Handle export of patch files to a directory"""
-
-    def __init__(self, output: str, patch: PatchVersion, previous_patch: Optional[PatchVersion]):
-        self.storage = patch.storage
+    def __init__(self, output: str, storage: Storage):
         self.output = os.path.normpath(output)
-        self.patch = patch
-        self.previous_patch = previous_patch
-        # list of export path to link from the previous patch, set in export()
-        self.previous_links = None
-        # list of all unknown hashes, sorted (including those linked from previous patch)
-        self.unknown_hashes = None
-
-    def export(self, overwrite=True):
-        """Export modified files to the output directory
-
-        Set previous_links and unknown_hashes.
-
-        Files that have changed from the previous patch are copied to the
-        output directory.
-        Files that didn't changed are added to self.previous_links. It's
-        content is reduced so that identical directories result into a single
-        link entry.
-
-        If overwrite is False, don't extract files that already exist on disk.
-        """
-
-        if self.previous_patch:
-            logger.info(f"exporting patch {self.patch.version} based on patch {self.previous_patch.version}")
-        else:
-            logger.info(f"exporting patch {self.patch.version} based on (full)")
-
-        patch_solutions = self.patch.solutions(latest=True)
-        for sv in patch_solutions:
-            sv.download(langs=True)
-
-        if self.previous_patch:
-            prev_patch_solutions = self.previous_patch.solutions(latest=True)
-            for sv in prev_patch_solutions:
-                sv.download(langs=True)
-
-        # iterate on project files, compare files with previous patch
-        projects = {pv for sv in patch_solutions for pv in sv.projects(True)}
-        # match projects with previous projects
-        if self.previous_patch:
-            prev_projects = {pv.project.name: pv for sv in prev_patch_solutions for pv in sv.projects(True)}
-        else:
-            prev_projects = {}
-        #XXX for now, exclude lol_game_client language projects
-        projects = {pv for pv in projects if not pv.project.name.startswith('lol_game_client_')}
-        prev_projects = {name: pv for name, pv in prev_projects.items() if not name.startswith('lol_game_client_')}
-
-        logger.info("build list of files to extract or link")
-        new_symlinks = []
-        new_extracts = []
-        unknown_hashes = []
-        to_extract = []  # StorageFile or Wad instances (with wad.files correctly filled)
-        for pv, prev_pv in sorted((pv, prev_projects.get(pv.project.name)) for pv in projects):
-            is_game = pv.project.name.startswith('lol_game_client')
-            # get export paths from previous package
-            prev_extract_paths = {}  # {export_path: extract_path}
-            if prev_pv:
-                for path in prev_pv.filepaths():
-                    prev_extract_paths[self.to_export_path(path)] = path
-
-            for extract_path in pv.filepaths():
-                export_path = self.to_export_path(extract_path)
-                prev_extract_path = prev_extract_paths.get(export_path)
-                # package files with identical extract paths are the same
-
-                if extract_path.endswith('.wad') or extract_path.endswith('.wad.client'):
-                    # WAD file: link the whole archive or compare file by file using sha256
-                    wad = self._open_wad(extract_path, unknown_hashes)
-                    if extract_path == prev_extract_path:
-                        logger.debug(f"unchanged WAD file: {extract_path}")
-                        new_symlinks += [wf.path for wf in wad.files]
-                    else:
-                        logger.debug(f"modified WAD file: {extract_path}")
-                        if prev_extract_path:
-                            # compare to the previous WAD based on sha256 hashes
-                            # note: no need to use _open_wad(), file paths are not used
-                            prev_wad = Wad(self.storage.fspath(prev_extract_path), hashes={})
-                            prev_sha256 = {wf.path_hash: wf.sha256 for wf in prev_wad.files}
-                            wadfiles_to_extract = []
-                            for wf in wad.files:
-                                if wf.sha256 == prev_sha256.get(wf.path_hash):
-                                    # same file, add a link
-                                    new_symlinks.append(wf.path)
-                                else:
-                                    wadfiles_to_extract.append(wf)
-                            # change the files from the wad so it only extract these
-                            wad.files = wadfiles_to_extract
-                        new_extracts += [wf.path for wf in wad.files]
-                        to_extract.append(wad)
-                else:
-                    # normal file, retrieved directly from storage
-                    storage_file = self._storage_file(extract_path, export_path, is_game)
-                    if not storage_file:
-                        continue
-                    if extract_path == prev_extract_path:
-                        logger.debug(f"unchanged file: {extract_path}")
-                        new_symlinks.append(storage_file.export_path)
-                    else:
-                        logger.debug(f"modified file: {extract_path}")
-                        new_extracts.append(storage_file.export_path)
-                        to_extract.append(storage_file)
-
-        # convert to sets now (we will need it later)
-        new_extracts = set(new_extracts)
-        new_symlinks = set(new_symlinks)
-
-        # set unknown_hashes
-        # filter duplicates, even if there should be none
-        self.unknown_hashes = sorted(set(unknown_hashes))
-
-        # get stored files, to remove superfluous ones
-        old_extracts = set()
-        old_symlinks = set()
-        for path in self.exported_files():
-            full_path = os.path.join(self.output, path)
-            if os.path.islink(full_path):
-                old_symlinks.add(path)
-            elif os.path.isfile(full_path):
-                old_extracts.add(path)
-            else:
-                raise ValueError(f"unexpected directory: {full_path}")
-
-        # build the reduced list of new symlinks (self.previous_links)
-        if self.previous_patch:
-            previous_files = list(self._exported_paths_for_projects(prev_projects.values()))
-
-            # Check for files both extracted and linked, which should only
-            # happen for duplicated files. Game files can contain duplicates,
-            # so don't fail and ignore symlinks; this will avoid errors later.
-            for duplicate in sorted(new_symlinks & new_extracts):
-                logger.warning(f"duplicate file: {duplicate}")
-                new_symlinks.remove(duplicate)
-
-            self.previous_links = reduce_common_paths(new_symlinks, previous_files, new_extracts)
-        else:
-            assert not new_symlinks
-            self.previous_links = None
-
-        # remove extra files and their parent directories (if empty)
-        # note: symlinks are assumed to point to the right location
-        dirs_to_remove = set()
-        for path in list(old_extracts - new_extracts) + list(old_symlinks - set(self.previous_links or [])):
-            logger.info(f"remove extra file or symlink: {path}")
-            full_path = os.path.join(self.output, path)
-            os.remove(full_path)
-            dirs_to_remove.add(os.path.dirname(full_path))
-        for path in dirs_to_remove:
-            try:
-                os.removedirs(path)
-            except OSError:
-                pass
-
-        # extract files, finally
-        for elem in to_extract:
-            if isinstance(elem, Wad):
-                elem.extract(self.output, overwrite=overwrite)
-            elif isinstance(elem, StorageFile):
-                elem.export(self.output)
-            else:
-                raise TypeError(f"unexpected element to extract: {elem!r}")
+        self.storage = storage
+        self.wads = {}  # {export_path: Wad}
+        self.plain_files = {}  # {export_path: storage_path}
+        self.converters = []
 
 
-    def _open_wad(self, extract_path: str, unknown: Optional[List]=None) -> Wad:
-        """Open a WAD, guess extensions, resolve paths, setup conversions.
+    def exported_paths(self):
+        """Generate paths of extracted files"""
+        yield from self.plain_files
+        for wad in self.wads.values():
+            yield from (wf.path for wf in wad.files)
 
-        If unknown is set, unknown hashes are appended to it.
-        """
+    def unknown_hashes(self):
+        """Yield all unknown hashes from WAD files"""
+        for wad in self.wads.values():
+            yield from (wf.path_hash for wf in wad.files if not wf.path)
 
-        wad = Wad(self.storage.fspath(extract_path))
-        wad.guess_extensions()
-        if unknown is not None:
-            unknown += [wf.path_hash for wf in wad.files if not wf.path]
+    def converted_exported_paths(self):
+        """Generate paths of extracted files after conversion"""
+        yield from (self._get_converter(path)[0] for path in self.exported_paths())
 
-        if extract_path.endswith('.wad.client'):
-            # lol_game_client
-            wad.set_unknown_paths("unknown")
-            new_files = []
-            for wf in wad.files:
-                # check for converter
-                for converter in _game_converters:
-                    converted_path = converter.handle_path(wf.path)
-                    if converted_path is not None:
-                        wf.path = converted_path
-                        wf.ext = wf.path.rsplit('.', 1)[1]
-                        wf.save_method = converter.convert_to_file
-                        break
-                else:
-                    # only export converted files
-                    continue
-                # export in 'game/' subdirectory
-                wf.path = f"game/{wf.path}"
-                new_files.append(wf)
-            wad.files = new_files
-        else:
-            # league_client: extract everything, unknown path depends on WAD path
-            m = re.search(r'/(plugins/rcp-.+?)/[^/]*assets\.wad$', extract_path, re.I)
-            if m is not None:
-                # LCU client: plugins/<plugin-name>
-                unknown_path = f"{m.group(1).lower()}/unknown"
-            else:
-                unknown_path = "unknown"
-            wad.set_unknown_paths(unknown_path)
-        return wad
-
-    def _storage_file(self, extract_path, export_path, is_game):
-        """Create a StorageFile instance, return None if the file must be ignored"""
-
-        save_method = None
-        if is_game:
-            # check for converter
-            for converter in _game_converters:
-                converted_path = converter.handle_path(export_path)
-                if converted_path is not None:
-                    export_path = converted_path
-                    save_method = converter.convert_to_file
-                    break
-            else:
-                # only export converted files
-                return None
-            # export in 'game/' subdirectory
-            export_path = f"game/{export_path}"
-        else:
-            # ignore description.json files
-            # They may also also be in WADs (slightly different
-            # though), which may result into files being both extracted
-            # and symlinked.
-            # Just use WAD ones, even if it leads to not having a
-            # description.json at all. These files are not needed
-            # anyway.
-            if export_path.endswith('/descriptions.json'):
-                return None
-
-        storage_file = StorageFile(self.storage, extract_path, export_path)
-        storage_file.save_method = save_method
-        return storage_file
-
-
-    def exported_files(self):
-        """Generate a list of files on disk (even if not if patch files)
+    def walk_output_dir(self):
+        """Generate a list of files on disk (even if not in exported files)
 
         Generate paths with forward slashes on all platforms.
         """
@@ -377,42 +110,357 @@ class PatchExporter:
                     elif entry.is_dir():
                         to_visit.append(f"{base}{entry.name}/")
 
-    def all_exported_paths(self):
-        """Generate a list of all files exported by a full export"""
 
-        patch_solutions = self.patch.solutions(latest=True)
-        projects = {pv for sv in patch_solutions for pv in sv.projects(True)}
+    def add_storage_path(self, path):
+        """Add a path from it's storage path"""
+
+        if path.endswith('.wad') or path.endswith('.wad.client'):
+            wad = Wad(self.storage.fspath(path))
+            # remove file redirections
+            wad.files = [wf for wf in wad.files if wf.type != 2]
+            wad.guess_extensions()
+            self.wads[self._export_path(path)] = wad
+        else:
+            self.plain_files[self._export_path(path)] = path
+
+    def add_patch_files(self, patch):
+        """Add files to export from a patch"""
+
+        logger.info(f"add list of files to extract for patch {patch.version}")
+        projects = self._patch_to_projects(patch)
+
+        # add files to export
+        for pv in projects:
+            for path in pv.filepaths():
+                self.add_storage_path(path)
+
+    def filter_storage_path(self, path):
+        """Remove files that are in the provided storage path
+
+        WAD files are first compared by path, then by file's sha256.
+        Plain files are simply removed.
+        """
+
+        if path in self.plain_files:
+            del self.plain_files[path]
+        elif path.endswith('.wad') or path.endswith('.wad.client'):
+            export_path = self._export_path(path)
+            self_wad = self.wads.get(export_path)
+            if self_wad is None:
+                return  # not exported
+            if self_wad.path == path:
+                # same path: WADs are identical
+                logger.debug(f"filter identical WAD file: {path}")
+                del self.wads[export_path]
+            else:
+                # compare the sha256 hashes to find the common files
+                # don't resolve hashes: we just need the sha256
+                logger.debug(f"filter modified WAD file: {path}")
+                other_wad = Wad(self.storage.fspath(path), hashes={})
+                other_sha256 = {wf.path_hash: wf.sha256 for wf in other_wad.files}
+                # change the files from the wad so it only extract these
+                self_wad.files = [wf for wf in self_wad.files if wf.sha256 != other_sha256.get(wf.path_hash)]
+                if not self_wad.files:
+                    del self.wads[export_path]
+
+    def filter_export_paths(self, predicate):
+        """Filter paths to export using a predicate
+
+        Unknown files are filtered out if None is filtered out.
+        """
+
+        self.plain_files = {k: v for k, v in self.plain_files.items() if predicate(k)}
+        emptied = []
+        for path, wad in self.wads.items():
+            wad.files = [wf for wf in wad.files if predicate(wf.path)]
+            if not wad.files:
+                emptied.append(path)
+        for path in emptied:
+            del self.wads[path]
+
+    def filter_exporter(self, other):
+        """Remove files that are exported by another exporter"""
+
+        for path, other_storage_path in other.plain_files.items():
+            if self.plain_files.get(path) == other_storage_path:
+                # same storage path: files are identical
+                logger.debug(f"filter identical plain file: {path}")
+                del self.plain_files[path]
+
+        for path, other_wad in other.wads.items():
+            self_wad = self.wads.get(path)
+            if self_wad is None:
+                continue  # not exported
+            if self_wad.path == other_wad.path:
+                # same path: WADs are identical
+                logger.debug(f"filter identical WAD file: {path}")
+                del self.wads[path]
+            else:
+                # compare the sha256 hashes to find the common files
+                # don't resolve hashes: we just need the sha256
+                logger.debug(f"filter modified WAD file: {path}")
+                other_sha256 = {wf.path_hash: wf.sha256 for wf in other_wad.files}
+                # change the files from the wad so it only extract these
+                self_wad.files = [wf for wf in self_wad.files if wf.sha256 != other_sha256.get(wf.path_hash)]
+                if not self_wad.files:
+                    del self.wads[path]
+
+    def export(self, overwrite=True):
+        """Export files to the output
+
+        If overwrite is False, don't extract files that already exist on disk.
+        """
+
+        logger.info(f"export plain files ({len(self.plain_files)})")
+        for export_path, storage_path in self.plain_files.items():
+            self._export_plain_file(export_path, storage_path, overwrite)
+
+        for wad in self.wads.values():
+            self._export_wad(wad, overwrite)
+
+    def clean_output_dir(self, kept_files, kept_symlinks):
+        """Remove regular files/symlinks from output, except given ones
+
+        This method is intended to be used to clean-up files that should not be
+        extracted/symlinked. Parent directories are removed (if empty).
+        Note: symlinks are assumed to point to the right location.
+        """
+
+        # collect files to remove
+        to_remove = []
+        for path in self.walk_output_dir():
+            full_path = os.path.join(self.output, path)
+            if os.path.islink(full_path):
+                if path in kept_symlinks:
+                    continue
+            elif os.path.isfile(full_path):
+                if path in kept_files:
+                    continue
+            else:
+                raise ValueError(f"unexpected directory: {full_path}")
+            to_remove.append(full_path)
+
+        dirs_to_remove = set()
+        for path in to_remove:
+            logger.info(f"remove extra file or symlink: {path}")
+            os.remove(path)
+            dirs_to_remove.add(os.path.dirname(path))
+        for path in dirs_to_remove:
+            try:
+                os.removedirs(path)
+            except OSError:
+                pass
+
+
+    def _get_converter(self, path):
+        """Get converter for given path
+        Return (converted_path, converter) or (path, None).
+        """
+        for converter in self.converters:
+            converted_path = converter.handle_path(path)
+            if converted_path is not None:
+                return (converted_path, converter)
+        return (path, None)
+
+    def _export_plain_file(self, export_path, storage_path, overwrite=True):
+        """Export a plain file"""
+
+        converted_path, converter = self._get_converter(export_path)
+
+        output_path = os.path.join(self.output, converted_path)
+        if not overwrite and os.path.lexists(output_path):
+            return
+
+        source_path = self.storage.fspath(storage_path)
+        try:
+            with open(source_path, 'rb') as fin:
+                with write_file_or_remove(output_path) as fout:
+                    if converter is None:
+                        shutil.copyfileobj(fin, fout)
+                    else:
+                        converter.convert_to_file(fin, fout)
+        except FileConversionError as e:
+            logger.warning(f"cannot convert file '{source_path}': {e}")
+
+    def _export_wad(self, wad, overwrite=True):
+        logger.info(f"export {wad.path} ({len(wad.files)})")
+        # similar to Wad.extract()
+        # unknown files are skipped
+        with open(wad.path, 'rb') as fwad:
+            for wadfile in wad.files:
+                if wadfile.path is None:
+                    continue
+                converted_path, converter = self._get_converter(wadfile.path)
+                output_path = os.path.join(self.output, converted_path)
+                if not overwrite and os.path.lexists(output_path):
+                    continue
+
+                data = wadfile.read_data(fwad)
+                if data is None:
+                    continue  # should not happen, file redirections have been filtered already
+
+                try:
+                    with write_file_or_remove(output_path) as fout:
+                        if converter is None:
+                            fout.write(data)
+                        else:
+                            converter.convert_to_file(BytesIO(data), fout)
+                except FileConversionError as e:
+                    logger.warning(f"cannot convert file '{wadfile.path}': {e}")
+                except OSError as e:
+                    # Windows does not support path components longer than 255
+                    # ignore such files
+                    if e.errno == errno.EINVAL:
+                        logger.warning(f"ignore file with invalid path: {wad.path}")
+                    else:
+                        raise
+
+    @staticmethod
+    def _export_path(path):
+        """Compute path to which export the file from storage path"""
+        # projects/<p_name>/releases/<p_version>/files/<export_path>
+        return path.split('/', 5)[5].lower()
+
+    @staticmethod
+    def _patch_to_projects(patch):
+        """Download a path, return a list of projects to export from a patch"""
+
+        solutions = patch.solutions(latest=True)
+        for sv in solutions:
+            sv.download(langs=True)
+        projects = [pv for sv in solutions for pv in sv.projects(True)]
         #XXX for now, exclude lol_game_client language projects
-        projects = {pv for pv in projects if not pv.project.name.startswith('lol_game_client_')}
-        yield from self._exported_paths_for_projects(sorted(projects))
+        projects = [pv for pv in projects if not pv.project.name.startswith('lol_game_client_')]
+
+        return projects
 
 
-    def write_links(self, path=None):
-        if self.previous_links is None:
-            return
-        if path is None:
-            path = self.output + ".links.txt"
-        with open(path, 'w', newline='\n') as f:
-            for link in sorted(self.previous_links):
-                print(link, file=f)
+class CdragonRawPatchExporter:
+    """Export a single patch, as on raw.communitydragon.org
 
-    def write_unknown(self, path=None):
-        if self.unknown_hashes is None:
-            return
-        if path is None:
-            path = self.output + ".unknown.txt"
-        with open(path, 'w', newline='\n') as f:
-            for h in self.unknown_hashes:
+    Handle symlinking of previous patch files, write list of unknown hashes,
+    convert files, etc.
+    """
+
+    def __init__(self, output, patch, prev_patch=None, symlinks=None):
+        self.output = os.path.normpath(output)
+        self.storage = patch.storage
+        self.patch = patch
+        self.prev_patch = prev_patch
+        if symlinks is None:
+            self.create_symlinks = prev_patch is not None
+        else:
+            if symlinks and not prev_patch:
+                raise ValueError("cannot create symlinks without a previous patch")
+            self.create_symlinks = symlinks
+
+    def process(self, overwrite=True):
+        exporter = self._create_exporter(self.patch)
+
+        # collect unknown hashes before resolving and filtering anything
+        unknown_hashes = sorted(exporter.unknown_hashes())
+
+        logger.info(f"filter and transform exported files for patch {self.patch.version}")
+        self._transform_exported_files(exporter)
+
+        if self.prev_patch:
+            prev_exporter = self._create_exporter(self.prev_patch)
+            self._transform_exported_files(prev_exporter)
+
+        # collect list of paths to extract (new ones, previous ones)
+        new_paths = set(exporter.converted_exported_paths())
+        symlinked_paths = None
+        if self.prev_patch:
+            prev_paths = set(prev_exporter.converted_exported_paths())
+            # filter out files from previous patch
+            exporter.filter_exporter(prev_exporter)
+            # collect a list of new paths to actually extract (changed ones)
+            changed_paths = set(exporter.converted_exported_paths())
+            if self.create_symlinks:
+                # build a list of symlinks
+                # note: Game files contain some duplicates which will appear in several WAD files.
+                # A new version of any duplicate will override any unmodified one.
+                symlinked_paths = reduce_common_paths(new_paths - changed_paths, prev_paths, changed_paths)
+        else:
+            changed_paths = new_paths
+
+        exporter.clean_output_dir(changed_paths, set(symlinked_paths or []))
+
+        # extract files, create symlinks if needed
+        exporter.export(overwrite=overwrite)
+        if symlinked_paths:
+            self._create_symlinks(symlinked_paths)
+
+        # write additional txt files
+        if symlinked_paths:
+            with open(self.output + ".links.txt", 'w', newline='\n') as f:
+                for link in sorted(symlinked_paths):
+                    print(link, file=f)
+
+        with open(self.output + ".unknown.txt", 'w', newline='\n') as f:
+            for h in unknown_hashes:
                 print(f"{h:016x}", file=f)
 
-    def create_symlinks(self):
-        if self.previous_links is None:
+        with open(self.output + ".filelist.txt", 'w', newline='\n') as f:
+            for path in new_paths:
+                print(path, file=f)
+
+
+    def _create_exporter(self, patch):
+        exporter = Exporter(self.output, patch.storage)
+        exporter.converters = [
+            ImageConverter(('.dds', '.tga')),
+            BinConverter(re.compile(r'^game/data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin$')),
+        ]
+        exporter.add_patch_files(patch)
+        return exporter
+
+    @staticmethod
+    def _transform_exported_files(exporter):
+        """Filter exported files, resolve unknowns, etc."""
+
+        # resolve unknowns paths
+        for path, wad in exporter.wads.items():
+            unknown_path = "unknown"
+            # league_client: extract unknown files under plugin directory
+            m = re.search(r'^(plugins/rcp-.+?)/[^/]*assets\.wad$', path, re.I)
+            if m is not None:
+                unknown_path = f"{m.group(1).lower()}/unknown"
+            wad.set_unknown_paths(unknown_path)
+
+        # don't export executables
+        exporter.filter_export_paths(lambda p: p and not p.endswith('.exe') and not p.endswith('.dll'))
+
+        # Remove 'description.json' files from plain files.
+        # They may also also be in WADs (slightly different though), which may
+        # result into files being both extracted and symlinked.
+        # Just use WAD ones, even if it leads to not having a description.json
+        # at all. These files are not needed anyway.
+        exporter.plain_files = {k: v for k, v in exporter.plain_files.items() if not k.endswith('/description.json')}
+
+        # game WADs:
+        # - keep only images and champion 'bin' files
+        # - add 'game/' prefix to export path
+        re_game_paths = re.compile(r'(?:\.dds|\.tga|^data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin)$')
+        for path, wad in exporter.wads.items():
+            if path.endswith('.wad.client'):
+                wad.files = [wf for wf in wad.files if re_game_paths.search(wf.path)]
+                for wf in wad.files:
+                    wf.path = f"game/{wf.path}"
+        # remove emptied WADs
+        for path, wad in list(exporter.wads.items()):
+            if not wad.files:
+                del exporter.wads[path]
+
+
+    def _create_symlinks(self, symlinks):
+        if not symlinks:
             return
         dst_output = self.output
-        src_output = os.path.join(os.path.dirname(self.output), str(self.previous_patch.version))
+        src_output = os.path.join(os.path.dirname(self.output), str(self.prev_patch.version))
 
         logger.info(f"creating symlinks for patch {self.patch.version}")
-        for link in self.previous_links:
+        for link in symlinks:
             dst = os.path.join(dst_output, link)
             if os.path.lexists(dst):
                 if not os.path.islink(dst):
@@ -424,61 +472,49 @@ class PatchExporter:
             logger.info(f"create symlink {dst}")
             os.symlink(src, dst)
 
-    @staticmethod
-    def to_export_path(path):
-        """Compute path to which export the file from storage path"""
-        # projects/<p_name>/releases/<p_version>/files/<export_path>
-        return path.split('/', 5)[5].lower()
+    @classmethod
+    def from_directory(cls, storage, output: str, first: Version=None):
+        """Handle export of multiple patchs in the same directory
 
-    def _exported_paths_for_projects(self, projects):
-        """Generate exported paths for a list of projects"""
+        Exporter for the most oldest patch is returned first.
+        """
 
-        for pv in projects:
-            is_game = pv.project.name.startswith('lol_game_client')
-            for extract_path in pv.filepaths():
-                if extract_path.endswith('.wad') or extract_path.endswith('.wad.client'):
-                    wad = self._open_wad(extract_path)
-                    yield from (wf.path for wf in wad.files)
-                else:
-                    export_path = self.to_export_path(extract_path)
-                    storage_file = self._storage_file(extract_path, export_path, is_game)
-                    if storage_file:
-                        yield storage_file.export_path
+        #XXX If directories of intermediate patches don't exist, they will
+        # be fully extracted. This should be checked.
 
-
-class StorageFile:
-    """Single exported file from storage"""
-
-    def __init__(self, storage, storage_path, export_path):
-        self.source_path = storage.fspath(storage_path)
-        self.export_path = export_path
-        self.save_method = None
-
-    def export(self, output):
-        """Export the file, do nothing if it already exists"""
-
-        output_path = os.path.join(output, self.export_path)
-        if os.path.lexists(output_path):
-            return
-        logger.info(f"exporting {self.export_path}")
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
-        try:
-            if self.save_method is None:
-                shutil.copyfile(self.source_path, output_path)
-            else:
-                with open(self.source_path, 'rb') as fin:
-                    with open(output_path, 'wb') as fout:
-                        self.save_method(fin, fout)
-        except Exception as e:
-            # remove partially exported file
+        # collect all version subdirectories
+        versions = set()
+        for path in os.listdir(output):
+            if not os.path.isdir(os.path.join(output, path)):
+                continue
             try:
-                os.remove(output_path)
-            except OSError:
-                pass
-            if isinstance(e, ValueError):
-                logger.warning(f"cannot convert file '{self.source_path}': {e}")
-            else:
-                raise
+                version = Version(path)
+            except (ValueError, TypeError):
+                continue
+            versions.add(version)
+
+        if not versions:
+            raise ValueError("no version directory found")
+
+        # get patches from versions (latest to oldest)
+        patches = []
+        for patch in PatchVersion.versions(storage, stored=True):
+            if first and patch.version < first:
+                break
+            if patch.version in versions:
+                patches.append(patch)
+                versions.remove(patch.version)
+                if not versions:
+                    break
+        else:
+            raise ValueError(f"versions not found: {versions!r}")
+
+        # create patch exporters (latest to oldest)
+        exporters = []
+        for patch, previous_patch in zip(patches, patches[1:] + [None]):
+            patch_output = os.path.join(output, str(patch.version))
+            exporters.append(cls(patch_output, patch, previous_patch))
+        return exporters[::-1]
 
 
 class FileConverter:
@@ -488,9 +524,12 @@ class FileConverter:
         """Return the path of the converted path or None if not handled"""
         raise NotImplementedError()
 
-    def convert_to_file(self, data_or_file, fout):
-        """Convert data or file object content and save it to given file object"""
+    def convert_to_file(self, fin, fout):
+        """Convert file object content and save it to given file object"""
         raise NotImplementedError()
+
+class FileConversionError(RuntimeError):
+    pass
 
 class ImageConverter(FileConverter):
     def __init__(self, extensions):
@@ -502,15 +541,13 @@ class ImageConverter(FileConverter):
             return base + '.png'
         return None
 
-    def convert_to_file(self, data_or_file, fout):
-        if isinstance(data_or_file, bytes):
-            data_or_file = BytesIO(data_or_file)
+    def convert_to_file(self, fin, fout):
         try:
-            im = Image.open(data_or_file)
+            im = Image.open(fin)
             im.save(fout)
         except (OSError, NotImplementedError):
             # "OSError: cannot identify image file" happen for some files with a wrong extension
-            raise ValueError("cannot convert image to PNG")
+            raise FileConversionError("cannot convert image to PNG")
 
 class BinConverter(FileConverter):
     def __init__(self, regex):
@@ -521,13 +558,7 @@ class BinConverter(FileConverter):
             return path + '.json'
         return None
 
-    def convert_to_file(self, data_or_file, fout):
-        if isinstance(data_or_file, bytes):
-            data_or_file = BytesIO(data_or_file)
-        binfile = BinFile(data_or_file)
+    def convert_to_file(self, fin, fout):
+        binfile = BinFile(fin)
         fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
 
-_game_converters = [
-    ImageConverter(('.dds', '.tga')),
-    BinConverter(re.compile(r'^data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin$')),
-]

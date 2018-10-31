@@ -43,8 +43,8 @@ def test_cli_export_versions(runner, monkeypatch, mocker, args, version, previou
             yield PatchVersion._create(storage, Version(v), [])
     monkeypatch.setattr(PatchVersion, 'versions', patch_versions)
 
-    with mocker.patch('cdragontoolbox.__main__.PatchExporter'):
-        mock = cdragontoolbox.__main__.PatchExporter
+    with mocker.patch('cdragontoolbox.__main__.CdragonRawPatchExporter'):
+        mock = cdragontoolbox.__main__.CdragonRawPatchExporter
         mock.return_value = mock_instance = mocker.Mock()
         runner("export " + args)
 
@@ -52,9 +52,7 @@ def test_cli_export_versions(runner, monkeypatch, mocker, args, version, previou
         previous_patch = None if previous_version is None else PatchVersion._create(None, previous_version, [])
         mock.assert_called_once_with(os.path.join('export', '7.24'), patch, previous_patch)
 
-        mock_instance.export.assert_called_once_with()
-        mock_instance.write_links.assert_called_once_with()
-        mock_instance.write_unknown.assert_called_once_with()
+        mock_instance.process.assert_called_once_with(overwrite=True, symlinks=False)
 
 @pytest.mark.parametrize("arg_storage, arg_cdn, env_storage, env_cdn, path, url", [
     # basic cases

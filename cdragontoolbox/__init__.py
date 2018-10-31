@@ -13,5 +13,5 @@ from cdragontoolbox.wad import (
 )
 from cdragontoolbox.export import (
     Exporter,
-    PatchExporter,
+    CdragonRawPatchExporter,
 )

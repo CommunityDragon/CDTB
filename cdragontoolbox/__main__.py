@@ -20,8 +20,7 @@ from cdragontoolbox.wad import (
     wads_from_component,
 )
 from cdragontoolbox.export import (
-    Exporter,
-    PatchExporter,
+    CdragonRawPatchExporter,
 )
 from cdragontoolbox.binfile import (
     BinFile,
@@ -281,14 +280,18 @@ def command_export(parser, args):
         if os.name == 'nt' or not hasattr(os, 'symlink'):
             parser.error("symlinks not supported on this platform")
 
+    process_kwargs = dict(
+        overwrite = not args.lazy,
+        symlinks = args.symlinks,
+    )
+
     if not args.patch:
         # multiple patch (update only)
         if args.previous:
             parser.error("patch version required with --previous or --full")
-        exporter = Exporter(storage, args.output, Version(args.first))
-        exporter.update()
-        if args.symlinks:
-            exporter.create_symlinks()
+        exporters = CdragonRawPatchExporter.from_directory(storage, args.output, Version(args.first))
+        for exporter in exporters:
+            exporter.process(**process_kwargs)
     else:
         if args.first:
             parser.error("--from cannot be used when providing a patch")
@@ -312,12 +315,8 @@ def command_export(parser, args):
             else:
                 parser.error("cannot guess previous patch")
 
-        exporter = PatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
-        exporter.export()
-        exporter.write_links()
-        exporter.write_unknown()
-        if args.symlinks:
-            exporter.create_symlinks()
+        exporter = CdragonRawPatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
+        exporter.process(**process_kwargs)
 
 
 def command_bin_dump(parser, args):
@@ -464,6 +463,8 @@ def create_parser():
                            help="export the whole patch (don't compare with a previous one)")
     subparser.add_argument('--from', dest='first',
                            help="if a patch is not provided, update all exported patches starting from this one")
+    subparser.add_argument('--lazy', action='store_true',
+                           help="don't overwrite files, assume they are already correctly extracted")
     subparser.add_argument('patch', nargs='?',
                            help="patch version to export or 'latest', can be omitted to update all exported patches")
 

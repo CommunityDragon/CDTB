@@ -18,6 +18,7 @@ from .storage import (
     ProjectVersion,
     SolutionVersion,
 )
+from .tools import write_file_or_remove
 
 def test_jpeg_photoshop(h, f):
     if h[:4] == b'\xff\xd8\xff\xe1':
@@ -97,8 +98,6 @@ class WadFileHeader:
         # values that can be guessed
         self.path = None
         self.ext = None
-        # method used to save the file, converting it if needed
-        self.save_method = self.save_default
 
     def read_data(self, f):
         """Retrieve (uncompressed) data from WAD file object"""
@@ -127,25 +126,17 @@ class WadFileHeader:
         """
 
         data = self.read_data(fwad)
-        if not data:
+        if data is None:
             return
 
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
         try:
-            with open(output_path, 'wb') as fout:
-                self.save_method(data, fout)
-        except Exception as e:
-            # remove partially extracted file
-            try:
-                os.remove(output_path)
-            except OSError:
-                pass
+            with write_file_or_remove(output_path) as fout:
+                fout.write(data)
+        except OSError as e:
             # Windows does not support path components longer than 255
             # ignore such files
-            if isinstance(e, OSError) and e.errno == errno.EINVAL:
+            if e.errno == errno.EINVAL:
                 logger.warning(f"ignore file with invalid path: {self.path}")
-            elif isinstance(e, ValueError):
-                logger.warning(f"cannot convert file '{self.path}': {e}")
             else:
                 raise
 
@@ -171,10 +162,6 @@ class WadFileHeader:
         for prefix, ext in WadFileHeader._magic_numbers_ext.items():
             if data.startswith(prefix):
                 return ext
-
-    @staticmethod
-    def save_default(data, fout):
-        fout.write(data)
 
 
 class Wad:
