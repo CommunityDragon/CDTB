@@ -990,6 +990,7 @@ a8445b9c91c5eee8 plugins/rcp-be-lol-game-data/global/default/assets/characters/a
 6cd955f0388d3354 plugins/rcp-be-lol-game-data/global/default/assets/characters/ahri/skins/skin14/ahriloadscreen_14_le.jpg
 8e4f56ead22892c3 plugins/rcp-be-lol-game-data/global/default/assets/characters/ahri/skins/skin15/ahriloadscreen_15.skins_ahri_skin15.jpg
 e35451d1242007eb plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/hud/icons2d/akali_e.akaliupdate.png
+000174b934e3de56 plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/hud/icons2d/akali_e.png
 6d9975fca5018a55 plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/hud/icons2d/akali_p.akaliupdate.png
 8bf7fa7827e97810 plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/hud/icons2d/akali_p.png
 6d90f4ffd0b388de plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/hud/icons2d/akali_q.akaliupdate.png
@@ -1410,13 +1411,17 @@ ebb03038cbb0b42c plugins/rcp-be-lol-game-data/global/default/assets/characters/e
 a13b48918fbda522 plugins/rcp-be-lol-game-data/global/default/assets/characters/evelynn/skins/skin06/evelynnloadscreen_6.skins_evelynn_skin06.jpg
 3b9f7a8fd1e8879b plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_arcaneshift.png
 1447bd34bf27b4e6 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_e.ezrealvgu.png
+c3b9125de9b7a3f2 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_e.png
 804647e8b14ad713 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_essenceflux.png
 91a66909cc5e6bc8 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_mysticshot.png
 79e6da68d95cced0 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_q.ezrealvgu.png
+43dc9db39a87993e plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_q.png
 80ffcc8769a56158 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_r.ezrealvgu.png
+0bafd621a34e4b6a plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_r.png
 1f481d839b928d34 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_risingspellforce.png
 fb6fc015b19d5ad0 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_trueshotbarrage.png
 46125ffcd99f5cc1 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_w.ezrealvgu.png
+d24e2c726eae3db1 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_w.png
 ff2f39c108ee7004 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/skins/base/ezrealloadscreen.ezrealvgu.jpg
 f42772b0f7a602c6 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/skins/base/ezrealloadscreen.jpg
 d08666fa0a9b6e87 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/skins/skin01/ezrealloadscreen_1.ezrealvgu.jpg
@@ -3566,6 +3571,7 @@ b29eab43b3d27fd7 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/sum
 f4b3924c7942de0f plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/ziggs/ziggs_happy_cheers_inventory.png
 d59ac85417e4a84d plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/zoe/em_zoe_goodbye_inventory.nct_emotes_patch_8_5.png
 54d71ff113b4aed5 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/zoe/em_zoe_goodbye_inventory.png
+fbfb6245badcdf21 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/esports/allstars2018/em_allstars2018_inventory.emotes_8_23.png
 116df6d74b9c3fab plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/esports/msi2018/em_msi_2018_100_01_inventory.nct_msi_2018.png
 c6102ba002a83cc8 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/esports/msi2018/em_msi_2018_100_01_inventory.png
 0455de424d282a00 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/esports/msi2018/em_msi_2018_6sn_01_inventory.nct_msi_2018.png
