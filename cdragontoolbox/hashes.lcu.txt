@@ -28549,6 +28549,22 @@ bcc63c171976ecea plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/p
 38a8bc5a8612ed4d plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/portal_chest_promotion.png
 25db0aa254064d54 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/portal_material_key.png
 8f56b320a563f33d plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/portal_material_key_fragment.png
+171210cbcb02c39b plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1303.png
+43402297fe571945 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1307.png
+f5f1fd5c71200de0 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1311.png
+54f67b731e6b0123 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1313.png
+8d075e0479897221 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1315.png
+5fa45404ea324b7d plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1319.png
+df964ed198fd1f6e plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1325.png
+c4f3a8ecde7c55ac plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1327.png
+fe7f8eaed9638704 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1331.png
+20f605face9892d1 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1337.png
+8c5aec589991581a plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1339.png
+90a541838c5201ad plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1341.png
+3d018c66efcc4f79 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1349.png
+d6eefd4696915773 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1351.png
+f07584869a63266b plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1355.png
+83ac99be5dcb2f16 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/summoner_icon_1367.png
 d3eec1ce160fc239 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/tournamentlogo_1.png
 72543e57358d94a9 plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/tournamentlogo_10.png
 d3a9515655ce7c4a plugins/rcp-fe-lol-loot/global/default/assets/loot_item_icons/tournamentlogo_10_splash.png
@@ -29374,6 +29390,7 @@ c14c19136cb5ae9e plugins/rcp-fe-lol-missions/global/default/events/images/missio
 503bdd773c1ee4d7 plugins/rcp-fe-lol-missions/global/default/events/images/missions/aprilfools18/aprilfools_missionthumbnails_icanbearlyhandleit.png
 4bad972db2b1f039 plugins/rcp-fe-lol-missions/global/default/events/images/missions/aprilfools18/aprilfools_missionthumbnails_notfrustratingatall.png
 9ae0a74aae2a19f9 plugins/rcp-fe-lol-missions/global/default/events/images/missions/aprilfools18/aprilfools_missionthumbnails_timetoendthis.png
+ee52dc2c04afbf7f plugins/rcp-fe-lol-missions/global/default/events/images/missions/aramarama18/aram_induction_sm.png
 4b44284d0e32bd99 plugins/rcp-fe-lol-missions/global/default/events/images/missions/aramarama18/aramaramamissionsicon.png
 057a3d8714613c1f plugins/rcp-fe-lol-missions/global/default/events/images/missions/arcade/arcade_blitzcrank.png
 150b7ea28b1c53ff plugins/rcp-fe-lol-missions/global/default/events/images/missions/arcade/arcade_brand.png
@@ -29389,6 +29406,7 @@ b625f6c02ae0c0fd plugins/rcp-fe-lol-missions/global/default/events/images/missio
 57bea5702929fed3 plugins/rcp-fe-lol-missions/global/default/events/images/missions/bilgewater18/legends-of-bilgewater-2.png
 a0fdb8fd8c9bf92c plugins/rcp-fe-lol-missions/global/default/events/images/missions/bilgewater18/legends-of-bilgewater-3.png
 ed1e6cb78748b44b plugins/rcp-fe-lol-missions/global/default/events/images/missions/bilgewater18/legends-of-bilgewater-4.png
+fde3502983b06b20 plugins/rcp-fe-lol-missions/global/default/events/images/missions/bilgewater18/missioninductioncard_bilgewater-sm.png
 6cf1dd7168e24cf8 plugins/rcp-fe-lol-missions/global/default/events/images/missions/bilgewater18/surviving-the-slaughter.png
 d355105df022463b plugins/rcp-fe-lol-missions/global/default/events/images/missions/bilgewater18/the-bloodharbor-ripper.png
 fe9e7fa1831bd2c8 plugins/rcp-fe-lol-missions/global/default/events/images/missions/bilgewater18/welcome-to-the-slaughter-docks.png
@@ -29397,6 +29415,7 @@ d096a55c4690b76c plugins/rcp-fe-lol-missions/global/default/events/images/missio
 e5c015cf47e58384 plugins/rcp-fe-lol-missions/global/default/events/images/missions/lunarrevel18/lunarrevel_disciplinetraining.png
 3096ae658638e06c plugins/rcp-fe-lol-missions/global/default/events/images/missions/lunarrevel18/lunarrevel_ferocioustraining.png
 0b9d3f319bd38701 plugins/rcp-fe-lol-missions/global/default/events/images/missions/lunarrevel18/lunarrevel_finale.png
+591012fdee1dd77c plugins/rcp-fe-lol-missions/global/default/events/images/missions/lunarrevel18/lunarrevel_inductionbg.png
 3928feb7b1a62520 plugins/rcp-fe-lol-missions/global/default/events/images/missions/lunarrevel18/lunarrevel_intro.png
 d0bd981c7d55307f plugins/rcp-fe-lol-missions/global/default/events/images/missions/lunarrevel18/lunarrevel_lux.png
 4115b57ddb80880b plugins/rcp-fe-lol-missions/global/default/events/images/missions/lunarrevel18/lunarrevel_nasus.png
@@ -29434,6 +29453,7 @@ ae2742c45fbe4a1b plugins/rcp-fe-lol-missions/global/default/events/images/missio
 2d90a9ef9fdf7450 plugins/rcp-fe-lol-missions/global/default/events/images/missions/missionv6.png
 ad2d159d8a5a37e8 plugins/rcp-fe-lol-missions/global/default/events/images/missions/missionv6a.png
 9b97c473bdb33eaa plugins/rcp-fe-lol-missions/global/default/events/images/missions/missionv6b.png
+4bfc183955f30b75 plugins/rcp-fe-lol-missions/global/default/events/images/missions/msi18/2018msi_inductionsplashart_sm.png
 4d9b62ef9f8d98fb plugins/rcp-fe-lol-missions/global/default/events/images/missions/msi18/2018msi_missionthumbnail_fightforyourregion.png
 83fcc26b79992698 plugins/rcp-fe-lol-missions/global/default/events/images/missions/msi18/2018msi_missionthumbnail_logo.png
 3a5a3bfd8906a4e1 plugins/rcp-fe-lol-missions/global/default/events/images/missions/msi18/2018msi_missionthumbnail_takeupthebanner.png
@@ -29450,6 +29470,8 @@ c0320fb9d9259c85 plugins/rcp-fe-lol-missions/global/default/events/images/missio
 c441c7c0a5edb659 plugins/rcp-fe-lol-missions/global/default/events/images/missions/poolparty18/fun4.png
 7d416c040ad6246e plugins/rcp-fe-lol-missions/global/default/events/images/missions/poolparty18/fun5.png
 1abf0f4609d365c7 plugins/rcp-fe-lol-missions/global/default/events/images/missions/poolparty18/fun6.png
+1106bf1b6bb68802 plugins/rcp-fe-lol-missions/global/default/events/images/missions/poolparty18/missioninductioncard_pool-party-lg.png
+701bad81a9d97dff plugins/rcp-fe-lol-missions/global/default/events/images/missions/poolparty18/missioninductioncard_pool-party-sm.png
 53c4dde4157e42b9 plugins/rcp-fe-lol-missions/global/default/events/images/missions/poolparty18/pals.png
 2c53a3d69c7fe12d plugins/rcp-fe-lol-missions/global/default/events/images/missions/poolparty18/poro.png
 82400b75628bd72f plugins/rcp-fe-lol-missions/global/default/events/images/missions/poolparty18/ultimate.png
@@ -29468,6 +29490,8 @@ e5a84783bf992199 plugins/rcp-fe-lol-missions/global/default/events/images/missio
 98f0777d6913f957 plugins/rcp-fe-lol-missions/global/default/events/images/missions/ss18/ss18_mission_lucian_post.png
 2c82b200ea6bc9a0 plugins/rcp-fe-lol-missions/global/default/events/images/missions/ss18/ss18_mission_poppy_pre.png
 d521a7edff098411 plugins/rcp-fe-lol-missions/global/default/events/images/missions/tournaments/tournament_cup.png
+a9714e8f302deb3a plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/missioninductioncard_versus-lg.png
+cf37e08ed2284035 plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/missioninductioncard_versus.png
 4c084cce524d7e1a plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/versus_chain_lion.png
 6280e84952d47092 plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/versus_chain_wolf.png
 0f1d7c20118a8c34 plugins/rcp-fe-lol-missions/global/default/events/images/missions/versus18/versus_daily.png
