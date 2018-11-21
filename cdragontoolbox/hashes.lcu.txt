@@ -28843,6 +28843,15 @@ a1cd1fb94ed6d4e0 plugins/rcp-fe-lol-leagues/global/default/lottie/images/silver_
 863dff64647332b5 plugins/rcp-fe-lol-leagues/global/default/lottie/images/silver_sr3.png
 56f1cbf8bf685457 plugins/rcp-fe-lol-leagues/global/default/lottie/images/silver_sr3_hotg.png
 d64cb69df2a44b4a plugins/rcp-fe-lol-leagues/global/default/lottie/images/silver_sr3_sheeng.png
+7723ba99826c3d68 plugins/rcp-fe-lol-leagues/global/default/lottie/videos/bronze_to_silver.webm
+be941c81c39e8075 plugins/rcp-fe-lol-leagues/global/default/lottie/videos/diamond_to_master.webm
+b37001e51de1192f plugins/rcp-fe-lol-leagues/global/default/lottie/videos/gold_to_platinum.webm
+95951bac037f1625 plugins/rcp-fe-lol-leagues/global/default/lottie/videos/grandmaster_to_challenger.webm
+d149b818fee57784 plugins/rcp-fe-lol-leagues/global/default/lottie/videos/iron_to_bronze.webm
+43970a81a11d5a51 plugins/rcp-fe-lol-leagues/global/default/lottie/videos/master_to_challenger.webm
+0b00229ed3dadbd3 plugins/rcp-fe-lol-leagues/global/default/lottie/videos/master_to_grandmaster.webm
+8b2e285b4c90ea8b plugins/rcp-fe-lol-leagues/global/default/lottie/videos/platinum_to_diamond.webm
+a5e28146722d569d plugins/rcp-fe-lol-leagues/global/default/lottie/videos/silver_to_gold.webm
 6c476c0e9db74244 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-challenger.ogg
 b31a4a5d445eb059 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-diamond.ogg
 d7989cd569f73403 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-gold.ogg
