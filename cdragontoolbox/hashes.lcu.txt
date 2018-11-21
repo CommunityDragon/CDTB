@@ -28646,6 +28646,10 @@ b8d1877272a03bd0 plugins/rcp-fe-lol-leagues/global/default/images/title_backgrou
 c5dc396b0d6b0a87 plugins/rcp-fe-lol-leagues/global/default/images/vignette_background.png
 7bdcebc74bd7c573 plugins/rcp-fe-lol-leagues/global/default/index.html
 e112f32f4c969a28 plugins/rcp-fe-lol-leagues/global/default/license.json
+78daa3d1b1d41199 plugins/rcp-fe-lol-leagues/global/default/lottie/bronze_to_silver.json
+20ead0edae133376 plugins/rcp-fe-lol-leagues/global/default/lottie/diamond_to_master.json
+0806c35c47b43c4d plugins/rcp-fe-lol-leagues/global/default/lottie/gold_to_platinum.json
+3843212c69bb84e4 plugins/rcp-fe-lol-leagues/global/default/lottie/grandmaster_to_challenger.json
 a5d7a9d335c391cc plugins/rcp-fe-lol-leagues/global/default/lottie/images/bronze_base.png
 5cbe450b88a93bea plugins/rcp-fe-lol-leagues/global/default/lottie/images/bronze_base_sheeng.png
 c0a57d8ecf7dad4b plugins/rcp-fe-lol-leagues/global/default/lottie/images/bronze_baseface_matte.png
@@ -28843,6 +28847,11 @@ a1cd1fb94ed6d4e0 plugins/rcp-fe-lol-leagues/global/default/lottie/images/silver_
 863dff64647332b5 plugins/rcp-fe-lol-leagues/global/default/lottie/images/silver_sr3.png
 56f1cbf8bf685457 plugins/rcp-fe-lol-leagues/global/default/lottie/images/silver_sr3_hotg.png
 d64cb69df2a44b4a plugins/rcp-fe-lol-leagues/global/default/lottie/images/silver_sr3_sheeng.png
+d08b926c75d1de4f plugins/rcp-fe-lol-leagues/global/default/lottie/iron_to_bronze.json
+1ee2f573219b2be3 plugins/rcp-fe-lol-leagues/global/default/lottie/master_to_challenger.json
+49a4fc204f6fa3e9 plugins/rcp-fe-lol-leagues/global/default/lottie/master_to_grandmaster.json
+8980881a1e9162bf plugins/rcp-fe-lol-leagues/global/default/lottie/platinum_to_diamond.json
+2c65f4f69b8f1641 plugins/rcp-fe-lol-leagues/global/default/lottie/silver_to_gold.json
 7723ba99826c3d68 plugins/rcp-fe-lol-leagues/global/default/lottie/videos/bronze_to_silver.webm
 be941c81c39e8075 plugins/rcp-fe-lol-leagues/global/default/lottie/videos/diamond_to_master.webm
 b37001e51de1192f plugins/rcp-fe-lol-leagues/global/default/lottie/videos/gold_to_platinum.webm
