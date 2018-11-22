@@ -529,5 +529,5 @@ class BinConverter(FileConverter):
 
 _game_converters = [
     ImageConverter(('.dds', '.tga')),
-    BinConverter(re.compile(r'^data/characters/[^/.]*/[^/.]*\.bin$')),
+    BinConverter(re.compile(r'^data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin$')),
 ]
