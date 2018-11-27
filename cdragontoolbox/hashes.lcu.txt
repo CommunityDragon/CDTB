@@ -3980,8 +3980,10 @@ c6ee30698d3a3f82 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/sum
 1d279956aa5da776 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/nautilus/em_nautilus_happy_inventory.png
 e83ccfc0936de46e plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/neeko/em_neeko_angry_inventory.botcarry.png
 7b2f09eaa6b3cd36 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/neeko/em_neeko_funny_inventory.botcarry.png
+4e4bd86f9a07371c plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/neeko/em_neeko_funny_inventory_cn_inventory.botcarry.png
 4f5025831811e3e5 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/neeko/em_neeko_poro_inventory.botcarry.png
 34e56ec1f8741150 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/neeko/em_neeko_rainbow_inventory.botcarry.png
+ef12ed61cb4599bd plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/neeko/em_neeko_rainbow_selector_cn_inventory.botcarry.png
 4fb431c473d642d5 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/nunu/em_nunu_confused_inventory.emotes_8_17.png
 0c811fdd62b9bc10 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/nunu/em_nunu_shocked_inventory.emotes_8_17.png
 6c4cf2987143ac05 plugins/rcp-be-lol-game-data/global/default/assets/loadouts/summoneremotes/champions/nunu/em_nunu_snowball_inventory.emotes_8_17.png
@@ -4576,6 +4578,7 @@ b94abd10c63e43e3 plugins/rcp-be-lol-game-data/global/default/assets/loot/aprilfo
 35d729e95ac3f313 plugins/rcp-be-lol-game-data/global/default/assets/loot/aprilfoolsbag_490x490.png
 eba55a764b97bce5 plugins/rcp-be-lol-game-data/global/default/assets/loot/aprilfoolsbag_490x490j.png
 9b70bd056b2a3acf plugins/rcp-be-lol-game-data/global/default/assets/loot/aprilfoolscapsule_490x490j.png
+c8ad751d09b96511 plugins/rcp-be-lol-game-data/global/default/assets/loot/bard-icon-chroma-490px.png
 100538c262d452d5 plugins/rcp-be-lol-game-data/global/default/assets/loot/bilgewater-capsule-490x490.png
 289d6a6c286e327c plugins/rcp-be-lol-game-data/global/default/assets/loot/bilgewater-shard-490x490.png
 95a4f6b1da7f79f0 plugins/rcp-be-lol-game-data/global/default/assets/loot/borderbundle_lux_490x490.png
@@ -4615,6 +4618,7 @@ cda0a198f1b6163a plugins/rcp-be-lol-game-data/global/default/assets/loot/goldenc
 c716b5be559b0398 plugins/rcp-be-lol-game-data/global/default/assets/loot/goldenchroma_katarina_490x490.png
 f822bef37584b5a3 plugins/rcp-be-lol-game-data/global/default/assets/loot/goldenchroma_riven_490x490.png
 6602cf73ffe86ddd plugins/rcp-be-lol-game-data/global/default/assets/loot/goldenchroma_sona_490x490.png
+087e99b717fc0755 plugins/rcp-be-lol-game-data/global/default/assets/loot/graves-icon-chroma-490px.png
 4e168399b13a99c5 plugins/rcp-be-lol-game-data/global/default/assets/loot/hextech_mystery_shard_490x490.png
 35e51a87960f3262 plugins/rcp-be-lol-game-data/global/default/assets/loot/hextechexclusiveshard_256x256j.png
 618bca57a02c3b3f plugins/rcp-be-lol-game-data/global/default/assets/loot/hextechkeyfragment_490x490.png
@@ -4626,6 +4630,7 @@ c4c8edfe4b5aa41a plugins/rcp-be-lol-game-data/global/default/assets/loot/icons_l
 fc80781d52fa69d9 plugins/rcp-be-lol-game-data/global/default/assets/loot/icons_loot_vsorblion490x490.png
 051aecbb532e0d3d plugins/rcp-be-lol-game-data/global/default/assets/loot/icons_loot_vsorbwolf01.png
 21414b8ce00b88f7 plugins/rcp-be-lol-game-data/global/default/assets/loot/icons_loot_vsorbwolf490x490.png
+9992384c8e535aed plugins/rcp-be-lol-game-data/global/default/assets/loot/irelia-icon-chroma-490px.png
 e898099b6ce45212 plugins/rcp-be-lol-game-data/global/default/assets/loot/janna-border-icon-490px.png
 101dbe326727f2f9 plugins/rcp-be-lol-game-data/global/default/assets/loot/jinx-icon-border-490px.png
 51c6f65da6f324f0 plugins/rcp-be-lol-game-data/global/default/assets/loot/jungle-orb-256px.png
@@ -4653,6 +4658,7 @@ f548c3d19d400e07 plugins/rcp-be-lol-game-data/global/default/assets/loot/loottab
 cfab034b5a48c68e plugins/rcp-be-lol-game-data/global/default/assets/loot/loottable_chest_generic_1.png
 3a08f59329c90845 plugins/rcp-be-lol-game-data/global/default/assets/loot/lunarrevelassets_moneybag_490x490.png
 3e1d0772c5f0f405 plugins/rcp-be-lol-game-data/global/default/assets/loot/malphite-icon-border-490px.png
+895ed936875c42fc plugins/rcp-be-lol-game-data/global/default/assets/loot/malzahar-icon-chroma-490px.png
 83636a5cc4d608eb plugins/rcp-be-lol-game-data/global/default/assets/loot/master-pass-icon-490px.png
 b0a076b3b9388e34 plugins/rcp-be-lol-game-data/global/default/assets/loot/masterwork-chest-loot-490x490.png
 4e64eebbfd48b779 plugins/rcp-be-lol-game-data/global/default/assets/loot/masterworkchest_set.png
@@ -4664,6 +4670,9 @@ cee5de7706860278 plugins/rcp-be-lol-game-data/global/default/assets/loot/materia
 6dc6897d36d16ed9 plugins/rcp-be-lol-game-data/global/default/assets/loot/mister-yi-icon-border-490px.png
 f72757262aee1409 plugins/rcp-be-lol-game-data/global/default/assets/loot/msi_capsule_final_256x256.png
 b14de9b2c8baff31 plugins/rcp-be-lol-game-data/global/default/assets/loot/mundo-icon-border-490px.png
+405587e19475976c plugins/rcp-be-lol-game-data/global/default/assets/loot/nb-finisher-490px-small.png
+4c2c3adb0c57e8f0 plugins/rcp-be-lol-game-data/global/default/assets/loot/nb-fire-poro-490px-small.png
+97152fea98bd03ba plugins/rcp-be-lol-game-data/global/default/assets/loot/nb-recall-490px-small.png
 15099a4a6e02ef63 plugins/rcp-be-lol-game-data/global/default/assets/loot/neeko-emote-490px.png
 e15a752a093607f7 plugins/rcp-be-lol-game-data/global/default/assets/loot/neeko-icon-border-490px.png
 9f3079f40789975f plugins/rcp-be-lol-game-data/global/default/assets/loot/nexus-blitz-token-loot-2-490px.png
@@ -4683,12 +4692,14 @@ db06f277450454b1 plugins/rcp-be-lol-game-data/global/default/assets/loot/popstar
 753d6faf25964350 plugins/rcp-be-lol-game-data/global/default/assets/loot/riven-gold-chroma2-490px.png
 a87543024745605d plugins/rcp-be-lol-game-data/global/default/assets/loot/shyvana-border-icon-490px.png
 17273a1f99b9bccc plugins/rcp-be-lol-game-data/global/default/assets/loot/shyvana-gold-chroma-490px.png
+2e5d240b9e4612ef plugins/rcp-be-lol-game-data/global/default/assets/loot/sivir-icon-chroma-490px.png
 af5eb1d6237ebd14 plugins/rcp-be-lol-game-data/global/default/assets/loot/skinpermanent_256x256.png
 7cfe95a8c3e8a7c9 plugins/rcp-be-lol-game-data/global/default/assets/loot/skinpermanent_490x490.png
 794a8fde9d1fa61c plugins/rcp-be-lol-game-data/global/default/assets/loot/snowdown-token-2-490px.png
 78a26d1951c2aaf0 plugins/rcp-be-lol-game-data/global/default/assets/loot/snowdowncapsule_490x490.png
 73cee6a32c10c102 plugins/rcp-be-lol-game-data/global/default/assets/loot/sona-icon-border-490px.png
 2be424f78a9d4456 plugins/rcp-be-lol-game-data/global/default/assets/loot/soraka-icon-border-490px.png
+1283bc5f38126f63 plugins/rcp-be-lol-game-data/global/default/assets/loot/stocking-stuffer-490x490.png
 c8954e3c08822aef plugins/rcp-be-lol-game-data/global/default/assets/loot/summonerscrowncapsule_490x490.png
 1e66f167eea4659f plugins/rcp-be-lol-game-data/global/default/assets/loot/support-orb-256px.png
 2fe8cfaaabd61fb0 plugins/rcp-be-lol-game-data/global/default/assets/loot/support-orb-490px.png
@@ -7084,6 +7095,7 @@ b4c19abc50f35fab plugins/rcp-be-lol-game-data/global/default/data/characters/nee
 fccd499fd166915f plugins/rcp-be-lol-game-data/global/default/data/characters/neeko/recommended/neekofirstblood.json
 dda303f1d7ec55cb plugins/rcp-be-lol-game-data/global/default/data/characters/neeko/recommended/neekokingporo.json
 4a761f27d46c9d24 plugins/rcp-be-lol-game-data/global/default/data/characters/neeko/recommended/neekosiege.json
+a8058a95ae5bdeda plugins/rcp-be-lol-game-data/global/default/data/characters/neeko/recommended/neekosl.json
 b49a60005df7a40d plugins/rcp-be-lol-game-data/global/default/data/characters/neeko/recommended/neekosr.json
 dfcdb64a49286bd3 plugins/rcp-be-lol-game-data/global/default/data/characters/neeko/recommended/neekott.json
 6e3704916d6c9ac3 plugins/rcp-be-lol-game-data/global/default/data/characters/nidalee/recommended/beginner.json
@@ -29837,6 +29849,8 @@ f70accd7b4dfbd6b plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/materi
 41af897b25498730 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_256.png
 cf7b8b3df6853163 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_257.png
 5a28378546f117ae plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_263.png
+064f4c47fb5112a1 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_283.png
+d9ce06b2a7c6d4a5 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_285.png
 6fedfba016e084cf plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_89.png
 993be0ad0b097d40 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_90.png
 db6b9f5c2900f744 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_key.png
@@ -34718,6 +34732,10 @@ c3df1db2aeced2c2 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/
 5ec07f2459c6c555 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/intro-video-splash-msi2018.webm
 d1ae2e639fd17f61 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/music-splash-msi2018.ogg
 3a679b37c071a5d4 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/video-splash-msi2018.webm
+1b1fbefaf7e8efd7 plugins/rcp-fe-lol-splash/global/default/splash-assets/neeko/config.json
+9ef2bf79cf925091 plugins/rcp-fe-lol-splash/global/default/splash-assets/neeko/image-splash-neeko.jpg
+62172b47daadffc3 plugins/rcp-fe-lol-splash/global/default/splash-assets/neeko/music-splash-neeko.ogg
+e17649ef96f34a26 plugins/rcp-fe-lol-splash/global/default/splash-assets/neeko/video-splash-neeko.webm
 9609469bc2f17c11 plugins/rcp-fe-lol-splash/global/default/splash-assets/nunu/config.json
 25a8587244626a6f plugins/rcp-fe-lol-splash/global/default/splash-assets/nunu/image-splash-nunu.jpg
 783445e511ed25d3 plugins/rcp-fe-lol-splash/global/default/splash-assets/nunu/intro-sound-splash-nunu.ogg
