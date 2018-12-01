@@ -370,19 +370,18 @@ class CdragonRawPatchExporter:
         # collect list of paths to extract (new ones, previous ones)
         new_paths = set(exporter.converted_exported_paths())
         symlinked_paths = None
+        changed_paths = new_paths  # default: use all new paths
         if self.prev_patch:
             prev_paths = set(prev_exporter.converted_exported_paths())
             # filter out files from previous patch
             exporter.filter_exporter(prev_exporter)
             # collect a list of new paths to actually extract (changed ones)
-            changed_paths = set(exporter.converted_exported_paths())
             if self.create_symlinks:
+                changed_paths = set(exporter.converted_exported_paths())
                 # build a list of symlinks
                 # note: Game files contain some duplicates which will appear in several WAD files.
                 # A new version of any duplicate will override any unmodified one.
                 symlinked_paths = reduce_common_paths(new_paths - changed_paths, prev_paths, changed_paths)
-        else:
-            changed_paths = new_paths
 
         exporter.clean_output_dir(changed_paths, set(symlinked_paths or []))
 
