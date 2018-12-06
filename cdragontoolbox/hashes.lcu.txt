@@ -4895,6 +4895,16 @@ cc4d8f6951ec9d48 plugins/rcp-be-lol-game-data/global/default/assets/ranked/posit
 dc96f754d64587d4 plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_silver-support_lg.png
 1519ecae4fa86691 plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_silver-top.png
 efadd7fe5222029c plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/rankposition_silver-top_lg.png
+99c6218e6d57f11b plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-bot.png
+6392f4bb7dd1e95b plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-bot_lg.png
+e0b9d32ba8f460e3 plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-jungle.png
+e4ed111fa9614585 plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-jungle_lg.png
+74989ee922d93302 plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-mid.png
+c37207e80551833e plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-mid_lg.png
+d9c04828557e03d5 plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-support.png
+e00949b81dba08a4 plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-support_lg.png
+9b22d20535edb202 plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-top.png
+168aceb00006ac48 plugins/rcp-be-lol-game-data/global/default/assets/ranked/positions/unranked-top_lg.png
 a016aac940e16c42 plugins/rcp-be-lol-game-data/global/default/assets/regalia/banners/backgrounds/solidbanner_animatable.png
 78c6e7c66588af3a plugins/rcp-be-lol-game-data/global/default/assets/regalia/banners/backgrounds/solidbanner_still.png
 15e081140435354c plugins/rcp-be-lol-game-data/global/default/assets/regalia/banners/patterns/blank.png
@@ -16783,6 +16793,7 @@ afa27005af696aee plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/38
 b0ecd321e7221ec5 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3895.jpg
 76d588e612816a12 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3896.jpg
 352ecf65ecdb00fc plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3897.jpg
+7a039f5226ce31a8 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/3898.jpg
 a70c00fcf8b5cfef plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/4.jpg
 e6403044cebc1d72 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/5.jpg
 99692a45d94b2617 plugins/rcp-be-lol-game-data/global/default/v1/profile-icons/50.jpg
@@ -28896,6 +28907,15 @@ be3b25742d0537b8 plugins/rcp-fe-lol-league-tier-names/global/default/assets/imag
 85c5d9c5a4335ca8 plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-crests/silver_4.png
 6d8aaf5bb2b45a69 plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-crests/silver_5.png
 c08e72273fe10427 plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-crests/unranked.png
+2d232c733f1cc15d plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-mini-regalia/bronze.png
+c32b3a9d2fb7c26c plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-mini-regalia/challenger.png
+b977f0a38a217915 plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-mini-regalia/diamond.png
+8f0a4aca8e378d00 plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-mini-regalia/gold.png
+52857308b4180734 plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-mini-regalia/grandmaster.png
+0ec8b4b176d62b3e plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-mini-regalia/iron.png
+f93cb57754b445c4 plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-mini-regalia/master.png
+09bf8dfccf40a71a plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-mini-regalia/platinum.png
+fdddbbe35d07c1d2 plugins/rcp-fe-lol-league-tier-names/global/default/assets/images/ranked-mini-regalia/silver.png
 fbe5a93e20b9dd97 plugins/rcp-fe-lol-league-tier-names/global/default/index.html
 0fc9155fe2623ac4 plugins/rcp-fe-lol-league-tier-names/global/default/init.js
 8646d37017908799 plugins/rcp-fe-lol-league-tier-names/global/default/license.json
@@ -29567,6 +29587,8 @@ ee7cac5a25c8f89a plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-re
 28b91c218647cae7 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-reroll-outro.ogg
 6195a3d59c96a22d plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-reroll-populate.ogg
 f3f8725062c272d2 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-reveal-acknowledge.ogg
+81161289fd817efe plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-reveal-currency_champion.ogg
+4f351038f5d27233 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-reveal-currency_cosmetic.ogg
 e9ab12a1c38ed2c9 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-reveal-material_key.ogg
 e7195cad6f443849 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-reveal-material_rare.ogg
 80066f01f62a7268 plugins/rcp-fe-lol-loot/global/default/assets/audio/sfx-loot-reveal-permanent-rarity_epic.ogg
@@ -30765,6 +30787,7 @@ fbda2620f1f45424 plugins/rcp-fe-lol-missions/global/default/eog_rewardoutro_magi
 2e549f6345996028 plugins/rcp-fe-lol-missions/global/default/eog_rewardoutro_magic_large.webm
 d7e46271da84ac09 plugins/rcp-fe-lol-missions/global/default/eog_rewardoutro_magic_medium.webm
 643acc017639ed68 plugins/rcp-fe-lol-missions/global/default/eog_rewardoutro_magic_small.webm
+248d3567b284b84d plugins/rcp-fe-lol-missions/global/default/events/images/eog/missions_eog_splash.png
 2c1e119ddcaf869a plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/backgrounds/eog_default.jpg
 c3f62e2573df9fa5 plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/backgrounds/eog_default.png
 e9fd5e023957cc64 plugins/rcp-fe-lol-missions/global/default/events/images/eog/rewards/leveling/emotes/tier1defenderemote.png
@@ -35253,6 +35276,10 @@ ee362b518451e07c plugins/rcp-fe-lol-splash/global/default/splash-assets/snowdown
 e5f8b663f4618e9c plugins/rcp-fe-lol-splash/global/default/splash-assets/snowdown2017/image-splash-snowdown2017.jpg
 a3eaa4581bc68243 plugins/rcp-fe-lol-splash/global/default/splash-assets/snowdown2017/music-splash-snowdown2017.ogg
 8aeecbc9571f215e plugins/rcp-fe-lol-splash/global/default/splash-assets/snowdown2017/video-splash-snowdown2017.webm
+16621f0d35595260 plugins/rcp-fe-lol-splash/global/default/splash-assets/snowdown2018/config.json
+a48872d1a12bb9f4 plugins/rcp-fe-lol-splash/global/default/splash-assets/snowdown2018/image-splash-snowdown2018.jpg
+4f7fd13225996d1f plugins/rcp-fe-lol-splash/global/default/splash-assets/snowdown2018/music-splash-snowdown2018.ogg
+6f58456e2a9af68a plugins/rcp-fe-lol-splash/global/default/splash-assets/snowdown2018/video-splash-snowdown2018.webm
 43e4268cbade8255 plugins/rcp-fe-lol-splash/global/default/splash-assets/starguardian2017/config.json
 a87c20ae31d18cd5 plugins/rcp-fe-lol-splash/global/default/splash-assets/starguardian2017/image-splash-starguardian2017.jpg
 99f22a858ba39e50 plugins/rcp-fe-lol-splash/global/default/splash-assets/starguardian2017/music-splash-starguardian2017.ogg
@@ -35365,6 +35392,7 @@ bdae84f4fbd4d534 plugins/rcp-fe-lol-summoner-icon-picker/description.json
 5b4c07d2a0848c62 plugins/rcp-fe-lol-summoner-icon-picker/global/default/bundle.js
 2ca304e9231f9c19 plugins/rcp-fe-lol-summoner-icon-picker/global/default/images/lock-hover.png
 6ff06df22eb77221 plugins/rcp-fe-lol-summoner-icon-picker/global/default/images/lock.png
+0985d1691db48a9c plugins/rcp-fe-lol-summoner-icon-picker/global/default/images/ranked_crest_placeholder.png
 96fd77d08de09496 plugins/rcp-fe-lol-summoner-icon-picker/global/default/images/x.png
 63a2d9a18a801d94 plugins/rcp-fe-lol-summoner-icon-picker/global/default/images/x_active.png
 1024f2b87e476d8c plugins/rcp-fe-lol-summoner-icon-picker/global/default/images/x_hover.png
