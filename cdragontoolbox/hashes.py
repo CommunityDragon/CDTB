@@ -184,7 +184,8 @@ class HashGuesser:
     def check_basenames(self, names):
         """Check a list of basenames for each known subdirectory"""
 
-        self.check_iter(f"{d}/{name}" for d in self.directory_list() for name in names)
+        dirs = self.directory_list()
+        self.check_iter(f"{d}/{name}" for name in names for d in dirs)
 
     def directory_list(self, cached=True):
         """Return a set of all directories and subdirectories"""
