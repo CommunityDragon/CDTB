@@ -481,6 +481,15 @@ class GameHashGuesser(HashGuesser):
     def build_wordlist(self):
         return build_wordlist(self.known.values())
 
+    def get_characters(self):
+        re_char = re.compile(r'^assets/characters/([^/]+)/')
+        chars = set()
+        for p in self.known.values():
+            m = re_char.match(p)
+            if m:
+                chars.add(m.group(1))
+        return sorted(chars)
+
     def substitute_numbers(self, nmax=100, digits=None):
         paths = self.known.values()
         super()._substitute_numbers(paths, nmax, digits)
@@ -607,6 +616,31 @@ class GameHashGuesser(HashGuesser):
                 self.check(f"{prefix}.dds")
             else:
                 self.check(f"{prefix}.{ext}")
+
+    def guess_characters_files(self, chars=None):
+        """Guess hashes using common patterns for characters files"""
+
+        if chars is None:
+            chars = self.get_characters()
+
+        formats = [
+            "data/characters/{c}/skins/root.bin",
+            "data/characters/{c}/skins/base/{c}.skl",
+            "data/characters/{c}/skins/base/{c}.skn",
+            "data/characters/{c}/skins/base/{c}_tx_cm.dds",
+            "data/characters/{c}/{c}.bin",
+            "data/characters/{c}/{c}.ddf",
+            "data/characters/{c}/hud/{c}_circle.dds",
+            "data/characters/{c}/hud/{c}_square.dds",
+            "assets/characters/{c}/hud/{c}_circle.dds",
+            "assets/characters/{c}/hud/{c}_square.dds",
+        ]
+
+        logger.info(f"guess characters files: {len(chars)} characters")
+        for c in progress_iterator(sorted(chars)):
+            self.check_iter(s.format(c=c) for s in formats)
+            self.check_iter(f"data/characters/{c}/skins/skin{i}.bin" for i in range(200))
+            self.check_iter(f"data/characters/{c}/animations/skin{i}.bin" for i in range(200))
 
     def grep_wad(self, wad):
         """Find hashes from a wad file"""
