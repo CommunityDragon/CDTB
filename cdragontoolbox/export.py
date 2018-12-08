@@ -348,7 +348,10 @@ class CdragonRawPatchExporter:
         self.patch = patch
         self.prev_patch = prev_patch
         if symlinks is None:
-            self.create_symlinks = prev_patch is not None
+            if os.name == 'nt' or not hasattr(os, 'symlink'):
+                self.create_symlinks = False
+            else:
+                self.create_symlinks = prev_patch is not None
         else:
             if symlinks and not prev_patch:
                 raise ValueError("cannot create symlinks without a previous patch")
@@ -472,7 +475,7 @@ class CdragonRawPatchExporter:
             os.symlink(src, dst)
 
     @classmethod
-    def from_directory(cls, storage, output: str, first: Version=None):
+    def from_directory(cls, storage, output: str, first: Version=None, symlinks=None):
         """Handle export of multiple patchs in the same directory
 
         Exporter for the most oldest patch is returned first.
@@ -512,7 +515,7 @@ class CdragonRawPatchExporter:
         exporters = []
         for patch, previous_patch in zip(patches, patches[1:] + [None]):
             patch_output = os.path.join(output, str(patch.version))
-            exporters.append(cls(patch_output, patch, previous_patch))
+            exporters.append(cls(patch_output, patch, previous_patch, symlinks=symlinks if previous_patch else False))
         return exporters[::-1]
 
 

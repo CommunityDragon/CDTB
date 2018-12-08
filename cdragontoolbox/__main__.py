@@ -280,18 +280,18 @@ def command_export(parser, args):
         if os.name == 'nt' or not hasattr(os, 'symlink'):
             parser.error("symlinks not supported on this platform")
 
-    process_kwargs = dict(
-        overwrite = not args.lazy,
-        symlinks = args.symlinks,
-    )
+    overwrite = not args.lazy
+    symlinks = bool(args.symlinks)
 
     if not args.patch:
-        # multiple patch (update only)
+        # multiple patches (update only)
         if args.previous:
             parser.error("patch version required with --previous or --full")
-        exporters = CdragonRawPatchExporter.from_directory(storage, args.output, Version(args.first))
+        if args.first:
+            parser.error("--from is required when no patch is provided")
+        exporters = CdragonRawPatchExporter.from_directory(storage, args.output, Version(args.first), symlinks=symlinks)
         for exporter in exporters:
-            exporter.process(**process_kwargs)
+            exporter.process(overwrite=overwrite)
     else:
         if args.first:
             parser.error("--from cannot be used when providing a patch")
@@ -315,8 +315,8 @@ def command_export(parser, args):
             else:
                 parser.error("cannot guess previous patch")
 
-        exporter = CdragonRawPatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch)
-        exporter.process(**process_kwargs)
+        exporter = CdragonRawPatchExporter(os.path.join(args.output, str(patch.version)), patch, previous_patch, symlinks=symlinks)
+        exporter.process(overwrite=overwrite)
 
 
 def command_bin_dump(parser, args):
