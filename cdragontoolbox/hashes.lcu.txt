@@ -1002,6 +1002,7 @@ e01a1ca745db9a12 plugins/rcp-be-lol-game-data/global/default/assets/characters/a
 a8445b9c91c5eee8 plugins/rcp-be-lol-game-data/global/default/assets/characters/ahri/skins/skin07/ahriloadscreen_7.jpg
 19c5754786ff49fb plugins/rcp-be-lol-game-data/global/default/assets/characters/ahri/skins/skin14/ahriloadscreen_14.jpg
 6cd955f0388d3354 plugins/rcp-be-lol-game-data/global/default/assets/characters/ahri/skins/skin14/ahriloadscreen_14_le.jpg
+f269561c7e4ed0fc plugins/rcp-be-lol-game-data/global/default/assets/characters/ahri/skins/skin15/ahriloadscreen_15.jpg
 8e4f56ead22892c3 plugins/rcp-be-lol-game-data/global/default/assets/characters/ahri/skins/skin15/ahriloadscreen_15.skins_ahri_skin15.jpg
 e35451d1242007eb plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/hud/icons2d/akali_e.akaliupdate.png
 04fae17602170d9d plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/hud/icons2d/akali_e.dds
@@ -1044,6 +1045,7 @@ ecb5312f85e53155 plugins/rcp-be-lol-game-data/global/default/assets/characters/a
 166c139eda66e22e plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/skins/skin08/akaliloadscreen_8.akaliupdate.jpg
 90505cba341f7f97 plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/skins/skin08/akaliloadscreen_8.jpg
 45aa8a9099e4211d plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/skins/skin08/akaliloadscreen_8.png
+cd3c5efdc7d0e164 plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/skins/skin09/akaliloadscreen_9.jpg
 ef7fbd73dbd595c1 plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/skins/skin09/akaliloadscreen_9.skins_akali_skin09.jpg
 e46d899e84e88f48 plugins/rcp-be-lol-game-data/global/default/assets/characters/akali/skins/skin13/akaliloadscreen_13.prestige_kda_akali.jpg
 74c3f0a7b791b68a plugins/rcp-be-lol-game-data/global/default/assets/characters/alistar/hud/icons2d/alistar_e.png
@@ -1497,6 +1499,7 @@ ebb03038cbb0b42c plugins/rcp-be-lol-game-data/global/default/assets/characters/e
 8d20078550015179 plugins/rcp-be-lol-game-data/global/default/assets/characters/evelynn/skins/skin04/evelynnloadscreen_4.png
 745f67cca68176bc plugins/rcp-be-lol-game-data/global/default/assets/characters/evelynn/skins/skin05/evelynnloadscreen_5.jpg
 0bd359821b555bff plugins/rcp-be-lol-game-data/global/default/assets/characters/evelynn/skins/skin05/evelynnloadscreen_5.skins_evelynn_skin05.jpg
+7ca4f611ecf09a5f plugins/rcp-be-lol-game-data/global/default/assets/characters/evelynn/skins/skin06/evelynnloadscreen_6.jpg
 a13b48918fbda522 plugins/rcp-be-lol-game-data/global/default/assets/characters/evelynn/skins/skin06/evelynnloadscreen_6.skins_evelynn_skin06.jpg
 3b9f7a8fd1e8879b plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_arcaneshift.png
 3cdabfb0e539aa28 plugins/rcp-be-lol-game-data/global/default/assets/characters/ezreal/hud/icons2d/ezreal_e.dds
@@ -1565,6 +1568,7 @@ e14ea5e9f444b619 plugins/rcp-be-lol-game-data/global/default/assets/characters/f
 f82f60cf6fab5223 plugins/rcp-be-lol-game-data/global/default/assets/characters/fiddlesticks/skins/skin06/fiddlesticksloadscreen_6.jpg
 daec21560631be19 plugins/rcp-be-lol-game-data/global/default/assets/characters/fiddlesticks/skins/skin07/fiddlesticksloadscreen_7.jpg
 a868bd270538e3ae plugins/rcp-be-lol-game-data/global/default/assets/characters/fiddlesticks/skins/skin08/fiddlesticksloadscreen_8.jpg
+ec443a2b80ce5c74 plugins/rcp-be-lol-game-data/global/default/assets/characters/fiddlesticks/skins/skin09/fiddlesticksloadscreen_9.jpg
 2360068a09e44c38 plugins/rcp-be-lol-game-data/global/default/assets/characters/fiddlesticks/skins/skin09/fiddlesticksloadscreen_9.skins_fiddlesticks_skin09.jpg
 8e9f6bb5c6bb35f3 plugins/rcp-be-lol-game-data/global/default/assets/characters/fiora/hud/icons2d/fiora_e.dds
 5ff0ffbb6cd9bf5b plugins/rcp-be-lol-game-data/global/default/assets/characters/fiora/hud/icons2d/fiora_e.png
@@ -1743,6 +1747,7 @@ bbacf06b9f03339d plugins/rcp-be-lol-game-data/global/default/assets/characters/g
 611b706c8e01f3e7 plugins/rcp-be-lol-game-data/global/default/assets/characters/graves/skins/skin06/gravesloadscreen_6.jpg
 4786d47bff532259 plugins/rcp-be-lol-game-data/global/default/assets/characters/graves/skins/skin07/gravesloadscreen_7.jpg
 df7a3dfec90b42b8 plugins/rcp-be-lol-game-data/global/default/assets/characters/graves/skins/skin14/gravesloadscreen_14.jpg
+02b249d6e730da0f plugins/rcp-be-lol-game-data/global/default/assets/characters/graves/skins/skin18/gravesloadscreen_18.jpg
 44a1b13bbfb33580 plugins/rcp-be-lol-game-data/global/default/assets/characters/graves/skins/skin18/gravesloadscreen_18.skins_graves_skin18.jpg
 b9a6af9cd71f3207 plugins/rcp-be-lol-game-data/global/default/assets/characters/hecarim/hud/icons2d/hecarim_devastingcharge.dds
 948eb639f07a94e0 plugins/rcp-be-lol-game-data/global/default/assets/characters/hecarim/hud/icons2d/hecarim_devastingcharge.png
@@ -1991,7 +1996,9 @@ f6ed62eadddc0621 plugins/rcp-be-lol-game-data/global/default/assets/characters/k
 cef2f7e2593ab1bf plugins/rcp-be-lol-game-data/global/default/assets/characters/kaisa/skins/skin01/kaisaloadscreen_1.johnclick.jpg
 ab482e365bbf0344 plugins/rcp-be-lol-game-data/global/default/assets/characters/kaisa/skins/skin01/kaisaloadscreen_1.johnclick.png
 0845268d5d24ea03 plugins/rcp-be-lol-game-data/global/default/assets/characters/kaisa/skins/skin01/kaisaloadscreen_1.jpg
+530d04da592c5b35 plugins/rcp-be-lol-game-data/global/default/assets/characters/kaisa/skins/skin14/kaisaloadscreen_14.jpg
 a43cc75b1d4e7c65 plugins/rcp-be-lol-game-data/global/default/assets/characters/kaisa/skins/skin14/kaisaloadscreen_14.skins_kaisa_skin14.jpg
+7e15525ef6ab2775 plugins/rcp-be-lol-game-data/global/default/assets/characters/kaisa/skins/skin15/kaisaloadscreen_15.jpg
 0982ee76c5d64ab3 plugins/rcp-be-lol-game-data/global/default/assets/characters/kaisa/skins/skin15/kaisaloadscreen_15.skins_prestige_kaisa_skin15.jpg
 8f78d2c61008684a plugins/rcp-be-lol-game-data/global/default/assets/characters/kalista/hud/icons2d/kalista_e.dds
 695b7bab9351c5dc plugins/rcp-be-lol-game-data/global/default/assets/characters/kalista/hud/icons2d/kalista_e.png
@@ -5395,6 +5402,7 @@ c6651cf694df8b45 plugins/rcp-be-lol-game-data/global/default/content/src/leaguec
 de82342dd71f8003 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/01_iron/images/iron_s3_hotg.png
 a57ffffc21716433 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/01_iron/images/iron_s3_sheeng.png
 174c160003c38e0f plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/01_iron/images/sheen_line.png
+ee92a97745cfecf9 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/01_iron/images/voice_iron.png
 57d5836c50f4b4cf plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/01_iron/images/whiteembers.png
 ae5a21457c48c4f6 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/01_iron/lobby_buildin_iron.json
 86344152d83eaed8 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/02_bronze/images/backlight.png
@@ -5432,6 +5440,7 @@ fab0d1b7462579d7 plugins/rcp-be-lol-game-data/global/default/content/src/leaguec
 5a76b73cf02b6355 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/02_bronze/images/bronze_s3_hotg.png
 0dd79a24030fed02 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/02_bronze/images/bronze_s3_sheeng.png
 7e4a6f2a2e7039b7 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/02_bronze/images/sheen_line.png
+f99d593eb090389f plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/02_bronze/images/voice_bronze.png
 be56c472389ad9fe plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/02_bronze/images/whiteembers.png
 a8eb2dc0b72225cb plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/02_bronze/lobby_buildin_bronze.json
 7bca4882451c5e7f plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/03_silver/images/backlight.png
@@ -5468,6 +5477,7 @@ ffdc117ef69b2740 plugins/rcp-be-lol-game-data/global/default/content/src/leaguec
 cbb9de63730e41c7 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/03_silver/images/silver_sr3.png
 ad873973af55815e plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/03_silver/images/silver_sr3_hotg.png
 f77956b9059efa61 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/03_silver/images/silver_sr3_sheeng.png
+525504d2ae7b379f plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/03_silver/images/voice_silver.png
 fb7fb1bd7f55561b plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/03_silver/images/whiteembers.png
 35fc8ac2cd8e8c17 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/03_silver/lobby_buildin_silver.json
 bb9545b615f77f49 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/04_gold/images/backlight.png
@@ -5504,6 +5514,7 @@ ee50a50c242fe03a plugins/rcp-be-lol-game-data/global/default/content/src/leaguec
 d374a8554ab4e1d7 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/04_gold/images/gold_s3_hotg.png
 6215ce8552fbba6a plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/04_gold/images/gold_s3_sheeng.png
 47b08d521bdb75eb plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/04_gold/images/sheen_line.png
+25ff72e8b443511b plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/04_gold/images/voice_gold.png
 c977fe036f822741 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/04_gold/images/whiteembers.png
 c7a72dc62dc5882e plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/04_gold/lobby_buildin_gold.json
 e10f955f3047b491 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/05_platinum/images/backlight.png
@@ -5539,6 +5550,7 @@ f70326781611a811 plugins/rcp-be-lol-game-data/global/default/content/src/leaguec
 57546b7ee5a25540 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/05_platinum/images/platinum_s3_hotg.png
 a7c6580371bc8beb plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/05_platinum/images/platinum_s3_sheeng.png
 fcee14f1fc1ad43a plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/05_platinum/images/sheen_line.png
+6706e169d6d461c3 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/05_platinum/images/voice_platinum.png
 b291d51af396479f plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/05_platinum/images/whiteembers.png
 8dbf84949020883e plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/05_platinum/lobby_buildin_platinum.json
 e1d2092dc0255e39 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/06_diamond/images/backlight.png
@@ -5574,6 +5586,7 @@ b68bbe209802cf13 plugins/rcp-be-lol-game-data/global/default/content/src/leaguec
 7daf192af3e9aef9 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/06_diamond/images/diamond_sr3_hotg.png
 a1ea3e1aee6cb7da plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/06_diamond/images/diamond_sr3_sheeng.png
 32f3d22ae471306d plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/06_diamond/images/sheen_line.png
+d82052db101074e0 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/06_diamond/images/voice_diamond.png
 0448d55a9987d0bf plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/06_diamond/images/whiteembers.png
 58c074f55858d394 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/06_diamond/lobby_buildin_diamond.json
 3531052d507ee3a0 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/07_master/images/backlight.png
@@ -5600,6 +5613,7 @@ fd74ff6e748d5d83 plugins/rcp-be-lol-game-data/global/default/content/src/leaguec
 604095535b0e28cb plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/07_master/images/master_sr3_hotg.png
 ba62b57fa05ea5d4 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/07_master/images/master_sr3_sheeng.png
 d6a763c2e6375b19 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/07_master/images/sheen_line.png
+ea8d360fa3c786d1 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/07_master/images/voice_master.png
 7c20bcba58e9b468 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/07_master/images/whiteembers.png
 55fdd051cd9ea760 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/07_master/lobby_buildin_master.json
 b327c56a2d3e28c2 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/08_grandmaster/images/backlight.png
@@ -5626,6 +5640,7 @@ aae5b15a1da6fd1c plugins/rcp-be-lol-game-data/global/default/content/src/leaguec
 c3b6595220451144 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/08_grandmaster/images/grandmaster_sr3_hotg.png
 9c5b9ba238597d33 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/08_grandmaster/images/grandmaster_sr3_sheeng.png
 57078324e4c02229 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/08_grandmaster/images/sheen_line.png
+517dcf1a010f7357 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/08_grandmaster/images/voice_grandmaster.png
 b8445e879255fd4d plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/08_grandmaster/images/whiteembers.png
 5a3dd724037b4e6d plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/08_grandmaster/lobby_buildin_grandmaster.json
 9afc6e97e02d7308 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/09_challenger/images/backlight.png
@@ -5652,8 +5667,10 @@ f54bde51d4e33b1b plugins/rcp-be-lol-game-data/global/default/content/src/leaguec
 d1f0b67d489f600d plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/09_challenger/images/challenger_sr3_hotg.png
 91439be9d9a6728b plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/09_challenger/images/challenger_sr3_sheeng.png
 a9af63f9e73ca4f8 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/09_challenger/images/sheen_line.png
+030e02c148b7fcfa plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/09_challenger/images/voice_challenger.png
 e11bcd3e1b2149d4 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/09_challenger/images/whiteembers.png
 d033e1b906e9e4ca plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/09_challenger/lobby_buildin_challenger.json
+a77af6eca7fde8df plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedcrests/generic/split_heatmap.png
 917d2ef5f2903e5a plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedpromotioncelebrations/01_iron/division_up_iron.json
 5469cdf0eec81b56 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedpromotioncelebrations/01_iron/images/iron_baseface_matte.png
 fcf468ee818869d6 plugins/rcp-be-lol-game-data/global/default/content/src/leagueclient/rankedpromotioncelebrations/01_iron/images/iron_crown_d1_hotg.png
@@ -26376,6 +26393,7 @@ ec72b9f182cf80d7 plugins/rcp-fe-lol-clash/global/default/assets/audio/sfx-clash-
 935742f659eb74bb plugins/rcp-fe-lol-clash/global/default/assets/audio/sfx-clash-test-audio.ogg
 f6b4247440aad036 plugins/rcp-fe-lol-clash/global/default/assets/audio/sfx-clash-text-click-small.ogg
 52f9fd1bd6b3d2c2 plugins/rcp-fe-lol-clash/global/default/assets/audio/sfx-clash-timer-tick-big.ogg
+e6ea5b32e7c0ab4e plugins/rcp-fe-lol-clash/global/default/assets/audio/sfx-clash-trophy-ceremony-music.ogg
 36ce06a23d5bb605 plugins/rcp-fe-lol-clash/global/default/assets/images/0.png
 4833e7055349cc24 plugins/rcp-fe-lol-clash/global/default/assets/images/1.png
 19248ae5c1f88b8b plugins/rcp-fe-lol-clash/global/default/assets/images/1x1_transparent.png
@@ -27905,6 +27923,7 @@ fbdc6c2739686320 plugins/rcp-fe-lol-collections/global/default/spells_2.webm
 268f9d680a78a55a plugins/rcp-fe-lol-collections/global/default/spells_6.webm
 ed2209ae397668af plugins/rcp-fe-lol-collections/global/default/spells_7.webm
 baeb67bc26006378 plugins/rcp-fe-lol-collections/global/default/spinner.png
+7138df40c24aea5d plugins/rcp-fe-lol-collections/global/default/styles.css
 4332a4de7697a515 plugins/rcp-fe-lol-collections/global/default/trans.json
 7036972908abee44 plugins/rcp-fe-lol-collections/global/el_gr/trans.json
 513c70f2cb7e8103 plugins/rcp-fe-lol-collections/global/en_au/trans.json
@@ -29153,6 +29172,12 @@ ad0dc83467c0388a plugins/rcp-fe-lol-league-tier-names/global/zh_cn/trans.json
 30e20dc50033f941 plugins/rcp-fe-lol-leagues/global/cs_cz/trans.json
 901aacadf944173c plugins/rcp-fe-lol-leagues/global/de_de/trans.json
 95c0590becfdf43b plugins/rcp-fe-lol-leagues/global/default/bundle.js
+1db018999a870095 plugins/rcp-fe-lol-leagues/global/default/images/2019-intro-background.jpg
+a57057a4ff67227b plugins/rcp-fe-lol-leagues/global/default/images/2019-intro-linework.png
+e6806395681793b4 plugins/rcp-fe-lol-leagues/global/default/images/2019-intro-placement.png
+756f749e6ff5a8e7 plugins/rcp-fe-lol-leagues/global/default/images/2019-intro-position-ranks.png
+302d002c4f06f87f plugins/rcp-fe-lol-leagues/global/default/images/2019-intro-ranked-armor.png
+731aa46fdf4ea651 plugins/rcp-fe-lol-leagues/global/default/images/2019-intro-splits-rewards.png
 94aa2264f97ee1dd plugins/rcp-fe-lol-leagues/global/default/images/arrows.png
 cff2ca509bd57d03 plugins/rcp-fe-lol-leagues/global/default/images/back_click.png
 49f2fe4efba2170a plugins/rcp-fe-lol-leagues/global/default/images/back_default.png
@@ -29486,6 +29511,7 @@ d7989cd569f73403 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-
 9d6b5b3b53662878 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-master.ogg
 b726108eaed1e1cf plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-platinum.ogg
 db478d1f45d02a4f plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-celebrate-ranked-promote-to-silver.ogg
+7f20cee30bd768dc plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-ranked-ui-circle-meter-fill-small.ogg
 5109ea0017eee16b plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-ranked-ui-lp-decrease.ogg
 b75ed0613a3b0d67 plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-ranked-ui-lp-increase-final-tick.ogg
 6f1f1ea37965348c plugins/rcp-fe-lol-leagues/global/default/sounds/sfx-ranked-ui-lp-increase-tick.ogg
@@ -30420,6 +30446,7 @@ cf7b8b3df6853163 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/materi
 5a28378546f117ae plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_263.png
 064f4c47fb5112a1 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_283.png
 d9ce06b2a7c6d4a5 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_285.png
+9936e30682adc67f plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_287.png
 6fedfba016e084cf plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_89.png
 993be0ad0b097d40 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_90.png
 db6b9f5c2900f744 plugins/rcp-fe-lol-loot/global/default/assets/tray_icons/material_key.png
@@ -30950,6 +30977,9 @@ caec05e0ee1b1bfc plugins/rcp-fe-lol-missions/global/default/championframe.png
 d4860d2c6d242a43 plugins/rcp-fe-lol-missions/global/default/championmask.png
 73cf5cc303cc27a3 plugins/rcp-fe-lol-missions/global/default/checkmark.png
 70ef9850a18bfcda plugins/rcp-fe-lol-missions/global/default/checkmark.webm
+4bf705a3adae9bee plugins/rcp-fe-lol-missions/global/default/chroma_bg.png
+e6eb3acf3beb6007 plugins/rcp-fe-lol-missions/global/default/chromaframe_2k.png
+c226ffad47c5616c plugins/rcp-fe-lol-missions/global/default/chromamask.png
 c579da6340d929ca plugins/rcp-fe-lol-missions/global/default/coin-background.png
 d914c382c16c520b plugins/rcp-fe-lol-missions/global/default/coin-currency.png
 a0cae69efc3053a3 plugins/rcp-fe-lol-missions/global/default/diamond_4k.png
@@ -31128,6 +31158,7 @@ a3c45f1ddab852e8 plugins/rcp-fe-lol-missions/global/default/events/images/missio
 b109f1dd56782a20 plugins/rcp-fe-lol-missions/global/default/events/images/missions/worlds18/watch-em.png
 699da5d4b7403e7e plugins/rcp-fe-lol-missions/global/default/events/images/missions/worlds18/worlds-pass-icon.png
 8d3f935617fb2d48 plugins/rcp-fe-lol-missions/global/default/events/images/missions/worlds18/worlds-section-mega-event.png
+ec9c99986f6f3e2f plugins/rcp-fe-lol-missions/global/default/iconframe.png
 218f6b21d2fb7422 plugins/rcp-fe-lol-missions/global/default/index.html
 2149f47b9c0ea8fb plugins/rcp-fe-lol-missions/global/default/init.js
 6b21263a5e5225f0 plugins/rcp-fe-lol-missions/global/default/levelupexplosion_large.webm
@@ -31198,6 +31229,7 @@ a3df3a7dbe8484a3 plugins/rcp-fe-lol-missions/global/default/rewardicons_ward.png
 9d65457430e1b5f0 plugins/rcp-fe-lol-missions/global/default/rewardicons_xp.png
 ab77acc522384034 plugins/rcp-fe-lol-missions/global/default/shardframe_4k.png
 cf28f589269e4cee plugins/rcp-fe-lol-missions/global/default/shardmask.png
+c11eccfa844d70c9 plugins/rcp-fe-lol-missions/global/default/skinframe.png
 2665144baeb087f6 plugins/rcp-fe-lol-missions/global/default/sort_mask.png
 8c74112e212f939a plugins/rcp-fe-lol-missions/global/default/sounds/sfx-button-claim-click.ogg
 b0526607d2ca957a plugins/rcp-fe-lol-missions/global/default/sounds/sfx-levelup-postgame-generic.ogg
@@ -32225,6 +32257,7 @@ c0078853d69e823b plugins/rcp-fe-lol-parties/global/default/bundle.js.map
 9a8945466526ded2 plugins/rcp-fe-lol-parties/global/default/c08563cc962cb50a1e3adf4fc32db977.png
 53d00b22ad7317bb plugins/rcp-fe-lol-parties/global/default/c0fb103bbeaa767cd9639a4784d2034c.png
 a539ed8e07dfa388 plugins/rcp-fe-lol-parties/global/default/c200604213e19687696d43eea88334fe.png
+2f0c2c3433cdda19 plugins/rcp-fe-lol-parties/global/default/c245c538b8c278ed0159f196052102fd.png
 4ed2cf6a5ec34b46 plugins/rcp-fe-lol-parties/global/default/c31b9ef3ca1a10ebc526cab26650d030.png
 fdb11df40b00d0de plugins/rcp-fe-lol-parties/global/default/c3e94520b418f2a93fdcba287df848df.png
 7d1e21cf26d091b5 plugins/rcp-fe-lol-parties/global/default/c4f920f3eb61426e2e72cb7cdf1f7b55.webm
@@ -33636,6 +33669,8 @@ b3b0d44a7060dc03 plugins/rcp-fe-lol-postgame/global/default/sfx-postgame-button-
 5ee339de230de380 plugins/rcp-fe-lol-postgame/global/default/sfx-postgame-button-playagain-click.ogg
 df17a422b16959f3 plugins/rcp-fe-lol-postgame/global/default/sfx-postgame-button-playagain-hover.ogg
 f3a83262ae3c8d88 plugins/rcp-fe-lol-postgame/global/default/sfx-postgame-button-report-click.ogg
+2912fa8db1ffd2a7 plugins/rcp-fe-lol-postgame/global/default/sfx-ranked-ui-circle-meter-fill-small.ogg
+49b69cdb765f7083 plugins/rcp-fe-lol-postgame/global/default/sfx-ranked-ui-circle-meter-level-up.ogg
 2733ed88a51a06e1 plugins/rcp-fe-lol-postgame/global/default/sfx-uikit-button-gold-click.ogg
 744c8e22dcabb3e4 plugins/rcp-fe-lol-postgame/global/default/sfx-uikit-button-gold-hover.ogg
 7b6fdc26551b60a7 plugins/rcp-fe-lol-postgame/global/default/sfx-uikit-click-generic.ogg
@@ -33788,6 +33823,7 @@ c61e46dd1797a79d plugins/rcp-fe-lol-profiles/global/default/3fedabd5403faf5c62fb
 3c2ef3de787210c4 plugins/rcp-fe-lol-profiles/global/default/40aed260bb449137388d1c71cc760750.png
 0529745520725fbc plugins/rcp-fe-lol-profiles/global/default/40de454d27208f00e977b2c127e2d575.png
 02c4ea7f9e7aa025 plugins/rcp-fe-lol-profiles/global/default/4260ce2072997ec56d70bcc82587125b.png
+463f64d8b9c27c02 plugins/rcp-fe-lol-profiles/global/default/42910398752c2c30d7c00e7741999e9b.png
 6896650fefa46f77 plugins/rcp-fe-lol-profiles/global/default/431b970a277de30014de093287ab46ad.png
 afefaa27753227ec plugins/rcp-fe-lol-profiles/global/default/436ca0db7bdac3408ebbfdc17c49664d.png
 867567ce1448df92 plugins/rcp-fe-lol-profiles/global/default/4726bea71d5c9e57f5bbb02ce588125a.png
@@ -33861,8 +33897,10 @@ cfc46e827ad5b4bf plugins/rcp-fe-lol-profiles/global/default/a712946db21cb2699958
 a607006424174be3 plugins/rcp-fe-lol-profiles/global/default/a732fee9fcc990b6f7b75fe99e4c5556.png
 62dbcc22fc393e2b plugins/rcp-fe-lol-profiles/global/default/a921f7e4866856830958aaf48d826303.png
 543f0f0790e1159c plugins/rcp-fe-lol-profiles/global/default/a9f1e8eb8e5533da46bc13f785819abf.png
+914684d24fe2ce43 plugins/rcp-fe-lol-profiles/global/default/aa44fcdf66e63e8324ecba0c2fed941c.png
 45138e6245c3720b plugins/rcp-fe-lol-profiles/global/default/ab3b70190d6219e584d6d2fa5acfd36c.png
 e9650ecd4d180769 plugins/rcp-fe-lol-profiles/global/default/abb8a1b761067c51ed11d34bffbdf542.png
+dd78baac5b3c8b00 plugins/rcp-fe-lol-profiles/global/default/abf595d721cdf3f82a5fa4f5cdc8f78c.png
 8361f392b0ebdbd5 plugins/rcp-fe-lol-profiles/global/default/b16fd319deff56bd7024abf95ec6be96.png
 1ba9074da9b015c8 plugins/rcp-fe-lol-profiles/global/default/b40c5e6500243daddc48063ae05e044d.png
 4061b296534ef7aa plugins/rcp-fe-lol-profiles/global/default/b4152933628b1b00206a4e882cb2d458.png
