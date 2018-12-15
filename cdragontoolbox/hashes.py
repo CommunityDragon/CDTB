@@ -669,10 +669,15 @@ class GameHashGuesser(HashGuesser):
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
                     data = wadfile.read_data(f)
-                    for m in re.finditer(br'(..)((?:ASSETS|DATA)/[0-9a-zA-Z_. /-]+)', data):
+                    for m in re.finditer(br'(..)((?:ASSETS|DATA|Characters)/[0-9a-zA-Z_. /-]+)', data):
                         n, path = m.groups()
                         n = n[0] + (n[1] << 8)
-                        self.check(path[:n].lower().decode('ascii'))
+                        path = path[:n].lower().decode('ascii')
+                        if path.startswith('characters'):
+                            self.check(f"assets/{path}")
+                            self.check(f"data/{path}")
+                        else:
+                            self.check(path)
 
                 elif wadfile.ext == 'preload':
                     # preload files
