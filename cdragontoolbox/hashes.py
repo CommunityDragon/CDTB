@@ -683,7 +683,12 @@ class GameHashGuesser(HashGuesser):
                     # preload files
                     data = wadfile.read_data(f)
                     fmt = os.path.dirname(wadfile.path) + '/%s.preload'
-                    self.check_iter(fmt % m.group(1).lower().decode('ascii') for m in re.finditer(br'Name="([^"]+)"', data))
+                    for m in re.finditer(br'Name="([^"]+)"', data):
+                        path = m.group(1).lower().decode('ascii')
+                        if path.endswith('.lua'):
+                            self.check(path[:-4] + '.luabin')
+                        else:
+                            self.check(fmt % path)
 
                 elif wadfile.ext in ('hls', 'ps_2_0', 'ps_3_0', 'vs_2_0', 'vs_3_0'):
                     # shader: search for includes
