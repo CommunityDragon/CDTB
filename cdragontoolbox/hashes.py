@@ -537,6 +537,24 @@ class GameHashGuesser(HashGuesser):
             for fmt, nocc in formats:
                 self.check_iter(fmt % p for p in itertools.combinations(skins, nocc))
 
+    def substitute_suffixes(self):
+        """Replace `.suffix.ext` using all known suffixes"""
+
+        suffixes = {""}
+        formats = set()
+        re_suffix = re.compile(r'^(.*?)(\.[^.]+)?(\.[^.]+)$')
+        for p in self.known.values():
+            m = re_suffix.search(p)
+            prefix, suffix, ext = m.groups()
+            if suffix:
+                suffixes.add(suffix)
+            formats.add(f"{prefix}%s{ext}")
+
+        # generate all combinations
+        logger.info(f"substitute suffixes: {len(formats)} formats, {len(suffixes)} suffixes")
+        for fmt in progress_iterator(sorted(formats)):
+            self.check_iter(fmt % s for s in suffixes)
+
     def substitute_lang(self):
         """Guess hashes from lang variants"""
 
@@ -544,7 +562,6 @@ class GameHashGuesser(HashGuesser):
         langs_re = re.compile(r'(%s)' % '|'.join(langs))
         formats = {langs_re.sub('{}', p) for p in self.known.values() if langs_re.search(p)}
 
-        print(len(formats))
         logger.info(f"substitute lang: {len(formats)} formats, {len(langs)} langs")
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt.replace('{}', l) for l in langs)
