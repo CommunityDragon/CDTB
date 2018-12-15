@@ -3,28 +3,23 @@ import os
 import sys
 import argparse
 import json
+import re
+import glob
 import textwrap
 import fnmatch
 import logging
 import cdragontoolbox
 from cdragontoolbox.storage import (
-    Version,
     Storage,
-    Project, ProjectVersion,
-    Solution, SolutionVersion,
+    Patch,
     PatchVersion,
-    parse_component,
+    parse_storage_component,
 )
-from cdragontoolbox.wad import (
-    Wad,
-    wads_from_component,
-)
-from cdragontoolbox.export import (
-    CdragonRawPatchExporter,
-)
-from cdragontoolbox.binfile import (
-    BinFile,
-)
+from cdragontoolbox.rads import RadsStorage
+from cdragontoolbox.patcher import PatcherStorage
+from cdragontoolbox.wad import Wad
+from cdragontoolbox.export import CdragonRawPatchExporter
+from cdragontoolbox.binfile import BinFile
 from cdragontoolbox.hashes import (
     HashFile,
     default_hashfile,
@@ -34,11 +29,21 @@ from cdragontoolbox.hashes import (
 
 
 def parse_component_arg(parser, storage: Storage, component: str):
-    """Wrapper around parse_component() to parse CLI arguments"""
+    """Wrapper around parse_storage_component() to parse CLI arguments into patch elements"""
     try:
-        return parse_component(storage, component)
+        component = parse_storage_component(storage, component)
     except ValueError:
         parser.error(f"invalid component: {component}")
+    if component is None:
+        parser.error(f"component not found: {component}")
+
+    if isinstance(component, Patch):
+        return list(component.elements)
+    else:
+        return [component.elements]
+
+def parse_component_args(parser, storage: Storage, components):
+    return [e for c in components for e in parse_component_arg(parser, storage, c)]
 
 
 def parse_storage_args(parser, args) -> Storage:
@@ -55,87 +60,53 @@ def parse_storage_args(parser, args) -> Storage:
 
     path = default_path if args.storage is None else args.storage
     if path is None:
-        path = "RADS" if cdn == 'default' else f"RADS.{cdn}"
+        path = "rads:RADS" if cdn == 'default' else f"rads:RADS.{cdn}"
 
-    storage_url = getattr(Storage, f"URL_{cdn}".upper())
-    return Storage(path, storage_url)
+    m = re.match(r'^(?:(rads|patcher):)?(.*)$', path)
+    storage_type, storage_path = m.groups()
+    if storage_type is None:
+        storage_type = guess_storage_type(storage_path)
+        if not storage_type:
+            parser.error("cannot guess storage type of '{path}'")
+
+    if storage_type == 'rads':
+        storage_url = getattr(RadsStorage, f"URL_{cdn}".upper())
+        return RadsStorage(path, storage_url)
+    elif storage_type == 'patcher':
+        if cdn != 'default':
+            parser.error("--cdn not supported for patcher storage")
+        return PatcherStorage(storage_path)
+    raise RuntimeError("invalid storage type")  # unreachable
+
+def guess_storage_type(path):
+    """Try to guess storage type from path"""
+
+    if os.path.isdir(os.path.join(path, 'solutions')):
+        # don't accept game installation directories
+        if glob.glob(os.path.join(path, 'solutions/lol_game_client_sln/releases/releases_*')):
+            return None
+        return 'rads'
+    elif os.path.isdir(os.path.join(path, 'channels')):
+        return 'patcher'
+    return None
 
 
 def command_download(parser, args):
-    components = [parse_component_arg(parser, args.storage, component) for component in args.component]
-    for component in components:
-        if isinstance(component, (Project, ProjectVersion)):
-            component.download(dry_run=args.dry_run)
-        elif isinstance(component, (Solution, SolutionVersion)):
-            component.download(args.langs, dry_run=args.dry_run)
-        elif isinstance(component, PatchVersion):
-            component.download(langs=args.langs, latest=args.latest, dry_run=args.dry_run)
-        else:
-            raise TypeError(component)
-
-
-def command_versions(parser, args):
-    if args.component == 'patch':
-        # special case for listing patch versions
-        for patch in PatchVersion.versions(args.storage, stored=args.stored):
-            print(patch.version)
-        return
-
-    component = parse_component_arg(parser, args.storage, args.component)
-    if isinstance(component, (Project, Solution)):
-        for pv in component.versions():
-            print(pv.version)
-    else:
-        parser.error(f"command cannot be used on {component}")
-
-
-def command_projects(parser, args):
-    component = parse_component_arg(parser, args.storage, args.component)
-    if isinstance(component, SolutionVersion):
-        for pv in sorted(component.projects(args.langs)):
-            print(pv)
-    elif isinstance(component, PatchVersion):
-        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs)}
-        for pv in sorted(projects):
-            print(pv)
-    else:
-        parser.error(f"command cannot be used on {component}")
-
-
-def command_solutions(parser, args):
-    component = parse_component_arg(parser, args.storage, args.component)
-    if isinstance(component, Project):
-        for sln in args.storage.list_solutions():
-            for sv in sln.versions(stored=True):
-                if component in (pv.project for pv in sv.projects(True)):
-                    print(sv)
-    elif isinstance(component, ProjectVersion):
-        for sln in args.storage.list_solutions():
-            for sv in sln.versions(stored=True):
-                if component in sv.projects(True):
-                    print(sv)
-    elif isinstance(component, PatchVersion):
-        for sv in component.solutions(latest=args.latest):
-            print(sv)
-    else:
-        parser.error(f"command cannot be used on {component}")
+    for component in parse_component_args(parser, args.storage, args.component):
+        component.download(langs=args.langs)
 
 
 def command_files(parser, args):
-    component = parse_component_arg(parser, args.storage, args.component)
-    if isinstance(component, ProjectVersion):
-        for path in component.filepaths():
+    for elem in parse_component_arg(parser, args.storage, args.component):
+        it = elem.relpaths() if args.relative else elem.fspaths()
+        for path in it:
             print(path)
-    elif isinstance(component, SolutionVersion):
-        for path in component.filepaths(args.langs):
-            print(path)
-    elif isinstance(component, PatchVersion):
-        projects = {pv for sv in component.solutions(latest=args.latest) for pv in sv.projects(args.langs)}
-        for pv in sorted(projects):
-            for path in pv.filepaths():
-                print(path)
-    else:
-        parser.error(f"command cannot be used on {component}")
+
+
+def command_versions(parser, args):
+    for patch in args.storage.patches(stored=args.stored):
+        if args.type == 'patch' or args.type in (e.name for e in patch.elements):
+            print(patch.version)
 
 
 def command_wad_extract(parser, args):
@@ -215,11 +186,18 @@ def command_hashes_guess(parser, args):
     wads = []
     for path_or_component in args.wad:
         try:
-            component = parse_component(args.storage, path_or_component)
+            component = parse_storage_component(args.storage, path_or_component)
         except ValueError:
             wads.append(Wad(path_or_component))
             continue
-        wads += wads_from_component(component)
+        if component is None:
+            continue
+        if isinstance(component, Patch):
+            elements = component.elements
+        else:
+            elements = [component.elements]
+        for elem in elements:
+            wads.extend(Wad(p) for p in elem.fspaths() if p.endswith('.wad') or p.endswith('.wad.client'))
 
     # guess LCU hashes
     guesser = LcuHashGuesser.from_wads(wads)
@@ -296,7 +274,7 @@ def command_export(parser, args):
             parser.error("patch version required with --previous or --full")
         if args.first:
             parser.error("--from is required when no patch is provided")
-        exporters = CdragonRawPatchExporter.from_directory(storage, args.output, Version(args.first), symlinks=symlinks)
+        exporters = CdragonRawPatchExporter.from_directory(storage, args.output, PatchVersion(args.first), symlinks=symlinks)
         for exporter in exporters:
             exporter.process(overwrite=overwrite)
     else:
@@ -304,17 +282,17 @@ def command_export(parser, args):
             parser.error("--from cannot be used when providing a patch")
         # single patch
         # retrieve target and previous patch versions
-        patch = PatchVersion.version(storage, None if args.patch == 'latest' else Version(args.patch))
+        patch = storage.patch(None if args.patch == 'latest' else args.patch)
         if patch is None:
             parser.error(f"patch not found: {args.patch}")
         if args.previous == 'none':
             previous_patch = None
         elif args.previous:
-            previous_patch = PatchVersion.version(storage, Version(args.previous), stored=True)
+            previous_patch = storage.patch(args.previous, stored=True)
             if previous_patch is None:
                 parser.error(f"previous patch not found: {patch.version}")
         else:
-            it = PatchVersion.versions(storage, stored=True)
+            it = storage.patches(stored=True)
             for v in it:
                 if v.version == patch.version:
                     previous_patch = next(it)
@@ -341,27 +319,27 @@ def command_bin_dump(parser, args):
 
 def create_parser():
     parser = argparse.ArgumentParser('cdragontoolbox',
-        description="Toolbox to work with League of Legends game files",
+        description="Toolbox to work with League of Legends game and client files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent("""
-            The following formats are used for components:
+            The following formats are supported for components:
 
-              s:solution_name
-              s:solution_name=version
-              p:project_name
-              p:project_name=version
-              patch=version
+              patch=version    patch with given version
+              game=version     game files for patch with given version
+              client=version   client files (LCU) for patch with given version
 
-            If version is empty, the latest one is used.
-            The `s:` and `p:` prefixes can be omitted if type can be deduced
-            from the name, which should always be the case.
-            Examples:
+            The following formats are supported for patch version:
 
-              league_client_fr_fr=0.0.0.78
-              league_client=
-              lol_game_client_sln
-              s:league_client_sln=0.0.1.195
-              patch=7.23
+              X.Y       patch X.Y (all subpatches)
+              X.Y.      latest subpatch for patch X.Y (latest elements)
+              <empty>   latest available subpatch
+
+            Multiple storages types are supported. The -s,--storage value can
+            be prefixed by the storage type to use. If no prefix is provided,
+            the type will be guessed, if possible.
+
+              rads:PATH     RADS storage, same file structure as on CDN
+              patcher:PATH  storage for bundle-based patcher
 
         """),
     )
@@ -376,7 +354,7 @@ def create_parser():
     # storage arguments
     storage_parser = argparse.ArgumentParser(add_help=False)
     storage_parser.add_argument('-s', '--storage', default=None,
-                                help="directory for downloaded files")
+                                help="path to downloaded files, with an optional storage type prefix (`type:path`)")
     storage_parser.add_argument('--cdn', choices=["default", "pbe", "kr"], default=None,
                                 help="use a different CDN")
 
@@ -387,37 +365,25 @@ def create_parser():
                                   help="ignore language projects from solutions")
     component_parser.add_argument('--lang', dest='langs', nargs='*',
                                   help="use projects from solutions in given languages (default: all)")
-    component_parser.add_argument('-1', '--latest', action='store_true',
-                                  help="consider only the most recent solutions when searching for patches")
 
     subparser = subparsers.add_parser('download', parents=[component_parser],
                                       help="download components to the storage")
-    subparser.add_argument('-n', '--dry-run', action='store_true',
-                           help="don't actually download package files, just list them")
     subparser.add_argument('component', nargs='+',
                            help="components to download")
 
-    subparser = subparsers.add_parser('versions', parents=[component_parser],
-                                      help="list versions of a component")
-    subparser.add_argument('-a', '--all', dest='stored', action='store_false', default=True,
-                           help="when listing patch versions, don't use only stored solutions")
-    subparser.add_argument('component',
-                           help="solution, project or 'patch' to list patch versions")
-
-    subparser = subparsers.add_parser('projects', parents=[component_parser],
-                                      help="list projects of a component")
-    subparser.add_argument('component',
-                           help="solution version or patch version")
-
-    subparser = subparsers.add_parser('solutions', parents=[component_parser],
-                                      help="list solutions of a component")
-    subparser.add_argument('component',
-                           help="project, project version or patch version")
-
     subparser = subparsers.add_parser('files', parents=[component_parser],
                                       help="list files of a component")
+    subparser.add_argument('-r', '--relative', action='store_true',
+                           help="print relative export path insted of filesystem path")
     subparser.add_argument('component',
                            help="project version, solution version or patch version")
+
+    subparser = subparsers.add_parser('versions', parents=[storage_parser],
+                                      help="list available patch versions for a component")
+    subparser.add_argument('-a', '--all', dest='stored', action='store_false', default=True,
+                           help="when listing patch versions, don't use only stored solutions")
+    subparser.add_argument('type', choices={'patch', 'game', 'client'},
+                           help="display versions of given component type")
 
 
     # WAD commands

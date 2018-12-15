@@ -7,7 +7,7 @@ import logging
 from io import BytesIO
 from PIL import Image
 
-from .storage import Version, Storage, PatchVersion
+from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
 from .tools import write_file_or_remove
@@ -68,11 +68,10 @@ def reduce_common_paths(paths1, paths2, excludes):
 class Exporter:
     """Export files and WADs to a directory"""
 
-    def __init__(self, output: str, storage: Storage):
+    def __init__(self, output: str):
         self.output = os.path.normpath(output)
-        self.storage = storage
         self.wads = {}  # {export_path: Wad}
-        self.plain_files = {}  # {export_path: storage_path}
+        self.plain_files = {}  # {export_path: path}
         self.converters = []
 
 
@@ -111,52 +110,62 @@ class Exporter:
                         to_visit.append(f"{base}{entry.name}/")
 
 
-    def add_storage_path(self, path):
-        """Add a path from it's storage path"""
+    def add_path(self, source_path, export_path):
+        """Add a path to export
 
-        if path.endswith('.wad') or path.endswith('.wad.client'):
-            wad = Wad(self.storage.fspath(path))
+        source_path is the full path to the file to export.
+        export_path is the relative export path, it serves as key for
+        filtering, etc.
+        """
+
+        if source_path.endswith('.wad') or source_path.endswith('.wad.client'):
+            wad = Wad(source_path)
             # remove file redirections
             wad.files = [wf for wf in wad.files if wf.type != 2]
             wad.guess_extensions()
-            self.wads[self._export_path(path)] = wad
+            self.wads[export_path] = wad
         else:
-            self.plain_files[self._export_path(path)] = path
+            self.plain_files[export_path] = source_path
 
     def add_patch_files(self, patch):
         """Add files to export from a patch"""
 
         logger.info(f"add list of files to extract for patch {patch.version}")
-        projects = self._patch_to_projects(patch)
+
+        for elem in patch.latest().elements:
+            elem.download(langs=True)
 
         # add files to export
-        for pv in projects:
-            for path in pv.filepaths():
-                self.add_storage_path(path)
+        for elem in patch.latest().elements:
+            #XXX for now, exclude game language-specific files
+            langs = elem.name == 'game'
+            for src, dst in elem.filepaths(langs=langs):
+                self.add_path(src, dst)
 
-    def filter_storage_path(self, path):
-        """Remove files that are in the provided storage path
+    def filter_path(self, source_path, export_path):
+        """Remove files that are in the provided path
 
-        WAD files are first compared by path, then by file's sha256.
+        Paths have the same meaning as for add_path().
+
+        WAD files are first compared by source path, then by file's sha256.
         Plain files are simply removed.
         """
 
-        if path in self.plain_files:
-            del self.plain_files[path]
-        elif path.endswith('.wad') or path.endswith('.wad.client'):
-            export_path = self._export_path(path)
+        if export_path in self.plain_files:
+            del self.plain_files[export_path]
+        elif source_path.endswith('.wad') or source_path.endswith('.wad.client'):
             self_wad = self.wads.get(export_path)
             if self_wad is None:
                 return  # not exported
-            if self_wad.path == path:
+            if self_wad.path == source_path:
                 # same path: WADs are identical
-                logger.debug(f"filter identical WAD file: {path}")
+                logger.debug(f"filter identical WAD file: {source_path}")
                 del self.wads[export_path]
             else:
                 # compare the sha256 hashes to find the common files
                 # don't resolve hashes: we just need the sha256
-                logger.debug(f"filter modified WAD file: {path}")
-                other_wad = Wad(self.storage.fspath(path), hashes={})
+                logger.debug(f"filter modified WAD file: {source_path}")
+                other_wad = Wad(source_path, hashes={})
                 other_sha256 = {wf.path_hash: wf.sha256 for wf in other_wad.files}
                 # change the files from the wad so it only extract these
                 self_wad.files = [wf for wf in self_wad.files if wf.sha256 != other_sha256.get(wf.path_hash)]
@@ -212,8 +221,8 @@ class Exporter:
         """
 
         logger.info(f"export plain files ({len(self.plain_files)})")
-        for export_path, storage_path in self.plain_files.items():
-            self._export_plain_file(export_path, storage_path, overwrite)
+        for export_path, source_path in self.plain_files.items():
+            self._export_plain_file(export_path, source_path, overwrite)
 
         for wad in self.wads.values():
             self._export_wad(wad, overwrite)
@@ -262,7 +271,7 @@ class Exporter:
                 return (converted_path, converter)
         return (path, None)
 
-    def _export_plain_file(self, export_path, storage_path, overwrite=True):
+    def _export_plain_file(self, export_path, source_path, overwrite=True):
         """Export a plain file"""
 
         converted_path, converter = self._get_converter(export_path)
@@ -271,7 +280,6 @@ class Exporter:
         if not overwrite and os.path.lexists(output_path):
             return
 
-        source_path = self.storage.fspath(storage_path)
         try:
             with open(source_path, 'rb') as fin:
                 with write_file_or_remove(output_path) as fout:
@@ -315,25 +323,6 @@ class Exporter:
                     else:
                         raise
 
-    @staticmethod
-    def _export_path(path):
-        """Compute path to which export the file from storage path"""
-        # projects/<p_name>/releases/<p_version>/files/<export_path>
-        return path.split('/', 5)[5].lower()
-
-    @staticmethod
-    def _patch_to_projects(patch):
-        """Download a path, return a list of projects to export from a patch"""
-
-        solutions = patch.solutions(latest=True)
-        for sv in solutions:
-            sv.download(langs=True)
-        projects = [pv for sv in solutions for pv in sv.projects(True)]
-        #XXX for now, exclude lol_game_client language projects
-        projects = [pv for pv in projects if not pv.project.name.startswith('lol_game_client_')]
-
-        return projects
-
 
 class CdragonRawPatchExporter:
     """Export a single patch, as on raw.communitydragon.org
@@ -344,7 +333,6 @@ class CdragonRawPatchExporter:
 
     def __init__(self, output, patch, prev_patch=None, symlinks=None):
         self.output = os.path.normpath(output)
-        self.storage = patch.storage
         self.patch = patch
         self.prev_patch = prev_patch
         if symlinks is None:
@@ -409,7 +397,7 @@ class CdragonRawPatchExporter:
 
 
     def _create_exporter(self, patch):
-        exporter = Exporter(self.output, patch.storage)
+        exporter = Exporter(self.output)
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
             BinConverter(re.compile(r'^game/data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin$')),
@@ -475,7 +463,7 @@ class CdragonRawPatchExporter:
             os.symlink(src, dst)
 
     @classmethod
-    def from_directory(cls, storage, output: str, first: Version=None, symlinks=None):
+    def from_directory(cls, storage, output: str, first: PatchVersion=None, symlinks=None):
         """Handle export of multiple patchs in the same directory
 
         Exporter for the most oldest patch is returned first.
@@ -490,7 +478,7 @@ class CdragonRawPatchExporter:
             if not os.path.isdir(os.path.join(output, path)):
                 continue
             try:
-                version = Version(path)
+                version = PatchVersion(path)
             except (ValueError, TypeError):
                 continue
             versions.add(version)
@@ -500,7 +488,7 @@ class CdragonRawPatchExporter:
 
         # get patches from versions (latest to oldest)
         patches = []
-        for patch in PatchVersion.versions(storage, stored=True):
+        for patch in storage.patches(stored=True):
             if first and patch.version < first:
                 break
             if patch.version in versions:

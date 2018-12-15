@@ -5,20 +5,13 @@ import gzip
 import json
 import imghdr
 import logging
-import zstd
-# support both zstd and zstandard implementations
-if hasattr(zstd, 'decompress'):
-    zstd_decompress = zstd.decompress
-else:
-    zstd_decompress = zstd.ZstdDecompressor().decompress
 
 from .hashes import default_hashfile
-from .storage import (
-    PatchVersion,
-    ProjectVersion,
-    SolutionVersion,
+from .tools import (
+    BinParser,
+    write_file_or_remove,
+    zstd_decompress,
 )
-from .tools import write_file_or_remove
 
 def test_jpeg_photoshop(h, f):
     if h[:4] == b'\xff\xd8\xff\xe1':
@@ -28,30 +21,6 @@ imghdr.tests.append(test_jpeg_photoshop)
 
 
 logger = logging.getLogger(__name__)
-
-
-class Parser:
-    def __init__(self, f):
-        self.f = f
-
-    def tell(self):
-        return self.f.tell()
-
-    def seek(self, position):
-        self.f.seek(position, 0)
-
-    def skip(self, amount):
-        self.f.seek(amount, 1)
-
-    def rewind(self, amount):
-        self.f.seek(-amount, 1)
-
-    def unpack(self, fmt):
-        length = struct.calcsize(fmt)
-        return struct.unpack(fmt, self.f.read(length))
-
-    def raw(self, length):
-        return self.f.read(length)
 
 
 # Cache for guessed extensions.
@@ -190,7 +159,7 @@ class Wad:
 
         logger.debug(f"parse headers of {self.path}")
         with open(self.path, 'rb') as f:
-            parser = Parser(f)
+            parser = BinParser(f)
             magic, version_major, version_minor = parser.unpack("<2sBB")
             if magic != b'RW':
                 raise ValueError("invalid magic code")
@@ -271,22 +240,4 @@ class Wad:
                     continue
                 logger.debug(f"extracting {wadfile.path_hash:016x} {wadfile.path}")
                 wadfile.extract(fwad, output_path)
-
-
-def wads_from_component(component):
-    """Get WADs from a component"""
-
-    if isinstance(component, ProjectVersion):
-        it = component.filepaths()
-        storage = component.project.storage
-    elif isinstance(component, SolutionVersion):
-        it = component.filepaths(langs=True)
-        storage = component.solution.storage
-    elif isinstance(component, PatchVersion):
-        # there must be one solution
-        it = (p for sv in component.solutions(latest=True) for p in sv.filepaths(langs=True))
-        storage = component.storage
-    else:
-        raise TypeError(f"cannot retrieve WAD files from {component}")
-    return [Wad(storage.fspath(p)) for p in it if p.endswith('.wad') or p.endswith('.wad.client')]
 
