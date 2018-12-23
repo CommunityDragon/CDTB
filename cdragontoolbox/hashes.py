@@ -708,15 +708,19 @@ class GameHashGuesser(HashGuesser):
         with open(path, "rb") as f:
             # find strings based on prefix, then parse the length
             paths = set()
-            for m in re.finditer(br'(..\x00\x00|.[\x00-\x02])?((?:ASSETS|DATA)/[0-9a-zA-Z_. /-]+)', f.read()):
-                prefix, path = m.groups()
-                path = path.lower().decode('ascii')
+            data = f.read()
+            for m in re.finditer(br'(?:ASSETS|DATA)/[0-9a-zA-Z_. /-]+', data):
+                path = m.group(0).lower().decode('ascii')
                 paths.add(path)
-                if prefix:
-                    if len(prefix) == 4:
-                        paths.add(path[:struct.unpack('<L', prefix)[0]])
-                    elif len(prefix) == 2:
-                        paths.add(path[:struct.unpack('<H', prefix)[0]])
+                pos = m.start()
+                if pos >= 2:
+                    n = struct.unpack('<H', data[pos-2:pos])[0]
+                    if n < len(path):
+                        paths.add(path[:n])
+                if pos >= 4:
+                    n = struct.unpack('<L', data[pos-4:pos])[0]
+                    if n < len(path):
+                        paths.add(path[:n])
 
         for p in paths:
             if p.endswith('.lua'):
