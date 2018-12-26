@@ -57,8 +57,8 @@ def build_wordlist(paths):
     for path in paths:
         words |= set(re_split.split(path)[:-1])
 
-    # filter out numbers
-    re_filter_words = re.compile(r'^[0-9]+$')
+    # filter out large numbers
+    re_filter_words = re.compile(r'^[0-9][0-9][0-9]+$')
     words = set(w for w in words if not re_filter_words.search(w))
     return sorted(words)
 
@@ -223,6 +223,26 @@ class HashGuesser:
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt % s for s in words)
 
+    def _add_basename_word(self, words):
+        """Add a known word to all known basenames"""
+
+        re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
+        formats = set()
+        for path in self.known.values():
+            if "assets/characters" not in path and "vo/" not in path and "sfx/" not in path and "skins_skin" not in path: # Reduce the iteration time for game hashes
+                for m in re_extract.finditer(path):
+                    formats.add('%s%%s%s' % (path[:m.start()], path[m.start():]))
+                    formats.add('%s%%s%s' % (path[:m.end()], path[m.end():]))
+        
+        logger.info(f"add basename word: {len(formats)} formats, {len(words)} words")
+        words_left = [word + append for word in words for append in "-_."]
+        words_right = [prepend + word for word in words for prepend in "-_."]
+        for fmt in progress_iterator(sorted(formats)):
+            if "/%s" in fmt or ".%s" in fmt or "-%s" in fmt or "_%s" in fmt:
+                self.check_iter(f"{fmt}" % s for s in words_left)
+            else:
+                self.check_iter(f"{fmt}" % s for s in words_right)
+
     def _substitute_numbers(self, paths, nmax=10000, digits=None):
         """Guess hashes by changing numbers in basenames"""
 
@@ -289,13 +309,7 @@ class LcuHashGuesser(HashGuesser):
         return super().from_wads([wad for wad in wads if wad.path.endswith('.wad')])
 
     def build_wordlist(self):
-        re_filter_path = re.compile(r"""'(?:
-            ^(?:plugins/rcp-be-lol-game-data/global/default/v1/champion-ability-icons/
-              | plugins/rcp-be-lol-game-data/global/default/data/characters/
-              )
-            | /[0-9a-f]{32}\.
-            )""", re.VERBOSE)
-        paths = (p for p in self.known.values() if not re_filter_path.search(p))
+        paths = (p for p in self.known.values())
         return build_wordlist(paths)
 
     def substitute_region_lang(self):
@@ -314,6 +328,9 @@ class LcuHashGuesser(HashGuesser):
 
     def substitute_basename_words(self):
         super()._substitute_basename_words(self.build_wordlist())
+
+    def add_basename_word(self):
+        super()._add_basename_word(self.build_wordlist())
 
     def substitute_numbers(self, nmax=10000, digits=None):
         re_filter = re.compile(r"""(?:
@@ -483,7 +500,7 @@ class GameHashGuesser(HashGuesser):
         return build_wordlist(self.known.values())
 
     def get_characters(self):
-        re_char = re.compile(r'^assets/characters/([^/]+)/')
+        re_char = re.compile(r'^(?:assets|data)/characters/([^/]+)/')
         chars = set()
         for p in self.known.values():
             m = re_char.match(p)
@@ -495,15 +512,32 @@ class GameHashGuesser(HashGuesser):
         paths = self.known.values()
         super()._substitute_numbers(paths, nmax, digits)
 
+    def check_prefixes(self):
+        """Checks all known prefixes for all files"""
+        values = set()
+        prefixes = {"2x_","2x_sd_","4x_","4x_sd_","sd_"}
+        for path in self.known.values():
+            separator = path.rfind("/")
+            values.add(path[:separator+1] + path[separator+4:])
+            values.add(path[:separator+1] + path[separator+7:])
+            for prefix in prefixes:
+                values.add(path[:separator+1] + prefix + path[separator+1:])
+        
+        logger.info(f"check prefixes: {len(values)} paths")
+        self.check_iter(value for value in values)
+
     def substitute_basename_words(self):
         super()._substitute_basename_words(self.build_wordlist())
+
+    def add_basename_word(self):
+        super()._add_basename_word(self.build_wordlist())
 
     def substitute_character(self):
         """Guess hashes by changing champion names in assets/characters/"""
 
         characters = set()
         formats = set()
-        re_char = re.compile(r'^assets/characters/([^/]+)/')
+        re_char = re.compile(r'^(?:assets|data)/characters/([^/]+)/')
         for p in self.known.values():
             m = re_char.match(p)
             if not m:
@@ -611,7 +645,6 @@ class GameHashGuesser(HashGuesser):
             char_to_skins.setdefault(char, {0}).add(nskin)
 
         # generate all combinations
-        #TODO find a way to reduce number of combinations, for instance by always grouping chroma skinds together
         logger.info(f"find skin groups .bin files")
         for char, skins in progress_iterator(char_to_skins.items(), lambda v: v[0]):
             # note: skins are in lexicographic order: skin11 is before skin2
@@ -667,6 +700,19 @@ class GameHashGuesser(HashGuesser):
 
         with open(wad.path, 'rb') as f:
             for wadfile in wad.files:
+                if wadfile.path_hash == 2155072684501898278 or wadfile.path == 10561690728639675755: # quality coding
+                    paths = set()
+                    data = wadfile.read_data(f)
+                    for m in re.finditer(br'((?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+)', data):
+                        path = m.group(1).lower().decode('ascii')
+                        pos = m.start()
+                        n = struct.unpack('<L', data[pos-4:pos])[0]
+                        paths.add(path[:n])
+                    for p in paths:
+                        if p.endswith('.lua'):
+                            self.check(p[:-4] + '.luabin')
+                        else:
+                            self.check(p)
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
                     data = wadfile.read_data(f)
@@ -688,6 +734,8 @@ class GameHashGuesser(HashGuesser):
                         path = m.group(1).lower().decode('ascii')
                         if path.endswith('.lua'):
                             self.check(path[:-4] + '.luabin')
+                        elif path.endswith('troy'):
+                            self.check(path[:-4] + '.troybin')
                         else:
                             self.check(fmt % path)
 
@@ -701,25 +749,23 @@ class GameHashGuesser(HashGuesser):
 
                 #TODO
                 # .troybin: find .dds/.tga in footer
-                # .fx: find .troy filenames
-                # data/levels/project_clientlevelscripts/: guess .xml names from each other
 
     def grep_file(self, path):
         with open(path, "rb") as f:
             # find strings based on prefix, then parse the length
             paths = set()
             data = f.read()
-            for m in re.finditer(br'(?:ASSETS|DATA)/[0-9a-zA-Z_. /-]+', data):
-                path = m.group(0).lower().decode('ascii')
+            for m in re.finditer(br'((?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+)', data):
+                path = m.group(1).lower().decode('ascii')
                 paths.add(path)
                 pos = m.start()
                 if pos >= 2:
                     n = struct.unpack('<H', data[pos-2:pos])[0]
-                    if n < len(path):
-                        paths.add(path[:n])
-                if pos >= 4:
-                    n = struct.unpack('<L', data[pos-4:pos])[0]
-                    if n < len(path):
+                    if n == 0 and pos >= 4:
+                        n = struct.unpack('<L', data[pos-4:pos])[0]
+                        if n < len(path):
+                            paths.add(path[:n])
+                    elif n < len(path):
                         paths.add(path[:n])
 
         for p in paths:
@@ -727,4 +773,3 @@ class GameHashGuesser(HashGuesser):
                 self.check(p[:-4] + '.luabin')
             else:
                 self.check(p)
-
