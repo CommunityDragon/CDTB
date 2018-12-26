@@ -239,9 +239,9 @@ class HashGuesser:
         words_right = [prepend + word for word in words for prepend in "-_."]
         for fmt in progress_iterator(sorted(formats)):
             if "/%s" in fmt or ".%s" in fmt or "-%s" in fmt or "_%s" in fmt:
-                self.check_iter(f"{fmt}" % s for s in words_left)
+                self.check_iter(fmt % s for s in words_left)
             else:
-                self.check_iter(f"{fmt}" % s for s in words_right)
+                self.check_iter(fmt % s for s in words_right)
 
     def _substitute_numbers(self, paths, nmax=10000, digits=None):
         """Guess hashes by changing numbers in basenames"""
