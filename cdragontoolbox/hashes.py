@@ -58,7 +58,7 @@ def build_wordlist(paths):
         words |= set(re_split.split(path)[:-1])
 
     # filter out large numbers
-    re_filter_words = re.compile(r'^[0-9][0-9][0-9]+$')
+    re_filter_words = re.compile(r'^[0-9]{3,}$')
     words = set(w for w in words if not re_filter_words.search(w))
     return sorted(words)
 
