@@ -231,17 +231,12 @@ class HashGuesser:
         for path in self.known.values():
             if "assets/characters" not in path and "vo/" not in path and "sfx/" not in path and "skins_skin" not in path: # Reduce the iteration time for game hashes
                 for m in re_extract.finditer(path):
-                    formats.add('%s%%s%s' % (path[:m.start()], path[m.start():]))
-                    formats.add('%s%%s%s' % (path[:m.end()], path[m.end():]))
-        
+                    formats.update('%s%%s%s%s' % (path[:m.start()], sep, path[m.start():]) for sep in "-._")
+                    formats.update('%s%s%%s%s' % (path[:m.end()], sep, path[m.end():]) for sep in "-._")
+
         logger.info(f"add basename word: {len(formats)} formats, {len(words)} words")
-        words_left = [word + append for word in words for append in "-_."]
-        words_right = [prepend + word for word in words for prepend in "-_."]
         for fmt in progress_iterator(sorted(formats)):
-            if "/%s" in fmt or ".%s" in fmt or "-%s" in fmt or "_%s" in fmt:
-                self.check_iter(fmt % s for s in words_left)
-            else:
-                self.check_iter(fmt % s for s in words_right)
+            self.check_iter(fmt % s for s in words)
 
     def _substitute_numbers(self, paths, nmax=10000, digits=None):
         """Guess hashes by changing numbers in basenames"""
@@ -309,7 +304,8 @@ class LcuHashGuesser(HashGuesser):
         return super().from_wads([wad for wad in wads if wad.path.endswith('.wad')])
 
     def build_wordlist(self):
-        paths = (p for p in self.known.values())
+        re_filter_path = re.compile(r'(?:^plugins/rcp-be-lol-game-data/global/default/data/characters/|/[0-9a-f]{32}\.)')
+        paths = (p for p in self.known.values() if not re_filter_path.search(p))
         return build_wordlist(paths)
 
     def substitute_region_lang(self):
@@ -512,16 +508,15 @@ class GameHashGuesser(HashGuesser):
         paths = self.known.values()
         super()._substitute_numbers(paths, nmax, digits)
 
-    def check_prefixes(self):
-        """Checks all known prefixes for all files"""
+    def check_basename_prefixes(self, prefixes=None):
+        """Checks a provided list of prefixes for all basenames.
+        If no list is provided, a default one will be used"""
         values = set()
-        prefixes = {"2x_","2x_sd_","4x_","4x_sd_","sd_"}
-        for path in self.known.values():
-            separator = path.rfind("/")
-            values.add(path[:separator+1] + path[separator+4:])
-            values.add(path[:separator+1] + path[separator+7:])
-            for prefix in prefixes:
-                values.add(path[:separator+1] + prefix + path[separator+1:])
+        if prefixes == None:
+            prefixes = {"2x_","2x_sd_","4x_","4x_sd_","sd_"}
+        for p in self.known.values():
+            path, basename = p.rsplit('/', 1)
+            values.add(f"{path}/{prefix}{basename}" for prefix in prefixes)
         
         logger.info(f"check prefixes: {len(values)} paths")
         self.check_iter(value for value in values)
@@ -703,8 +698,8 @@ class GameHashGuesser(HashGuesser):
                 if wadfile.path_hash == 2155072684501898278 or wadfile.path == 10561690728639675755: # quality coding
                     paths = set()
                     data = wadfile.read_data(f)
-                    for m in re.finditer(br'((?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+)', data):
-                        path = m.group(1).lower().decode('ascii')
+                    for m in re.finditer(br'(?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+', data):
+                        path = m.group(0).lower().decode('ascii')
                         pos = m.start()
                         n = struct.unpack('<L', data[pos-4:pos])[0]
                         paths.add(path[:n])
@@ -734,8 +729,8 @@ class GameHashGuesser(HashGuesser):
                         path = m.group(1).lower().decode('ascii')
                         if path.endswith('.lua'):
                             self.check(path[:-4] + '.luabin')
-                        elif path.endswith('troy'):
-                            self.check(path[:-4] + '.troybin')
+                        elif path.endswith('.troy'):
+                            self.check(path[:-5] + '.troybin')
                         else:
                             self.check(fmt % path)
 
@@ -755,17 +750,15 @@ class GameHashGuesser(HashGuesser):
             # find strings based on prefix, then parse the length
             paths = set()
             data = f.read()
-            for m in re.finditer(br'((?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+)', data):
-                path = m.group(1).lower().decode('ascii')
+            for m in re.finditer(br'(?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+', data):
+                path = m.group(0).lower().decode('ascii')
                 paths.add(path)
                 pos = m.start()
                 if pos >= 2:
                     n = struct.unpack('<H', data[pos-2:pos])[0]
                     if n == 0 and pos >= 4:
                         n = struct.unpack('<L', data[pos-4:pos])[0]
-                        if n < len(path):
-                            paths.add(path[:n])
-                    elif n < len(path):
+                    if n < len(path):
                         paths.add(path[:n])
 
         for p in paths:
