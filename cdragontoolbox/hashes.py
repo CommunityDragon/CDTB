@@ -695,20 +695,10 @@ class GameHashGuesser(HashGuesser):
 
         with open(wad.path, 'rb') as f:
             for wadfile in wad.files:
-                if wadfile.path_hash == 2155072684501898278 or wadfile.path == 10561690728639675755: # quality coding
-                    paths = set()
-                    data = wadfile.read_data(f)
-                    for m in re.finditer(br'(?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+', data):
-                        path = m.group(0).lower().decode('ascii')
-                        pos = m.start()
-                        n = struct.unpack('<L', data[pos-4:pos])[0]
-                        paths.add(path[:n])
-                    for p in paths:
-                        if p.endswith('.lua'):
-                            self.check(p[:-4] + '.luabin')
-                        else:
-                            self.check(p)
-                elif wadfile.ext in ('bin', 'inibin'):
+                if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm', 'anm', 'skl', 'skn', 'scb', 'sco', 'troybin'):
+                    continue # don't grep filetypes known to not contain full paths
+
+                if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
                     data = wadfile.read_data(f)
                     for m in re.finditer(br'(..)((?:ASSETS|DATA|Characters)/[0-9a-zA-Z_. /-]+)', data):
@@ -742,24 +732,29 @@ class GameHashGuesser(HashGuesser):
                         subpath = m.group(1).lower().decode('ascii')
                         self.check(os.path.normpath(f"{dirname}/{subpath}"))
 
-                #TODO
-                # .troybin: find .dds/.tga in footer
+                else:
+                    # fallback: search for path-looking strings in all remaining files
+                    self.grep_file(data=wadfile.read_data(f))
 
-    def grep_file(self, path):
-        with open(path, "rb") as f:
-            # find strings based on prefix, then parse the length
-            paths = set()
-            data = f.read()
-            for m in re.finditer(br'(?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+', data):
-                path = m.group(0).lower().decode('ascii')
-                paths.add(path)
-                pos = m.start()
-                if pos >= 2:
-                    n = struct.unpack('<H', data[pos-2:pos])[0]
-                    if n == 0 and pos >= 4:
-                        n = struct.unpack('<L', data[pos-4:pos])[0]
-                    if n < len(path):
-                        paths.add(path[:n])
+    def grep_file(self, path=None, data=None):
+        if path:
+            with open(path, 'rb') as f:
+                data = f.read()
+        elif data is None:
+            raise TypeError("either path or data must be provided")
+
+        # find path-like strings, then try to parse the length
+        paths = set()
+        for m in re.finditer(br'(?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+', data):
+            path = m.group(0).lower().decode('ascii')
+            paths.add(path)
+            pos = m.start()
+            if pos >= 2:
+                n = struct.unpack('<H', data[pos-2:pos])[0]
+                if n == 0 and pos >= 4:
+                    n = struct.unpack('<L', data[pos-4:pos])[0]
+                if n < len(path):
+                    paths.add(path[:n])
 
         for p in paths:
             if p.endswith('.lua'):
