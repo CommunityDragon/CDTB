@@ -512,13 +512,13 @@ class GameHashGuesser(HashGuesser):
         """Checks a provided list of prefixes for all basenames.
         If no list is provided, a default one will be used"""
         values = set()
-        if prefixes == None:
-            prefixes = {"2x_","2x_sd_","4x_","4x_sd_","sd_"}
+        if prefixes is None:
+            prefixes = {'2x_', '2x_sd_', '4x_', '4x_sd_', 'sd_'}
         for p in self.known.values():
             path, basename = p.rsplit('/', 1)
-            values.add(f"{path}/{prefix}{basename}" for prefix in prefixes)
-        
-        logger.info(f"check prefixes: {len(values)} paths")
+            values.update(f"{path}/{prefix}{basename}" for prefix in prefixes)
+
+        logger.info(f"check prefixes: {len(prefixes)} prefixes with a total {len(values)} paths")
         self.check_iter(value for value in values)
 
     def substitute_basename_words(self):
@@ -708,7 +708,7 @@ class GameHashGuesser(HashGuesser):
                             self.check(p[:-4] + '.luabin')
                         else:
                             self.check(p)
-                if wadfile.ext in ('bin', 'inibin'):
+                elif wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
                     data = wadfile.read_data(f)
                     for m in re.finditer(br'(..)((?:ASSETS|DATA|Characters)/[0-9a-zA-Z_. /-]+)', data):
