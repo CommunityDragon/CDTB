@@ -695,12 +695,13 @@ class GameHashGuesser(HashGuesser):
 
         with open(wad.path, 'rb') as f:
             for wadfile in wad.files:
-                if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm', 'anm', 'skl', 'skn', 'scb', 'sco', 'troybin'):
+                if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm','anm',
+                                   'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'bnk', 'wpk'):
                     continue # don't grep filetypes known to not contain full paths
 
+                data = wadfile.read_data(f)
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
-                    data = wadfile.read_data(f)
                     for m in re.finditer(br'(..)((?:ASSETS|DATA|Characters)/[0-9a-zA-Z_. /-]+)', data):
                         n, path = m.groups()
                         n = n[0] + (n[1] << 8)
@@ -713,7 +714,6 @@ class GameHashGuesser(HashGuesser):
 
                 elif wadfile.ext == 'preload':
                     # preload files
-                    data = wadfile.read_data(f)
                     fmt = os.path.dirname(wadfile.path) + '/%s.preload'
                     for m in re.finditer(br'Name="([^"]+)"', data):
                         path = m.group(1).lower().decode('ascii')
@@ -726,7 +726,6 @@ class GameHashGuesser(HashGuesser):
 
                 elif wadfile.ext in ('hls', 'ps_2_0', 'ps_3_0', 'vs_2_0', 'vs_3_0'):
                     # shader: search for includes
-                    data = wadfile.read_data(f)
                     dirname = os.path.dirname(wadfile.path)
                     for m in re.finditer(br'#include "([^"]+)"', data):
                         subpath = m.group(1).lower().decode('ascii')
@@ -734,7 +733,7 @@ class GameHashGuesser(HashGuesser):
 
                 else:
                     # fallback: search for path-looking strings in all remaining files
-                    self.grep_file(data=wadfile.read_data(f))
+                    self.grep_file(data=data)
 
     def grep_file(self, path=None, data=None):
         if path:
