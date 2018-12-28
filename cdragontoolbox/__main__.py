@@ -190,7 +190,7 @@ def command_hashes_guess(parser, args):
         ("plugin", "substitute plugin name (LCU only)"),
         ("skin-num", "substitute skinNN numbers (game only)"),
         ("character", "substitute character name (game only)"),
-        ("lang", "substitute lang (game only)"),
+        ("prefixes", "substitute prefixes (game only)"),
     ]
     all_method_names = [name for name, _ in all_methods]
 
@@ -261,8 +261,8 @@ def command_hashes_guess(parser, args):
             guesser.substitute_skin_numbers()
         if "character" in method_names:
             guesser.substitute_character()
-        if "lang" in method_names:
-            guesser.substitute_lang()
+        if "prefixes" in method_names:
+            guesser.substitute_basename_prefixes()
 
         nfound = nunknown - len(guesser.unknown)
         if nfound:

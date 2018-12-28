@@ -622,7 +622,6 @@ class GameHashGuesser(HashGuesser):
                     s = ''.join(sorted(s for g in p for s in g))
                     self.check(f"data/{char}{s}.bin")
 
-
     def guess_skin_groups_bin(self):
         """Guess 'skin*.bin' with long filenames"""
 
