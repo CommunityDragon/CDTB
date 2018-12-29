@@ -184,13 +184,14 @@ def command_hashes_guess(parser, args):
     all_methods = [
         ("grep", "search for hashes in WAD files"),
         ("numbers", "substitute numbers in basenames"),
+        ("basenames", "substitute basenames"),
         ("words", "substitute known words in basenames"),
         ("ext", "substitute extensions"),
         ("regionlang", "substitute region and lang (LCU only)"),
         ("plugin", "substitute plugin name (LCU only)"),
         ("skin-num", "substitute skinNN numbers (game only)"),
         ("character", "substitute character name (game only)"),
-        ("prefixes", "substitute prefixes (game only)"),
+        ("prefixes", "check basename prefixes (game only)"),
     ]
     all_method_names = [name for name, _ in all_methods]
 
@@ -201,7 +202,7 @@ def command_hashes_guess(parser, args):
         return
 
     if not args.methods:
-        method_names = all_method_names
+        method_names = [name for name in all_method_names if name != "basenames" and name != "words"]
     else:
         method_names = [s.strip() for s in args.methods.split(',')]
         for name in method_names:
@@ -228,6 +229,8 @@ def command_hashes_guess(parser, args):
                 guesser.grep_wad(wad)
         if "numbers" in method_names:
             guesser.substitute_numbers()
+        if "basenames" in method_names:
+            guesser.substitute_basenames()
         if "words" in method_names:
             guesser.substitute_basename_words()
         if "ext" in method_names:
@@ -253,6 +256,8 @@ def command_hashes_guess(parser, args):
                 guesser.grep_wad(wad)
         if "numbers" in method_names:
             guesser.substitute_numbers()
+        if "basenames" in method_names:
+            guesser.substitute_basenames()
         if "words" in method_names:
             guesser.substitute_basename_words()
         if "ext" in method_names:
@@ -262,7 +267,7 @@ def command_hashes_guess(parser, args):
         if "character" in method_names:
             guesser.substitute_character()
         if "prefixes" in method_names:
-            guesser.substitute_basename_prefixes()
+            guesser.check_basename_prefixes()
 
         nfound = nunknown - len(guesser.unknown)
         if nfound:
@@ -442,7 +447,7 @@ def create_parser():
     subparser.add_argument('-n', '--dry-run', action='store_true',
                            help="list new hashes but don't update the hashes file")
     subparser.add_argument('-m', '--methods',
-                           help="list of guessing methods to run, comma-separated (default: all)")
+                           help="list of guessing methods to run, comma-separated (default: all except \"basenames\" and \"words\")")
     subparser.add_argument('--list-methods', action='store_true',
                            help="display a list of valid guessing methods and exit")
     subparser.add_argument('wad', nargs='*',
