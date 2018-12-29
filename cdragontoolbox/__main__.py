@@ -202,7 +202,7 @@ def command_hashes_guess(parser, args):
         return
 
     if not args.methods:
-        method_names = [name for name in all_method_names if name != "basenames" and name != "words"]
+        method_names = [name for name in all_method_names if name not in ("basenames", "words")]
     else:
         method_names = [s.strip() for s in args.methods.split(',')]
         for name in method_names:
