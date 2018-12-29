@@ -518,7 +518,7 @@ class GameHashGuesser(HashGuesser):
             path, basename = p.rsplit('/', 1)
             values.update(f"{path}/{prefix}{basename}" for prefix in prefixes)
 
-        logger.info(f"check prefixes: {len(prefixes)} prefixes with a total {len(values)} paths")
+        logger.info(f"check basename prefixes: {len(prefixes)} prefixes with a total {len(values)} paths")
         self.check_iter(value for value in values)
 
     def substitute_basename_words(self):
