@@ -200,6 +200,8 @@ def command_hashes_guess(parser, args):
         for name, desc in all_methods:
             print(f"  {name:{name_width}}  {desc}")
         return
+    elif not args.wad:
+        parser.error("neither \"wad\" nor \"--list-methods\" argument was found")
 
     if not args.methods:
         method_names = [name for name in all_method_names if name not in ("basenames", "words")]
