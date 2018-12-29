@@ -75,15 +75,17 @@ class WadFileHeader:
         b'DDS ': 'dds',
         b'<svg': 'svg',
         b'PROP': 'bin',
-        b'BKHD': 'bkhd',
+        b'BKHD': 'bnk',
         b'r3d2Mesh': 'scb',
         b'r3d2anmd': 'anm',
         b'r3d2canm': 'anm',
         b'r3d2sklt': 'skl',
-        b'\x33\x22\x11\x00': 'skn',
-        #b'\x1bLua': ?,
-        #b'[ObjectBegin]': ?,
-        #TODO .troybin
+        b'r3d2': 'wpk',
+        bytes.fromhex('33221100'): 'skn',
+        b'PreLoadBuildingBlocks = {': 'preload',
+        b'\x1bLua': 'luabin',
+        bytes.fromhex('023d0028'): 'troybin',
+        b'[ObjectBegin]': 'sco'
     }
 
     def __init__(self, path_hash, offset, compressed_size, size, type, duplicate, unk0, unk1, sha256):
@@ -135,6 +137,7 @@ class WadFileHeader:
         except OSError as e:
             # Windows does not support path components longer than 255
             # ignore such files
+            # TODO: Find a better way of handling these files
             if e.errno == errno.EINVAL:
                 logger.warning(f"ignore file with invalid path: {self.path}")
             else:

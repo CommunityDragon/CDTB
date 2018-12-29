@@ -57,8 +57,8 @@ def build_wordlist(paths):
     for path in paths:
         words |= set(re_split.split(path)[:-1])
 
-    # filter out numbers
-    re_filter_words = re.compile(r'^[0-9]+$')
+    # filter out large numbers
+    re_filter_words = re.compile(r'^[0-9]{3,}$')
     words = set(w for w in words if not re_filter_words.search(w))
     return sorted(words)
 
@@ -223,6 +223,21 @@ class HashGuesser:
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt % s for s in words)
 
+    def _add_basename_word(self, words):
+        """Add a known word to all known basenames"""
+
+        re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
+        formats = set()
+        for path in self.known.values():
+            if "assets/characters" not in path and "vo/" not in path and "sfx/" not in path and "skins_skin" not in path: # Reduce the iteration time for game hashes
+                for m in re_extract.finditer(path):
+                    formats.update('%s%%s%s%s' % (path[:m.start()], sep, path[m.start():]) for sep in "-._")
+                    formats.update('%s%s%%s%s' % (path[:m.end()], sep, path[m.end():]) for sep in "-._")
+
+        logger.info(f"add basename word: {len(formats)} formats, {len(words)} words")
+        for fmt in progress_iterator(sorted(formats)):
+            self.check_iter(fmt % s for s in words)
+
     def _substitute_numbers(self, paths, nmax=10000, digits=None):
         """Guess hashes by changing numbers in basenames"""
 
@@ -289,12 +304,7 @@ class LcuHashGuesser(HashGuesser):
         return super().from_wads([wad for wad in wads if wad.path.endswith('.wad')])
 
     def build_wordlist(self):
-        re_filter_path = re.compile(r"""'(?:
-            ^(?:plugins/rcp-be-lol-game-data/global/default/v1/champion-ability-icons/
-              | plugins/rcp-be-lol-game-data/global/default/data/characters/
-              )
-            | /[0-9a-f]{32}\.
-            )""", re.VERBOSE)
+        re_filter_path = re.compile(r'(?:^plugins/rcp-be-lol-game-data/global/default/data/characters/|/[0-9a-f]{32}\.)')
         paths = (p for p in self.known.values() if not re_filter_path.search(p))
         return build_wordlist(paths)
 
@@ -314,6 +324,9 @@ class LcuHashGuesser(HashGuesser):
 
     def substitute_basename_words(self):
         super()._substitute_basename_words(self.build_wordlist())
+
+    def add_basename_word(self):
+        super()._add_basename_word(self.build_wordlist())
 
     def substitute_numbers(self, nmax=10000, digits=None):
         re_filter = re.compile(r"""(?:
@@ -483,7 +496,7 @@ class GameHashGuesser(HashGuesser):
         return build_wordlist(self.known.values())
 
     def get_characters(self):
-        re_char = re.compile(r'^assets/characters/([^/]+)/')
+        re_char = re.compile(r'^(?:assets|data)/characters/([^/]+)/')
         chars = set()
         for p in self.known.values():
             m = re_char.match(p)
@@ -495,15 +508,31 @@ class GameHashGuesser(HashGuesser):
         paths = self.known.values()
         super()._substitute_numbers(paths, nmax, digits)
 
+    def check_basename_prefixes(self, prefixes=None):
+        """Checks a provided list of prefixes for all basenames.
+        If no list is provided, a default one will be used"""
+        values = set()
+        if prefixes is None:
+            prefixes = {'2x_', '2x_sd_', '4x_', '4x_sd_', 'sd_'}
+        for p in self.known.values():
+            path, basename = p.rsplit('/', 1)
+            values.update(f"{path}/{prefix}{basename}" for prefix in prefixes)
+
+        logger.info(f"check basename prefixes: {len(prefixes)} prefixes with a total {len(values)} paths")
+        self.check_iter(value for value in values)
+
     def substitute_basename_words(self):
         super()._substitute_basename_words(self.build_wordlist())
+
+    def add_basename_word(self):
+        super()._add_basename_word(self.build_wordlist())
 
     def substitute_character(self):
         """Guess hashes by changing champion names in assets/characters/"""
 
         characters = set()
         formats = set()
-        re_char = re.compile(r'^assets/characters/([^/]+)/')
+        re_char = re.compile(r'^(?:assets|data)/characters/([^/]+)/')
         for p in self.known.values():
             m = re_char.match(p)
             if not m:
@@ -593,7 +622,6 @@ class GameHashGuesser(HashGuesser):
                     s = ''.join(sorted(s for g in p for s in g))
                     self.check(f"data/{char}{s}.bin")
 
-
     def guess_skin_groups_bin(self):
         """Guess 'skin*.bin' with long filenames"""
 
@@ -611,7 +639,6 @@ class GameHashGuesser(HashGuesser):
             char_to_skins.setdefault(char, {0}).add(nskin)
 
         # generate all combinations
-        #TODO find a way to reduce number of combinations, for instance by always grouping chroma skinds together
         logger.info(f"find skin groups .bin files")
         for char, skins in progress_iterator(char_to_skins.items(), lambda v: v[0]):
             # note: skins are in lexicographic order: skin11 is before skin2
@@ -667,9 +694,13 @@ class GameHashGuesser(HashGuesser):
 
         with open(wad.path, 'rb') as f:
             for wadfile in wad.files:
+                if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm','anm',
+                                   'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'bnk', 'wpk'):
+                    continue # don't grep filetypes known to not contain full paths
+
+                data = wadfile.read_data(f)
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
-                    data = wadfile.read_data(f)
                     for m in re.finditer(br'(..)((?:ASSETS|DATA|Characters)/[0-9a-zA-Z_. /-]+)', data):
                         n, path = m.groups()
                         n = n[0] + (n[1] << 8)
@@ -682,49 +713,49 @@ class GameHashGuesser(HashGuesser):
 
                 elif wadfile.ext == 'preload':
                     # preload files
-                    data = wadfile.read_data(f)
                     fmt = os.path.dirname(wadfile.path) + '/%s.preload'
                     for m in re.finditer(br'Name="([^"]+)"', data):
                         path = m.group(1).lower().decode('ascii')
                         if path.endswith('.lua'):
                             self.check(path[:-4] + '.luabin')
+                        elif path.endswith('.troy'):
+                            self.check(path[:-5] + '.troybin')
                         else:
                             self.check(fmt % path)
 
                 elif wadfile.ext in ('hls', 'ps_2_0', 'ps_3_0', 'vs_2_0', 'vs_3_0'):
                     # shader: search for includes
-                    data = wadfile.read_data(f)
                     dirname = os.path.dirname(wadfile.path)
                     for m in re.finditer(br'#include "([^"]+)"', data):
                         subpath = m.group(1).lower().decode('ascii')
                         self.check(os.path.normpath(f"{dirname}/{subpath}"))
 
-                #TODO
-                # .troybin: find .dds/.tga in footer
-                # .fx: find .troy filenames
-                # data/levels/project_clientlevelscripts/: guess .xml names from each other
+                else:
+                    # fallback: search for path-looking strings in all remaining files
+                    self.grep_file(data=data)
 
-    def grep_file(self, path):
-        with open(path, "rb") as f:
-            # find strings based on prefix, then parse the length
-            paths = set()
-            data = f.read()
-            for m in re.finditer(br'(?:ASSETS|DATA)/[0-9a-zA-Z_. /-]+', data):
-                path = m.group(0).lower().decode('ascii')
-                paths.add(path)
-                pos = m.start()
-                if pos >= 2:
-                    n = struct.unpack('<H', data[pos-2:pos])[0]
-                    if n < len(path):
-                        paths.add(path[:n])
-                if pos >= 4:
+    def grep_file(self, path=None, data=None):
+        if path:
+            with open(path, 'rb') as f:
+                data = f.read()
+        elif data is None:
+            raise TypeError("either path or data must be provided")
+
+        # find path-like strings, then try to parse the length
+        paths = set()
+        for m in re.finditer(br'(?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+', data):
+            path = m.group(0).lower().decode('ascii')
+            paths.add(path)
+            pos = m.start()
+            if pos >= 2:
+                n = struct.unpack('<H', data[pos-2:pos])[0]
+                if n == 0 and pos >= 4:
                     n = struct.unpack('<L', data[pos-4:pos])[0]
-                    if n < len(path):
-                        paths.add(path[:n])
+                if n < len(path):
+                    paths.add(path[:n])
 
         for p in paths:
             if p.endswith('.lua'):
                 self.check(p[:-4] + '.luabin')
             else:
                 self.check(p)
-
