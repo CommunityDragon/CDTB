@@ -713,22 +713,23 @@ class GameHashGuesser(HashGuesser):
 
                 elif wadfile.ext == 'preload':
                     # preload files
-                    fmt = os.path.dirname(wadfile.path) + '/%s.preload'
+                    fmt = os.path.dirname(wadfile.path) + '/%s.preload' if wadfile.path else None
                     for m in re.finditer(br'Name="([^"]+)"', data):
                         path = m.group(1).lower().decode('ascii')
                         if path.endswith('.lua'):
                             self.check(path[:-4] + '.luabin')
                         elif path.endswith('.troy'):
                             self.check(path[:-5] + '.troybin')
-                        else:
+                        elif fmt:
                             self.check(fmt % path)
 
                 elif wadfile.ext in ('hls', 'ps_2_0', 'ps_3_0', 'vs_2_0', 'vs_3_0'):
                     # shader: search for includes
-                    dirname = os.path.dirname(wadfile.path)
-                    for m in re.finditer(br'#include "([^"]+)"', data):
-                        subpath = m.group(1).lower().decode('ascii')
-                        self.check(os.path.normpath(f"{dirname}/{subpath}"))
+                    if wadfile.path:
+                        dirname = os.path.dirname(wadfile.path)
+                        for m in re.finditer(br'#include "([^"]+)"', data):
+                            subpath = m.group(1).lower().decode('ascii')
+                            self.check(os.path.normpath(f"{dirname}/{subpath}"))
 
                 else:
                     # fallback: search for path-looking strings in all remaining files
