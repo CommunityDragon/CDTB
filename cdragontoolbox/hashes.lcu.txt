@@ -4684,8 +4684,12 @@ abb5433af63a9281 plugins/rcp-be-lol-game-data/global/default/assets/loot/final-p
 a5c13c8c7a38a251 plugins/rcp-be-lol-game-data/global/default/assets/loot/golden-championship-ward-490px.png
 d3c4e517bc764dfc plugins/rcp-be-lol-game-data/global/default/assets/loot/golden-ekko-chroma-490px.png
 7a2f14dcf7299974 plugins/rcp-be-lol-game-data/global/default/assets/loot/golden-janna-chroma-490px.png
+48019da01d478b06 plugins/rcp-be-lol-game-data/global/default/assets/loot/golden-jarvan-icon-490px.png
 ce9be543c9f3082a plugins/rcp-be-lol-game-data/global/default/assets/loot/golden-kled-chroma-490px.png
 332cc4bfa7b21afd plugins/rcp-be-lol-game-data/global/default/assets/loot/golden-kraken-490x490.png
+9cea01e7344b6b19 plugins/rcp-be-lol-game-data/global/default/assets/loot/golden-pig-ward-490px.png
+cb0fa0a8272aced9 plugins/rcp-be-lol-game-data/global/default/assets/loot/golden-warwick-icon-490px.png
+e4da55c096c8859c plugins/rcp-be-lol-game-data/global/default/assets/loot/golden-xin-icon-490px.png
 cda0a198f1b6163a plugins/rcp-be-lol-game-data/global/default/assets/loot/goldenchroma_caitlyn_490x490.png
 776dd756cd1b2554 plugins/rcp-be-lol-game-data/global/default/assets/loot/goldenchroma_corki_490x490.png
 372528133ce12bc4 plugins/rcp-be-lol-game-data/global/default/assets/loot/goldenchroma_garen_490x490.png
@@ -4719,6 +4723,11 @@ e4ccf23efaeb9419 plugins/rcp-be-lol-game-data/global/default/assets/loot/kitty-s
 7bcd22f24f7344e4 plugins/rcp-be-lol-game-data/global/default/assets/loot/kled-border-icon-490px.png
 d020d98994008b64 plugins/rcp-be-lol-game-data/global/default/assets/loot/legendaryskinpermanent_256x256.png
 8028904930e9a667 plugins/rcp-be-lol-game-data/global/default/assets/loot/lion-icons-lootfinal-490x490.png
+dea86a13bb601fb9 plugins/rcp-be-lol-game-data/global/default/assets/loot/loot_goldenchroma_caitlyn_490x490.png
+c38e3c128a5cfa34 plugins/rcp-be-lol-game-data/global/default/assets/loot/loot_goldenchroma_corki_490x490.png
+e4daef7f50f9639e plugins/rcp-be-lol-game-data/global/default/assets/loot/loot_goldenchroma_garen_490x490.png
+8ba303a3fdd8e2ec plugins/rcp-be-lol-game-data/global/default/assets/loot/loot_goldenchroma_riven_490x490.png
+2c2e92fea767b284 plugins/rcp-be-lol-game-data/global/default/assets/loot/loot_goldenchroma_sona_490x490.png
 d18b42e2196b628d plugins/rcp-be-lol-game-data/global/default/assets/loot/loottable_chest_213_0.png
 989cce344fbedd7f plugins/rcp-be-lol-game-data/global/default/assets/loot/loottable_chest_213_1.png
 cf4ea7ebeaeac94a plugins/rcp-be-lol-game-data/global/default/assets/loot/loottable_chest_213_2.png
@@ -4730,6 +4739,12 @@ f5bb2caeaa45b8c6 plugins/rcp-be-lol-game-data/global/default/assets/loot/loottab
 5dd291d5e7e5d096 plugins/rcp-be-lol-game-data/global/default/assets/loot/loottable_chest_216.png
 f548c3d19d400e07 plugins/rcp-be-lol-game-data/global/default/assets/loot/loottable_chest_222_2.png
 cfab034b5a48c68e plugins/rcp-be-lol-game-data/global/default/assets/loot/loottable_chest_generic_1.png
+0b95f3841c3347a7 plugins/rcp-be-lol-game-data/global/default/assets/loot/lunar-grab-bag-490px.png
+0a27461cfaa33828 plugins/rcp-be-lol-game-data/global/default/assets/loot/lunar-kench-border-icon-490px.png
+10aa9c77028215c7 plugins/rcp-be-lol-game-data/global/default/assets/loot/lunar-revel-orb-490px.png
+2be245ee0fa82875 plugins/rcp-be-lol-game-data/global/default/assets/loot/lunar-sejuani-border-icon-490px.png
+b2ca0ee19ed1be0a plugins/rcp-be-lol-game-data/global/default/assets/loot/lunar-vayne-border-icon-490px.png
+f849ca9d914eaba3 plugins/rcp-be-lol-game-data/global/default/assets/loot/lunarrevel_eventtoken_final_490x490.png
 3a08f59329c90845 plugins/rcp-be-lol-game-data/global/default/assets/loot/lunarrevelassets_moneybag_490x490.png
 3e1d0772c5f0f405 plugins/rcp-be-lol-game-data/global/default/assets/loot/malphite-icon-border-490px.png
 895ed936875c42fc plugins/rcp-be-lol-game-data/global/default/assets/loot/malzahar-icon-chroma-490px.png
@@ -4744,6 +4759,7 @@ cee5de7706860278 plugins/rcp-be-lol-game-data/global/default/assets/loot/materia
 6dc6897d36d16ed9 plugins/rcp-be-lol-game-data/global/default/assets/loot/mister-yi-icon-border-490px.png
 f72757262aee1409 plugins/rcp-be-lol-game-data/global/default/assets/loot/msi_capsule_final_256x256.png
 b14de9b2c8baff31 plugins/rcp-be-lol-game-data/global/default/assets/loot/mundo-icon-border-490px.png
+ef93f4c187c1d838 plugins/rcp-be-lol-game-data/global/default/assets/loot/mystery-gold-chroma-490px.png
 405587e19475976c plugins/rcp-be-lol-game-data/global/default/assets/loot/nb-finisher-490px-small.png
 4c2c3adb0c57e8f0 plugins/rcp-be-lol-game-data/global/default/assets/loot/nb-fire-poro-490px-small.png
 97152fea98bd03ba plugins/rcp-be-lol-game-data/global/default/assets/loot/nb-recall-490px-small.png
@@ -4780,6 +4796,8 @@ c8954e3c08822aef plugins/rcp-be-lol-game-data/global/default/assets/loot/summone
 1e66f167eea4659f plugins/rcp-be-lol-game-data/global/default/assets/loot/support-orb-256px.png
 2fe8cfaaabd61fb0 plugins/rcp-be-lol-game-data/global/default/assets/loot/support-orb-490px.png
 ef6897bd6aa00724 plugins/rcp-be-lol-game-data/global/default/assets/loot/support-pumpkin-490px.png
+56dc571367041d3e plugins/rcp-be-lol-game-data/global/default/assets/loot/sylas-border-icon-490px.png
+2057898662c7f7e1 plugins/rcp-be-lol-game-data/global/default/assets/loot/sylas-emote-490px.png
 d391e7a8bdd4ea14 plugins/rcp-be-lol-game-data/global/default/assets/loot/tftr-emote-490px.png
 1e9cbabdaa466281 plugins/rcp-be-lol-game-data/global/default/assets/loot/tftr-wardskin-490px.png
 0971b8730cf1f387 plugins/rcp-be-lol-game-data/global/default/assets/loot/thresh-border-icon-490px.png
@@ -25985,6 +26003,10 @@ af5d8328340dd482 plugins/rcp-fe-lol-champ-select/global/default/images/emotes/ed
 d0e665179cc817e4 plugins/rcp-fe-lol-champ-select/global/default/images/emotes/edit-emotes-normal-off.png
 97512b83acaba2a1 plugins/rcp-fe-lol-champ-select/global/default/images/emotes/edit-emotes-normal-on.png
 87d0c22c17d8fda0 plugins/rcp-fe-lol-champ-select/global/default/images/emotes/emotes-background.png
+28ebe178129ef98e plugins/rcp-fe-lol-champ-select/global/default/images/entitled-features/golden_spatula_club/dice-click.png
+784a0a65391076e0 plugins/rcp-fe-lol-champ-select/global/default/images/entitled-features/golden_spatula_club/dice-disable.png
+ae18bac8ac9bd8a6 plugins/rcp-fe-lol-champ-select/global/default/images/entitled-features/golden_spatula_club/dice-hover.png
+3ca9c96e6764ae29 plugins/rcp-fe-lol-champ-select/global/default/images/entitled-features/golden_spatula_club/dice.png
 cb0325cb5b8aad37 plugins/rcp-fe-lol-champ-select/global/default/images/perks/exclamation.svg
 5e2dafba0e8acd81 plugins/rcp-fe-lol-champ-select/global/default/images/perks/exclamationpt.png
 33b9a90efedd0f17 plugins/rcp-fe-lol-champ-select/global/default/images/pick-ban-ring/pointy-blue.png
