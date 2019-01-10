@@ -404,7 +404,7 @@ class CdragonRawPatchExporter:
                 print(f"{h:016x}", file=f)
 
         with open(self.output + ".filelist.txt", 'w', newline='\n') as f:
-            for path in new_paths:
+            for path in sorted(new_paths):
                 print(path, file=f)
 
 
