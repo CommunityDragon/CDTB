@@ -4776,6 +4776,7 @@ cd78cba89b371efd plugins/rcp-be-lol-game-data/global/default/assets/loot/popstar
 db06f277450454b1 plugins/rcp-be-lol-game-data/global/default/assets/loot/popstar-icon-490px.png
 365c01f96153dbbd plugins/rcp-be-lol-game-data/global/default/assets/loot/popstar-orb-490px.png
 921982cd917ee97a plugins/rcp-be-lol-game-data/global/default/assets/loot/popstar-wardskin-490px.png
+a21cb381cc868a0d plugins/rcp-be-lol-game-data/global/default/assets/loot/prestige-point-single.png
 c428c24b3ade1487 plugins/rcp-be-lol-game-data/global/default/assets/loot/prestige_point_490x490.png
 678a1f3f14c6fef4 plugins/rcp-be-lol-game-data/global/default/assets/loot/relicbead-icon-490px.png
 2b2e86dec595fce0 plugins/rcp-be-lol-game-data/global/default/assets/loot/revel-red-envelope_490x490.png
@@ -21702,6 +21703,7 @@ f650814abecaebec plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/5.
 589b528f1341cd32 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/50.ogg
 726fcdba530fd8e7 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/51.ogg
 014fd3bdff790721 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/516.ogg
+4d41655f7dfe5a54 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/517.ogg
 b1664e9891564636 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/518.ogg
 af8b9148363d883d plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/53.ogg
 b31a6d3684cededc plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/54.ogg
@@ -21844,6 +21846,7 @@ a2ca2cf7abc523e3 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo
 2e6c251cbf4b8697 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/50.ogg
 4a683e826fe25ec7 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/51.ogg
 727750354dc744b9 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/516.ogg
+f0ba49db74781076 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/517.ogg
 28eaebc643aa3d0b plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/518.ogg
 8bd0217d798d2442 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/53.ogg
 6c484e53772d150b plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/54.ogg
@@ -29634,6 +29637,7 @@ f29238ddbf3235fa plugins/rcp-fe-lol-leagues/global/default/images/miniseries-not
 858ecdef069030c1 plugins/rcp-fe-lol-leagues/global/default/images/miniseries_big.png
 121bb51f2e1df35a plugins/rcp-fe-lol-leagues/global/default/images/miniseries_small.png
 0c8e2182b375fee9 plugins/rcp-fe-lol-leagues/global/default/images/normal.png
+5759bddbdef531a6 plugins/rcp-fe-lol-leagues/global/default/images/position-swap-icon.svg
 74129b7fc6574b48 plugins/rcp-fe-lol-leagues/global/default/images/promo-to-master-position-combine.jpg
 2532f21a77642d0e plugins/rcp-fe-lol-leagues/global/default/images/provisional-banner-static.png
 82f9df3f4ffb7050 plugins/rcp-fe-lol-leagues/global/default/images/rank_status_icons.png
@@ -29647,6 +29651,7 @@ da4fa0fd9b4499a1 plugins/rcp-fe-lol-leagues/global/default/images/ranked-intro-e
 1de7c3c48fbf5d66 plugins/rcp-fe-lol-leagues/global/default/images/rewards/pip-checkmark-hover.png
 c93fa972b7d76d6f plugins/rcp-fe-lol-leagues/global/default/images/rewards/progress-bar-back-plate.png
 47b0553ba18bbe1c plugins/rcp-fe-lol-leagues/global/default/images/rewards/reward_thumbnail.png
+cd934c25d33ec86e plugins/rcp-fe-lol-leagues/global/default/images/rewards/rewards_background.jpg
 c7c613d9a2c1dc75 plugins/rcp-fe-lol-leagues/global/default/images/rewards/rewards_panel_bg.png
 9179a6d006fd7052 plugins/rcp-fe-lol-leagues/global/default/images/rightclick.png
 5fb1e7cbe1f8b3aa plugins/rcp-fe-lol-leagues/global/default/images/rightcompleted.png
@@ -29657,6 +29662,8 @@ a53b86cfc82884a9 plugins/rcp-fe-lol-leagues/global/default/images/runes-art.png
 34b44f331afe0136 plugins/rcp-fe-lol-leagues/global/default/images/season-reward-icon.svg
 f3941a69797b8115 plugins/rcp-fe-lol-leagues/global/default/images/spectate_icons.png
 606ac122cd8fbc58 plugins/rcp-fe-lol-leagues/global/default/images/spinner.png
+711a435fe97bb4e8 plugins/rcp-fe-lol-leagues/global/default/images/splash_demotion_icon.png
+bdeba1c6a52c6f6d plugins/rcp-fe-lol-leagues/global/default/images/splash_promotion_icon.png
 c4ee3b70dee25ee6 plugins/rcp-fe-lol-leagues/global/default/images/tier_frame.png
 29b3014216b23897 plugins/rcp-fe-lol-leagues/global/default/images/tier_icon_breakline.png
 3ce7825ccafecbcb plugins/rcp-fe-lol-leagues/global/default/images/tier_icons.png
@@ -30061,6 +30068,7 @@ a04d22799bd7b2f3 plugins/rcp-fe-lol-license-settings/global/default/bundle.js.ma
 ad25cf4f71999c9a plugins/rcp-fe-lol-license-settings/global/default/index.html
 cc0cd5b79b7f954e plugins/rcp-fe-lol-license-settings/global/default/license.json
 62629c4649c58e9e plugins/rcp-fe-lol-license-settings/global/default/licenses/licenses.txt
+b6f8a42d5e08c5d8 plugins/rcp-fe-lol-license-settings/global/default/style.css
 85f7cb2452a71206 plugins/rcp-fe-lol-license-settings/global/default/trans.json
 44e3eac0e4679a5e plugins/rcp-fe-lol-license-settings/global/el_gr/trans.json
 0ac93d9067ab9d81 plugins/rcp-fe-lol-license-settings/global/en_au/trans.json
@@ -31756,9 +31764,11 @@ b7b052042c31349c plugins/rcp-fe-lol-missions/global/default/rewardicons_orangees
 9db98981ca70d30e plugins/rcp-fe-lol-missions/global/default/rewardicons_tickets.png
 a3df3a7dbe8484a3 plugins/rcp-fe-lol-missions/global/default/rewardicons_ward.png
 9d65457430e1b5f0 plugins/rcp-fe-lol-missions/global/default/rewardicons_xp.png
+c1dbfd952f649ac4 plugins/rcp-fe-lol-missions/global/default/shardframe.png
 ab77acc522384034 plugins/rcp-fe-lol-missions/global/default/shardframe_4k.png
 cf28f589269e4cee plugins/rcp-fe-lol-missions/global/default/shardmask.png
 c11eccfa844d70c9 plugins/rcp-fe-lol-missions/global/default/skinframe.png
+742dee3488cb0959 plugins/rcp-fe-lol-missions/global/default/skinshardmask.png
 2665144baeb087f6 plugins/rcp-fe-lol-missions/global/default/sort_mask.png
 8c74112e212f939a plugins/rcp-fe-lol-missions/global/default/sounds/sfx-button-claim-click.ogg
 b0526607d2ca957a plugins/rcp-fe-lol-missions/global/default/sounds/sfx-levelup-postgame-generic.ogg
