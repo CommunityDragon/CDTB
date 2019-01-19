@@ -695,7 +695,7 @@ class GameHashGuesser(HashGuesser):
         with open(wad.path, 'rb') as f:
             for wadfile in wad.files:
                 if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm','anm',
-                                   'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'bnk', 'wpk'):
+                                   'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'luabin64', 'bnk', 'wpk'):
                     continue # don't grep filetypes known to not contain full paths
 
                 data = wadfile.read_data(f)

@@ -83,7 +83,8 @@ class WadFileHeader:
         b'r3d2': 'wpk',
         bytes.fromhex('33221100'): 'skn',
         b'PreLoadBuildingBlocks = {': 'preload',
-        b'\x1bLua': 'luabin',
+        b'\x1bLuaQ\x00\x01\x04\x04': 'luabin',
+        b'\x1bLuaQ\x00\x01\x04\x08': 'luabin64',
         bytes.fromhex('023d0028'): 'troybin',
         b'[ObjectBegin]': 'sco'
     }
