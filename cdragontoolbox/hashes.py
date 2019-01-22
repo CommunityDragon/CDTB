@@ -229,10 +229,10 @@ class HashGuesser:
         re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
         formats = set()
         for path in self.known.values():
-            if "assets/characters" not in path and "vo/" not in path and "sfx/" not in path and "skins_skin" not in path: # Reduce the iteration time for game hashes
+            if not any(part in path for part in ['assets/characters/', 'vo/', 'sfx/', 'skins_skin']): # Filter fully known paths
                 for m in re_extract.finditer(path):
-                    formats.update('%s%%s%s%s' % (path[:m.start()], sep, path[m.start():]) for sep in "-._")
-                    formats.update('%s%s%%s%s' % (path[:m.end()], sep, path[m.end():]) for sep in "-._")
+                    formats.update('%s%%s%s%s' % (path[:m.start()], sep, path[m.start():]) for sep in "-_")
+                    formats.update('%s%s%%s%s' % (path[:m.end()], sep, path[m.end():]) for sep in "-_")
 
         logger.info(f"add basename word: {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
@@ -328,6 +328,39 @@ class LcuHashGuesser(HashGuesser):
     def add_basename_word(self):
         super()._add_basename_word(self.build_wordlist())
 
+    def multi_substitution(self, plugin, fileext=""):
+        """Replaces a word in all basenames while adding an additional word near it.
+        Because of high running time, a specific plugin must and a file extension can be specified"""
+
+        words = self.build_wordlist()
+        re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
+        formats = set()
+        for path in self.known.values():
+            if path.startswith(f"plugins/{plugin}") and path.endswith(fileext):
+                for m in re_extract.finditer(path):
+                    formats.update('%s%%s%s%%s%s' % (path[:m.start()], sep, path[m.end():]) for sep in "-_")
+
+        logger.info(f"multi substitution for plugin {plugin}: {len(formats)} formats, {len(words)} words")
+        for fmt in progress_iterator(sorted(formats)):
+            self.check_iter(fmt % (a, b) for a in words for b in words)
+
+    def double_substitution(self, plugin, fileext=""):
+        """Replaces two side by side words in all basenames.
+        Because of high running time, a specific plugin must and a file extension can be specified"""
+
+        words = self.build_wordlist()
+        re_extract = re.compile(r'([^/_-]+)(?=([-_][^/_-]+)[^/]*\.[^/]+$)')
+        formats = set()
+        for path in self.known.values():
+            if path.startswith(f"plugins/{plugin}") and path.endswith(fileext):
+                for m in re_extract.finditer(path):
+                    match = m.group(1) + m.group(2)
+                    formats.update('%s%%s%s%%s%s' % (path[:m.start()], sep, path[(m.span()[0]+len(match)):]) for sep in "-_")
+
+        logger.info(f"double substitution for plugin {plugin}: {len(formats)} formats, {len(words)} words")
+        for fmt in progress_iterator(sorted(formats)):
+            self.check_iter(fmt % (a, b) for a in words for b in words)
+
     def substitute_numbers(self, nmax=10000, digits=None):
         re_filter = re.compile(r"""(?:
             ^(?:plugins/rcp-be-lol-game-data/[^/]+/[^/]+/v1/champion-
@@ -382,8 +415,8 @@ class LcuHashGuesser(HashGuesser):
                     # splash config
                     # try to guess subdirectory name (names should only contain one element)
                     names = {s for path in jdata['files'].values() for s in re.findall(r'-splash-([^.]+)', path)}
-                    self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/config.json" for name in names)
-                    self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/{path}" for name in names for path in jdata['files'].values())
+                    self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name.lower()}/config.json" for name in names)
+                    self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name.lower()}/{path.lower()}" for name in names for path in jdata['files'].values())
                     continue  # no more data to parse
                 elif wadfile.path == 'plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json':
                     champion_ids = [v['id'] for v in jdata]
@@ -406,8 +439,8 @@ class LcuHashGuesser(HashGuesser):
 
             # relative path starting with ./ or ../ (e.g. require() use)
             relpaths |= {m.group(1) for m in re.finditer(r'[^a-zA-Z0-9/_.\\-]((?:\.|\.\.)/[a-zA-Z0-9/_.-]+)', data)}
-            # basename or subpath (check for a extension)
-            relpaths |= {m.group(1) for m in re.finditer(r'''["']([a-zA-Z0-9][a-zA-Z0-9/_.@-]*\.(?:js|json|webm|html|[a-z]{3}))\b''', data)}
+            # basename or subpath (check for an extension)
+            relpaths |= {m.group(1) for m in re.finditer(r'''["']([a-zA-Z0-9][a-zA-Z0-9/_.@-]*\.(?:js|json|webm|html|[a-z]{3}))["']''', data)}
             # template ID to template path
             relpaths |= {f"{m.group(1)}/template.html" for m in re.finditer(r'<template id="[^"]*-template-([^"]+)"', data)}
             # JS maps
@@ -694,6 +727,8 @@ class GameHashGuesser(HashGuesser):
 
         with open(wad.path, 'rb') as f:
             for wadfile in wad.files:
+                if wadfile.type == 2:
+                    continue # softlink; contains no actual content
                 if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm','anm',
                                    'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'luabin64', 'bnk', 'wpk'):
                     continue # don't grep filetypes known to not contain full paths
@@ -713,15 +748,18 @@ class GameHashGuesser(HashGuesser):
 
                 elif wadfile.ext == 'preload':
                     # preload files
-                    fmt = os.path.dirname(wadfile.path) + '/%s.preload' if wadfile.path else None
                     for m in re.finditer(br'Name="([^"]+)"', data):
                         path = m.group(1).lower().decode('ascii')
                         if path.endswith('.lua'):
                             self.check(path[:-4] + '.luabin')
+                            self.check(path[:-4] + '.luabin64')
                         elif path.endswith('.troy'):
-                            self.check(path[:-5] + '.troybin')
-                        elif fmt:
+                            self.check('data/shared/particles/'+ path[:-5] + '.troybin')
+                        elif wadfile.path:
+                            fmt = os.path.dirname(wadfile.path) + '/%s.preload'
                             self.check(fmt % path)
+                        else: # should this really be done?
+                            self.check_basenames(f"{path}.preload")
 
                 elif wadfile.ext in ('hls', 'ps_2_0', 'ps_3_0', 'vs_2_0', 'vs_3_0'):
                     # shader: search for includes
@@ -758,5 +796,6 @@ class GameHashGuesser(HashGuesser):
         for p in paths:
             if p.endswith('.lua'):
                 self.check(p[:-4] + '.luabin')
+                self.check(p[:-4] + '.luabin64')
             else:
                 self.check(p)
