@@ -648,10 +648,10 @@ class GameHashGuesser(HashGuesser):
 
         logger.info(f"find skin groups .bin files using chroma groups")
         for char, groups in progress_iterator(char_to_skin_groups.items(), lambda v: v[0]):
-            str_groups = [[f"_skins_skin{i}" for i in group] for group in groups]
+            str_groups = [[f"_skins_skin{i}" for i in group] for group in groups] + [["_skins_root"]]
             for n in range(len(str_groups)):
                 for p in itertools.combinations(str_groups, n+1):
-                    # note: skins are in lexicographic order: skin11 is before skin2
+                    # note: skins are in lexicographic order: skin11 is before skin2; root before all
                     s = ''.join(sorted(s for g in p for s in g))
                     self.check(f"data/{char}{s}.bin")
 
