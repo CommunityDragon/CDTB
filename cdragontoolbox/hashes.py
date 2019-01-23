@@ -238,7 +238,20 @@ class HashGuesser:
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt % s for s in words)
 
-    def _substitute_numbers(self, paths, nmax=10000, digits=None):
+    def _multi_substitution(self, paths, words):
+        """Replaces a word in all basenames of all given paths while adding an additional word near it."""
+
+        re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
+        formats = set()
+        for path in paths:
+            for m in re_extract.finditer(path):
+                formats.update('%s%%s%s%%s%s' % (path[:m.start()], sep, path[m.end():]) for sep in "-_")
+
+        logger.info(f"multi substitution: {len(formats)} formats, {len(words)} words")
+        for fmt in progress_iterator(sorted(formats)):
+            self.check_iter(fmt % (a, b) for a in words for b in words)
+
+    def _substitute_numbers(self, formats, nmax=10000, digits=None):
         """Guess hashes by changing numbers in basenames"""
 
         if digits is True:
@@ -329,20 +342,16 @@ class LcuHashGuesser(HashGuesser):
         super()._add_basename_word(self.build_wordlist())
 
     def multi_substitution(self, plugin, fileext=""):
-        """Replaces a word in all basenames while adding an additional word near it.
-        Because of high running time, a specific plugin must and a file extension can be specified"""
+        """Builds a list of paths based on the specified plugin and file-extension.
+        Replaces a word in all basenames in these paths while adding an additional word near it."""
 
         words = self.build_wordlist()
-        re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
-        formats = set()
+        paths = set()
         for path in self.known.values():
             if path.startswith(f"plugins/{plugin}") and path.endswith(fileext):
-                for m in re_extract.finditer(path):
-                    formats.update('%s%%s%s%%s%s' % (path[:m.start()], sep, path[m.end():]) for sep in "-_")
+                paths.add(path)
 
-        logger.info(f"multi substitution for plugin {plugin}: {len(formats)} formats, {len(words)} words")
-        for fmt in progress_iterator(sorted(formats)):
-            self.check_iter(fmt % (a, b) for a in words for b in words)
+        super()._multi_substitution(paths, words)
 
     def double_substitution(self, plugin, fileext=""):
         """Replaces two side by side words in all basenames.
