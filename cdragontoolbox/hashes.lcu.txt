@@ -25735,6 +25735,7 @@ d8fe8c3b3a36f967 plugins/rcp-fe-lol-account-verification-settings/global/default
 4dd33e681696ab72 plugins/rcp-fe-lol-account-verification-settings/global/default/index.html
 d60e5ef4148c3939 plugins/rcp-fe-lol-account-verification-settings/global/default/init.js
 f2058ad33e91d2bd plugins/rcp-fe-lol-account-verification-settings/global/default/license.json
+a2d770a6d02f0da5 plugins/rcp-fe-lol-account-verification-settings/global/default/styles.css
 f0110dc3e7d98b4a plugins/rcp-fe-lol-account-verification-settings/global/default/trans.json
 df2976513281642d plugins/rcp-fe-lol-account-verification-settings/global/el_gr/trans.json
 407c9664cc0ca61f plugins/rcp-fe-lol-account-verification-settings/global/en_au/trans.json
@@ -26120,6 +26121,7 @@ f54caf47d3d6b66c plugins/rcp-fe-lol-block-list-settings/global/default/images/x_
 dbce1a9d1826c6b8 plugins/rcp-fe-lol-block-list-settings/global/default/license.json
 7e2570350603c60d plugins/rcp-fe-lol-block-list-settings/global/default/poro_smile.png
 dd4dd959f4997acc plugins/rcp-fe-lol-block-list-settings/global/default/sounds/sfx-soc-notif-success.ogg
+7ae4f6b2c8be8085 plugins/rcp-fe-lol-block-list-settings/global/default/styles.css
 30f74bf465f396e2 plugins/rcp-fe-lol-block-list-settings/global/default/trans.json
 d7194bf6852d8a4a plugins/rcp-fe-lol-block-list-settings/global/default/x_mask.png
 1a4db7e37bc40129 plugins/rcp-fe-lol-block-list-settings/global/el_gr/trans.json
@@ -26840,6 +26842,7 @@ e6491d0647031a18 plugins/rcp-fe-lol-chat-settings/global/de_de/trans.json
 b64709d11bc83dac plugins/rcp-fe-lol-chat-settings/global/default/bundle.js
 5a9ca5758b78ed53 plugins/rcp-fe-lol-chat-settings/global/default/index.html
 d97205b36bdd47bb plugins/rcp-fe-lol-chat-settings/global/default/license.json
+3cadcf2cd456af77 plugins/rcp-fe-lol-chat-settings/global/default/styles.css
 6fe780e0c267d928 plugins/rcp-fe-lol-chat-settings/global/default/trans.json
 d64305da1f887bcc plugins/rcp-fe-lol-chat-settings/global/el_gr/trans.json
 1557c4ca847273a2 plugins/rcp-fe-lol-chat-settings/global/en_au/trans.json
@@ -28538,6 +28541,7 @@ c06495ca3a21f372 plugins/rcp-fe-lol-collectibles/global/default/images/summoner-
 3349d7171ab150e7 plugins/rcp-fe-lol-collectibles/global/default/index.html
 67e22cff416fe63e plugins/rcp-fe-lol-collectibles/global/default/license.json
 98dc684e3401af2d plugins/rcp-fe-lol-collectibles/global/default/rcp-fe-lol-collectibles.js
+c80272d6eda85efc plugins/rcp-fe-lol-collectibles/global/default/styles.css
 2418afe81325b12f plugins/rcp-fe-lol-collectibles/global/default/trans.json
 74b2ec7a5650b8b3 plugins/rcp-fe-lol-collectibles/global/default/video/purchase/linger.webm
 3b704ebbf83bed06 plugins/rcp-fe-lol-collectibles/global/el_gr/trans.json
@@ -28880,6 +28884,7 @@ ad4fc75e7b4e9b5d plugins/rcp-fe-lol-emote-panel/global/default/sounds/sfx-emotes
 a522da5b8cb20bbc plugins/rcp-fe-lol-emote-panel/global/default/sounds/sfx-empty.ogg
 ff224e0fddfc74f5 plugins/rcp-fe-lol-emote-panel/global/default/sounds/sfx-nav-button-text-click.ogg
 65178192b2214210 plugins/rcp-fe-lol-emote-panel/global/default/sounds/sfx-uikit-button-circlex-click.ogg
+b5aff529303dce96 plugins/rcp-fe-lol-emote-panel/global/default/styles.css
 42cbbed051d9f058 plugins/rcp-fe-lol-emote-panel/global/default/trans.json
 a16755efce3992fd plugins/rcp-fe-lol-emote-panel/global/el_gr/trans.json
 f76f0fa527d7d189 plugins/rcp-fe-lol-emote-panel/global/en_au/trans.json
@@ -29111,6 +29116,7 @@ e06682e2cbac4c9d plugins/rcp-fe-lol-general-settings/global/default/audio/sfx-fu
 55f5d107103e5e92 plugins/rcp-fe-lol-general-settings/global/default/bundle.js.map
 73ea7b9ef1943eee plugins/rcp-fe-lol-general-settings/global/default/index.html
 0443f2f5e74c85e2 plugins/rcp-fe-lol-general-settings/global/default/license.json
+352a08f8e212e379 plugins/rcp-fe-lol-general-settings/global/default/styles.css
 7a4a3e9f045c4980 plugins/rcp-fe-lol-general-settings/global/default/trans.json
 fa26e18d9267ad3a plugins/rcp-fe-lol-general-settings/global/el_gr/trans.json
 62d0587375ef4b48 plugins/rcp-fe-lol-general-settings/global/en_au/trans.json
@@ -29819,6 +29825,7 @@ fba8490b166c641b plugins/rcp-fe-lol-l10n/global/el_gr/trans.json
 f6614b6e6e19f52b plugins/rcp-fe-lol-l10n/global/en_gb/moment-locale.js
 3a3dedfb38c9506f plugins/rcp-fe-lol-l10n/global/en_gb/trans.json
 fef6faaf76e60656 plugins/rcp-fe-lol-l10n/global/en_ph/trans.json
+7389ef458d3da7f2 plugins/rcp-fe-lol-l10n/global/en_sg/moment-locale.js
 7deb0603a1c1eafa plugins/rcp-fe-lol-l10n/global/en_sg/trans.json
 3ff3ad3fdf71a8a3 plugins/rcp-fe-lol-l10n/global/en_us/trans.json
 90028d0f07a495d0 plugins/rcp-fe-lol-l10n/global/es_ar/moment-locale.js
@@ -31858,6 +31865,7 @@ bcf49ea0cda38385 plugins/rcp-fe-lol-matchmaking-notifications/global/zh_my/trans
 7844eb5d16c236c6 plugins/rcp-fe-lol-missions/description.json
 45aeb9ef20cec860 plugins/rcp-fe-lol-missions/global/cs_cz/trans.json
 a1821f98459e356a plugins/rcp-fe-lol-missions/global/de_de/trans.json
+49096cc7d5ecec33 plugins/rcp-fe-lol-missions/global/default/allicon.svg
 ff6825d943e85d94 plugins/rcp-fe-lol-missions/global/default/arrow_4k.png
 2aec80e83f589163 plugins/rcp-fe-lol-missions/global/default/badge_loyalty4k.png
 91e47dc921c25f1a plugins/rcp-fe-lol-missions/global/default/badge_purchased4k.png
@@ -32069,8 +32077,10 @@ eb1ae278ee705b94 plugins/rcp-fe-lol-missions/global/default/levelupexplosion_sma
 a0c49a98a8938d68 plugins/rcp-fe-lol-missions/global/default/mission_tracker_button.png
 da63506e91cf0c4a plugins/rcp-fe-lol-missions/global/default/missionflyoutbackground_large.png
 deafd31630a26c4c plugins/rcp-fe-lol-missions/global/default/missionflyoutbackground_small.png
+44828df0cde56eed plugins/rcp-fe-lol-missions/global/default/missionicon.svg
 6beceadae05094a0 plugins/rcp-fe-lol-missions/global/default/missionobject_rewardicons_alert.png
 6f720a6123a88346 plugins/rcp-fe-lol-missions/global/default/missionreward_tooltipdivider.png
+c772b1644a108e12 plugins/rcp-fe-lol-missions/global/default/missions_completed_default.png
 2705e32b86e55282 plugins/rcp-fe-lol-missions/global/default/missions_eog_buttonframe_left.png
 85d2531a00f79ede plugins/rcp-fe-lol-missions/global/default/missions_eog_buttonframe_right.png
 2d453e53cbdd15f0 plugins/rcp-fe-lol-missions/global/default/missions_eog_pips_done.png
@@ -36203,6 +36213,7 @@ b18385accbedca06 plugins/rcp-fe-lol-service-status/global/pl_pl/trans.json
 b8a044b880c25b6f plugins/rcp-fe-lol-settings/global/default/bundle.js
 51abd36def7fac9d plugins/rcp-fe-lol-settings/global/default/index.html
 da4865d9e80f86bb plugins/rcp-fe-lol-settings/global/default/license.json
+61b45156b9ba98de plugins/rcp-fe-lol-settings/global/default/styles.css
 760d9114055479af plugins/rcp-fe-lol-settings/global/default/trans.json
 28988c520740b562 plugins/rcp-fe-lol-settings/global/el_gr/trans.json
 eb7621bc3568c904 plugins/rcp-fe-lol-settings/global/en_au/trans.json
@@ -36525,6 +36536,7 @@ d06667890d86c1e2 plugins/rcp-fe-lol-sound-settings/global/de_de/trans.json
 20a12d2f7dfd6182 plugins/rcp-fe-lol-sound-settings/global/default/bundle.js
 4f2c76d0883c1830 plugins/rcp-fe-lol-sound-settings/global/default/index.html
 91f4ccb89c95b7f7 plugins/rcp-fe-lol-sound-settings/global/default/license.json
+d568300061470762 plugins/rcp-fe-lol-sound-settings/global/default/styles.css
 eb8c48f32c27267f plugins/rcp-fe-lol-sound-settings/global/default/trans.json
 1450474c1fffe7de plugins/rcp-fe-lol-sound-settings/global/el_gr/trans.json
 9e530e56099fdf6b plugins/rcp-fe-lol-sound-settings/global/en_au/trans.json
@@ -36633,6 +36645,12 @@ e1b6a5625d8c2a71 plugins/rcp-fe-lol-splash/global/default/splash-assets/elementa
 b3b935d052c6269c plugins/rcp-fe-lol-splash/global/default/splash-assets/esportsallstar2016/image-splash-esportsallstar2016.jpg
 ef22a14483b25f84 plugins/rcp-fe-lol-splash/global/default/splash-assets/esportsallstar2016/music-splash-esportsallstar2016.ogg
 06d2ed88635a4dbb plugins/rcp-fe-lol-splash/global/default/splash-assets/esportsallstar2016/video-splash-esportsallstar2016.webm
+7cba3d2cc28bfbc8 plugins/rcp-fe-lol-splash/global/default/splash-assets/eulcs-madrid2018/config.json
+31a477651b8e6148 plugins/rcp-fe-lol-splash/global/default/splash-assets/eulcs-madrid2018/image-splash-madrid.jpg
+6e10f4059d2dcf13 plugins/rcp-fe-lol-splash/global/default/splash-assets/eulcs-madrid2018/intro-sound-splash-madrid.ogg
+21bbfe431b25ec16 plugins/rcp-fe-lol-splash/global/default/splash-assets/eulcs-madrid2018/intro-video-splash-madrid.webm
+4a734cc4fe7498d3 plugins/rcp-fe-lol-splash/global/default/splash-assets/eulcs-madrid2018/music-splash-madrid.ogg
+a9ceda195b9f8c0c plugins/rcp-fe-lol-splash/global/default/splash-assets/eulcs-madrid2018/video-splash-madrid.webm
 dd7c55c407017269 plugins/rcp-fe-lol-splash/global/default/splash-assets/evelynn-kr/config.json
 d9a455d84adba1c2 plugins/rcp-fe-lol-splash/global/default/splash-assets/evelynn-kr/image-splash-evelynn-kr.jpg
 19f2ba47d6bfd8b6 plugins/rcp-fe-lol-splash/global/default/splash-assets/evelynn-kr/music-splash-evelynn-kr.ogg
@@ -36708,6 +36726,10 @@ c3df1db2aeced2c2 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/
 5ec07f2459c6c555 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/intro-video-splash-msi2018.webm
 d1ae2e639fd17f61 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/music-splash-msi2018.ogg
 3a679b37c071a5d4 plugins/rcp-fe-lol-splash/global/default/splash-assets/msi2018/video-splash-msi2018.webm
+593ef485cd453473 plugins/rcp-fe-lol-splash/global/default/splash-assets/nacollegechamp2018/config.json
+cd033517d601e0b0 plugins/rcp-fe-lol-splash/global/default/splash-assets/nacollegechamp2018/image-splash-collegechampna.jpg
+cc0b71b5cb45a7bc plugins/rcp-fe-lol-splash/global/default/splash-assets/nacollegechamp2018/music-splash-collegechampna.ogg
+b886b07bf3639f49 plugins/rcp-fe-lol-splash/global/default/splash-assets/nacollegechamp2018/video-splash-collegechampna.webm
 1b1fbefaf7e8efd7 plugins/rcp-fe-lol-splash/global/default/splash-assets/neeko/config.json
 9ef2bf79cf925091 plugins/rcp-fe-lol-splash/global/default/splash-assets/neeko/image-splash-neeko.jpg
 62172b47daadffc3 plugins/rcp-fe-lol-splash/global/default/splash-assets/neeko/music-splash-neeko.ogg
@@ -36808,6 +36830,14 @@ c2db72c5998e7391 plugins/rcp-fe-lol-splash/global/default/splash-assets/vayne-lu
 18e1f3d5c6116a83 plugins/rcp-fe-lol-splash/global/default/splash-assets/vs/image-splash-vs.jpg
 070026bf96840f77 plugins/rcp-fe-lol-splash/global/default/splash-assets/vs/music-splash-vs.ogg
 38e683571a2a9fda plugins/rcp-fe-lol-splash/global/default/splash-assets/vs/video-splash-vs.webm
+7434ee1e48054c81 plugins/rcp-fe-lol-splash/global/default/splash-assets/vsdarius/config.json
+528907f66ee563b0 plugins/rcp-fe-lol-splash/global/default/splash-assets/vsdarius/image-splash-vs2018-godkingdarius.jpg
+91395f238fa05e43 plugins/rcp-fe-lol-splash/global/default/splash-assets/vsdarius/music-splash-vs2018-godkingdarius.ogg
+0e808d49e35c982b plugins/rcp-fe-lol-splash/global/default/splash-assets/vsdarius/video-splash-vs2018-godkingdarius.webm
+25dfe45ff6d96799 plugins/rcp-fe-lol-splash/global/default/splash-assets/vsgaren/config.json
+5edb153773ddb156 plugins/rcp-fe-lol-splash/global/default/splash-assets/vsgaren/image-splash-vs2018-godkinggaren.jpg
+449cc0abb0fc6f0a plugins/rcp-fe-lol-splash/global/default/splash-assets/vsgaren/music-splash-vs2018-godkinggaren.ogg
+86bb2020e9fa149d plugins/rcp-fe-lol-splash/global/default/splash-assets/vsgaren/video-splash-vs2018-godkinggaren.webm
 0c24ed9aade7a341 plugins/rcp-fe-lol-splash/global/default/splash-assets/warwick/config.json
 ce73555fb0dad678 plugins/rcp-fe-lol-splash/global/default/splash-assets/warwick/image-splash-warwick.jpg
 c4a4d4591fdf68ba plugins/rcp-fe-lol-splash/global/default/splash-assets/warwick/music-splash-warwick.ogg
@@ -37518,6 +37548,7 @@ c2edd7a7d963c37a plugins/rcp-fe-lol-user-experience-settings/global/de_de/trans.
 f842f60ae5573fe1 plugins/rcp-fe-lol-user-experience-settings/global/default/index.html
 9b0010669e095fcb plugins/rcp-fe-lol-user-experience-settings/global/default/init.js
 66c33f0419cb756c plugins/rcp-fe-lol-user-experience-settings/global/default/license.json
+e2d16402b10fb0ea plugins/rcp-fe-lol-user-experience-settings/global/default/styles.css
 8dafb03e81489f91 plugins/rcp-fe-lol-user-experience-settings/global/default/trans.json
 d649115e47c3fecb plugins/rcp-fe-lol-user-experience-settings/global/el_gr/trans.json
 a1adeb510ed83e81 plugins/rcp-fe-lol-user-experience-settings/global/en_au/trans.json
