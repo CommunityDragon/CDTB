@@ -185,8 +185,13 @@ class HashGuesser:
     def check_basenames(self, names):
         """Check a list of basenames for each known subdirectory"""
 
-        dirs = self.directory_list()
-        self.check_iter(f"{d}/{name}" for name in names for d in dirs)
+        dirs = list(self.directory_list())
+        unknown = self.unknown # global -> local for increased performance
+        for name in progress_iterator(sorted(names)):
+            for dir in dirs:
+                h = xxh64(name).intdigest() # inline check() for increased performance
+                if h in unknown:
+                    self._add_known(h, name)
 
     def directory_list(self, cached=True):
         """Return a set of all directories and subdirectories"""
@@ -205,23 +210,46 @@ class HashGuesser:
         """Check all basenames in each subdirectory"""
 
         names = set(os.path.basename(p) for p in self.known.values())
-        dirs = self.directory_list()
+        dirs = list(self.directory_list())
         logger.info(f"substitute basenames: {len(names)} basenames, {len(dirs)} directories")
+        unknown = self.unknown # global -> local for increased performance
         for name in progress_iterator(sorted(names)):
-            self.check_iter(f"{d}/{name}" for d in dirs)
+            for d in dirs:
+                h = xxh64(name).intdigest() # inline check() for increased performance
+                if h in unknown:
+                    self._add_known(h, name)
 
-    def _substitute_basename_words(self, words):
-        """Replace all words in known basename"""
+    def _substitute_basename_words(self, paths, words, amount=1):
+        """Replaces {amount} side by side words in all basenames
+        of all given paths (default=1 for simple 1 word substitution)."""
 
-        re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
-        formats = set()
-        for path in self.known.values():
+        regex_part = ""
+        format_part = ""
+        for i in range(1, amount):
+            regex_part += r'([-_][^/_.-]+)'
+            format_part += r'{sep}%%s'
+        format_part = ''.join([r'%s%%s', format_part, r'%s'])
+        re_extract = re.compile(''.join([r'([^/_.-]+)(?=', regex_part, r'[^/]*\.[^/]+$)']))
+        temp_formats = set()
+        for path in paths:
             for m in re_extract.finditer(path):
-                formats.add('%s%%s%s' % (path[:m.start()], path[m.end():]))
+                match = ""
+                for i in range(amount):
+                    match += m.group(i+1)
+                temp_formats.add(format_part % (path[:m.start()], path[m.span()[0]+len(match):]))
+
+        formats = set()
+        for format in temp_formats:
+            formats.update(format.replace("{sep}", sep) for sep in "-_")
 
         logger.info(f"substitute basename words: {len(formats)} formats, {len(words)} words")
+        product = itertools.product #
+        unknown = self.unknown      # global -> local for increased performance
         for fmt in progress_iterator(sorted(formats)):
-            self.check_iter(fmt % s for s in words)
+            for p in product(words, repeat=amount):
+                h = xxh64(fmt % p).intdigest() # inline check() for increased performance
+                if h in unknown:
+                    self._add_known(h, fmt % p)
 
     def _add_basename_word(self, words):
         """Add a known word to all known basenames"""
@@ -335,8 +363,15 @@ class LcuHashGuesser(HashGuesser):
             replacement = r'plugins/\1/%s/%s/' % region_lang
             self.check_iter(regex.sub(replacement, p) for p in known)
 
-    def substitute_basename_words(self):
-        super()._substitute_basename_words(self.build_wordlist())
+    def substitute_basename_words(self, plugin="", fileext="", words=None, amount=1):
+        """Replaces {amount} side by side words in all basenames (default=1 for simple 1 word substitution).
+        Additionally, a plugin name and file extension can be specified to filter on."""
+
+        if words is None:
+            words = self.build_wordlist()
+        paths = [path for path in self.known.values() if path.startswith(f"plugins/{plugin}") and path.endswith(fileext)]
+
+        super()._substitute_basename_words(paths, words, amount=amount)
 
     def add_basename_word(self):
         super()._add_basename_word(self.build_wordlist())
@@ -353,22 +388,39 @@ class LcuHashGuesser(HashGuesser):
 
         super()._multi_substitution(paths, words)
 
-    def double_substitution(self, plugin, fileext=""):
-        """Replaces two side by side words in all basenames.
+    def double_substitution(self, plugin, fileext="", amount=1):
+        """Replaces {amount} side by side words in all basenames.
         Because of high running time, a specific plugin must and a file extension can be specified"""
 
+        regex_part = ""
+        format_part = ""
+        for i in range(1, amount):
+            regex_part += r'([-_][^/_.-]+)'
+            format_part += r'{sep}{f' + str(i) + r'}'
+        format_part = r'%s{f0}' + format_part + r'%s'
         words = self.build_wordlist()
-        re_extract = re.compile(r'([^/_-]+)(?=([-_][^/_-]+)[^/]*\.[^/]+$)')
+        re_extract = re.compile(r'([^/_.-]+)(?=' + regex_part + r'[^/]*\.[^/]+$)')
         formats = set()
         for path in self.known.values():
             if path.startswith(f"plugins/{plugin}") and path.endswith(fileext):
                 for m in re_extract.finditer(path):
-                    match = m.group(1) + m.group(2)
-                    formats.update('%s%%s%s%%s%s' % (path[:m.start()], sep, path[(m.span()[0]+len(match)):]) for sep in "-_")
+                    match_len = 0
+                    for i in range(amount):
+                        match_len += len(m.group(i+1))
+                    formats.add(format_part % (path[:m.start()], path[(m.span()[0]+match_len):]))
+
+        new_formats = set()
+        for format in formats:
+            new_formats.update(format.replace("{sep}", sep) for sep in "-_")
+        formats = new_formats
 
         logger.info(f"double substitution for plugin {plugin}: {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
-            self.check_iter(fmt % (a, b) for a in words for b in words)
+            for p in itertools.product(words, repeat=amount):
+                to_check = fmt
+                for i in range(amount):
+                    to_check = to_check.replace(r'{f' + str(i) + r'}', p[i])
+                self.check(to_check)
 
     def substitute_numbers(self, nmax=10000, digits=None):
         re_filter = re.compile(r"""(?:
