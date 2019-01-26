@@ -214,39 +214,32 @@ class HashGuesser:
         unknown = self.unknown # global -> local for increased performance
         logger.info(f"substitute basenames: {len(names)} basenames, {len(dirs)} directories")
         for name in progress_iterator(sorted(names)):
-            for d in dirs:
-                h = xxh64(name).intdigest() # inline check() for increased performance
+            for dir in dirs:
+                h = xxh64(f"{dir}/{name}").intdigest() # inline check() for increased performance
                 if h in unknown:
-                    self._add_known(h, name)
+                    self._add_known(h, f"{dir}/{name}")
 
     def _substitute_basename_words(self, paths, words, amount=1):
         """Substitutes {amount} side by side words in all basenames
         of all given paths (default=1 for simple 1 word substitution)."""
 
-        regex_part = ""
-        format_part = ""
-        for i in range(1, amount):
-            regex_part += r'([-_][^/_.-]+)'
-            format_part += r'{sep}%%s'
-        format_part = ''.join([r'%s%%s', format_part, r'%s'])
-        re_extract = re.compile(''.join([r'([^/_.-]+)(?=', regex_part, r'[^/]*\.[^/]+$)']))
+        words = list(words)
+        format_part = "{sep}%%s" * (amount-1)
+        format_part = f"%s%%s{format_part}%s"
+        re_extract = re.compile(f"([^/_.-]+)(?=([-_][^/_.-]+){{{amount-1}}}[^/]*\.[^/]+$)")
         temp_formats = set()
         for path in paths:
             for m in re_extract.finditer(path):
-                match = ""
-                for i in range(amount):
-                    match += m.group(i+1)
+                match = ''.join([m.group(i+1) for i in range(amount)])
                 temp_formats.add(format_part % (path[:m.start()], path[m.span()[0]+len(match):]))
 
-        formats = set()
-        for format in temp_formats:
-            formats.update(format.replace("{sep}", sep) for sep in "-_")
+        formats = {fmt.replace("{sep}", sep) for fmt in temp_formats for sep in "-_"}
 
-        product = [prod for prod in itertools.product(words, repeat=amount)]
+        product = itertools.product
         unknown = self.unknown # global -> local for increased performance
         logger.info(f"substitute basename words: {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
-            for p in product:
+            for p in product(words, repeat=amount):
                 h = xxh64(fmt % p).intdigest() # inline check() for increased performance
                 if h in unknown:
                     self._add_known(h, fmt % p)
@@ -271,8 +264,9 @@ class HashGuesser:
                     self._add_known(h, fmt % w)
 
     def _double_substitution(self, paths, words):
-        """Replaces a word in all basenames by two words."""
+        """Replaces a word in all basenames of all given paths by two words."""
 
+        words = list(words)
         re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
         formats = set()
         for path in paths:
@@ -389,11 +383,12 @@ class LcuHashGuesser(HashGuesser):
     def add_basename_word(self):
         super()._add_basename_word(list(self.known.values()), self.build_wordlist())
 
-    def double_substitution(self, plugin, fileext=""):
+    def double_substitution(self, plugin, fileext="", words=None):
         """Builds a list of paths based on the specified plugin and file-extension.
-        Replaces a word in all basenames in these paths while adding an additional word near it."""
+        Replaces a word in all basenames in these paths by two words."""
 
-        words = self.build_wordlist()
+        if words is None:
+            words = self.build_wordlist()
         paths = [path for path in self.known.values() if path.startswith(f"plugins/{plugin}") and path.endswith(fileext)]
 
         super()._double_substitution(paths, words)
