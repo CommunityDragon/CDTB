@@ -374,13 +374,12 @@ class LcuHashGuesser(HashGuesser):
         """Replaces {amount} side by side words in all basenames (default=1 for simple 1 word substitution).
         Additionally, a plugin name and file extension can be specified to filter on."""
 
-        if fileext is None:
-            fileext = ""
-        if plugin is None:
-            plugin = ""
         if words is None:
             words = self.build_wordlist()
-        paths = [path for path in self.known.values() if path.startswith(f"plugins/{plugin}") and path.endswith(fileext)]
+        if plugin is not None:
+            paths = [path for path in self.known.values() if path.startswith(f"plugins/{plugin}/")]
+        if fileext is not None:
+            paths = [path for path in paths if path.endswith(fileext)]
 
         super()._substitute_basename_words(paths, words, amount=amount)
 
@@ -391,11 +390,9 @@ class LcuHashGuesser(HashGuesser):
         """Builds a list of paths based on the specified plugin and file-extension.
         Replaces a word in all basenames in these paths by two words."""
 
-        if fileext is None:
-            fileext = ""
-        if words is None:
-            words = self.build_wordlist()
-        paths = [path for path in self.known.values() if path.startswith(f"plugins/{plugin}") and path.endswith(fileext)]
+        paths = [path for path in self.known.values() if path.startswith(f"plugins/{plugin}/")]
+        if fileext is not None:
+            paths = [path for path in paths if path.endswith(fileext)]
 
         super()._double_substitution(paths, words)
 
