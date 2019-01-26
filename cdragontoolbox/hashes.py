@@ -189,9 +189,9 @@ class HashGuesser:
         unknown = self.unknown # global -> local for increased performance
         for name in progress_iterator(sorted(names)):
             for dir in dirs:
-                h = xxh64(name).intdigest() # inline check() for increased performance
+                h = xxh64(f"{dir}/{name}").intdigest() # inline check() for increased performance
                 if h in unknown:
-                    self._add_known(h, name)
+                    self._add_known(h, f"{dir}/{name}")
 
     def directory_list(self, cached=True):
         """Return a set of all directories and subdirectories"""
