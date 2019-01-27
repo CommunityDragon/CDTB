@@ -226,11 +226,11 @@ class HashGuesser:
         words = list(words)
         format_part = "{sep}%%s" * (amount-1)
         format_part = f"%s%%s{format_part}%s"
-        re_extract = re.compile(f"([^/_.-]+)(?=([-_][^/_.-]+){{{amount-1}}}[^/]*\.[^/]+$)")
+        re_extract = re.compile(f"([^/_.-]+)(?=((?:[-_][^/_.-]+){{{amount-1}}})[^/]*\.[^/]+$)")
         temp_formats = set()
         for path in paths:
             for m in re_extract.finditer(path):
-                match = ''.join([m.group(i+1) for i in range(amount)])
+                match = m.group(1) + m.group(2)
                 temp_formats.add(format_part % (path[:m.start()], path[m.span()[0]+len(match):]))
 
         formats = {fmt.replace("{sep}", sep) for fmt in temp_formats for sep in "-_"}
@@ -376,8 +376,9 @@ class LcuHashGuesser(HashGuesser):
 
         if words is None:
             words = self.build_wordlist()
+        paths = list(self.known.values())
         if plugin is not None:
-            paths = [path for path in self.known.values() if path.startswith(f"plugins/{plugin}/")]
+            paths = [path for path in paths if path.startswith(f"plugins/{plugin}/")]
         if fileext is not None:
             paths = [path for path in paths if path.endswith(fileext)]
 
