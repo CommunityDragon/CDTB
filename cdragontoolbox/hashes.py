@@ -185,7 +185,7 @@ class HashGuesser:
     def check_basenames(self, names):
         """Check a list of basenames for each known subdirectory"""
 
-        dirs = list(self.directory_list())
+        dirs = self.directory_list()
         unknown = self.unknown # global -> local for increased performance
         for name in progress_iterator(sorted(names)):
             for dir in dirs:
@@ -203,14 +203,14 @@ class HashGuesser:
             while len(bases):
                 bases = {os.path.dirname(p) for p in bases} - dirs
                 dirs |= bases
-            self.__directory_list = dirs
+            self.__directory_list = list(dirs)
         return self.__directory_list
 
     def substitute_basenames(self):
         """Check all basenames in each subdirectory"""
 
         names = set(os.path.basename(p) for p in self.known.values())
-        dirs = list(self.directory_list())
+        dirs = self.directory_list()
         unknown = self.unknown # global -> local for increased performance
         logger.info(f"substitute basenames: {len(names)} basenames, {len(dirs)} directories")
         for name in progress_iterator(sorted(names)):
