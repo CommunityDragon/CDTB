@@ -223,7 +223,7 @@ class HashGuesser:
         """Substitutes {amount} side by side words in all basenames
         of all given paths (default=1 for simple 1 word substitution)."""
 
-        words = list(words)
+        words = list(words) # Ensure words is a list
         format_part = "{sep}%%s" * (amount-1)
         format_part = f"%s%%s{format_part}%s"
         re_extract = re.compile(f"([^/_.-]+)(?=((?:[-_][^/_.-]+){{{amount-1}}})[^/]*\.[^/]+$)")
@@ -591,7 +591,7 @@ class GameHashGuesser(HashGuesser):
         self.check_iter(value for value in list(values))
 
     def substitute_basename_words(self):
-        super()._substitute_basename_words(self.build_wordlist())
+        super()._substitute_basename_words(self.known.values(), self.build_wordlist())
 
     def add_basename_word(self):
         paths = [path for path in self.known.values() if not any(part in path for part in ['assets/characters/', 'vo/', 'sfx/', 'skins_skin'])]
