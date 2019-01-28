@@ -237,7 +237,7 @@ class HashGuesser:
 
         product = itertools.product
         unknown = self.unknown # global -> local for increased performance
-        logger.info(f"substitute basename words: {len(formats)} formats, {len(words)} words")
+        logger.info(f"substitute basename words ({amount}): {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
             for p in product(words, repeat=amount):
                 h = xxh64(fmt % p).intdigest() # inline check() for increased performance
