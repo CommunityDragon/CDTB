@@ -250,10 +250,9 @@ class HashGuesser:
         re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
         formats = set()
         for path in paths:
-            if not any(part in path for part in ['assets/characters/', 'vo/', 'sfx/', 'skins_skin']): # Filter fully known paths
-                for m in re_extract.finditer(path):
-                    formats.update('%s%%s%s%s' % (path[:m.start()], sep, path[m.start():]) for sep in "-_")
-                    formats.update('%s%s%%s%s' % (path[:m.end()], sep, path[m.end():]) for sep in "-_")
+            for m in re_extract.finditer(path):
+                formats.update('%s%%s%s%s' % (path[:m.start()], sep, path[m.start():]) for sep in "-_")
+                formats.update('%s%s%%s%s' % (path[:m.end()], sep, path[m.end():]) for sep in "-_")
 
         unknown = self.unknown # global -> local for increased performance
         logger.info(f"add basename word: {len(formats)} formats, {len(words)} words")
@@ -595,7 +594,8 @@ class GameHashGuesser(HashGuesser):
         super()._substitute_basename_words(self.build_wordlist())
 
     def add_basename_word(self):
-        super()._add_basename_word(list(self.known.values()), self.build_wordlist())
+        paths = [path for path in self.known.values() if not any(part in path for part in ['assets/characters/', 'vo/', 'sfx/', 'skins_skin'])]
+        super()._add_basename_word(paths, self.build_wordlist())
 
     def substitute_character(self):
         """Guess hashes by changing champion names in assets/characters/"""
