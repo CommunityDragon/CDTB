@@ -182,10 +182,16 @@ class PatcherManifest:
         parser.skip(4)  # skip offset table offset
         pos = parser.tell()
 
-        flags, name_offset, struct_size, link_offset, _file_id = parser.unpack('<LlllQ')
-        # note: name and link_offst are read later, at the end
+        flags, = parser.unpack('<L')
+        if flags == 0x00010200 or (flags >> 24) != 0:
+            name_offset, = parser.unpack('<l')
+        else:
+            name_offset = flags - 4
+            flags = 0
 
-        #XXX use flags?
+        struct_size, link_offset, _file_id = parser.unpack('<llQ')
+        # note: name and link_offset are read later, at the end
+
         if struct_size > 28:
             directory_id, = parser.unpack('<Q')
         else:
