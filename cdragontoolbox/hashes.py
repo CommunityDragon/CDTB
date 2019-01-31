@@ -265,18 +265,18 @@ class HashGuesser:
     def _double_substitution(self, paths, words):
         """Replaces a word in all basenames of all given paths by two words."""
 
-        words = list(words)
+        words = list(words) # Ensure words is a list
         re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
         formats = set()
         for path in paths:
             for m in re_extract.finditer(path):
                 formats.update('%s%%s%s%%s%s' % (path[:m.start()], sep, path[m.end():]) for sep in "-_")
 
-        product = [prod for prod in itertools.product(words, repeat=2)]
+        product = itertools.product
         unknown = self.unknown # global -> local for increased performance
         logger.info(f"double substitution: {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
-            for p in product:
+            for p in product(words, repeat=2):
                 h = xxh64(fmt % p).intdigest() # inline check() for increased performance
                 if h in unknown:
                     self._add_known(h, fmt % p)
@@ -821,16 +821,16 @@ class GameHashGuesser(HashGuesser):
 
         # find path-like strings, then try to parse the length
         paths = set()
-        for m in re.finditer(br'(?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+', data):
+        for m in re.finditer(br'(?:ASSETS|DATA|DATA_SOON|LEVELS)/[0-9a-zA-Z_. /-]+', data):
             path = m.group(0).lower().decode('ascii')
-            paths.add(path)
+            paths.add(path.replace("data_soon","data"))
             pos = m.start()
             if pos >= 2:
                 n = struct.unpack('<H', data[pos-2:pos])[0]
                 if n == 0 and pos >= 4:
                     n = struct.unpack('<L', data[pos-4:pos])[0]
                 if n < len(path):
-                    paths.add(path[:n])
+                    paths.add(path[:n].replace("data_soon","data"))
 
         for p in paths:
             if p.endswith('.lua'):
