@@ -390,6 +390,8 @@ class LcuHashGuesser(HashGuesser):
         """Builds a list of paths based on the specified plugin and file-extension.
         Replaces a word in all basenames in these paths by two words."""
 
+        if words is None:
+            words = self.build_wordlist()
         paths = [path for path in self.known.values() if path.startswith(f"plugins/{plugin}/")]
         if fileext is not None:
             paths = [path for path in paths if path.endswith(fileext)]
