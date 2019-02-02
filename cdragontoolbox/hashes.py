@@ -251,7 +251,7 @@ class HashGuesser:
             self.check_iter(fmt % w for w in words)
 
     def _double_substitution(self, paths, words):
-        """Replaces a word in all basenames of all given paths by two words."""
+        """Replaces each word in all basenames of all given paths by two words."""
 
         words = list(words) # Ensure words is a list
         re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
@@ -366,13 +366,15 @@ class LcuHashGuesser(HashGuesser):
     def add_basename_word(self):
         super()._add_basename_word(list(self.known.values()), self.build_wordlist())
 
-    def double_substitution(self, plugin, fileext=None, words=None):
+    def double_substitution(self, plugin=None, fileext=None, words=None):
         """Builds a list of paths based on the specified plugin and file-extension.
         Replaces a word in all basenames in these paths by two words."""
 
         if words is None:
             words = self.build_wordlist()
-        paths = [path for path in self.known.values() if path.startswith(f"plugins/{plugin}/")]
+        paths = self.known.values()
+        if plugin:
+            paths = [path for path in paths if path.startswith(f"plugins/{plugin}/")]
         if fileext is not None:
             paths = [path for path in paths if path.endswith(fileext)]
 
@@ -433,7 +435,7 @@ class LcuHashGuesser(HashGuesser):
                     # try to guess subdirectory name (names should only contain one element)
                     names = {s.lower() for path in jdata['files'].values() for s in re.findall(r'-splash-([^.]+)', path)}
                     self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/config.json" for name in names)
-                    self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{lower}/{path}" for name in names for path in jdata['files'].values())
+                    self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/{path}" for name in names for path in jdata['files'].values())
                     continue  # no more data to parse
                 elif wadfile.path == 'plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json':
                     champion_ids = [v['id'] for v in jdata]
@@ -803,14 +805,14 @@ class GameHashGuesser(HashGuesser):
         paths = set()
         for m in re.finditer(br'(?:ASSETS|DATA|DATA_SOON|LEVELS)/[0-9a-zA-Z_. /-]+', data):
             path = m.group(0).lower().decode('ascii')
-            paths.add(path.replace("data_soon","data"))
+            paths.add(path.replace("data_soon/", "data/"))
             pos = m.start()
             if pos >= 2:
                 n = struct.unpack('<H', data[pos-2:pos])[0]
                 if n == 0 and pos >= 4:
                     n = struct.unpack('<L', data[pos-4:pos])[0]
                 if n < len(path):
-                    paths.add(path[:n].replace("data_soon","data"))
+                    paths.add(path[:n].replace("data_soon/", "data/"))
 
         for p in paths:
             if p.endswith('.lua'):
