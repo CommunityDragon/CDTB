@@ -5,6 +5,7 @@ REGIONS = ['br', 'cn', 'eun', 'eune', 'euw', 'garena2', 'garena3', 'id', 'jp', '
            'na', 'oc', 'oc1', 'oce', 'pbe', 'ph', 'ru', 'sg', 'tencent', 'th', 'tr', 'tw', 'vn']
 
 class Language(Enum):
+    ar_ae = 'ar_ae'
     ar_eg = 'ar_eg'
     cs_cz = 'cs_cz'
     de_de = 'de_de'

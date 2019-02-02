@@ -25731,6 +25731,7 @@ faa0882d9407e5dc plugins/rcp-fe-lock-and-load/description.json
 0a463931b7d28488 plugins/rcp-fe-lock-and-load/global/default/init.js
 f71698cf0f548c12 plugins/rcp-fe-lock-and-load/global/default/license.json
 7c4d906a6f1eee30 plugins/rcp-fe-lol-account-verification-settings/description.json
+b1bf0420ab936d9c plugins/rcp-fe-lol-account-verification-settings/global/ar_ae/trans.json
 3db13a9d6162ac52 plugins/rcp-fe-lol-account-verification-settings/global/cs_cz/trans.json
 e184024abd1caf05 plugins/rcp-fe-lol-account-verification-settings/global/de_de/trans.json
 5bfce69138d17724 plugins/rcp-fe-lol-account-verification-settings/global/default/382d6927c12b6ef9d4f4d16c7e8280d0.png
@@ -26113,6 +26114,7 @@ cd800e00943df203 plugins/rcp-fe-lol-battle-training/global/vn_vn/trans.json
 6616d7be0b73b9f8 plugins/rcp-fe-lol-battle-training/global/zh_my/trans.json
 d88cd4369b9c9882 plugins/rcp-fe-lol-battle-training/global/zh_tw/trans.json
 7bdad374d2ca05a6 plugins/rcp-fe-lol-block-list-settings/description.json
+fc36ff48c2865094 plugins/rcp-fe-lol-block-list-settings/global/ar_ae/trans.json
 3369f532a0c4cdd9 plugins/rcp-fe-lol-block-list-settings/global/cs_cz/trans.json
 685ac0b9c6361b2d plugins/rcp-fe-lol-block-list-settings/global/de_de/trans.json
 2f55a06ef3f42cfb plugins/rcp-fe-lol-block-list-settings/global/default/blocked-summoner.html
@@ -26848,6 +26850,7 @@ b49658f1dc5fe7de plugins/rcp-fe-lol-champion-statistics/global/default/index.htm
 b3252a23e553e4ce plugins/rcp-fe-lol-champion-statistics/global/default/init.js
 3f119e89abe0fb7d plugins/rcp-fe-lol-champion-statistics/global/default/license.json
 dc0bf141f71b11b8 plugins/rcp-fe-lol-chat-settings/description.json
+b86353bbf33664fa plugins/rcp-fe-lol-chat-settings/global/ar_ae/trans.json
 014893cd6cb3f2a1 plugins/rcp-fe-lol-chat-settings/global/cs_cz/trans.json
 e6491d0647031a18 plugins/rcp-fe-lol-chat-settings/global/de_de/trans.json
 b64709d11bc83dac plugins/rcp-fe-lol-chat-settings/global/default/bundle.js
@@ -28590,6 +28593,7 @@ fa33f477563ef80a plugins/rcp-fe-lol-collectibles/global/tr_tr/trans.json
 182a736699e1ae19 plugins/rcp-fe-lol-collectibles/global/zh_my/trans.json
 50e0ac9072f9b764 plugins/rcp-fe-lol-collectibles/global/zh_tw/trans.json
 b0d4ad547985ead9 plugins/rcp-fe-lol-collections/description.json
+d09e72f7eed7461d plugins/rcp-fe-lol-collections/global/ar_ae/trans.json
 11abd5a65a4cb7cf plugins/rcp-fe-lol-collections/global/ar_eg/styles.css
 b112d8cc39f9adbf plugins/rcp-fe-lol-collections/global/ar_eg/trans.json
 0ca668283b352324 plugins/rcp-fe-lol-collections/global/cs_cz/trans.json
@@ -29091,6 +29095,7 @@ b2a538f9a4e054a4 plugins/rcp-fe-lol-game-in-progress/global/zh_cn/trans.json
 1f40372d005f5faf plugins/rcp-fe-lol-game-in-progress/global/zh_my/trans.json
 331cd7e861de05b3 plugins/rcp-fe-lol-game-in-progress/global/zh_tw/trans.json
 1d3cc797e4d4a575 plugins/rcp-fe-lol-game-settings/description.json
+aec95df818ade187 plugins/rcp-fe-lol-game-settings/global/ar_ae/trans.json
 d81b50ebfcd6cce0 plugins/rcp-fe-lol-game-settings/global/ar_eg/styles.css
 f59d8cf3be10d790 plugins/rcp-fe-lol-game-settings/global/ar_eg/trans.json
 9fdf4afde2936e74 plugins/rcp-fe-lol-game-settings/global/cs_cz/trans.json
@@ -30463,6 +30468,7 @@ f8d92c8473999dd5 plugins/rcp-fe-lol-license-agreement/global/th_th/trans.json
 f650b57392a10b0d plugins/rcp-fe-lol-license-agreement/global/zh_my/trans.json
 1b92590a4897e077 plugins/rcp-fe-lol-license-agreement/global/zh_tw/trans.json
 c8beef801b2b0b63 plugins/rcp-fe-lol-license-settings/description.json
+a43950e940ce9b9f plugins/rcp-fe-lol-license-settings/global/ar_ae/trans.json
 df2ce5791661d4cc plugins/rcp-fe-lol-license-settings/global/ar_eg/style.css
 0e80f2c580b25dbf plugins/rcp-fe-lol-license-settings/global/ar_eg/trans.json
 166626c13ed13c32 plugins/rcp-fe-lol-license-settings/global/cs_cz/trans.json
@@ -30514,6 +30520,7 @@ c1045c3673f432e5 plugins/rcp-fe-lol-lock-and-load/description.json
 48eed58771769e8c plugins/rcp-fe-lol-lock-and-load/global/default/init.js
 69e04048ad3655c4 plugins/rcp-fe-lol-lock-and-load/global/default/license.json
 94d688bd7114c6a1 plugins/rcp-fe-lol-login/description.json
+cf1c4e8c31fa910a plugins/rcp-fe-lol-login/global/ar_ae/trans.json
 9bdccb00aa1a3155 plugins/rcp-fe-lol-login/global/ar_eg/styles.css
 297337a546e669ea plugins/rcp-fe-lol-login/global/ar_eg/trans.json
 4ac6549232af73b4 plugins/rcp-fe-lol-login/global/cs_cz/trans.json
@@ -32586,6 +32593,7 @@ c9fa0b1d6d3aff5d plugins/rcp-fe-lol-new-player-intro/global/zh_my/trans.json
 18481a28fef3ec40 plugins/rcp-fe-lol-new-player-intro/global/zh_tw/trans.json
 d5477b09f3a08f87 plugins/rcp-fe-lol-notification-settings/description.json
 989e51ebe328943a plugins/rcp-fe-lol-notification-settings/global/.ds_store
+1666bf03a709c053 plugins/rcp-fe-lol-notification-settings/global/ar_ae/trans.json
 fc7c63852d90dc9e plugins/rcp-fe-lol-notification-settings/global/cs_cz/trans.json
 27d29594e717db22 plugins/rcp-fe-lol-notification-settings/global/de_de/trans.json
 e6471c89c808f753 plugins/rcp-fe-lol-notification-settings/global/default/bundle.js
@@ -33464,6 +33472,7 @@ fc3376af431d6fec plugins/rcp-fe-lol-parties/global/ms_my/trans.json
 e64819142d44f636 plugins/rcp-fe-lol-parties/global/zh_my/trans.json
 e78afe064e5639f9 plugins/rcp-fe-lol-parties/global/zh_tw/trans.json
 e7910f9516928372 plugins/rcp-fe-lol-patcher/description.json
+8f8e45d660df3024 plugins/rcp-fe-lol-patcher/global/ar_ae/trans.json
 1bcb60f8d452dd36 plugins/rcp-fe-lol-patcher/global/ar_eg/styles.css
 46e7418aed56e85b plugins/rcp-fe-lol-patcher/global/ar_eg/trans.json
 cc6ed9f3ea5912c2 plugins/rcp-fe-lol-patcher/global/cs_cz/trans.json
@@ -35466,6 +35475,7 @@ b85a6e06ef8d4620 plugins/rcp-fe-lol-regalia/global/zh_tw/trans.json
 8f34bb9f434cc5bc plugins/rcp-fe-lol-regalia/sounds/sfx-profile-summoner-big-click.ogg
 f28104ec37accd10 plugins/rcp-fe-lol-replays-settings/description.json
 164182f07a1e7f98 plugins/rcp-fe-lol-replays-settings/global/.ds_store
+7c191ee020cb3fac plugins/rcp-fe-lol-replays-settings/global/ar_ae/trans.json
 5648d60bbfb12b95 plugins/rcp-fe-lol-replays-settings/global/ar_eg/styles.css
 1ccb9d47cb802a3c plugins/rcp-fe-lol-replays-settings/global/ar_eg/trans.json
 eea90eb80ed83a57 plugins/rcp-fe-lol-replays-settings/global/cs_cz/trans.json
@@ -36257,6 +36267,7 @@ b18385accbedca06 plugins/rcp-fe-lol-service-status/global/pl_pl/trans.json
 6fcd1ff7304076bc plugins/rcp-fe-lol-service-status/global/zh_my/trans.json
 81d59b5fffe7e19d plugins/rcp-fe-lol-service-status/global/zh_tw/trans.json
 44397b16be8b5165 plugins/rcp-fe-lol-settings/description.json
+36f98b37396c342d plugins/rcp-fe-lol-settings/global/ar_ae/trans.json
 8734b4409a4ec59b plugins/rcp-fe-lol-settings/global/cs_cz/trans.json
 92ef5a3bddd2ce49 plugins/rcp-fe-lol-settings/global/de_de/trans.json
 b8a044b880c25b6f plugins/rcp-fe-lol-settings/global/default/bundle.js
@@ -36617,6 +36628,7 @@ e32d4a2004838d62 plugins/rcp-fe-lol-sound-settings/global/zh_cn/trans.json
 2b6de376eff1a2cc plugins/rcp-fe-lol-sound-settings/global/zh_my/trans.json
 ff0d130b393ac678 plugins/rcp-fe-lol-sound-settings/global/zh_tw/trans.json
 cc848c3098b17666 plugins/rcp-fe-lol-splash/description.json
+d218b6445e828031 plugins/rcp-fe-lol-splash/global/ar_ae/trans.json
 c4682863596015c3 plugins/rcp-fe-lol-splash/global/ar_eg/styles.css
 0f88aa46f3099969 plugins/rcp-fe-lol-splash/global/ar_eg/trans.json
 ea242b2934aa9e56 plugins/rcp-fe-lol-splash/global/cs_cz/trans.json
@@ -37609,6 +37621,7 @@ c9325803c5299469 plugins/rcp-fe-lol-uikit/global/default/videos/right-rune-intro
 e5721d12c7933203 plugins/rcp-fe-lol-uikit/global/default/videos/right-rune-press.webm
 d609715a5ff5cc68 plugins/rcp-fe-lol-uikit/global/default/videos/vignette-celebration-intro-magic.webm
 054add76649c0528 plugins/rcp-fe-lol-user-experience-settings/description.json
+ebba18c89c3cc445 plugins/rcp-fe-lol-user-experience-settings/global/ar_ae/trans.json
 df25903622a2898c plugins/rcp-fe-lol-user-experience-settings/global/cs_cz/trans.json
 c2edd7a7d963c37a plugins/rcp-fe-lol-user-experience-settings/global/de_de/trans.json
 f842f60ae5573fe1 plugins/rcp-fe-lol-user-experience-settings/global/default/index.html
