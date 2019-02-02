@@ -170,9 +170,11 @@ class HashGuesser:
         # failsafe for common dumb error
         if isinstance(paths, str):
             raise TypeError("expected iterable of strings, got a string")
-        c = self.check
+        unknown = self.unknown
         for p in paths:
-            c(p)
+            h = xxh64(p).intdigest()
+            if h in unknown:
+                self._add_known(h, p)
 
     def check_text_list(self, text):
         """Check paths from a text list"""
@@ -186,12 +188,8 @@ class HashGuesser:
         """Check a list of basenames for each known subdirectory"""
 
         dirs = self.directory_list()
-        unknown = self.unknown # global -> local for increased performance
         for name in progress_iterator(sorted(names)):
-            for dir in dirs:
-                h = xxh64(f"{dir}/{name}").intdigest() # inline check() for increased performance
-                if h in unknown:
-                    self._add_known(h, f"{dir}/{name}")
+            self.check_iter(f"{dir}/{name}" for dir in dirs)
 
     def directory_list(self, cached=True):
         """Return a set of all directories and subdirectories"""
@@ -209,15 +207,11 @@ class HashGuesser:
     def substitute_basenames(self):
         """Check all basenames in each subdirectory"""
 
-        names = set(os.path.basename(p) for p in self.known.values())
+        names = {os.path.basename(p) for p in self.known.values()}
         dirs = self.directory_list()
-        unknown = self.unknown # global -> local for increased performance
         logger.info(f"substitute basenames: {len(names)} basenames, {len(dirs)} directories")
         for name in progress_iterator(sorted(names)):
-            for dir in dirs:
-                h = xxh64(f"{dir}/{name}").intdigest() # inline check() for increased performance
-                if h in unknown:
-                    self._add_known(h, f"{dir}/{name}")
+            self.check_iter(f"{dir}/{name}" for dir in dirs)
 
     def _substitute_basename_words(self, paths, words, amount=1):
         """Substitutes {amount} side by side words in all basenames
@@ -236,17 +230,14 @@ class HashGuesser:
         formats = {fmt.replace("{sep}", sep) for fmt in temp_formats for sep in "-_"}
 
         product = itertools.product
-        unknown = self.unknown # global -> local for increased performance
         logger.info(f"substitute basename words ({amount}): {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
-            for p in product(words, repeat=amount):
-                h = xxh64(fmt % p).intdigest() # inline check() for increased performance
-                if h in unknown:
-                    self._add_known(h, fmt % p)
+            self.check_iter(fmt % p for p in product(words, repeat=amount))
 
     def _add_basename_word(self, paths, words):
         """Add a word to all known basenames"""
 
+        words = list(words) # Ensure words is a list
         re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
         formats = set()
         for path in paths:
@@ -257,10 +248,7 @@ class HashGuesser:
         unknown = self.unknown # global -> local for increased performance
         logger.info(f"add basename word: {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
-            for w in words:
-                h = xxh64(fmt % w).intdigest() # inline check() for increased performance
-                if h in unknown:
-                    self._add_known(h, fmt % w)
+            self.check_iter(fmt % w for w in words)
 
     def _double_substitution(self, paths, words):
         """Replaces a word in all basenames of all given paths by two words."""
@@ -273,13 +261,9 @@ class HashGuesser:
                 formats.update('%s%%s%s%%s%s' % (path[:m.start()], sep, path[m.end():]) for sep in "-_")
 
         product = itertools.product
-        unknown = self.unknown # global -> local for increased performance
         logger.info(f"double substitution: {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
-            for p in product(words, repeat=2):
-                h = xxh64(fmt % p).intdigest() # inline check() for increased performance
-                if h in unknown:
-                    self._add_known(h, fmt % p)
+            self.check_iter(fmt % p for p in product(words, repeat=2))
 
     def _substitute_numbers(self, paths, nmax=10000, digits=None):
         """Guess hashes by changing numbers in basenames"""
@@ -300,13 +284,9 @@ class HashGuesser:
                 formats.add(f'%s%s%s' % (path[:m.start()], fmt, path[m.end():]))
 
         nrange = range(nmax)
-        unknown = self.unknown # global -> local for increased performance
         logger.info(f"substitute numbers: {len(formats)} formats, nmax = {nmax}")
         for fmt in progress_iterator(sorted(formats)):
-            for n in nrange:
-                h = xxh64(fmt % n).intdigest() # inline check() for increased performance
-                if h in unknown:
-                    self._add_known(h, fmt % n)
+            self.check_iter(fmt % n for n in nrange)
 
     def substitute_extensions(self):
         """Guess hashes by substituting file extensions"""
@@ -375,7 +355,7 @@ class LcuHashGuesser(HashGuesser):
 
         if words is None:
             words = self.build_wordlist()
-        paths = list(self.known.values())
+        paths = self.known.values()
         if plugin is not None:
             paths = [path for path in paths if path.startswith(f"plugins/{plugin}/")]
         if fileext is not None:
@@ -461,7 +441,7 @@ class LcuHashGuesser(HashGuesser):
                     self.check_iter(f'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/{cid}/metadata.json' for cid in champion_ids)
                 elif 'recommendedItemDefaults' in jdata:
                     # plugins/rcp-be-lol-game-data/global/default/v1/champions/{cid}.json
-                    self.check_iter('plugins/rcp-be-lol-game-data/global/default' + p.lower() for p in jdata['recommendedItemDefaults'])
+                    self.check_iter(f'plugins/rcp-be-lol-game-data/global/default{p.lower()}' for p in jdata['recommendedItemDefaults'])
 
             # search for known paths formats
             # /fe/{plugin}/{subpath} -> plugins/rcp-fe-{plugin}/global/default/{subpath}
@@ -477,7 +457,7 @@ class LcuHashGuesser(HashGuesser):
             # relative path starting with ./ or ../ (e.g. require() use)
             relpaths |= {m.group(1) for m in re.finditer(r'[^a-zA-Z0-9/_.\\-]((?:\.|\.\.)/[a-zA-Z0-9/_.-]+)', data)}
             # basename or subpath (check for an extension)
-            relpaths |= {m.group(1) for m in re.finditer(r'''["']([a-zA-Z0-9][a-zA-Z0-9/_.@-]*\.(?:js|json|webm|html|[a-z]{3}))["']''', data)}
+            relpaths |= {m.group(1) for m in re.finditer(r'''["']([a-zA-Z0-9][a-zA-Z0-9/_.@-]*\.(?:js|json|webm|html|[a-z]{3}))\b''', data)}
             # template ID to template path
             relpaths |= {f"{m.group(1)}/template.html" for m in re.finditer(r'<template id="[^"]*-template-([^"]+)"', data)}
             # JS maps
