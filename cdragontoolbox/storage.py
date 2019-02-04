@@ -1,6 +1,8 @@
 import os
 import re
 import itertools
+import json
+import glob
 from contextlib import contextmanager
 from typing import List, Tuple, Union, Optional, Generator, Iterable
 import logging
@@ -121,13 +123,107 @@ class RequestStreamReader:
         self.skip(pos - self.pos)
 
 
-class Storage:
-    """Download and store game and client files"""
+# registered storage classes
+_storage_registry = {}
+
+def load_storage_conf(path):
+    with open(path) as f:
+        conf = json.load(f)
+    if 'type' not in conf:
+        raise ValueError("storage configuration file must define its 'type'")
+    if 'path' not in conf:
+        conf['path'] = os.path.dirname(path)
+    return conf
+
+def storage_conf_from_path(path):
+    """Parse a path as supported by Storage.from_path()
+
+    The returned conf is guaranteed to have a `type` and a `path` entries.
+    """
+    if os.path.isdir(path):
+        conf_path = os.path.join(path, 'cdtb.storage.conf')
+        if os.path.isfile(conf_path):
+            return load_storage_conf(conf_path)
+        else:
+            conf = guess_storage_conf(path)
+            if conf is None:
+                raise ValueError(f"cannot guess storage configuration from '{path}'")
+            return conf
+    elif os.path.isfile(path):
+        return load_storage_conf(path)
+    elif ':' in path:
+        storage_type, storage_path = path.split(':', 1)
+        conf = {'type': storage_type, 'path': storage_path}
+    else:
+        raise ValueError(f"invalid storage path: {path}")
+
+def guess_storage_conf(path):
+    """Try to guess storage configuration from path"""
+
+    if os.path.isdir(os.path.join(path, 'solutions')):
+        # don't accept game installation directories
+        if glob.glob(os.path.join(path, 'solutions/lol_game_client_sln/releases/releases_*')):
+            return None
+        conf = {'type': 'rads', 'path': path}
+        basename = os.path.basename(path)
+        if basename in ('RADS.pbe', 'RADS.kr'):
+            conf['cdn'] = basename.split('.')[-1]
+        return conf
+    elif os.path.isdir(os.path.join(path, 'channels')):
+        return {'type': 'patcher', 'path': path}
+    return None
+
+
+class StorageRegister(type):
+    """Metaclass to register storage types"""
+
+    def __new__(mcs, name, bases, class_dict):
+        cls = type.__new__(mcs, name, bases, class_dict)
+        if cls.storage_type is not None:
+            _storage_registry[cls.storage_type] = cls
+        return cls
+
+class Storage(metaclass=StorageRegister):
+    """
+    Download and store game and client files
+
+    Each storage is basically a directory in which files are downloaded and
+    extracted if needed. Each storage type can define configuration options.
+    """
+
+    storage_type = None
 
     def __init__(self, path, url):
         self.path = path
         self.url = url
         self.s = requests.session()
+
+    @staticmethod
+    def from_path(path):
+        """Return a storage from a path
+
+        `path` can points to:
+        - a storage configuration file
+        - a directory containing a `cdtb.storage.conf` file
+        - a directory (storage configuration will be guessed, if possible)
+        - `type:dir_path` string
+        """
+
+        conf = storage_conf_from_path(path)
+        if conf is None:
+            raise ValueError(f"cannot retrieve storage configuration from '{path}'")
+
+    @staticmethod
+    def from_conf(conf):
+        try:
+            cls = _storage_registry[conf['type']]
+        except KeyError:
+            raise ValueError(f"unknown storage type: {conf['type']}")
+        return cls.from_conf_data(conf)
+
+    @classmethod
+    def from_conf_data(cls, conf):
+        raise NotImplementedError()
 
     def request_get(self, path, **kwargs) -> requests.Response:
         """Request a path, returns a requests.Response object"""

@@ -4,7 +4,6 @@ import sys
 import argparse
 import json
 import re
-import glob
 import textwrap
 import fnmatch
 import logging
@@ -14,6 +13,7 @@ from cdragontoolbox.storage import (
     Patch,
     PatchVersion,
     parse_storage_component,
+    storage_conf_from_path,
 )
 from cdragontoolbox.rads import RadsStorage
 from cdragontoolbox.patcher import PatcherStorage
@@ -60,35 +60,20 @@ def parse_storage_args(parser, args) -> Storage:
 
     path = default_path if args.storage is None else args.storage
     if path is None:
-        path = "rads:RADS" if cdn == 'default' else f"rads:RADS.{cdn}"
-
-    m = re.match(r'^(?:(rads|patcher):)?(.*)$', path)
-    storage_type, storage_path = m.groups()
-    if storage_type is None:
-        storage_type = guess_storage_type(storage_path)
-        if not storage_type:
-            parser.error("cannot guess storage type of '{path}'")
-
-    if storage_type == 'rads':
-        storage_url = getattr(RadsStorage, f"URL_{cdn}".upper())
-        return RadsStorage(path, storage_url)
-    elif storage_type == 'patcher':
-        if cdn != 'default':
-            parser.error("--cdn not supported for patcher storage")
-        return PatcherStorage(storage_path)
-    raise RuntimeError("invalid storage type")  # unreachable
-
-def guess_storage_type(path):
-    """Try to guess storage type from path"""
-
-    if os.path.isdir(os.path.join(path, 'solutions')):
-        # don't accept game installation directories
-        if glob.glob(os.path.join(path, 'solutions/lol_game_client_sln/releases/releases_*')):
-            return None
-        return 'rads'
-    elif os.path.isdir(os.path.join(path, 'channels')):
-        return 'patcher'
-    return None
+        conf = {
+            'type': 'rads',
+            'path': "RADS" if cdn == 'default' else f"RADS.{cdn}",
+            'cdn': cdn,
+        }
+    else:
+        conf = storage_conf_from_path(path)
+        if conf is None:
+            parser.error(f"cannot retrieve storage configuration from '{path}'")
+        if conf['type'] == 'rads':
+            conf['cdn'] = cdn
+        elif cdn != 'default':
+            parser.error("--cdn is only supported for 'rads' storage")
+    return Storage.from_conf(conf)
 
 
 def command_download(parser, args):

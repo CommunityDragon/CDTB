@@ -36,7 +36,16 @@ class RadsVersion(BaseVersion):
 
 
 class RadsStorage(Storage):
-    """Storage based on RADS structure"""
+    """
+    Storage based on RADS structure
+
+    Configuration options:
+      url -- storage URL (see examples below)
+      cdn -- 'default', 'kr' or 'pbe' (incompatible with 'url')
+
+    """
+
+    storage_type = 'rads'
 
     # all available values are in system.yaml
     # values in use are in RADS/system/system.cfg
@@ -54,6 +63,16 @@ class RadsStorage(Storage):
         if url is None:
             url = self.URL_DEFAULT
         super().__init__(path, url)
+
+    @classmethod
+    def from_conf_data(cls, conf):
+        if 'cdn' in conf:
+            if 'url' in conf:
+                raise ValueError("'url' and 'cdn' are mutually exclusive")
+            url = getattr(cls, f"URL_{conf['cdn']}".upper())
+        else:
+            url = conf.get('url')
+        return cls(conf['path'], url)
 
     def list_projects(self) -> List['RadsProject']:
         """List projects present in storage"""

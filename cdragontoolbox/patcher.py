@@ -265,13 +265,23 @@ class PatcherStorage(Storage):
     under the same file tree. This is because only bundles and chunks are
     shared between channels, not versions and extracted files.
 
+    Configuration options:
+      channel -- the channel name
+
     """
 
-    URL_BASE = "https://lol.dyn.riotcdn.net/"
+    storage_type = 'patcher'
 
-    def __init__(self, path, channel='pbe-pbe-win'):
+    URL_BASE = "https://lol.dyn.riotcdn.net/"
+    DEFAULT_CHANNEL = 'pbe-pbe-win'  #XXX temporay ("live" channel is not known yet)
+
+    def __init__(self, path, channel=DEFAULT_CHANNEL):
         super().__init__(path, self.URL_BASE)
         self.channel = channel
+
+    @classmethod
+    def from_conf_data(cls, conf):
+        return cls(conf['path'], conf.get('channel', cls.DEFAULT_CHANNEL))
 
     def list_releases(self) -> List['PatcherRelease']:
         """List releases available in the storage, latest first"""
@@ -371,7 +381,7 @@ class PatcherRelease:
         return f"<{self.__class__.__qualname__} {self.version}>"
 
     @classmethod
-    def fetch_latest(cls, storage: PatcherStorage, channel='pbe-pbe-win'):
+    def fetch_latest(cls, storage: PatcherStorage):
         data = storage.request_release_data()
         version = data['version']
         # store data in the storage, at the right place
