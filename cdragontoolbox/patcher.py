@@ -2,6 +2,7 @@ import os
 import re
 import io
 import json
+import hashlib
 import logging
 from typing import List, Optional, Generator
 
@@ -50,6 +51,13 @@ class PatcherFile:
         self.link = link
         self.langs = langs
         self.chunks = chunks
+
+    def hexdigest(self):
+        """Compute a hash unique for this file content"""
+        m = hashlib.sha1()
+        for chunk in self.chunks:
+            m.update(b"%016X" % chunk.chunk_id)
+        return m.hexdigest()
 
 
 class PatcherManifest:
@@ -256,17 +264,24 @@ class PatcherStorage(Storage):
           bundles/
           releases/
       cdtb/  -- CDTB files and exported files
-        {channel}/{version}/  -- one directory per channel and release version
+        channels/{channel}/{version}/  -- one directory per channel and release version
           release.json  -- copy of release's JSON file
           files/  -- release files, extracted from bundles
           patch_version.{elem}  -- cached patch version for element `name`
+        files/  -- extracted files, named after their hash (shared)
 
     One instance handles a single channel, even if all channels are stored
     under the same file tree. This is because only bundles and chunks are
     shared between channels, not versions and extracted files.
 
+    The `cdtb/files/` directory is used to avoid to extract (and store)
+    multiple copies of the same file. Actual files are put in `cdtb/files/` and
+    `channels/.../files/` contains symlinks to them.
+    This can be disabled by setting the `use_extract_symlinks` option to false.
+
     Configuration options:
       channel -- the channel name
+      use_extract_symlinks -- if false, disable use of symlinks for extracted files
 
     """
 
@@ -278,15 +293,19 @@ class PatcherStorage(Storage):
     def __init__(self, path, channel=DEFAULT_CHANNEL):
         super().__init__(path, self.URL_BASE)
         self.channel = channel
+        self.use_extract_symlinks = True
 
     @classmethod
     def from_conf_data(cls, conf):
-        return cls(conf['path'], conf.get('channel', cls.DEFAULT_CHANNEL))
+        storage = cls(conf['path'], conf.get('channel', cls.DEFAULT_CHANNEL))
+        if conf.get('use_extract_symlinks') is False:
+            storage.use_extract_symlinks = False
+        return storage
 
     def list_releases(self) -> List['PatcherRelease']:
         """List releases available in the storage, latest first"""
 
-        base = self.fspath(f"cdtb/{self.channel}")
+        base = self.fspath(f"cdtb/channels/{self.channel}")
         if not os.path.isdir(base):
             return []
         versions = []
@@ -354,10 +373,27 @@ class PatcherStorage(Storage):
         if not overwrite and os.path.isfile(output) and os.path.getsize(output) == file.size:
             logger.debug(f"skip {file.name}: already built to {output}")
             return
-        logger.debug(f"extract {file.name} to {output}")
-        with write_file_or_remove(output) as f:
-            for chunk in file.chunks:
-                f.write(self.load_chunk(chunk))
+
+        if self.use_extract_symlinks:
+            real_output = self.fspath(f"cdtb/files/{file.hexdigest()}")
+        else:
+            real_output = output
+
+        if not os.path.isfile(real_output):
+            logger.debug(f"extract {file.name} to {real_output}")
+            with write_file_or_remove(real_output) as f:
+                for chunk in file.chunks:
+                    f.write(self.load_chunk(chunk))
+
+        if self.use_extract_symlinks:
+            logger.debug(f"symlink {real_output} to {output}")
+            try:
+                os.remove(output)
+            except OSError:
+                pass
+            output_dir = os.path.dirname(output)
+            os.makedirs(output_dir, exist_ok=True)
+            os.symlink(os.path.relpath(real_output, output_dir), output)
 
 
 class PatcherRelease:
@@ -368,7 +404,7 @@ class PatcherRelease:
     def __init__(self, storage: PatcherStorage, version):
         self.storage = storage
         self.version = version
-        self.storage_dir = f"cdtb/{storage.channel}/{version}"
+        self.storage_dir = f"cdtb/channels/{storage.channel}/{version}"
         with open(self.storage.fspath(f"{self.storage_dir}/release.json")) as f:
             self.data = json.load(f)
         self._elements = {}  # {name: PatcherPatchElement}
@@ -385,7 +421,7 @@ class PatcherRelease:
         data = storage.request_release_data()
         version = data['version']
         # store data in the storage, at the right place
-        path = storage.fspath(f"cdtb/{storage.channel}/{version}/release.json")
+        path = storage.fspath(f"cdtb/channels/{storage.channel}/{version}/release.json")
         with write_file_or_remove(path, binary=False) as f:
             json.dump(data, f)
         return cls(storage, version)

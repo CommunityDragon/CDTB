@@ -13,3 +13,8 @@ from cdragontoolbox.export import (
     Exporter,
     CdragonRawPatchExporter,
 )
+
+# import storages to register them
+import cdragontoolbox.rads
+import cdragontoolbox.patcher
+

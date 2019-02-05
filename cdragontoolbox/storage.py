@@ -11,7 +11,6 @@ import hachoir.parser
 import hachoir.metadata
 
 from .tools import write_file_or_remove
-from .data import Language
 
 logger = logging.getLogger(__name__)
 
@@ -212,6 +211,7 @@ class Storage(metaclass=StorageRegister):
         conf = storage_conf_from_path(path)
         if conf is None:
             raise ValueError(f"cannot retrieve storage configuration from '{path}'")
+        return Storage.from_conf(conf)
 
     @staticmethod
     def from_conf(conf):
