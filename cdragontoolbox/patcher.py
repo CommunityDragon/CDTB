@@ -339,6 +339,7 @@ class PatcherStorage(Storage):
         """Download a manifest from its ID or full URL if needed, return its path in the storage"""
 
         if isinstance(id_or_url, str):
+            id_or_url = id_or_url.replace(".secure.", ".")
             if not id_or_url.startswith(self.url):
                 raise ValueError(f"unexpected base URL for manifest: {id_or_url}")
             m = re.match(r"^channels/public/releases/([0-9A-F]{16})\.manifest$", id_or_url[len(self.url):])
