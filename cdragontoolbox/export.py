@@ -336,10 +336,7 @@ class CdragonRawPatchExporter:
         self.patch = patch
         self.prev_patch = prev_patch
         if symlinks is None:
-            if os.name == 'nt' or not hasattr(os, 'symlink'):
-                self.create_symlinks = False
-            else:
-                self.create_symlinks = prev_patch is not None
+            self.create_symlinks = prev_patch is not None
         else:
             if symlinks and not prev_patch:
                 raise ValueError("cannot create symlinks without a previous patch")

@@ -243,13 +243,6 @@ def command_hashes_guess(parser, args):
 
 def command_export(parser, args):
     storage = args.storage
-
-    if args.symlinks:
-        # symlink are not supported on Windows because of the
-        # 'target_is_directory' parameter which requires extra handling
-        if os.name == 'nt' or not hasattr(os, 'symlink'):
-            parser.error("symlinks not supported on this platform")
-
     overwrite = not args.lazy
     symlinks = bool(args.symlinks)
 
