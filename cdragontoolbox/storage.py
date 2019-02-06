@@ -301,7 +301,12 @@ class Storage(metaclass=StorageRegister):
         """
 
         for _, group in itertools.groupby(self.patch_elements(stored=stored), key=lambda e: e.version):
-            yield Patch._create(list(group))
+            # keep latest sub-patch version of each element
+            elements = {}
+            for elem in group:
+                if elem.name not in elements:
+                    elements[elem.name] = elem
+            yield Patch._create(elements.values())
 
     def patch(self, version=None, stored=False) -> Optional['Patch']:
         """Retrieve a single patch, None if not found

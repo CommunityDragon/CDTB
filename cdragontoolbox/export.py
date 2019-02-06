@@ -139,7 +139,7 @@ class Exporter:
         for elem in patch.latest().elements:
             #XXX for now, exclude game language-specific files
             langs = elem.name == 'game'
-            for src, dst in elem.filepaths(langs=langs):
+            for src, dst in elem.paths(langs=langs):
                 self.add_path(src, dst)
 
     def filter_path(self, source_path, export_path):

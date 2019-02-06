@@ -408,7 +408,6 @@ class PatcherRelease:
         self.storage_dir = f"cdtb/channels/{storage.channel}/{version}"
         with open(self.storage.fspath(f"{self.storage_dir}/release.json")) as f:
             self.data = json.load(f)
-        self._elements = {}  # {name: PatcherPatchElement}
 
 
     def __str__(self):
@@ -445,7 +444,7 @@ class PatcherRelease:
             if elem is not None:
                 yield elem
 
-    def download(self, langs=True):
+    def download_bundles(self, langs=True):
         """Download bundles from CDN for the release"""
 
         for elem in self.elements():
@@ -484,7 +483,7 @@ class PatcherReleaseElement:
     def __repr__(self):
         return f"<{self.__class__.__qualname__} {self.release.version} {self.name}>"
 
-    def download(self, langs=True):
+    def download_bundles(self, langs=True):
         """Download bundles from CDN"""
 
         logger.info(f"download bundles for {self}")
@@ -566,7 +565,8 @@ class PatcherPatchElement(PatchElement):
         super().__init__(elem.name, version)
 
     def download(self, langs=True):
-        self.elem.download(langs=langs)
+        self.elem.download_bundles(langs=langs)
+        self.elem.extract(langs=langs)
 
     def fspaths(self, langs=True):
         return (self.elem.extract_path(f) for f in self.elem.manif.filter_files(langs=langs))
