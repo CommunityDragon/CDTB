@@ -213,17 +213,16 @@ class HashGuesser:
         for name in progress_iterator(sorted(names)):
             self.check_iter(f"{dir}/{name}" for dir in dirs)
 
-    def _substitute_basename_words(self, paths, words, x=1, y=1):
-        """Replaces x side by side words with y words in all basenames of all given paths
-        (default=1 for simple 1 word substitution). x > 0; y > 0 is required."""
+    def _substitute_basename_words(self, paths, words, nold=1, nnew=1):
+        """Replaces nold side by side words with nnew words in all basenames of all given paths
+        (default=1 for simple 1 word substitution). nold > 0; nnew > 0 is required."""
 
-        if not (x and y):
-            print("Either x or y is 0.")
-            return
+        if not (nold and nnew):
+            raise ValueError("Either nold or nnew is 0.")
         words = list(words) # Ensure words is a list
-        format_part = "{sep}%%s" * (y-1)
+        format_part = "{sep}%%s" * (nnew-1)
         format_part = f"%s%%s{format_part}%s"
-        re_extract = re.compile(f"([^/_.-]+)(?=((?:[-_][^/_.-]+){{{x-1}}})[^/]*\.[^/]+$)")
+        re_extract = re.compile(f"([^/_.-]+)(?=((?:[-_][^/_.-]+){{{nold-1}}})[^/]*\.[^/]+$)")
         temp_formats = set()
         for path in paths:
             for m in re_extract.finditer(path):
@@ -233,9 +232,9 @@ class HashGuesser:
         formats = {fmt.replace("{sep}", sep) for fmt in temp_formats for sep in "-_"}
 
         product = itertools.product
-        logger.info(f"substitute basename words ({x} by {y}): {len(formats)} formats, {len(words)} words")
+        logger.info(f"substitute basename words ({nold} by {nnew}): {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
-            self.check_iter(fmt % p for p in product(words, repeat=y))
+            self.check_iter(fmt % p for p in product(words, repeat=nnew))
 
     def _add_basename_word(self, paths, words):
         """Add a word to all known basenames"""
@@ -336,14 +335,10 @@ class LcuHashGuesser(HashGuesser):
             replacement = r'plugins/\1/%s/%s/' % region_lang
             self.check_iter(regex.sub(replacement, p) for p in known)
 
-    def substitute_basename_words(self, plugin=None, fileext=None, words=None, amount=None, x=1, y=1):
-        """Substitutes {amount} side by side words in all basenames or replaces
-        x side by side words with y words (default=1 for simple 1 word substitution).
-        Additionally, a plugin name and file extension can be specified to filter on."""
+    def substitute_basename_words(self, plugin=None, fileext=None, words=None, nold=1, nnew=1):
+        """Replaces nold side by side words in basenames with nnew words (default=1 for simple 1 word substitution).
+        Additionally, a plugin name, file extension and wordlist can be specified to filter on."""
 
-        if amount:
-            x = amount
-            y = amount
         if words is None:
             words = self.build_wordlist()
         paths = self.known.values()
@@ -352,7 +347,7 @@ class LcuHashGuesser(HashGuesser):
         if fileext:
             paths = [path for path in paths if path.endswith(fileext)]
 
-        super()._substitute_basename_words(paths, words, x=x, y=y)
+        super()._substitute_basename_words(paths, words, nold=nold, nnew=nnew)
 
     def add_basename_word(self):
         super()._add_basename_word(self.known.values(), self.build_wordlist())
