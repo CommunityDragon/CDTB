@@ -170,9 +170,11 @@ class HashGuesser:
         # failsafe for common dumb error
         if isinstance(paths, str):
             raise TypeError("expected iterable of strings, got a string")
-        c = self.check
+        unknown = self.unknown
         for p in paths:
-            c(p)
+            h = xxh64(p).intdigest()
+            if h in unknown:
+                self._add_known(h, p)
 
     def check_text_list(self, text):
         """Check paths from a text list"""
@@ -186,7 +188,8 @@ class HashGuesser:
         """Check a list of basenames for each known subdirectory"""
 
         dirs = self.directory_list()
-        self.check_iter(f"{d}/{name}" for name in names for d in dirs)
+        for name in progress_iterator(sorted(names)):
+            self.check_iter(f"{dir}/{name}" for dir in dirs)
 
     def directory_list(self, cached=True):
         """Return a set of all directories and subdirectories"""
@@ -198,45 +201,55 @@ class HashGuesser:
             while len(bases):
                 bases = {os.path.dirname(p) for p in bases} - dirs
                 dirs |= bases
-            self.__directory_list = dirs
+            self.__directory_list = list(dirs)
         return self.__directory_list
 
     def substitute_basenames(self):
         """Check all basenames in each subdirectory"""
 
-        names = set(os.path.basename(p) for p in self.known.values())
+        names = {os.path.basename(p) for p in self.known.values()}
         dirs = self.directory_list()
         logger.info(f"substitute basenames: {len(names)} basenames, {len(dirs)} directories")
         for name in progress_iterator(sorted(names)):
-            self.check_iter(f"{d}/{name}" for d in dirs)
+            self.check_iter(f"{dir}/{name}" for dir in dirs)
 
-    def _substitute_basename_words(self, words):
-        """Replace all words in known basename"""
+    def _substitute_basename_words(self, paths, words, nold=1, nnew=1):
+        """Replaces nold side by side words with nnew words in all basenames of all given paths
+        (default=1 for simple 1 word substitution). nold > 0; nnew > 0 is required."""
 
-        re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
-        formats = set()
-        for path in self.known.values():
+        if not (nold and nnew):
+            raise ValueError("Either nold or nnew is 0.")
+        words = list(words) # Ensure words is a list
+        format_part = "{sep}%%s" * (nnew-1)
+        format_part = f"%s%%s{format_part}%s"
+        re_extract = re.compile(f"([^/_.-]+)(?=((?:[-_][^/_.-]+){{{nold-1}}})[^/]*\.[^/]+$)")
+        temp_formats = set()
+        for path in paths:
             for m in re_extract.finditer(path):
-                formats.add('%s%%s%s' % (path[:m.start()], path[m.end():]))
+                match = m.group(1) + m.group(2)
+                temp_formats.add(format_part % (path[:m.start()], path[m.span()[0]+len(match):]))
 
-        logger.info(f"substitute basename words: {len(formats)} formats, {len(words)} words")
+        formats = {fmt.replace("{sep}", sep) for fmt in temp_formats for sep in "-_"}
+
+        product = itertools.product
+        logger.info(f"substitute basename words ({nold} by {nnew}): {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
-            self.check_iter(fmt % s for s in words)
+            self.check_iter(fmt % p for p in product(words, repeat=nnew))
 
-    def _add_basename_word(self, words):
-        """Add a known word to all known basenames"""
+    def _add_basename_word(self, paths, words):
+        """Add a word to all known basenames"""
 
+        words = list(words) # Ensure words is a list
         re_extract = re.compile(r'([^/_.-]+)(?=[^/]*\.[^/]+$)')
         formats = set()
-        for path in self.known.values():
-            if "assets/characters" not in path and "vo/" not in path and "sfx/" not in path and "skins_skin" not in path: # Reduce the iteration time for game hashes
-                for m in re_extract.finditer(path):
-                    formats.update('%s%%s%s%s' % (path[:m.start()], sep, path[m.start():]) for sep in "-._")
-                    formats.update('%s%s%%s%s' % (path[:m.end()], sep, path[m.end():]) for sep in "-._")
+        for path in paths:
+            for m in re_extract.finditer(path):
+                formats.update('%s%%s%s%s' % (path[:m.start()], sep, path[m.start():]) for sep in "-_")
+                formats.update('%s%s%%s%s' % (path[:m.end()], sep, path[m.end():]) for sep in "-_")
 
         logger.info(f"add basename word: {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
-            self.check_iter(fmt % s for s in words)
+            self.check_iter(fmt % w for w in words)
 
     def _substitute_numbers(self, paths, nmax=10000, digits=None):
         """Guess hashes by changing numbers in basenames"""
@@ -315,18 +328,29 @@ class LcuHashGuesser(HashGuesser):
         langs = [l.value for l in Language] + ['default']
 
         regex = re.compile(r'^plugins/([^/]+)/[^/]+/[^/]+/')
-        logger.info(f"substitute region and lang")
         region_lang_list = [(r, l) for r in regions for l in langs]
         known = list(self.known.values())
+        logger.info(f"substitute region and lang")
         for region_lang in progress_iterator(region_lang_list, lambda rl: f"{rl[0]}/{rl[1]}"):
             replacement = r'plugins/\1/%s/%s/' % region_lang
             self.check_iter(regex.sub(replacement, p) for p in known)
 
-    def substitute_basename_words(self):
-        super()._substitute_basename_words(self.build_wordlist())
+    def substitute_basename_words(self, plugin=None, fileext=None, words=None, nold=1, nnew=1):
+        """Replaces nold side by side words in basenames with nnew words (default=1 for simple 1 word substitution).
+        Additionally, a plugin name, file extension and wordlist can be specified to filter on."""
+
+        if words is None:
+            words = self.build_wordlist()
+        paths = self.known.values()
+        if plugin:
+            paths = [path for path in paths if path.startswith(f"plugins/{plugin}/")]
+        if fileext:
+            paths = [path for path in paths if path.endswith(fileext)]
+
+        super()._substitute_basename_words(paths, words, nold=nold, nnew=nnew)
 
     def add_basename_word(self):
-        super()._add_basename_word(self.build_wordlist())
+        super()._add_basename_word(self.known.values(), self.build_wordlist())
 
     def substitute_numbers(self, nmax=10000, digits=None):
         re_filter = re.compile(r"""(?:
@@ -381,7 +405,7 @@ class LcuHashGuesser(HashGuesser):
                 elif 'musicVolume' in jdata and 'files' in jdata:
                     # splash config
                     # try to guess subdirectory name (names should only contain one element)
-                    names = {s for path in jdata['files'].values() for s in re.findall(r'-splash-([^.]+)', path)}
+                    names = {s.lower() for path in jdata['files'].values() for s in re.findall(r'-splash-([^.]+)', path)}
                     self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/config.json" for name in names)
                     self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/{path}" for name in names for path in jdata['files'].values())
                     continue  # no more data to parse
@@ -391,7 +415,7 @@ class LcuHashGuesser(HashGuesser):
                     self.check_iter(f'plugins/rcp-be-lol-game-data/global/default/v1/champion-splashes/{cid}/metadata.json' for cid in champion_ids)
                 elif 'recommendedItemDefaults' in jdata:
                     # plugins/rcp-be-lol-game-data/global/default/v1/champions/{cid}.json
-                    self.check_iter('plugins/rcp-be-lol-game-data/global/default' + p.lower() for p in jdata['recommendedItemDefaults'])
+                    self.check_iter(f'plugins/rcp-be-lol-game-data/global/default{p.lower()}' for p in jdata['recommendedItemDefaults'])
 
             # search for known paths formats
             # /fe/{plugin}/{subpath} -> plugins/rcp-fe-{plugin}/global/default/{subpath}
@@ -406,7 +430,7 @@ class LcuHashGuesser(HashGuesser):
 
             # relative path starting with ./ or ../ (e.g. require() use)
             relpaths |= {m.group(1) for m in re.finditer(r'[^a-zA-Z0-9/_.\\-]((?:\.|\.\.)/[a-zA-Z0-9/_.-]+)', data)}
-            # basename or subpath (check for a extension)
+            # basename or subpath (check for an extension)
             relpaths |= {m.group(1) for m in re.finditer(r'''["']([a-zA-Z0-9][a-zA-Z0-9/_.@-]*\.(?:js|json|webm|html|[a-z]{3}))\b''', data)}
             # template ID to template path
             relpaths |= {f"{m.group(1)}/template.html" for m in re.finditer(r'<template id="[^"]*-template-([^"]+)"', data)}
@@ -511,21 +535,23 @@ class GameHashGuesser(HashGuesser):
     def check_basename_prefixes(self, prefixes=None):
         """Checks a provided list of prefixes for all basenames.
         If no list is provided, a default one will be used"""
+
         values = set()
         if prefixes is None:
-            prefixes = {'2x_', '2x_sd_', '4x_', '4x_sd_', 'sd_'}
+            prefixes = ['2x_', '2x_sd_', '4x_', '4x_sd_', 'sd_']
         for p in self.known.values():
             path, basename = p.rsplit('/', 1)
             values.update(f"{path}/{prefix}{basename}" for prefix in prefixes)
 
         logger.info(f"check basename prefixes: {len(prefixes)} prefixes with a total {len(values)} paths")
-        self.check_iter(value for value in values)
+        self.check_iter(value for value in list(values))
 
     def substitute_basename_words(self):
-        super()._substitute_basename_words(self.build_wordlist())
+        super()._substitute_basename_words(self.known.values(), self.build_wordlist())
 
     def add_basename_word(self):
-        super()._add_basename_word(self.build_wordlist())
+        paths = [path for path in self.known.values() if not any(part in path for part in ['assets/characters/', 'vo/', 'sfx/', 'skins_skin'])]
+        super()._add_basename_word(paths, self.build_wordlist())
 
     def substitute_character(self):
         """Guess hashes by changing champion names in assets/characters/"""
@@ -615,10 +641,10 @@ class GameHashGuesser(HashGuesser):
 
         logger.info(f"find skin groups .bin files using chroma groups")
         for char, groups in progress_iterator(char_to_skin_groups.items(), lambda v: v[0]):
-            str_groups = [[f"_skins_skin{i}" for i in group] for group in groups]
+            str_groups = [[f"_skins_skin{i}" for i in group] for group in groups] + [["_skins_root"]]
             for n in range(len(str_groups)):
                 for p in itertools.combinations(str_groups, n+1):
-                    # note: skins are in lexicographic order: skin11 is before skin2
+                    # note: skins are in lexicographic order: skin11 is before skin2; root before all
                     s = ''.join(sorted(s for g in p for s in g))
                     self.check(f"data/{char}{s}.bin")
 
@@ -694,6 +720,8 @@ class GameHashGuesser(HashGuesser):
 
         with open(wad.path, 'rb') as f:
             for wadfile in wad.files:
+                if wadfile.type == 2:
+                    continue # softlink; contains no actual content
                 if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm','anm',
                                    'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'luabin64', 'bnk', 'wpk'):
                     continue # don't grep filetypes known to not contain full paths
@@ -713,15 +741,18 @@ class GameHashGuesser(HashGuesser):
 
                 elif wadfile.ext == 'preload':
                     # preload files
-                    fmt = os.path.dirname(wadfile.path) + '/%s.preload' if wadfile.path else None
                     for m in re.finditer(br'Name="([^"]+)"', data):
                         path = m.group(1).lower().decode('ascii')
                         if path.endswith('.lua'):
                             self.check(path[:-4] + '.luabin')
+                            self.check(path[:-4] + '.luabin64')
                         elif path.endswith('.troy'):
-                            self.check(path[:-5] + '.troybin')
-                        elif fmt:
+                            self.check('data/shared/particles/'+ path[:-5] + '.troybin')
+                        elif wadfile.path:
+                            fmt = os.path.dirname(wadfile.path) + '/%s.preload'
                             self.check(fmt % path)
+                        else: # should this really be done?
+                            self.check_basenames(f"{path}.preload")
 
                 elif wadfile.ext in ('hls', 'ps_2_0', 'ps_3_0', 'vs_2_0', 'vs_3_0'):
                     # shader: search for includes
@@ -744,19 +775,20 @@ class GameHashGuesser(HashGuesser):
 
         # find path-like strings, then try to parse the length
         paths = set()
-        for m in re.finditer(br'(?:ASSETS|DATA|LEVELS)/[0-9a-zA-Z_. /-]+', data):
+        for m in re.finditer(br'(?:ASSETS|DATA|DATA_SOON|LEVELS)/[0-9a-zA-Z_. /-]+', data):
             path = m.group(0).lower().decode('ascii')
-            paths.add(path)
+            paths.add(path.replace("data_soon/", "data/"))
             pos = m.start()
             if pos >= 2:
                 n = struct.unpack('<H', data[pos-2:pos])[0]
                 if n == 0 and pos >= 4:
                     n = struct.unpack('<L', data[pos-4:pos])[0]
                 if n < len(path):
-                    paths.add(path[:n])
+                    paths.add(path[:n].replace("data_soon/", "data/"))
 
         for p in paths:
             if p.endswith('.lua'):
                 self.check(p[:-4] + '.luabin')
+                self.check(p[:-4] + '.luabin64')
             else:
                 self.check(p)
