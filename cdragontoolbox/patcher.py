@@ -59,6 +59,18 @@ class PatcherFile:
             m.update(b"%016X" % chunk.chunk_id)
         return m.hexdigest()
 
+    @staticmethod
+    def langs_predicate(langs):
+        """Return a predicate function for a `langs` filtering parameter"""
+        if langs is False:
+            return lambda f: f.langs is None
+        elif langs is True:
+            return lambda f: True
+        elif isinstance(langs, Language):
+            return lambda f: f.langs == [langs]
+        else:
+            return lambda f: f.langs is not None and langs in f.langs
+
 
 class PatcherManifest:
     def __init__(self, path_or_f=None):
@@ -76,16 +88,7 @@ class PatcherManifest:
 
     def filter_files(self, langs=True) -> List[PatcherFile]:
         """Filter files from the manifest with provided language(s)"""
-
-        if langs is False:
-            pred = lambda f: f.langs is None
-        elif langs is True:
-            pred = lambda f: True
-        elif isinstance(langs, Language):
-            pred = lambda f: f.langs == [langs]
-        else:
-            pred = lambda f: f.langs is not None and langs in f.langs
-        return filter(pred, self.files.values())
+        return filter(PatcherFile.langs_predicate(langs), self.files.values())
 
     def parse_rman(self, f):
         parser = BinParser(f)
@@ -302,12 +305,12 @@ class PatcherStorage(Storage):
             storage.use_extract_symlinks = False
         return storage
 
-    def list_releases(self) -> List['PatcherRelease']:
-        """List releases available in the storage, latest first"""
+    def iter_releases(self) -> List['PatcherRelease']:
+        """Generate releases available in the storage, latest first"""
 
         base = self.fspath(f"cdtb/channels/{self.channel}")
         if not os.path.isdir(base):
-            return []
+            return
         versions = []
         for version in os.listdir(base):
             try:
@@ -315,18 +318,16 @@ class PatcherStorage(Storage):
             except ValueError:
                 continue
 
-        ret = []
         for version in sorted(versions, reverse=True):
             if os.path.isfile(f"{base}/{version}/release.json"):
-                ret.append(PatcherRelease(self, version))
-        return ret
+                yield PatcherRelease(self, version)
 
     def patch_elements(self, stored=False):
         if not stored:
             # add latest release to the storage, if any
             PatcherRelease.fetch_latest(self)
 
-        for release in self.list_releases():
+        for release in self.iter_releases():
             for elem in release.elements():
                 yield PatcherPatchElement(elem)
 
@@ -466,14 +467,14 @@ class PatcherReleaseElement:
         self.release = release
         self.name = name
         self._manif = None
+        self.manif_url = self.release.data.get(f"{self.name}_patch_url")
 
     @property
     def manif(self):
         if self._manif is None:
-            manif_url = self.release.data.get(f"{self.name}_patch_url")
-            if not manif_url:
+            if not self.manif_url:
                 raise ValueError("no manifest URL found for {self}")
-            path = self.release.storage.download_manifest(manif_url)
+            path = self.release.storage.download_manifest(self.manif_url)
             self._manif = PatcherManifest(self.release.storage.fspath(path))
         return self._manif
 
@@ -577,3 +578,128 @@ class PatcherPatchElement(PatchElement):
     def paths(self, langs=True):
         for f in self.elem.manif.filter_files(langs=langs):
             yield (self.elem.extract_path(f), f.name.lower())
+
+
+class MultiPatcherStorage(Storage):
+    """
+    PatcherStorage merging multiple channels
+
+    This storage always announce a single element which merge the latest
+    elements of each individual sub-storage.
+
+    Configuration options:
+      channels -- the channel names
+
+    """
+
+    storage_type = 'multipatcher'
+
+    DEFAULT_CHANNELS = tuple(f"live-{x}-win.json" for x in "br eune euw jp kr la1 la2 na oc1 ru tr".split())
+
+    def __init__(self, path, channels=DEFAULT_CHANNELS):
+        if not channels:
+            raise ValueError("no channels")
+        super().__init__(path, PatcherStorage.URL_BASE)
+        self.substorages = [PatcherStorage(path, channel) for channel in channels]
+
+    @classmethod
+    def from_conf_data(cls, conf):
+        return cls(conf['path'], conf.get('channels', cls.DEFAULT_CHANNELS))
+
+    def patch_elements(self, stored=False):
+        if not stored:
+            # add latest releases to the storage, if any
+            for substorage in self.substorages:
+                PatcherRelease.fetch_latest(substorage)
+
+        # Peek next element for each storage.
+        # Skip duplicate manifests, order by patch version then timestamp.
+        manifest_urls = set()
+
+        class Peeker:
+            def __init__(self, it):
+                self.it = it
+                self.element = self.version = self.date = None
+
+            def peek(self):
+                while self.element is None:
+                    try:
+                        self.element = next(self.it)
+                    except StopIteration:
+                        return False
+                    if self.element.manif_url in manifest_urls:
+                        continue  # manifest already processed
+                    manifest_urls.add(self.element.manif_url)
+                    self.version = self.element.patch_version()
+                    self.date = self.element.release.data["timestamp"]
+                    break
+                return True
+
+            def consume(self):
+                assert self.element is not None
+                self.element = self.version = self.date = None
+
+        peekers = [Peeker(substorage.iter_releases()) for substorage in self.substorages]
+        current_elements = {}  # {name: [(date, elem)]}
+        current_version = {}  # {name: version}
+
+        while True:
+            best_peeker = None
+            for peeker in peekers:
+                if not peeker.peek():
+                    continue
+                if best_peeker is None or (peeker.version, peeker.date) > (best_peeker.version, best_peeker.date):
+                    best_peeker = peeker
+            if best_peeker is None:
+                break  # exhausted
+            name = best_peeker.element.name
+
+            if best_peeker.version != current_version.get(name):
+                # new version: yield the previous one
+                if name in current_elements:
+                    yield MultiPatcherPatchElement(name, best_peeker.version, current_elements[name])
+                current_elements[name] = []
+                current_version[name] = best_peeker.version
+            current_elements[name].append((best_peeker.date, best_peeker.element))
+            best_peeker.consume()
+
+        # don't forget the last versions
+        for name, elems in current_elements.items():
+            if elems:
+                yield MultiPatcherPatchElement(name, current_version[name], elems)
+
+
+class MultiPatcherPatchElement(PatchElement):
+    """Patch element from a multi-patcher storage"""
+
+    def __init__(self, name, version, dated_elements):
+        super().__init__(name, version)
+        self.elements = [e for d, e in sorted(dated_elements, key=lambda d,e: d, reverse=True)]
+        files = {}  # {name: (elem, f)}
+        for elem in self.elements:
+            for f in elem.manif.files:
+                if f.name not in files:
+                    files[f.name] = (elem, f)
+        self.files = files.values()
+
+    def download(self, langs=True):
+        for elem in self.elements:
+            # There must not be significant overhead for extracting everything,
+            # including "duplicate" files. Even for extract, since symlinks are
+            # used, it does not cost much. Moreoever, completely identical
+            # elements (same manifest) have already been filtered out.
+            elem.download_bundles(langs=langs)
+            elem.extract(langs=langs)
+
+    def fspaths(self, langs=True):
+        pred = PatcherFile.langs_predicate(langs)
+        return (elem.extract_path(f) for elem, f in self.files if pred(f))
+
+    def relpaths(self, langs=True):
+        pred = PatcherFile.langs_predicate(langs)
+        return (f.name.lower() for elem, f in self.files if pred(f))
+
+    def paths(self, langs=True):
+        pred = PatcherFile.langs_predicate(langs)
+        return ((elem.extract_path(f), f.name.lower()) for elem, f in self.files if pred(f))
+
