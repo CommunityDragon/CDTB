@@ -130,8 +130,7 @@ def load_storage_conf(path):
         conf = json.load(f)
     if 'type' not in conf:
         raise ValueError("storage configuration file must define its 'type'")
-    if 'path' not in conf:
-        conf['path'] = os.path.dirname(path)
+    conf['path'] = os.path.normpath(os.path.join(os.path.dirname(path), conf.get('path', '.')))
     return conf
 
 def storage_conf_from_path(path):
@@ -295,7 +294,7 @@ class Storage(metaclass=StorageRegister):
         return None
 
     def patches(self, stored=False) -> Generator['Patch', None, None]:
-        """Generate patch elements, sorted from the latest one
+        """Generate patch, sorted from the latest one
 
         See patch_elements() for additional remarks.
         """
@@ -306,7 +305,7 @@ class Storage(metaclass=StorageRegister):
             for elem in group:
                 if elem.name not in elements:
                     elements[elem.name] = elem
-            yield Patch._create(elements.values())
+            yield Patch._create(list(elements.values()))
 
     def patch(self, version=None, stored=False) -> Optional['Patch']:
         """Retrieve a single patch, None if not found

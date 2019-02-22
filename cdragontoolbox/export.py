@@ -138,7 +138,7 @@ class Exporter:
         # add files to export
         for elem in patch.latest().elements:
             #XXX for now, exclude game language-specific files
-            langs = elem.name == 'game'
+            langs = elem.name != 'game'
             for src, dst in elem.paths(langs=langs):
                 self.add_path(src, dst)
 
@@ -455,7 +455,7 @@ class CdragonRawPatchExporter:
                 continue  # already set
             dst_dir = os.path.dirname(dst)
             os.makedirs(dst_dir, exist_ok=True)
-            src = os.path.relpath(os.path.realpath(os.path.join(src_output, link)), dst_dir)
+            src = os.path.relpath(os.path.realpath(os.path.join(src_output, link)), os.path.realpath(dst_dir))
             logger.info(f"create symlink {dst}")
             os.symlink(src, dst)
 
@@ -481,7 +481,7 @@ class CdragonRawPatchExporter:
             versions.add(version)
 
         if not versions:
-            raise ValueError("no version directory found")
+            return []  # no version directory found
 
         # get patches from versions (latest to oldest)
         patches = []

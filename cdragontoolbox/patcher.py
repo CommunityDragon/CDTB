@@ -291,7 +291,7 @@ class PatcherStorage(Storage):
     storage_type = 'patcher'
 
     URL_BASE = "https://lol.dyn.riotcdn.net/"
-    DEFAULT_CHANNEL = 'pbe-pbe-win'  #XXX temporay ("live" channel is not known yet)
+    DEFAULT_CHANNEL = 'pbe-pbe-win'
 
     def __init__(self, path, channel=DEFAULT_CHANNEL):
         super().__init__(path, self.URL_BASE)
@@ -325,11 +325,15 @@ class PatcherStorage(Storage):
     def patch_elements(self, stored=False):
         if not stored:
             # add latest release to the storage, if any
-            PatcherRelease.fetch_latest(self)
+            self.fetch_latest_update()
 
         for release in self.iter_releases():
             for elem in release.elements():
                 yield PatcherPatchElement(elem)
+
+    def fetch_latest_update(self):
+        """Fetch the latest release from the CDN"""
+        PatcherRelease.fetch_latest(self)
 
     def request_release_data(self):
         r = self.request_get(f"channels/public/{self.channel}.json")
@@ -410,7 +414,6 @@ class PatcherRelease:
         with open(self.storage.fspath(f"{self.storage_dir}/release.json")) as f:
             self.data = json.load(f)
 
-
     def __str__(self):
         return f"patcher:v{self.version}"
 
@@ -484,13 +487,17 @@ class PatcherReleaseElement:
     def __repr__(self):
         return f"<{self.__class__.__qualname__} {self.release.version} {self.name}>"
 
+    def bundle_ids(self, langs=True) -> set:
+        """Return IDs of bundles used by the element as a set"""
+
+        files = [f for f in self.manif.filter_files(langs) if not f.link]
+        return {chunk.bundle.bundle_id for f in files for chunk in f.chunks}
+
     def download_bundles(self, langs=True):
         """Download bundles from CDN"""
 
         logger.info(f"download bundles for {self}")
-        files = [f for f in self.manif.filter_files(langs) if not f.link]
-        bundle_ids = {chunk.bundle.bundle_id for f in files for chunk in f.chunks}
-        for bundle_id in sorted(bundle_ids):
+        for bundle_id in sorted(self.bundle_ids(langs=langs)):
             self.release.storage.download_bundle(bundle_id)
 
     def extract(self, langs=True, overwrite=False):
@@ -552,8 +559,12 @@ class PatcherReleaseElement:
 
         file_name, extractor = retrievers[self.name]
         file = self.manif.files[file_name]
+        # download and extract file if needed
+        for bundle_id in {chunk.bundle.bundle_id for chunk in file.chunks}:
+            self.release.storage.download_bundle(bundle_id)
         self.extract_file(file)
-        version = extractor(self.extract_path(file_name))
+
+        version = extractor(self.extract_path(file))
         return PatchVersion(version)
 
 
@@ -594,7 +605,7 @@ class MultiPatcherStorage(Storage):
 
     storage_type = 'multipatcher'
 
-    DEFAULT_CHANNELS = tuple(f"live-{x}-win.json" for x in "br eune euw jp kr la1 la2 na oc1 ru tr".split())
+    DEFAULT_CHANNELS = tuple(f"live-{x}-win" for x in "br eune euw jp kr la1 la2 na oc1 ru tr".split())
 
     def __init__(self, path, channels=DEFAULT_CHANNELS):
         if not channels:
@@ -609,8 +620,7 @@ class MultiPatcherStorage(Storage):
     def patch_elements(self, stored=False):
         if not stored:
             # add latest releases to the storage, if any
-            for substorage in self.substorages:
-                PatcherRelease.fetch_latest(substorage)
+            self.fetch_latest_update()
 
         # Peek next element for each storage.
         # Skip duplicate manifests, order by patch version then timestamp.
@@ -624,14 +634,15 @@ class MultiPatcherStorage(Storage):
             def peek(self):
                 while self.element is None:
                     try:
-                        self.element = next(self.it)
+                        element = next(self.it)
                     except StopIteration:
                         return False
-                    if self.element.manif_url in manifest_urls:
+                    if element.manif_url in manifest_urls:
                         continue  # manifest already processed
-                    manifest_urls.add(self.element.manif_url)
-                    self.version = self.element.patch_version()
-                    self.date = self.element.release.data["timestamp"]
+                    manifest_urls.add(element.manif_url)
+                    self.element = element
+                    self.version = element.patch_version()
+                    self.date = element.release.data["timestamp"]
                     break
                 return True
 
@@ -639,7 +650,7 @@ class MultiPatcherStorage(Storage):
                 assert self.element is not None
                 self.element = self.version = self.date = None
 
-        peekers = [Peeker(substorage.iter_releases()) for substorage in self.substorages]
+        peekers = [Peeker((e for r in substorage.iter_releases() for e in r.elements())) for substorage in self.substorages]
         current_elements = {}  # {name: [(date, elem)]}
         current_version = {}  # {name: version}
 
@@ -668,18 +679,23 @@ class MultiPatcherStorage(Storage):
             if elems:
                 yield MultiPatcherPatchElement(name, current_version[name], elems)
 
+    def fetch_latest_update(self):
+        """Fetch the latest release from the CDN, for each substorage"""
+        for substorage in self.substorages:
+            substorage.fetch_latest_update()
+
 
 class MultiPatcherPatchElement(PatchElement):
     """Patch element from a multi-patcher storage"""
 
     def __init__(self, name, version, dated_elements):
         super().__init__(name, version)
-        self.elements = [e for d, e in sorted(dated_elements, key=lambda d,e: d, reverse=True)]
+        self.elements = [e for d, e in sorted(dated_elements, key=lambda o: o[0], reverse=True)]
         files = {}  # {name: (elem, f)}
         for elem in self.elements:
-            for f in elem.manif.files:
-                if f.name not in files:
-                    files[f.name] = (elem, f)
+            for fname, f in elem.manif.files.items():
+                if fname not in files:
+                    files[fname] = (elem, f)
         self.files = files.values()
 
     def download(self, langs=True):
