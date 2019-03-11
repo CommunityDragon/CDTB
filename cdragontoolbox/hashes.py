@@ -474,7 +474,7 @@ class LcuHashGuesser(HashGuesser):
         langs = [l.value for l in Language]
         paths = []
         for i in range(5):
-            for action in ('filter', 'unfilter'):
+            for action in ('filter', 'unfilter', 'whitelist'):
                 paths += [f'{i}.{action}.csv']
                 paths += [f'{i}.{action}.language.{x.split("_")[0]}.csv' for x in langs]
                 paths += [f'{i}.{action}.country.{x.split("_")[1]}.csv' for x in langs]
