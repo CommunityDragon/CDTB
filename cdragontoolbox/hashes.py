@@ -478,7 +478,7 @@ class LcuHashGuesser(HashGuesser):
                 paths += [f'{i}.{action}.csv']
                 paths += [f'{i}.{action}.language.{x.split("_")[0]}.csv' for x in langs]
                 paths += [f'{i}.{action}.country.{x.split("_")[1]}.csv' for x in langs]
-                paths += [f'{i}.{action}.region.{x}c.csv' for x in REGIONS]
+                paths += [f'{i}.{action}.region.{x}.csv' for x in REGIONS]
                 paths += [f'{i}.{action}.locale.{x}.csv' for x in langs]
         for p in 'allowedchars breakingchars projectedchars projectedchars1337 punctuationchars variantaliases'.split():
             paths += [f'{p}.locale.{x}.txt' for x in langs]
