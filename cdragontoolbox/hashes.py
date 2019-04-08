@@ -407,7 +407,7 @@ class LcuHashGuesser(HashGuesser):
                     # try to guess subdirectory name (names should only contain one element)
                     names = {s.lower() for path in jdata['files'].values() for s in re.findall(r'-splash-([^.]+)', path)}
                     self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/config.json" for name in names)
-                    self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/{path}" for name in names for path in jdata['files'].values())
+                    self.check_iter(f"plugins/rcp-fe-lol-splash/global/default/splash-assets/{name}/{path.lower()}" for name in names for path in jdata['files'].values())
                     continue  # no more data to parse
                 elif wadfile.path == 'plugins/rcp-be-lol-game-data/global/default/v1/champion-summary.json':
                     champion_ids = [v['id'] for v in jdata]
