@@ -759,7 +759,7 @@ def get_system_yaml_version(path) -> Optional[Version]:
         for line in f:
             # TODO do proper yaml parsing
             # formats: Release/X.Y or 'X.Y'
-            m = re.match(r"""^ *game-branch: .*["'/]([0-9.]+)["']?$""", line)
+            m = re.match(r"""^ *(?:game-|)branch: .*["'/]([0-9.]+)["']?$""", line)
             if m:
                 return Version(m.group(1))
         else:
