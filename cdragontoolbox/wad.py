@@ -89,7 +89,7 @@ class WadFileHeader:
         b'[ObjectBegin]': 'sco'
     }
 
-    def __init__(self, path_hash, offset, compressed_size, size, type, duplicate, unk0, unk1, sha256):
+    def __init__(self, path_hash, offset, compressed_size, size, type, duplicate=None, unk0=None, unk1=None, sha256=None):
         self.path_hash = path_hash
         self.offset = offset
         self.size = size
@@ -196,7 +196,9 @@ class Wad:
                 raise ValueError("invalid magic code")
             self.version = (version_major, version_minor)
 
-            if version_major == 2:
+            if version_major == 1:
+                parser.seek(8)
+            elif version_major == 2:
                 parser.seek(100)
             elif version_major == 3:
                 parser.seek(268)
@@ -204,7 +206,11 @@ class Wad:
                 raise ValueError(f"unsupported WAD version: {version_major}.{version_minor}")
 
             entry_count, = parser.unpack("<I")
-            self.files = [WadFileHeader(*parser.unpack("<QIIIBBBBQ")) for _ in range(entry_count)]
+
+            if version_major == 1:
+                self.files = [WadFileHeader(*parser.unpack("<QIIII")) for _ in range(entry_count)]
+            else:
+                self.files = [WadFileHeader(*parser.unpack("<QIIIBBBBQ")) for _ in range(entry_count)]
 
     def resolve_paths(self, hashes=None):
         """Guess path of files"""
