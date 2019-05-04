@@ -23865,6 +23865,7 @@ c567a9251ee47261 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/26
 bdd586d61b30f4a0 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/33.ogg
 964cd47a4bfc074e plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/34.ogg
 99febf1646b8aca8 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/35.ogg
+0701b58a0cc1a6c6 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/350.ogg
 439d26fc0c4d8ab9 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/36.ogg
 0051ddb3ccad0c2c plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/37.ogg
 7a5038baed18192c plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-ban-vo/38.ogg
@@ -24008,6 +24009,7 @@ f1b1ff337b96174b plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo
 e30d1247d2e0f0ff plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/33.ogg
 26a05ddd3b4b1360 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/34.ogg
 335d10d61e6501a2 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/35.ogg
+0c6892cf6beb2f7a plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/350.ogg
 3bc89977751df1b7 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/36.ogg
 ff6b4c2d9c701c51 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/37.ogg
 bdcfafc50069c052 plugins/rcp-be-lol-game-data/global/ja_jp/v1/champion-choose-vo/38.ogg
@@ -24329,6 +24331,7 @@ f21bb412b4767415 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-ban-vo/32
 5c965c4d8ba269d6 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-ban-vo/33.ogg
 fa4bd08c770d44b6 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-ban-vo/34.ogg
 3a9440aa5842ec79 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-ban-vo/35.ogg
+1e661cd540e41042 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-ban-vo/350.ogg
 68e81d4446d8f6c7 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-ban-vo/36.ogg
 f02bd8848b626b3f plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-ban-vo/37.ogg
 be5e2e0d05578478 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-ban-vo/38.ogg
@@ -24472,6 +24475,7 @@ c4baadfcc77c0f18 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-choose-vo
 bc070000a6846852 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-choose-vo/33.ogg
 057980acfc01244f plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-choose-vo/34.ogg
 49ed02f0c419cf39 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-choose-vo/35.ogg
+358ca3dbac092c0b plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-choose-vo/350.ogg
 cf0156a35d8d3609 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-choose-vo/36.ogg
 ace4788f5dc18f83 plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-choose-vo/37.ogg
 56bf19bcd64de12b plugins/rcp-be-lol-game-data/global/ko_kr/v1/champion-choose-vo/38.ogg
@@ -26206,6 +26210,7 @@ a14e72cec415b757 plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-ban-vo/30
 30aa828b16d778b9 plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-ban-vo/33.ogg
 760e4f0d5996c6d9 plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-ban-vo/34.ogg
 ef33b63f2472d71c plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-ban-vo/35.ogg
+5c64c91fa851b8eb plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-ban-vo/350.ogg
 ab1efb66cb33f624 plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-ban-vo/36.ogg
 ff8360046599e43e plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-ban-vo/37.ogg
 c19701a15a638b6c plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-ban-vo/38.ogg
@@ -26349,6 +26354,7 @@ ae9d66513ad1a50c plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-choose-vo
 6c5f3125d93f0eed plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-choose-vo/33.ogg
 1c675ac64e9a252e plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-choose-vo/34.ogg
 4de5ec00a16823e9 plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-choose-vo/35.ogg
+58a33c807c7f7223 plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-choose-vo/350.ogg
 06422206c877829c plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-choose-vo/36.ogg
 421e5ca7942c5eeb plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-choose-vo/37.ogg
 aee9f14a69834ed6 plugins/rcp-be-lol-game-data/global/ru_ru/v1/champion-choose-vo/38.ogg
@@ -26850,6 +26856,7 @@ dd396384c775cf37 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-ban-vo/30
 7d4cd27fcf43d320 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-ban-vo/33.ogg
 e5f39a8e40cab795 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-ban-vo/34.ogg
 6ab096041d67b50b plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-ban-vo/35.ogg
+501ec650ff6909d1 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-ban-vo/350.ogg
 f82963db097185fa plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-ban-vo/36.ogg
 98f0210bbe5a329c plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-ban-vo/37.ogg
 dacadd8f232637f1 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-ban-vo/38.ogg
@@ -26993,6 +27000,7 @@ f514bbe1ae8e3811 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-choose-vo
 8c1e9166f16defd7 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-choose-vo/33.ogg
 48454bde5400a654 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-choose-vo/34.ogg
 8bcc8e4b3f7a5072 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-choose-vo/35.ogg
+5442c0af2f341338 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-choose-vo/350.ogg
 cb3d09f7a30b9ac8 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-choose-vo/36.ogg
 ba5419e869ed6537 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-choose-vo/37.ogg
 94918d192d298928 plugins/rcp-be-lol-game-data/global/tr_tr/v1/champion-choose-vo/38.ogg
@@ -32402,6 +32410,7 @@ e74f02a4dfe70bc4 plugins/rcp-fe-lol-esports-spectate/global/zh_cn/trans.json
 9667bad961ee100b plugins/rcp-fe-lol-esports-spectate/global/zh_my/trans.json
 4bd699d6ad42e953 plugins/rcp-fe-lol-esports-spectate/global/zh_tw/trans.json
 fcee13bb437dd721 plugins/rcp-fe-lol-friend-finder/description.json
+f8a1706d5623131b plugins/rcp-fe-lol-friend-finder/global/ar_ae/trans.json
 ac242f0e5f848c78 plugins/rcp-fe-lol-friend-finder/global/cs_cz/trans.json
 2b3dcbf36389a259 plugins/rcp-fe-lol-friend-finder/global/de_de/trans.json
 6b7c86d4dc319801 plugins/rcp-fe-lol-friend-finder/global/default/add_person_mask.png
