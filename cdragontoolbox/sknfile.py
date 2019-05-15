@@ -1,7 +1,7 @@
 from .tools import BinParser
 
 
-class SKNFile:
+class SknFile:
     def __init__(self, file):
         if isinstance(file, str):
             file = open(file, "rb")
@@ -10,8 +10,8 @@ class SKNFile:
 
         f = BinParser(file)
 
-        self.major, self.minor, self.count = f.unpack("<HHI")
-        self.entries = [self.read_object(f) for i in range(self.count)]
+        self.major, self.minor, count = f.unpack("<HHI")
+        self.entries = [self.read_object(f) for i in range(count)]
 
         if self.major == 4:
             self.unknown, = f.unpack("<I")
@@ -26,13 +26,17 @@ class SKNFile:
             self.bounding_sphere_location = f.unpack("<fff")
             self.bounding_sphere_radius, = f.unpack("<f")
 
-        self.indecies = [f.unpack("<H")[0] for i in range(self.index_count)]
-        self.vertices = [self.read_vertex(f) for i in range(self.vertex_count)]
+        indices = [f.unpack("<H")[0] for i in range(self.index_count)]
+        vertices = [self.read_vertex(f) for i in range(self.vertex_count)]
 
         for entry in self.entries:
-            entry["vertices"] = self.vertices[entry["start_vertex"] : entry["start_vertex"] + entry["vertex_count"]]
-            entry["indecies"] = self.indecies[entry["start_index"] : entry["start_index"] + entry["index_count"]]
-            entry["indecies"] = [x - (0 if x > entry["start_vertex"] else entry["start_vertex"]) for x in entry["indecies"]]
+            entry["vertices"] = vertices[entry["start_vertex"] : entry["start_vertex"] + entry["vertex_count"]]
+            entry["indices"] = [(x + 1) - (0 if x > entry["start_vertex"] else entry["start_vertex"]) for x in indices[entry["start_index"] : entry["start_index"] + entry["index_count"]]]
+            # remove redundant information
+            entry.pop("start_vertex", None)
+            entry.pop("start_index", None)
+            entry.pop("vertex_count", None)
+            entry.pop("index_count", None)
 
     def read_object(self, f):
         return {
@@ -46,7 +50,7 @@ class SKNFile:
     def read_vertex(self, f):
         return {
             "position": f.unpack("<fff"),
-            "bone_indecies": f.unpack("<BBBB"),
+            "bone_indices": f.unpack("<BBBB"),
             "weight": f.unpack("<ffff"),
             "normal": f.unpack("<fff"),
             "uv": f.unpack("<ff"),
@@ -60,12 +64,8 @@ class SKNFile:
             content += "vt %s %s\n" % vert["uv"]
             content += "vn %s %s %s\n" % vert["normal"]
 
-        i = 0
-        while i < entry["index_count"]:
-            a = entry["indecies"][i] + 1
-            b = entry["indecies"][i + 1] + 1
-            c = entry["indecies"][i + 2] + 1
+        for i in range(0, len(entry["indices"]), 3):
+            a, b, c = entry["indices"][i:i+3]
             content += "f {0}/{0}/{0} {1}/{1}/{1}/ {2}/{2}/{2}\n".format(a, b, c)
-            i += 3
-
+            
         return content

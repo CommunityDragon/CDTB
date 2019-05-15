@@ -10,7 +10,7 @@ from PIL import Image
 from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
-from .sknfile import SKNFile
+from .sknfile import SknFile
 from .tools import write_file_or_remove
 
 logger = logging.getLogger(__name__)
@@ -399,7 +399,7 @@ class CdragonRawPatchExporter:
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
             BinConverter(re.compile(r'^game/data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin$')),
-            SKNConverter([".skn"]),
+            SknConverter([".skn"]),
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -551,7 +551,7 @@ class BinConverter(FileConverter):
         binfile = BinFile(fin)
         fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
 
-class SKNConverter(FileConverter):
+class SknConverter(FileConverter):
     def __init__(self, extensions):
         self.extensions = extensions
 
