@@ -10,6 +10,7 @@ from PIL import Image
 from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
+from .sknfile import SknFile
 from .tools import (
     write_file_or_remove,
     write_dir_or_remove,
@@ -407,6 +408,7 @@ class CdragonRawPatchExporter:
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
             BinConverter(re.compile(r'^game/data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin$')),
+            SknConverter([".skn"]),
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -577,4 +579,25 @@ class BinConverter(FileConverter):
     def convert_to_file(self, fin, fout):
         binfile = BinFile(fin)
         fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
+
+class SknConverter(FileConverter):
+    output_is_dir = True
+
+    def __init__(self, extensions):
+        self.extensions = extensions
+
+
+    def handle_path(self, path):
+        if self.extensions:
+            base, ext = os.path.splitext(path)
+            if ext in self.extensions:
+                return base
+        return None
+
+    def convert_to_dir(self, fin, path):
+        sknfile = SknFile(fin)
+        for entry in sknfile.entries:
+            name = os.path.join(path, entry["name"] + ".obj")
+            with open(name, "w") as f:
+                f.write(sknfile.to_obj(entry))
 
