@@ -10,6 +10,7 @@ from PIL import Image
 from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
+from .sknfile import SKNFile
 from .tools import write_file_or_remove
 
 logger = logging.getLogger(__name__)
@@ -398,6 +399,7 @@ class CdragonRawPatchExporter:
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
             BinConverter(re.compile(r'^game/data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin$')),
+            SKNConverter([".skn"]),
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -549,3 +551,28 @@ class BinConverter(FileConverter):
         binfile = BinFile(fin)
         fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
 
+class SKNConverter(FileConverter):
+    def __init__(self, extensions):
+        self.extensions = extensions
+
+
+    def handle_path(self, path):
+        if self.extensions:
+            base, ext = os.path.splitext(path)
+            if ext in self.extensions:
+                return path
+        return None
+
+    def convert_to_file(self, fin, fout):
+        # close the writer and delete the extracted file, as each skn file has multiple output files
+        fout.close()
+        os.remove(fout.name)
+        # create a new folder with the same name as the export file, that we use to export the obj files to
+        base, ext = os.path.splitext(fout.name)
+        os.makedirs(base, exist_ok=True)
+
+        sknfile = SKNFile(fin)
+        for entry in sknfile.entries:
+            name = os.path.join(base, entry["name"] + ".obj")
+            with open(name, "w") as f:
+                f.write(sknfile.to_obj(entry))
