@@ -23,20 +23,18 @@ The CLI interface allows:
 Here are some examples, use `python3 -m cdragontoolbox -h` for details.
 
 ```sh
-# download and extract files for the latest patch
-python3 -m cdragontoolbox download patch=
+# download and extract files for the latest patch to the directory `cdn`
+# (files from the new patcher will be used)
+python3 -m cdragontoolbox download -s patcher:cdn patch=
 
-# download a solution, don't download language-specific projects
-python3 -m cdragontoolbox download --no-lang lol_game_client_sln=0.0.1.196
+# same, but don't download language-specific files
+python3 -m cdragontoolbox download -s patcher:cdn --no-lang patch=
 
-# list projects used by patch 7.23
-python3 -m cdragontoolbox projects patch=7.23
+# list patch versions (using already downloaded data in `cdn/`)
+python3 -m cdragontoolbox versions -s cdn/ patch
 
-# list patch versions (using already downloaded data)
-python3 -m cdragontoolbox versions patch
-
-# list files used by a given project version
-python3 -m cdragontoolbox files league_client_fr_fr=0.0.0.80
+# list game files for patch 9.9
+python3 -m cdragontoolbox files -s cdn/ game=9.9
 
 # extract a WAD file
 python3 -m cdragontoolbox wad-extract path/to/assets.wad
@@ -47,9 +45,6 @@ python3 -m cdragontoolbox wad-list path/to/assets.wad
 # export files of patch 7.23 into export/7.23
 # (files unchanged from 7.22 files are listed into 7.23.links.txt)
 python3 -m cdragontoolbox export -o export 7.23
-
-# download Korean files of league client
-python3 -m cdragontoolbox download --cdn kr league_client_ko_kr=
 
 # export files from PBE
 python3 -m cdragontoolbox export --cdn pbe --full main
