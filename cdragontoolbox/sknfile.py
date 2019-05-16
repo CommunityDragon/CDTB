@@ -10,13 +10,16 @@ class SknFile:
 
         f = BinParser(file)
 
-        self.major, self.minor, count = f.unpack("<HHI")
+        self.major, self.minor = f.unpack("<HH")
 
-        # there are some version 0 files, we do not support them atm.
-        if self.major < 2:
-            self.entries = []
+        if self.major == 0:
+            self.index_count, self.vertex_count = f.unpack("<II")
+            indices = [f.unpack("<H")[0] for i in range(self.index_count)]
+            vertices = [self.read_vertex(f) for i in range(self.vertex_count)]
+            self.entries = [{"name": "Unknown", "vertices": vertices, "indices": [(x + 1) for x in indices]}]
             return
 
+        count, = f.unpack("<I")
         self.entries = [self.read_object(f) for i in range(count)]
 
         if self.major == 4:
@@ -37,7 +40,10 @@ class SknFile:
 
         for entry in self.entries:
             entry["vertices"] = vertices[entry["start_vertex"] : entry["start_vertex"] + entry["vertex_count"]]
-            entry["indices"] = [(x + 1) - (0 if x < entry["start_vertex"] else entry["start_vertex"]) for x in indices[entry["start_index"] : entry["start_index"] + entry["index_count"]]]
+            entry["indices"] = [
+                (x + 1) - (0 if x < entry["start_vertex"] else entry["start_vertex"]) for x in indices[entry["start_index"] : entry["start_index"] + entry["index_count"]]
+            ]
+            
             # remove redundant information
             entry.pop("start_vertex", None)
             entry.pop("start_index", None)
@@ -71,7 +77,7 @@ class SknFile:
             content += "vn %s %s %s\n" % vert["normal"]
 
         for i in range(0, len(entry["indices"]), 3):
-            a, b, c = entry["indices"][i:i+3]
+            a, b, c = entry["indices"][i : i + 3]
             content += "f {0}/{0}/{0} {1}/{1}/{1}/ {2}/{2}/{2}\n".format(a, b, c)
-            
+
         return content
