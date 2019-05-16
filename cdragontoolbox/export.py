@@ -558,7 +558,7 @@ class SknConverter(FileConverter):
 
     def handle_path(self, path):
         if self.extensions:
-            base, ext = os.path.splitext(path)
+            _, ext = os.path.splitext(path)
             if ext in self.extensions:
                 return path
         return None
@@ -568,10 +568,10 @@ class SknConverter(FileConverter):
         fout.close()
         os.remove(fout.name)
         # create a new folder with the same name as the export file, that we use to export the obj files to
-        base, ext = os.path.splitext(fout.name)
+        base, _ = os.path.splitext(fout.name)
         os.makedirs(base, exist_ok=True)
 
-        sknfile = SKNFile(fin)
+        sknfile = SknFile(fin)
         for entry in sknfile.entries:
             name = os.path.join(base, entry["name"] + ".obj")
             with open(name, "w") as f:
