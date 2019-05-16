@@ -13,10 +13,10 @@ class SknFile:
         self.major, self.minor = f.unpack("<HH")
 
         if self.major == 0:
-            self.index_count, self.vertex_count = f.unpack("<II")
-            indices = [f.unpack("<H")[0] for i in range(self.index_count)]
-            vertices = [self.read_vertex(f) for i in range(self.vertex_count)]
-            self.entries = [{"name": "Unknown", "vertices": vertices, "indices": [(x + 1) for x in indices]}]
+            index_count, vertex_count = f.unpack("<II")
+            indices = [(f.unpack("<H")[0] + 1) for i in range(index_count)]
+            vertices = [self.read_vertex(f) for i in range(vertex_count)]
+            self.entries = [{"name": "Unknown", "vertices": vertices, "indices": indices}]
             return
 
         count, = f.unpack("<I")
@@ -25,7 +25,7 @@ class SknFile:
         if self.major == 4:
             self.unknown, = f.unpack("<I")
 
-        self.index_count, self.vertex_count = f.unpack("<II")
+        index_count, vertex_count = f.unpack("<II")
 
         if self.major == 4:
             self.vertex_size, = f.unpack("<I")
@@ -35,20 +35,21 @@ class SknFile:
             self.bounding_sphere_location = f.unpack("<fff")
             self.bounding_sphere_radius, = f.unpack("<f")
 
-        indices = [f.unpack("<H")[0] for i in range(self.index_count)]
-        vertices = [self.read_vertex(f) for i in range(self.vertex_count)]
+        indices = [(f.unpack("<H")[0] + 1) for i in range(index_count)]
+        vertices = [self.read_vertex(f) for i in range(vertex_count)]
 
         for entry in self.entries:
             entry["vertices"] = vertices[entry["start_vertex"] : entry["start_vertex"] + entry["vertex_count"]]
             entry["indices"] = [
-                (x + 1) - (0 if x < entry["start_vertex"] else entry["start_vertex"]) for x in indices[entry["start_index"] : entry["start_index"] + entry["index_count"]]
+                x - (0 if x < entry["start_vertex"] else entry["start_vertex"])
+                for x in indices[entry["start_index"] : entry["start_index"] + entry["index_count"]]
             ]
-            
+
             # remove redundant information
-            entry.pop("start_vertex", None)
-            entry.pop("start_index", None)
-            entry.pop("vertex_count", None)
-            entry.pop("index_count", None)
+            del entry["start_vertex"]
+            del entry["start_index"]
+            del entry["vertex_count"]
+            del entry["index_count"]
 
     def read_object(self, f):
         return {
