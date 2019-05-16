@@ -40,7 +40,7 @@ def parse_component_arg(parser, storage: Storage, component: str):
     if isinstance(component, Patch):
         return list(component.elements)
     else:
-        return [component.elements]
+        return [component]
 
 def parse_component_args(parser, storage: Storage, components):
     return [e for c in components for e in parse_component_arg(parser, storage, c)]
