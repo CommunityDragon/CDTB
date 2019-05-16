@@ -151,7 +151,7 @@ def storage_conf_from_path(path):
         return load_storage_conf(path)
     elif ':' in path:
         storage_type, storage_path = path.split(':', 1)
-        conf = {'type': storage_type, 'path': storage_path}
+        return {'type': storage_type, 'path': storage_path}
     else:
         raise ValueError(f"invalid storage path: {path}")
 
