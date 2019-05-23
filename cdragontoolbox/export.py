@@ -10,7 +10,10 @@ from PIL import Image
 from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
-from .tools import write_file_or_remove
+from .tools import (
+    write_file_or_remove,
+    write_dir_or_remove,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -228,7 +231,7 @@ class Exporter:
             self._export_wad(wad, overwrite)
 
     def clean_output_dir(self, kept_files, kept_symlinks):
-        """Remove regular files/symlinks from output, except given ones
+        """Remove regular files (or directories) and symlinks from output, except given ones
 
         This method is intended to be used to clean-up files that should not be
         extracted/symlinked. Parent directories are removed (if empty).
@@ -236,24 +239,30 @@ class Exporter:
         """
 
         # collect files to remove
-        to_remove = []
+        trees_to_remove = []
+        files_to_remove = []
         for path in self.walk_output_dir():
             full_path = os.path.join(self.output, path)
             if os.path.islink(full_path):
-                if path in kept_symlinks:
-                    continue
-            elif os.path.isfile(full_path):
-                if path in kept_files:
-                    continue
+                if path not in kept_symlinks:
+                    files_to_remove.append(full_path)
             else:
-                raise ValueError(f"unexpected directory: {full_path}")
-            to_remove.append(full_path)
+                if path not in kept_files:
+                    if os.path.isdir(full_path):
+                        trees_to_remove.append(full_path)
+                    else:
+                        files_to_remove.append(full_path)
 
         dirs_to_remove = set()
-        for path in to_remove:
+        for path in files_to_remove:
             logger.info(f"remove extra file or symlink: {path}")
             os.remove(path)
             dirs_to_remove.add(os.path.dirname(path))
+        for path in trees_to_remove:
+            logger.info(f"remove extra directory: {path}")
+            shutil.rmtree(path)
+            dirs_to_remove.add(os.path.dirname(path))
+
         for path in dirs_to_remove:
             try:
                 os.removedirs(path)
@@ -282,11 +291,11 @@ class Exporter:
 
         try:
             with open(source_path, 'rb') as fin:
-                with write_file_or_remove(output_path) as fout:
-                    if converter is None:
+                if converter is None:
+                    with write_file_or_remove(output_path) as fout:
                         shutil.copyfileobj(fin, fout)
-                    else:
-                        converter.convert_to_file(fin, fout)
+                else:
+                    converter.convert(fin, output_path)
         except FileConversionError as e:
             logger.warning(f"cannot convert file '{source_path}': {e}")
 
@@ -308,11 +317,11 @@ class Exporter:
                     continue  # should not happen, file redirections have been filtered already
 
                 try:
-                    with write_file_or_remove(output_path) as fout:
-                        if converter is None:
+                    if converter is None:
+                        with write_file_or_remove(output_path) as fout:
                             fout.write(data)
-                        else:
-                            converter.convert_to_file(BytesIO(data), fout)
+                    else:
+                        converter.convert(BytesIO(data), output_path)
                 except FileConversionError as e:
                     logger.warning(f"cannot convert file '{wadfile.path}': {e}")
                 except OSError as e:
@@ -505,14 +514,34 @@ class CdragonRawPatchExporter:
 
 
 class FileConverter:
-    """Base class for file conversions"""
+    """Base class for file conversions
+
+    Files can be converted either to a single file or a single directory.
+    """
+
+    output_is_dir = False
 
     def handle_path(self, path):
         """Return the path of the converted path or None if not handled"""
         raise NotImplementedError()
 
+    def convert(self, fin, output_path):
+        """Convert source file object to a file or directory"""
+
+        if self.output_is_dir:
+            shutil.rmtree(output_path, ignore_errors=True)
+            with write_dir_or_remove(output_path):
+                self.convert_to_dir(fin, output_path)
+        else:
+            with write_file_or_remove(output_path) as fout:
+                self.convert_to_file(fin, fout)
+
     def convert_to_file(self, fin, fout):
         """Convert file object content and save it to given file object"""
+        raise NotImplementedError()
+
+    def convert_to_dir(self, fin, path):
+        """Convert file object content and save it to given directory path"""
         raise NotImplementedError()
 
 class FileConversionError(RuntimeError):
