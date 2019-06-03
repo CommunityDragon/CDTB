@@ -8,7 +8,7 @@ import logging
 
 from .hashes import default_hashfile
 from .tools import (
-    BinParser,
+    BinaryParser,
     write_file_or_remove,
     zstd_decompress,
 )
@@ -159,7 +159,7 @@ class Wad:
 
         logger.debug(f"parse headers of {self.path}")
         with open(self.path, 'rb') as f:
-            parser = BinParser(f)
+            parser = BinaryParser(f)
             magic, version_major, version_minor = parser.unpack("<2sBB")
             if magic != b'RW':
                 raise ValueError("invalid magic code")

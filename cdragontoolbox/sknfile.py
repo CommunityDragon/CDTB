@@ -1,4 +1,4 @@
-from .tools import BinParser
+from .tools import BinaryParser
 
 
 class SknFile:
@@ -8,7 +8,7 @@ class SknFile:
         if file.read(4) != b"\x33\x22\x11\x00":
             raise ValueError("missing magic code")
 
-        f = BinParser(file)
+        f = BinaryParser(file)
 
         self.major, self.minor = f.unpack("<HH")
 

@@ -14,7 +14,7 @@ from .storage import (
     get_exe_version,
 )
 from .tools import (
-    BinParser,
+    BinaryParser,
     write_file_or_remove,
     zstd_decompress,
 )
@@ -91,7 +91,7 @@ class PatcherManifest:
         return filter(PatcherFile.langs_predicate(langs), self.files.values())
 
     def parse_rman(self, f):
-        parser = BinParser(f)
+        parser = BinaryParser(f)
 
         magic, version_major, version_minor = parser.unpack("<4sBB")
         if magic != b'RMAN':
@@ -107,7 +107,7 @@ class PatcherManifest:
         return self.parse_body(f)
 
     def parse_body(self, f):
-        parser = BinParser(f)
+        parser = BinaryParser(f)
 
         # header (unknown values, skip it)
         n, = parser.unpack('<l')

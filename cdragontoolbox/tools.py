@@ -44,7 +44,7 @@ def write_dir_or_remove(path):
         raise
 
 
-class BinParser:
+class BinaryParser:
     """Helper class to read from binary file object"""
 
     def __init__(self, f):
