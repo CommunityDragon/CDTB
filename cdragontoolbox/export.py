@@ -437,9 +437,9 @@ class CdragonRawPatchExporter:
         exporter.plain_files = {k: v for k, v in exporter.plain_files.items() if not k.endswith('/description.json')}
 
         # game WADs:
-        # - keep only images and champion 'bin' files
+        # - keep only images, champion 'bin' and 'skin' files
         # - add 'game/' prefix to export path
-        re_game_paths = re.compile(r'(?:\.dds|\.tga|^data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin)$')
+        re_game_paths = re.compile(r'(?:\.dds|\.tga|\.skn|^data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin)$')
         for path, wad in exporter.wads.items():
             if path.endswith('.wad.client'):
                 wad.files = [wf for wf in wad.files if re_game_paths.search(wf.path)]
