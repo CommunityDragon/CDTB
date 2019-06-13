@@ -115,7 +115,7 @@ def command_wad_extract(parser, args):
         wad.files = [wf for wf in wad.files if wf.path is not None]
 
     if args.pattern:
-        wad.files = [wf for wf in wad.files if any(fnmatch.fnmatchcase(wf.path, p) for p in args.pattern)]
+        wad.files = [wf for wf in wad.files if any(wf.path is not None and fnmatch.fnmatchcase(wf.path, p) for p in args.pattern)]
 
     wad.guess_extensions()
     wad.extract(args.output, overwrite=not args.lazy)
