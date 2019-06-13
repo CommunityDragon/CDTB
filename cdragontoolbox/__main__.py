@@ -437,6 +437,10 @@ def main():
     parser = create_parser()
     args = parser.parse_args()
 
+    if not args.command:
+        parser.print_help()
+        return
+
     if args.verbose >= 3:
         loglevel = logging.DEBUG
     elif args.verbose >= 1:
