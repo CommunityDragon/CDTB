@@ -55,7 +55,8 @@ class WadFileHeader:
         b'\x1bLuaQ\x00\x01\x04\x04': 'luabin',
         b'\x1bLuaQ\x00\x01\x04\x08': 'luabin64',
         bytes.fromhex('023d0028'): 'troybin',
-        b'[ObjectBegin]': 'sco'
+        b'[ObjectBegin]': 'sco',
+        b'OEGM': 'mapgeo'
     }
 
     def __init__(self, path_hash, offset, compressed_size, size, type, duplicate=None, unk0=None, unk1=None, sha256=None):
@@ -240,4 +241,3 @@ class Wad:
                     continue
                 logger.debug(f"extracting {wadfile.path_hash:016x} {wadfile.path}")
                 wadfile.extract(fwad, output_path)
-
