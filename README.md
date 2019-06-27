@@ -25,7 +25,7 @@ Here are some examples, use `python3 -m cdragontoolbox -h` for details.
 ```sh
 # download and extract files for the latest patch to the directory `cdn`
 # (files from the new patcher will be used)
-python3 -m cdragontoolbox download -s patcher:cdn patch=
+python3 -m cdragontoolbox -v download -s patcher:cdn patch=
 
 # same, but don't download language-specific files
 python3 -m cdragontoolbox download -s patcher:cdn --no-lang patch=
