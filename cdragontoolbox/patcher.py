@@ -291,7 +291,7 @@ class PatcherStorage(Storage):
     storage_type = 'patcher'
 
     URL_BASE = "https://lol.dyn.riotcdn.net/"
-    DEFAULT_CHANNEL = 'pbe-pbe-win'
+    DEFAULT_CHANNEL = 'live-euw-win'
 
     def __init__(self, path, channel=DEFAULT_CHANNEL):
         super().__init__(path, self.URL_BASE)
