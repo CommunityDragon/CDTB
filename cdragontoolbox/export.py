@@ -405,7 +405,7 @@ class CdragonRawPatchExporter:
         exporter = Exporter(self.output)
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
-            BinConverter(re.compile(r'^game/data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin$')),
+            BinConverter(re.compile(r'game/.*\.bin$')),
             SknConverter([".skn"]),
         ]
         exporter.add_patch_files(patch)
@@ -435,13 +435,19 @@ class CdragonRawPatchExporter:
         exporter.plain_files = {k: v for k, v in exporter.plain_files.items() if not k.endswith('/description.json')}
 
         # game WADs:
-        # - keep images, champion 'bin' and 'skin' files
+        # - keep images and skin files
+        # - keep .bin files, except 'data/*_skins_*.bin' files
         # - keep .txt files (some contain useful data)
         # - add 'game/' prefix to export path
-        re_game_paths = re.compile(r'(?:\.dds|\.tga|\.skn|\.txt|^data/characters/[^/.]*/(?:skins/)?[^/.]*\.bin)$')
+        def filter_path(path):
+            _, ext = os.path.splitext(path)
+            if ext == '.bin':
+                return '_skins_' not in path
+            return ext in ('.dds', '.tga', '.skn', '.txt')
+
         for path, wad in exporter.wads.items():
             if path.endswith('.wad.client'):
-                wad.files = [wf for wf in wad.files if re_game_paths.search(wf.path)]
+                wad.files = [wf for wf in wad.files if filter_path(path)]
                 for wf in wad.files:
                     wf.path = f"game/{wf.path}"
         # remove emptied WADs
@@ -571,7 +577,7 @@ class BinConverter(FileConverter):
         self.regex = regex
 
     def handle_path(self, path):
-        if self.regex.match(path):
+        if self.regex.search(path):
             return path + '.json'
         return None
 
