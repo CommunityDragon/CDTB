@@ -256,6 +256,8 @@ cb9f11d2 PrimaryAbilityResourceBar
 cdbc1b2a QuestComplete
 0b13c31a QuestReceived
 34e71c29 QueuedOrdersTriggerPreIssueOrder
+1be488a9 RBaseDamage
+3ca74b62 RCoefficient
 7eb2af0c Rage
 64806c29 ReconnectScriptsWhilePaused
 92fc4077 ReduceClientCameraReplication
@@ -983,6 +985,7 @@ bd132bec mBarTextureUvs
 b70ad8f0 mBaseColor
 e40bac02 mBaseExperienceMultiplier
 2c0e2bf7 mBaseItems
+6d3ccfd7 mBaseP
 11fe674c mBaseTexture
 13deb887 mBaseTextureName
 d45614c7 mBeam
@@ -1056,6 +1059,7 @@ dde40707 mChildAnimDelaySwitchTime
 20e6065b mChildCondition
 f21bb0f8 mChildConditions
 82f13684 mChildMissileSpell
+c354d821 mChildSpells
 55d8daee mChooseRandomValidRule
 18a41fd1 mCircleMissileAngularVelocity
 515b8d80 mCircleMissileRadialVelocity
@@ -1116,6 +1120,7 @@ bf1caf91 mDamageType
 0b58883e mDamping
 faf26cff mDampingValue
 7e0dca60 mData
+b386dcf1 mDataValue
 1f4d20a6 mDataValues
 990ee365 mDeathChaosColor
 fa19005e mDeathEnemyTeamColor
@@ -1139,6 +1144,7 @@ ec12a9d5 mDefault
 ae686ed6 mDefaultSplash
 fe66e5ff mDefaultTextureName
 b9b6eb7a mDefaultValue
+2ed0ec97 mDefaultVfxData
 35e84f37 mDelay
 f06f70bd mDeltaBuffCurrencyCost
 48e295f2 mDeltaBuffCurrencyCostPercent
@@ -1603,6 +1609,7 @@ c914c010 mNoPixelSnappingY
 ab8e7852 mNumberOfPeriods
 4a3183d0 mOMWPingRangeCutoffs
 62af1617 mOMWPingRanges
+b482c52c mObjectName
 95ac5b3d mObjectSkinFallbacks
 0f422262 mOffValue
 26dbcd4b mOffset
@@ -1684,6 +1691,7 @@ b799904c mPerk
 9ed64df4 mPerkStyleId
 71c6c91a mPerkStyleName
 45be132d mPerks
+dfcc29dc mPersistentVfxs
 393f5dab mPhysicalDamageRatio
 e7852ecf mPhysicalShieldColor
 3032dcc9 mPingChatColor
@@ -1790,6 +1798,7 @@ c0a5d6dd mSelfEventName
 bcc47d7d mShadowChatColor
 76a19ab7 mShieldParams
 4442ed57 mShopCloseCount
+e4e7426c mShopData
 c97373fb mShopOpenCount
 5f2170e9 mShortDescLocalizationKey
 d5cfa227 mShowAsModifiedInUI
@@ -1850,6 +1859,7 @@ d8a4574e mStartLocator
 fa58c885 mStartTime
 66379ea0 mStartingJoint
 c6a8e023 mStartingJointName
+4cec2c8a mStat
 94cfefd7 mStatBoostedColor
 fc56285c mStatNormalColor
 b6217025 mStiffness
@@ -1956,6 +1966,7 @@ cd89877e mTriggerEventAction
 37205660 mTunables
 26c28212 mTurnOffTimeSec
 2f6c7474 mTurnOnTimeSec
+506c0c02 mTurnSpeedScalar
 a58fd26d mTurretPosition
 87edaeb0 mType
 6815a72d mUITexture
@@ -2003,6 +2014,7 @@ d14d2f3b mValueProcessorDataList
 3288d6d8 mVelMultiplier
 bcad5522 mVertical
 1dcc5425 mVerticalOffset
+9f4faebd mVfxSpawnConditions
 84313c65 mVisibleToOwnerTeamOnly
 4a5f2ebc mVisualPriority
 a5ca13e4 mVoiceChatData
