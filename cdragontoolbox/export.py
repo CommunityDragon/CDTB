@@ -447,7 +447,7 @@ class CdragonRawPatchExporter:
 
         for path, wad in exporter.wads.items():
             if path.endswith('.wad.client'):
-                wad.files = [wf for wf in wad.files if filter_path(path)]
+                wad.files = [wf for wf in wad.files if filter_path(wf.path)]
                 for wf in wad.files:
                     wf.path = f"game/{wf.path}"
         # remove emptied WADs
