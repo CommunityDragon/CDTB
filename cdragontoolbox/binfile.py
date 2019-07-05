@@ -28,7 +28,7 @@ def compute_binhash(s):
 
 
 class BinHash:
-    """Hash value is in bin files"""
+    """Hash value in bin files"""
 
     def __init__(self, h):
         self.h = h
@@ -38,6 +38,20 @@ class BinHash:
         if self.s is not None:
             return self.s
         return f"{{{self.h:08x}}}"
+
+    to_serializable = __repr__
+
+class BinEntity:
+    """Entity in bin files"""
+
+    def __init__(self, h):
+        self.h = h
+        self.s = hashfile_bin.load().get(h)
+
+    def __repr__(self):
+        if self.s is not None:
+            return self.s
+        return f"[{self.h:08x}]"
 
     to_serializable = __repr__
 
@@ -187,14 +201,14 @@ class BinMapField(BinField):
 
 
 class BinFileEntry:
-    def __init__(self, ehash, etype, values):
-        self.ehash = ehash
+    def __init__(self, entity, etype, values):
+        self.entity = entity
         self.etype = etype
         self.values = values
 
     def __repr__(self):
         svalues = _repr_indent_list(self.values)
-        return f"<BinFileEntry {self.ehash} {self.etype:08x} {svalues}>"
+        return f"<BinFileEntry {self.entity} {self.etype} {svalues}>"
 
     def to_serializable(self):
         return [v.to_serializable() for v in self.values]
@@ -207,10 +221,10 @@ class BinFile:
             raise ValueError("missing magic code")
         reader = BinReader(f)
         self.version, self.linked_files, entry_types = reader.read_binfile_header()
-        self.entries = [reader.read_binfile_entry(etype) for etype in entry_types]
+        self.entries = [reader.read_binfile_entry(BinHash(etype)) for etype in entry_types]
 
     def to_serializable(self):
-        return {entry.ehash.to_serializable(): entry.to_serializable() for entry in self.entries}
+        return {entry.entity.to_serializable(): entry.to_serializable() for entry in self.entries}
 
 
 class BinReader:
@@ -237,9 +251,9 @@ class BinReader:
         """Read a single binfile entry"""
 
         pos = self.f.tell() + 4  # skip 'length' size
-        length, ehash, count = self.read_fmt('<LLH')
+        length, entity, count = self.read_fmt('<LLH')
         values = [self.read_field() for _ in range(count)]
-        entry = BinFileEntry(BinHash(ehash), etype, values)
+        entry = BinFileEntry(BinEntity(entity), etype, values)
         assert self.f.tell() - pos == length
         return entry
 
@@ -302,7 +316,7 @@ class BinReader:
         return BinHash(self.read_fmt('<L')[0])
 
     def read_link(self):
-        return self.read_fmt('<L')[0]
+        return BinEntity(self.read_fmt('<L')[0])
 
     def read_padding(self):
         return self.read_fmt('<B')[0]
