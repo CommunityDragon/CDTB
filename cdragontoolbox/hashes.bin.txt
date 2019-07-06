@@ -43,6 +43,7 @@ fd985966 Cases
 5c46e292 CastConeDistance
 4e47141f CastFrame
 453edffa CastLockoutTime
+d9f51778 CastOnHit
 b7250b1c CastRadius
 8f6f40e6 CastRadiusSecondary
 1b9cbd9b CastRange
@@ -53,7 +54,10 @@ d4c233b3 CastRangeDisplayOverride
 1286df69 ChallengerRecall
 9292a6c1 Chance
 2ac71ccc ChannelDuration
+8b3aa710 Character
 082ffaf1 CharacterLists
+fc4f4b05 CharacterPreloadData
+4a2608e1 CharacterPreloadList
 ac971e62 CharacterPreloads
 23ea1915 CharacterRecord
 905580d9 Characters
@@ -86,12 +90,15 @@ d17c71e5 DamageProperties
 871c0429 DamageTags
 f6f283a3 DamageTakenPie
 93f230bf DeathEventType
+1307c9ed DeathTimes
+1307c9ed DeathTimes
 5864ed98 Debug
 933b5bde Default
 4ac45539 DefaultPalette
 18330965 DelayCastOffsetPercent
 3a4c4690 DelayTotalTimePercent
 9a032455 Dest
+066b4e65 DestroyOnHit
 4ebb0d28 DetachedAnimationParticlesUseOwnerVisibility
 514a365c DirectedTrackingElement
 cded8c63 Disable
@@ -123,6 +130,7 @@ cf8231fa EnemyPhysicalDamageCritical
 29cc5095 Energy
 5ee3c453 Epicness
 92f1f329 Experience
+93f5c410 ExperienceCurveData
 4e7a0a52 FOWCastRayAccurate
 6419f82d FirstAcquisitionRange
 ddf13ae6 FixedLoadScreenPosition
@@ -133,9 +141,16 @@ f7318865 FixedTimeMovement
 d5f6c8c8 FlatMPRegenMod
 da5d575f Fleeing
 4428d332 ForbiddenWordList
+3458f92b FormatString
+3458f92b FormatString
 ff72f56a FramesPerSecond
 9ed64249 Function
 ed7c7d0c FunctionDefinition
+ddeddc60 GameMode
+0c07acc5 GameModeConstants
+5d2489ca GameModeDescription
+0bf2ebe3 GameModeName
+bcd573f7 GameplayConfig
 0f7352bb GlobalProperties
 ec66d793 Gold
 96ccf33d GravityHeightSolver
@@ -174,6 +189,7 @@ e29c2eca LevelThreeIcon
 de9f3f0c LevelTwoIcon
 eb079194 LimitedTournamentPause
 19d25270 LoadLuaFilesFromWad
+be0dceb0 LoadScreenTipConfiguration
 3c136fac LocaleRarityOverride
 ba383df4 Lore1
 898c0cb7 LuaOnMissileUpdateDistanceInterval
@@ -183,7 +199,10 @@ d997830a Mana
 541e7ba7 ManaDamage
 0e9d23cc ManaHeal
 c271cfd4 ManaUiOverride
+dfa2efb1 Map
+0bdd6bac MapCharacterList
 58eccfa6 MapInclusions
+cd19ef3c MapSkin
 b73427c1 MapStringId
 d7713c7b Margin
 2b3c2139 MaskData
@@ -268,6 +287,7 @@ cdbc1b2a QuestComplete
 92fc4077 ReduceClientCameraReplication
 f762be03 RemoveNullRepMrgTemp
 5a4c5648 RenderComponent
+fbfd48ce RenderStyleData
 3bf05b38 RenderUIPingMenu
 d2f58721 ResourceMap
 0a377624 Result
@@ -335,6 +355,8 @@ e23b3315 TargeterDefinitionAoe
 d641623f TexSize
 bee64fd1 TexU
 bbe64b18 TexV
+d186c31a TftItemData
+e52b8f5d TftShopData
 3d7f07ef TimeBlendData
 88e125fe Tips1
 87e1246b Tips2
@@ -367,8 +389,14 @@ fa56622f UseNewFireBBEvents
 4ce24bb7 UseNewSkinnedObjectOnAIBase
 7647b421 Value1
 7347af68 Value2
+074f91dd ValueColor
+04300058 ValueFloat
 8a25e7be Var
 018bb815 VerticalFacing
+68753673 VfxPrimitiveBeam
+8594e839 VfxPrimitiveMesh
+a14bd4d0 VfxPrimitiveRay
+77cf93a8 VfxShape
 44596cb6 VisibilityAnyToAny
 a0c70f80 VisibilityComponent
 66b252bd WakeUpRange
@@ -838,6 +866,7 @@ f9e1dd39 icons
 c1393f47 ignoreCollisionOnPlacement
 2da02c5b ignoreCombineRules
 e8926662 ignoreQueue
+b35135fa image
 c76fd482 imageInfo
 b9516a6f importance
 cd8310f1 inertia
@@ -853,11 +882,13 @@ ff578b94 inkFillRate
 c3130dac isAnimated
 518c8edb isClockwiseArc
 70f58633 isConstrainedToRange
+122c020e isDefault
 ddfca826 isDirectionOriented
 baa6e0c9 isFollowingTerrain
 27d40903 isGroundLayer
 2ae335b2 isLocalOrientation
 3040923e isLocalSpace
+f39dc24f isPlatformEnabled
 e09d5ebb isRandomStartFrame
 10552a3d isRandomStartFrameMult
 5362d6ff isRelativeColorCharacter
@@ -1050,6 +1081,7 @@ c1cff9a6 mCastRequirementsTarget
 8e257510 mCategory
 2a32f892 mCenterArrowToEndPoint
 4d2be76a mChampionDoubleResource
+0e7af56c mChampionLists
 173c0193 mChampionSingleResource
 cabd7df4 mChampions
 4628a916 mChangeAnimationMidPlay
@@ -1059,6 +1091,7 @@ a54ff456 mChannelIsInterruptedByAttacking
 b4ff0e30 mChaos
 718ad5c9 mChaosChatColor
 f91645c7 mChaosColor
+715b6117 mCharacter
 61f4fb27 mCharacterLevel
 ff675dd4 mCharacterName
 f3e8e24f mCharacterType
@@ -1316,6 +1349,7 @@ dc6e7daa mGameModeName
 0d1ffdb0 mGameMutator
 12dbe4bb mGameScoreboardTransitionData
 75d17289 mGameTimeInMinutes
+dd463d32 mGameplayConfig
 05bef2e9 mGameplayToggles
 fcbce201 mGearIndex
 c8215e27 mGearSelectionData
@@ -1370,6 +1404,7 @@ e723d68b mHudSpellSlotResetFeedbackData
 10537b0c mIconFileName
 fecf09e2 mIconName
 b0ec0f43 mIconNames
+8bee2972 mIconPath
 bcac92d4 mIconSettings
 6819c638 mIconSize
 57be823b mIconTextureName
@@ -1379,6 +1414,7 @@ cbe7c0b2 mIgnoreAnimContinueUntilCastFrame
 77740831 mIgnoreMaxGroupOwnable
 3a7386e9 mIgnoreRangeCheck
 fbc4a899 mIgnoreSpecificMaxGroupOwnable
+9d87bffb mImageAsset
 bebbcc16 mImagePath
 eed67cd5 mImgIconName
 5d7d4fb0 mInStore
@@ -1536,6 +1572,7 @@ b3ef371f mMaxGroupOwnable
 7b72e9c8 mMaxPercentageForMostReadHealth
 fd39cb94 mMaxScale
 ef7f4569 mMaxSpeed
+647c1dc9 mMaxUnits
 833f062d mMaxVal
 5f902917 mMaxValue
 507f1350 mMaximumDeltasToStack
@@ -1556,6 +1593,7 @@ a780452f mMicroTickAlpha
 e2064da9 mMinRemainingTime
 d961112e mMinScale
 c8847abf mMinSpeed
+749eab2b mMinUnits
 b21e8d4b mMinVal
 5154196d mMinValue
 42fcf599 mMinimapBackgroundConfig
@@ -1603,6 +1641,9 @@ b1cd460b mModeNameInclusions
 d47359cc mMouseOverBlurPassCount
 9e12a2ef mMouseOverColorFactor
 ed149690 mMouseOverSize
+b26a2782 mMoveHeight
+e4e577b8 mMoveInterval
+713df012 mMoveRange
 1f87eb90 mMultikillSize
 2c77adff mMultiplier
 61c4a9c7 mMultipliersRGB
@@ -1722,6 +1763,7 @@ fb7195e8 mPlatformEnabled
 9509c71b mPlatformSpellInfo
 c142ab71 mPlayerMinionSplitXp
 0811e0fa mPortraitIcon
+63f1fc69 mPortraitIconPath
 8e8a7dbf mPositionSemiLockMaxXBottom
 b6e6d737 mPositionSemiLockMaxXTop
 8ca97452 mPositionSemiLockMaxZDown
@@ -1729,6 +1771,7 @@ b6e6d737 mPositionSemiLockMaxXTop
 a609a785 mPostCastLockoutDeltaTime
 f14bcafe mPreCastLockoutDeltaTime
 057dc136 mPreferredPerkStyle
+df8e3299 mPreloadList
 80ddd91b mPreserveSpeed
 6a90713f mPrioritizedUnitStatusData
 0f717330 mPriority
@@ -1745,6 +1788,7 @@ f14bcafe mPreCastLockoutDeltaTime
 510cf34f mRadialWheelUITransitionData
 64216a8e mRadius
 67cbaced mRange
+1f01e303 mRarity
 0a1fc240 mReadyForPlaytest
 3c797074 mRecastFrequency
 8ff0bc76 mRect
@@ -1757,6 +1801,7 @@ e1cc324d mRelativeColorization
 1d15ff5e mRelativeTeams
 7ddafd74 mRemovedBuildFrom
 f8f7395a mRenderScale
+74200d0d mRenderStyle
 893d29ae mReplaceInsteadOfAddingBuildFrom
 db11f159 mReplaceTarget
 31fcf928 mReplaceWith
@@ -1781,6 +1826,7 @@ c4ca4906 mRequiredSpellName
 2a121d16 mRightClickSpellAction
 c9e2efe0 mRightSlicePercentage
 6d45b308 mRole
+1a7b693a mRootSpell
 72a18d9c mRow
 954d766f mRuleCooldown
 1a116faf mRules
@@ -2165,6 +2211,7 @@ b56e8811 particleColorTexture
 37ddb774 particleIsLocalOrientation
 2a552694 particleLifetime
 2431d42c particleLinger
+38897864 particleLingerType
 ecf1c6bc particleName
 1b2d7605 particleOverride_ChampionKillDeathParticle
 f587c10c particleOverride_DeathParticle
@@ -2319,6 +2366,7 @@ b39b0430 skyLightScale
 0a5eb702 sliceTechniqueRange
 70954771 slot
 6d9542b8 slow
+763e4b15 softDisabled
 bfb0efdd softParticleParams
 e0c375ae soundOnCreateDefault
 9406ff56 soundOnCreateName
