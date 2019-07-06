@@ -28,7 +28,7 @@ def compute_binhash(s):
 
 
 class BinHash:
-    """Hash value in bin files"""
+    """Hashed name in bin files (not hash type)"""
 
     def __init__(self, h):
         self.h = h
@@ -42,7 +42,7 @@ class BinHash:
     to_serializable = __repr__
 
 class BinEntity:
-    """Entity in bin files"""
+    """Entity hash in bin files"""
 
     def __init__(self, h):
         self.h = h
@@ -313,7 +313,7 @@ class BinReader:
         return self.f.read(self.read_fmt('<H')[0]).decode('utf-8')
 
     def read_hash(self):
-        return BinHash(self.read_fmt('<L')[0])
+        return BinEntity(self.read_fmt('<L')[0])
 
     def read_link(self):
         return BinEntity(self.read_fmt('<L')[0])
