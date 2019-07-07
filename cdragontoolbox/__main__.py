@@ -83,7 +83,7 @@ def command_download(parser, args):
 
 def command_files(parser, args):
     for elem in parse_component_arg(parser, args.storage, args.component):
-        it = elem.relpaths() if args.relative else elem.fspaths()
+        it = elem.relpaths(langs=args.langs) if args.relative else elem.fspaths(langs=args.langs)
         for path in it:
             print(path)
 
