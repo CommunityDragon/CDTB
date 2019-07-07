@@ -109,7 +109,7 @@ class WadFileHeader:
             # Windows does not support path components longer than 255
             # ignore such files
             # TODO: Find a better way of handling these files
-            if e.errno == errno.EINVAL:
+            if e.errno in (errno.EINVAL, errno.ENAMETOOLONG):
                 logger.warning(f"ignore file with invalid path: {self.path}")
             else:
                 raise

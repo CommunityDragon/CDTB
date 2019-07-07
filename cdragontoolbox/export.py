@@ -326,7 +326,7 @@ class Exporter:
                 except OSError as e:
                     # Windows does not support path components longer than 255
                     # ignore such files
-                    if e.errno == errno.EINVAL:
+                    if e.errno in (errno.EINVAL, errno.ENAMETOOLONG):
                         logger.warning(f"ignore file with invalid path: {wad.path}")
                     else:
                         raise
