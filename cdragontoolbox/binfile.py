@@ -50,10 +50,13 @@ class BinEntity:
 
     def __repr__(self):
         if self.s is not None:
-            return self.s
-        return f"[{self.h:08x}]"
+            return f"@{self.s!r}"
+        return f"@{{{self.h:08x}}}"
 
-    to_serializable = __repr__
+    def to_serializable(self):
+        if self.s is not None:
+            return self.s
+        return f"{{{self.h:08x}}}"
 
 
 class BinType(IntEnum):
