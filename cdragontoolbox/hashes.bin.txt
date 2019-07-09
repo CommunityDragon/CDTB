@@ -11,7 +11,6 @@ dbe35112 ASBoostMax
 c5cfa6b8 ASBoostMin
 92b5a83e ASMultiplier
 dc58b4ae AbilityObject
-fb33f2f3 AbilityObject
 c88c6b61 AbilityPowerIncPerLevel
 dcc344a6 AbilityResetUI
 ce31c975 AbilityResourceSlotInfo
@@ -3584,7 +3583,7 @@ e8f0845b Characters/TFT_Zed/Spells/TFT_ZedBasicAttack
 1ba0714b Characters/TFT_Zed/Spells/TFT_ZedBasicAttack2
 f507cd13 Characters/TFT_Zed/Spells/TFT_ZedCritAttack
 edc2e706 Characters/TFT_Zed/Spells/TFT_ZedQ
-e2385002 Characters/TFT_Zed/Spells/TFT_ZedQMissilea5121ec writeMask
+e2385002 Characters/TFT_Zed/Spells/TFT_ZedQMissile
 2ab5b981 Characters/TT_Spiderboss/Spells/TT_SpiderbossAttack
 ef1354c9 Characters/TT_Spiderboss/Spells/TT_SpiderbossAttack2
 ee135336 Characters/TT_Spiderboss/Spells/TT_SpiderbossAttack3
@@ -4833,7 +4832,7 @@ f4613a84 ItemDataModifiable
 3b2ddd39 ItemGroup
 13bddc7b ItemID
 7db9ab0b ItemModifier
-da8d10dd ItemUlowMod
+da8d10dd ItemSlowMod
 2103d934 ItemVOGroup
 9d24457e Items/1001
 a2244d5d Items/1004
