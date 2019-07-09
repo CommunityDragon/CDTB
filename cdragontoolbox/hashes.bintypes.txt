@@ -2,6 +2,7 @@ dc58b4ae AbilityObject
 ce31c975 AbilityResourceSlotInfo
 f5fb07c7 AnimationGraphData
 9a4b299d AnimationResourceData
+9b0f2144 Area
 06ad3499 AttackSlotData
 a4416515 BankUnit
 78bdcbc1 BannerFlagData
@@ -18,10 +19,15 @@ d94733d6 ChangeMissileSpeed
 fc4f4b05 CharacterPreloadData
 4a2608e1 CharacterPreloadList
 23ea1915 CharacterRecord
+ec3d693a CharacterToolData
 999c92e7 CheatPage
 4577ec44 CheatSet
 039b5ebc CircleMovement
+995f3c95 Companion
 7cc20e55 CompanionData
+8e3b8299 CompanionSpeciesData
+dd404b6a Cone
+cf313c24 ContextualActionData
 a2c49ab2 ContextualConditionCharacter
 22d0ac10 ContextualRule
 fc27a63e ContextualSituation
@@ -30,9 +36,12 @@ bd32d02a CustomTargeterDefinitions
 cd3905c8 DamageSourceSettings
 ec41779d DamageUnitCheat
 1307c9ed DeathTimes
+d2c1ea2e Defaultvisibility
 c45b6745 Destroy
 066b4e65 DestroyOnHit
+df6dc76a Direction
 66244ec3 EmblemData
+16b80106 EmblemSettings
 a64d5210 EngineFeatureToggles
 c1f3e2a0 EvolutionDescription
 93f5c410 ExperienceCurveData
@@ -60,7 +69,9 @@ ea452f2f LoadoutFeatureData
 dfa2efb1 Map
 0bdd6bac MapCharacterList
 dde8c114 MapContainer
+f3726d48 MapGroup
 a844df61 MapLocator
+592ef6c3 MapParticle
 022e6e77 MapPointLight
 cd19ef3c MapSkin
 169a2f9c MapSunProperties
@@ -75,6 +86,7 @@ cd19ef3c MapSkin
 1f728d34 PauseCheat
 b6f03cdd Perk
 3d7822a4 PerkBuff
+5ae18e0f PerkConfig
 5a708f9f PerkReplacement
 898fff67 PerkReplacementList
 1ddec1f2 PerkScript
@@ -84,6 +96,7 @@ a4e7a4a2 PerkScriptData
 1c081003 PhysicsMovement
 5acfdf50 PlatformSpellInfo
 a66424c6 PresetAnimatorCheat
+312f4782 RecSpellRankUpInfo
 29727fa5 RecallDecalData
 22df6f20 RegionSettings
 fbfd48ce RenderStyleData
@@ -102,6 +115,8 @@ ea5c9896 SelfAoe
 31d1e223 ShaderTexture
 947b858f ShowObjectsCheat
 f4dc8ec5 ShowServerMissilesCheat
+426d89a3 SkinAnimationProperties
+8f7b194f SkinAudioProperties
 9b67e9f6 SkinCharacterDataProperties
 7ba9ed2e SkinEmblem
 9c566034 SoundEventData
@@ -111,6 +126,7 @@ c7d4634c SpawnBotCheat
 43368569 SpellDataResource
 005008a6 SpellDataValue
 92d4987c SpellEffectAmount
+9b601778 SpellLevelUpInfo
 5e7e5a06 SpellObject
 743d2a1b SummonerEmote
 1e4b24c6 SummonerEmoteSettings
@@ -147,6 +163,8 @@ b11164b7 ToolEducationData
 54588ac6 TrackMouseMovement
 b94b2351 TriggerOnDelay
 1ab2045f TriggerOnHit
+4621cb67 TrophyData
+f4729554 UseableData
 074f91dd ValueColor
 04300058 ValueFloat
 f627e1a2 VfxAssetRemap
@@ -154,15 +172,5 @@ f627e1a2 VfxAssetRemap
 8594e839 VfxPrimitiveMesh
 a14bd4d0 VfxPrimitiveRay
 77cf93a8 VfxShape
-8fa548d5 WallFollowMovement
-9b0f2144 Area
-ec3d693a CharacterToolData
-dd404b6a Cone
-d2c1ea2e Defaultvisibility
-df6dc76a Direction
-312f4782 RecSpellRankUpInfo
-426d89a3 SkinAnimationProperties
-8f7b194f SkinAudioProperties
-9b601778 SpellLevelUpInfo
-f4729554 UseableData
 a8eb52f4 VfxSpawnConditions
+8fa548d5 WallFollowMovement
