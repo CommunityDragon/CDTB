@@ -222,6 +222,17 @@ class Wad:
                 else:
                     wadfile.path = f"{path}/{wadfile.path_hash:016x}"
 
+    def sanitize_paths(self):
+        """Truncate files that have a length of over 255"""
+
+        for wadfile in self.files:
+            path, filename = os.path.split(wadfile.path)
+            if (len(filename) < 256):
+                continue
+
+            basename, ext = os.path.splitext(filename)
+            wadfile.path = os.path.join(path, basename[:255-21] + "." + hex(wadfile.path_hash)[2:] + ext)
+
     def extract(self, output, overwrite=True):
         """Extract WAD file
 
@@ -231,6 +242,7 @@ class Wad:
         logger.info(f"extracting {self.path} to {output}")
 
         self.set_unknown_paths("unknown")
+        self.sanitize_paths()
 
         with open(self.path, 'rb') as fwad:
             for wadfile in self.files:
