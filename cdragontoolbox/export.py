@@ -127,6 +127,7 @@ class Exporter:
             # remove file redirections
             wad.files = [wf for wf in wad.files if wf.type != 2]
             wad.guess_extensions()
+            wad.sanitize_paths()
             self.wads[export_path] = wad
         else:
             self.plain_files[export_path] = source_path
@@ -605,4 +606,3 @@ class SknConverter(FileConverter):
             name = os.path.join(path, entry["name"] + ".obj")
             with open(name, "w") as f:
                 f.write(sknfile.to_obj(entry))
-
