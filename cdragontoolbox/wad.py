@@ -232,7 +232,7 @@ class Wad:
                     continue
 
                 basename, ext = os.path.splitext(filename)
-                wadfile.path = os.path.join(path, f"{basename[:255-21]}.{hex(wadfile.path_hash)[2:]}{ext}")
+                wadfile.path = os.path.join(path, f"{basename[:255-17-len(ext)]}.{wadfile.path_hash:016x}{ext}")
 
     def extract(self, output, overwrite=True):
         """Extract WAD file
