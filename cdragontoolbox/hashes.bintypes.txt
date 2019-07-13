@@ -48,6 +48,9 @@ c1f3e2a0 EvolutionDescription
 f0cf99ef ExperienceModData
 06302899 FixedSpeedMovement
 f7318865 FixedTimeMovement
+641de12c GameModeConstantBool
+977517c6 GameModeConstantFloat
+a188bd55 GameModeConstantString
 0c07acc5 GameModeConstants
 bcd573f7 GameplayConfig
 b414c51a GameplayFeatureToggles
