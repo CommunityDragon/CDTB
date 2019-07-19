@@ -20,6 +20,7 @@ fc4f4b05 CharacterPreloadData
 4a2608e1 CharacterPreloadList
 23ea1915 CharacterRecord
 ec3d693a CharacterToolData
+141c2ec1 CheatMenuUIData
 999c92e7 CheatPage
 4577ec44 CheatSet
 039b5ebc CircleMovement
@@ -101,6 +102,7 @@ a4e7a4a2 PerkScriptData
 a66424c6 PresetAnimatorCheat
 312f4782 RecSpellRankUpInfo
 29727fa5 RecallDecalData
+8842b9ae RegaliaData
 22df6f20 RegionSettings
 fbfd48ce RenderStyleData
 da0bc105 ResetGoldCheat

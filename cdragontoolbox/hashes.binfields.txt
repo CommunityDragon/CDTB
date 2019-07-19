@@ -1328,6 +1328,14 @@ db40d44a reflectionMap
 85a34efd reflectionMapTexture
 11bc7060 reflectionOpacityDirect
 173a5bb6 reflectionOpacityGlancing
+38a4dd49 regaliaCrest
+a4260da0 regaliaCrown1
+a7261259 regaliaCrown2
+a62610c6 regaliaCrown3
+a926157f regaliaCrown4
+d96b2535 regaliaSplit1
+d66b207c regaliaSplit2
+d76b220f regaliaSplit3
 fc6183f5 relativeColorSwapTable
 76fb6570 renderPhaseOverride
 729fc939 renderScale
