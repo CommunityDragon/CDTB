@@ -287,13 +287,12 @@ def command_skn_extract(parser, args):
     if not os.path.isfile(args.skn):
         parser.error("SKN file does not exist")
 
-    with open(args.skn, 'rb') as f:
-        sknfile = SknFile(f)
-        os.makedirs(args.output, exist_ok=True)
-        for entry in sknfile.entries:
-            name = os.path.join(args.output, entry["name"] + ".obj")
-            with open(name, "w") as f:
-                f.write(sknfile.to_obj(entry))
+    sknfile = SknFile(args.skn)
+    os.makedirs(args.output, exist_ok=True)
+    for entry in sknfile.entries:
+        name = os.path.join(args.output, entry["name"] + ".obj")
+        with open(name, "w") as f:
+            f.write(sknfile.to_obj(entry))
 
 
 def command_bin_dump(parser, args):
