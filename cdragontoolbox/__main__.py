@@ -20,6 +20,7 @@ from cdragontoolbox.patcher import PatcherStorage
 from cdragontoolbox.wad import Wad
 from cdragontoolbox.export import CdragonRawPatchExporter
 from cdragontoolbox.binfile import BinFile
+from cdragontoolbox.sknfile import SknFile
 from cdragontoolbox.hashes import (
     HashFile,
     default_hashfile,
@@ -282,6 +283,19 @@ def command_export(parser, args):
         exporter.process(overwrite=overwrite)
 
 
+def command_skn_extract(parser, args):
+    if not os.path.isfile(args.skn):
+        parser.error("SKN file does not exist")
+
+    with open(args.skn, 'rb') as f:
+        sknfile = SknFile(f)
+        os.makedirs(args.output, exist_ok=True)
+        for entry in sknfile.entries:
+            name = os.path.join(args.output, entry["name"] + ".obj")
+            with open(name, "w") as f:
+                f.write(sknfile.to_obj(entry))
+
+
 def command_bin_dump(parser, args):
     if not os.path.isfile(args.bin):
         parser.error("BIN file does not exist")
@@ -429,6 +443,14 @@ def create_parser():
     subparser.add_argument('bin',
                            help="BIN file to extract")
 
+    # skn files commands
+
+    subparser = subparsers.add_parser('skn-extract',
+                                      help="Extract an SKN file to a folder")
+    subparser.add_argument('skn',
+                           help="SKN file to extract")
+    subparser.add_argument('output',
+                           help="output folder")
 
     return parser
 
