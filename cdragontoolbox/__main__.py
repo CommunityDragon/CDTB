@@ -285,9 +285,11 @@ def command_export(parser, args):
 
 def command_skn_extract(parser, args):
     if not os.path.isfile(args.skn):
-        parser.error("SKN file does not exist")
+        parser.error(f"SKN file not found: {args.skn}")
 
     sknfile = SknFile(args.skn)
+    if args.output is None:
+        args.output = os.path.splitext(args.skn)[0]
     os.makedirs(args.output, exist_ok=True)
     for entry in sknfile.entries:
         name = os.path.join(args.output, entry["name"] + ".obj")
@@ -297,7 +299,7 @@ def command_skn_extract(parser, args):
 
 def command_bin_dump(parser, args):
     if not os.path.isfile(args.bin):
-        parser.error("BIN file does not exist")
+        parser.error(f"BIN file not found: {args.bin}")
 
     with open(args.bin, 'rb') as f:
         binfile = BinFile(f)
@@ -445,11 +447,11 @@ def create_parser():
     # skn files commands
 
     subparser = subparsers.add_parser('skn-extract',
-                                      help="Extract an SKN file to a folder")
+                                      help="extract an SKN file to a directory")
+    subparser.add_argument('-o', '--output',
+                           help="output directory")
     subparser.add_argument('skn',
                            help="SKN file to extract")
-    subparser.add_argument('output',
-                           help="output folder")
 
     return parser
 
