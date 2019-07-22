@@ -43,7 +43,6 @@ python3 -m cdragontoolbox wad-extract path/to/assets.wad
 python3 -m cdragontoolbox wad-list path/to/assets.wad
 
 # export files of patch 7.23 into export/7.23
-# (files unchanged from 7.22 files are listed into 7.23.links.txt)
 python3 -m cdragontoolbox export -o export 7.23
 
 # export files from PBE
