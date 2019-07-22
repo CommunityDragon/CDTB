@@ -14,6 +14,7 @@ aa25504e Cast
 d9f51778 CastOnHit
 ea595ca6 Champion
 a5d193ef ChampionMasteryMap
+ad06db03 ChampionMetadata
 d94733d6 ChangeMissileSpeed
 8b3aa710 Character
 fc4f4b05 CharacterPreloadData
@@ -55,6 +56,7 @@ a188bd55 GameModeConstantString
 0c07acc5 GameModeConstants
 bcd573f7 GameplayConfig
 b414c51a GameplayFeatureToggles
+da9e5c0c GdsMapObject
 0be608fc GlobalResourceResolver
 96ccf33d GravityHeightSolver
 e4a9de8e HasBuffData
@@ -70,6 +72,7 @@ be0dceb0 LoadScreenTipConfiguration
 f725cf62 LoadScreenTipSet
 ea452f2f LoadoutFeatureData
 3c136fac LocaleRarityOverride
+69dae321 LolSpellScript
 dfa2efb1 Map
 0bdd6bac MapCharacterList
 dde8c114 MapContainer
@@ -132,6 +135,7 @@ c7d4634c SpawnBotCheat
 005008a6 SpellDataValue
 92d4987c SpellEffectAmount
 9b601778 SpellLevelUpInfo
+7640880c SpellModifier
 5e7e5a06 SpellObject
 743d2a1b SummonerEmote
 1e4b24c6 SummonerEmoteSettings
@@ -147,6 +151,7 @@ bc6ed2a6 TargeterDefinitionArc
 047acadf TargeterDefinitionRange
 628b8dca TargeterDefinitionWall
 7c972275 TeamBuffData
+350f16ae TerrainType
 62ff42f4 TftEffectAmount
 d186c31a TftItemData
 a2d042b0 TftMapSkin
@@ -166,6 +171,7 @@ b11164b7 ToolEducationData
 9d41092e ToolSpellDesc
 982a3d24 TrackData
 54588ac6 TrackMouseMovement
+ff256668 TriggerFromScript
 b94b2351 TriggerOnDelay
 1ab2045f TriggerOnHit
 4621cb67 TrophyData

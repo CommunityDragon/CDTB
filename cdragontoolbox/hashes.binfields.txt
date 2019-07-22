@@ -157,6 +157,7 @@ d41d4fce centerLocator
 848e6203 champTargetingEffectDefinition
 ea595ca6 champion
 047f7e3b championId
+ad06db03 championMetadata
 a977f4ae championSkinId
 2d78c328 championSkinName
 1cec9ef2 charAudioNameOverride
@@ -501,6 +502,7 @@ eefcf01b mAnimationWinddownName
 b2bc22d9 mApplyAttackDamage
 0b720c29 mApplyAttackEffect
 a4b8b264 mApplyMaterialOnHitSound
+8e5b9dba mAssetFilenames
 2b9afbf2 mAttackCastTime
 f8f757cc mAttackDelayCastOffsetPercent
 e4d66086 mAttackDelayCastOffsetPercentAttackSpeedRatio
@@ -611,6 +613,7 @@ bae514d4 mCostAlwaysShownInUI
 bef40586 mCursorChangesInGrass
 1565f5bd mCursorChangesInTerrain
 e4928fe4 mCursorConfig
+edbd6c35 mCustomTargeterDefinitions
 405be548 mCustomTimer
 ee88201d mCutoff
 16b3c595 mDamageAmount
@@ -631,6 +634,7 @@ ec12a9d5 mDefault
 1064f3f9 mDefaultPriority
 ae686ed6 mDefaultSplash
 fe66e5ff mDefaultTextureName
+b8890051 mDefaultTftCompanion
 b9b6eb7a mDefaultValue
 2ed0ec97 mDefaultVfxData
 35e84f37 mDelay
@@ -638,9 +642,12 @@ a7a12801 mDeltaGoldCost
 b571bf6e mDeltaGoldCostPercent
 f1f20d72 mDescription
 0a188a4f mDescriptionToAppend
+07f7c001 mDescriptionToReplace
 708696b4 mDisableCastBar
 95f1b682 mDisabledDescriptionOverride
+5a2297d3 mDisplayAsPercent
 74d44065 mDisplayName
+b7161590 mDisplayNameIcon
 2da3f8bf mDisplayNameLocalizationKey
 863b75c4 mDisplayNameToPrepend
 7c46445c mDisplayNameToReplace
@@ -762,6 +769,7 @@ eed67cd5 mImgIconName
 5d7d4fb0 mInStore
 8ca5eda5 mIncrement
 79f8c465 mInferDirectionFromFacingIfNeeded
+57c662cb mInitialMana
 82f1d787 mInitialSpeed
 7eb127d5 mInitialTargetHeightOffset
 afe7ef44 mInputType
@@ -783,6 +791,7 @@ a547a9ab mIsToggleCheat
 f28d66f4 mIsUIAlwaysShown
 e114db54 mItemCalloutPlayer
 51c4b876 mItemCalloutSpectator
+08e2e7c5 mItemDataBuild
 d92888a0 mItemDataClient
 ceaabb75 mItemDataModifiable
 5c84dd53 mItemGroupID
@@ -810,6 +819,7 @@ e61c36cc mLethalityRatioFromTarget
 4d294399 mLethalityScalesCapsAtLevel
 909be896 mLethalityScalesToLevel
 a77654ae mLevel
+ad62f672 mLevel1Value
 41cec662 mLevelDifferenceExperienceMultiplier
 e73465cb mLifetime
 cd56ff90 mLineDragLength
@@ -859,6 +869,8 @@ ef7f4569 mMaxSpeed
 647c1dc9 mMaxUnits
 833f062d mMaxVal
 5f902917 mMaxValue
+b4815c89 mMaxXBottom
+3ff96f6d mMaxXTop
 507f1350 mMaximumDeltasToStack
 71c4a90d mMaximumDistance
 ed25564b mMaximumModifierInstancesToBeActive
@@ -899,6 +911,7 @@ b1cd460b mModeNameInclusions
 6afd07fe mModifiedGroup
 68d2ec46 mModifiedIfBuildsFromItem
 7ef84e70 mModifiedItem
+91b5e214 mModifierID
 8acfbf7f mModifierIsInheritedByOwnedParentItems
 b26a2782 mMoveHeight
 e4e577b8 mMoveInterval
@@ -930,6 +943,7 @@ f2c20ffc mOutputMinValue
 64a3af1d mOutputType
 fde2e93d mOverrideMovement
 0dce8dc3 mOverrideSpec
+ea4fde50 mOverrideSpellLevel
 3536aa6a mOwnerTeamNetKillAdvantage
 d313cbc5 mPBITipDurationOnLoadingScreen
 2ec3ba66 mParametricPairDataList
@@ -975,6 +989,7 @@ df8e3299 mPreloadList
 80ddd91b mPreserveSpeed
 0f717330 mPriority
 63cb984f mProbability
+ac9639d8 mProfileIcon
 27a5c707 mProjectTargetToCastRange
 04d81495 mProjection
 1fdd4e76 mPurchaseCooldown
@@ -1010,7 +1025,6 @@ ff5d32f0 mRiverCursor
 954d766f mRuleCooldown
 fecc56e5 mRuleName
 1a116faf mRules
-a86263e5 mSLotlinks
 74fe309a mScale
 8c16993f mScalePlaySpeedWithAnimation
 d2ad3c7f mScalingIncrementTime
@@ -1042,10 +1056,13 @@ d467e8c0 mSimpleMeshName
 878fb675 mSkinIDs
 a8c68ca4 mSkinId
 bca90069 mSlotLabelKey
+a86263e5 mSlotlinks
 91a7c4f5 mSlots
 0ea6d9c1 mSmoothingMode
 9d477e74 mSoundName
 5a286ac1 mSourceIcons
+9eeaba32 mSourceStatOutput
+97c76ae7 mSourceStatType
 142c35c1 mSpawnBaron
 b82a29c2 mSpawnParticleName
 b02578f2 mSpawningUIDefinition
@@ -1087,6 +1104,8 @@ db63db58 mSubmeshesToDraw
 b1a2e185 mSubmeshesToDrawAlways
 a066cc28 mSubparts
 5eb06a64 mSummonerIconId
+f87ab099 mSummonerPerkReplacements
+d05e7643 mSummonerSpellRequired
 ac0671eb mSummonerSpells
 af884184 mSyncGroupDataMap
 a09d0561 mSyncGroupDataName
@@ -1180,6 +1199,7 @@ d14d2f3b mValueProcessorDataList
 1b80126e mWaitForAnnouncerQueue
 316428c4 mWaitTimeout
 3adc6ece mWallCursor
+eaa35cf6 mWallSearchRadius
 a3c80380 mWeightList
 ac49859c mWorldGeometry
 e474fea4 mWorldParticlesDAT
@@ -1190,6 +1210,7 @@ f10ed334 mZoomMaxDistance
 d997830a mana
 c271cfd4 manaUiOverride
 dde8c114 mapContainer
+d91ebe82 mapNameOverride
 d65a78b6 mapObjectSkinID
 cc5e808a mapPath
 b73427c1 mapStringId
@@ -1297,6 +1318,9 @@ a77b63e1 percentBaseMPRegenMod
 82135982 perceptionBubbleRadius
 99c94704 period
 6d8233bf platformEnabled
+e7188105 playStyleDamage
+cd50f121 playStyleMobility
+dc62fe84 playStyleUtility
 df1e9ff3 polymorph
 934f4e0a position
 fa45ef23 postRotateOrientationAxis
@@ -1305,6 +1329,7 @@ bbd81e0d primaryAbilityResource
 007b14f6 primitive
 94e4e309 priority
 a7084719 probabilityTables
+053f960b profileIcon
 fc23f1cc purchaseIdentities
 34e71c29 queuedOrdersTriggerPreIssueOrder
 0dba4cb3 radius

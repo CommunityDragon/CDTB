@@ -48,6 +48,7 @@ bb0d0262 Audio_Data
 b8c92edb BaseHot
 7db21b5b BaseJungleItems
 a8c1dce1 BaseShield
+4f67766b BeamCooldown
 df1422ce BlockAmount
 e2e5893f BlockBase
 606d5c89 BlockCount
@@ -170,6 +171,7 @@ beb41f04 CooldownMin
 6d5b6aa4 DOOMBOTSTEEMO
 59e94c40 Damage
 d8f53a85 DamageBase
+288ff49f DamageBeam
 19ca4a22 DamageIncMax
 23b6d228 DamageIncMin
 5fb9bd8e DamageMax
@@ -217,11 +219,15 @@ b9cec909 FeatherDamage
 ceb959ce FlatResistMaximum
 3c58a6c9 FlatResists
 757179c8 GAMEMODEX
+5b0cb25c Gem
+2d7fd646 GemIdle
 2a6d8591 Geometry
 6a3827bc Glow
 ec66d793 Gold
 38fa74a5 GoldItems
 603aea02 HA
+32fed486 HPMultiplier
+5610b17a HPPercent
 8ddf0da4 HPRatio
 34f98570 Haste
 3a69585b Heal
@@ -329,9 +335,11 @@ e02f3655 ManaHealPercent
 9380eafa ManaIncrease
 f2deea87 MapObjects
 07c7994f MaxAdaptive
+83bfb144 MaxBase
 37921a35 MaxBaseDamage
 7bd2eb10 MaxBonusXp
 47d0e794 MaxDamage
+07be1036 MaxDamageTotal
 ec1f44b9 MaxDuration
 19971f1b MaxHealth
 bea956d4 MaxHealthDifference
@@ -340,6 +348,7 @@ da3491bc MaxShield
 6810ef40 MaxStacks
 1b788522 MegaDamage
 f4350ae1 MinAdaptive
+6250353a MinBase
 49ff53c2 MinBonusXp
 fe544f96 MinDamage
 016801c6 MinHealthDifference
@@ -347,6 +356,7 @@ fe544f96 MinDamage
 0ca0336a MinimumChannelDuration
 b57faec1 MinimumHealth
 6b30d302 MinionDamage
+0089fa21 MinionDamageRatio
 50acb2ef MinionHealMod
 9ba42830 MinionKillValue
 bbbde607 MinutesRequired
@@ -424,6 +434,7 @@ b66bca58 RCooldown
 e5c69450 RDamage
 b109a034 RRatio
 7eb2af0c Rage
+144f0c62 Random
 fadc0cd2 Range
 5a81bdb0 Recall
 373111c9 RecallLeadIn
@@ -478,6 +489,7 @@ de316207 ShopClose
 b894b475 ShopOpen
 f2aa916c Siege
 4b9514e4 SilenceDuration
+13efe61d SizeCoefficient
 8cbf9724 SlowAmount
 de31fe11 SlowAmountBase
 6d8f0832 SlowAmountMax
@@ -501,6 +513,7 @@ c89f29ce StackDamage
 98ef15c1 StackMult
 0c8ca5d0 StacksPerAssist
 c5aeb275 StartingBaseDamage
+fa37db04 StartingCDR
 8da8785b StartingHealth
 29f3d7f1 StunDuration
 67a830a4 Stunned
@@ -800,7 +813,9 @@ f899a2e8 TotalExtraArmor
 b26e9905 TotalHealing
 cf9c3dd3 Tournaments
 f80a8b80 Trait_Yordle_Child
+ecca6f9a TriggerTime
 7510a868 Trinket
+8a04a74d TrophyIdle
 b12a3081 TurretHealth
 e6673d68 ULT_Idlein
 75b18622 ULT_Taunt_loop
@@ -816,6 +831,7 @@ f66a7ece Unsheath_run01
 b20a78eb UseItem
 198a4488 VFX_Data
 68dac35d VFX_Shared
+4b6bd493 WDamage
 7afa5b33 Ward
 cd6ec2a7 WardDuration
 056b5c43 WardPink
