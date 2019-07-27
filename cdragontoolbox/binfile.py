@@ -1,14 +1,16 @@
 import os
 from enum import IntEnum
 import struct
-import textwrap
 from .hashes import HashFile
 
+
+def _repr_indent(v):
+    return repr(v).replace('\n', '\n  ')
 
 def _repr_indent_list(values):
     if not values:
         return '[]'
-    return "[\n%s]" % ''.join("%s\n" % textwrap.indent(repr(v), '  ') for v in values)
+    return "[\n%s]" % ''.join(f"  {_repr_indent(v)}\n" for v in values)
 
 
 hashfile_binentries = HashFile(os.path.join(os.path.dirname(__file__), "hashes.binentries.txt"), hash_size=8)
@@ -209,8 +211,7 @@ class BinMapField(BinField):
         self.values = values
 
     def __repr__(self):
-        svalues = ''.join(f"{k} => {v!r}\n" for k, v in self.values.items())
-        svalues = textwrap.indent(svalues, '  ')
+        svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in self.values.items())
         return f"<{self.name!r} MAP({self.ktype.name},{self.vtype.name}) {{\n{svalues}}}>"
 
     def to_serializable(self):
