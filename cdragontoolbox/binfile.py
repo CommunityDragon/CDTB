@@ -136,7 +136,7 @@ class BinObjectWithFields:
 
 
 class BinType(IntEnum):
-    VEC3_U16 = 0
+    EMPTY = 0
     BOOL = 1
     S8 = 2
     U8 = 3
@@ -158,9 +158,9 @@ class BinType(IntEnum):
     STRUCT = 19
     EMBEDDED = 20
     LINK = 21
-    ARRAY = 22
+    OPTION = 22
     MAP = 23
-    PADDING = 24
+    FLAG = 24
 
 class BinStruct(BinObjectWithFields):
     """Structured binary value"""
@@ -235,18 +235,18 @@ class BinEmbeddedField(BinField):
     def to_serializable(self):
         return (self.name.to_serializable(), self.value.to_serializable())
 
-class BinArrayField(BinField):
-    def __init__(self, hname, vtype, values):
+class BinOptionField(BinField):
+    def __init__(self, hname, vtype, value):
         super().__init__(hname)
         self.vtype = vtype
-        self.value = values
+        self.value = value
 
     def __repr__(self):
-        svalues = _repr_indent_list(self.value)
-        return f"<{self.name!r} ARRAY({self.vtype.name}) {svalues}>"
+        svalue = '-' if self.value is None else f'(\n  {_repr_indent(self.value)}\n)'
+        return f"<{self.name!r} OPTION({self.vtype.name}) {svalue}>"
 
     def to_serializable(self):
-        return (self.name.to_serializable(), [_to_serializable(v) for v in self.value])
+        return (self.name.to_serializable(), None if self.value is None else _to_serializable(self.value))
 
 class BinMapField(BinField):
     def __init__(self, hname, ktype, vtype, values):
@@ -320,7 +320,7 @@ class BinReader:
     def read_bvalue(self, vtype):
         return self._vtype_to_bvalue_reader[vtype](self)
 
-    def read_vec3_u16(self):
+    def read_empty(self):
         return self.read_fmt('<3H')
 
     def read_bool(self):
@@ -377,7 +377,7 @@ class BinReader:
     def read_link(self):
         return BinEntryPath(self.read_fmt('<L')[0])
 
-    def read_padding(self):
+    def read_flag(self):
         return self.read_fmt('<B')[0]
 
     def read_struct(self):
@@ -413,10 +413,11 @@ class BinReader:
     def read_field_embedded(self, hname, btype):
         return BinEmbeddedField(hname, self.read_bvalue(btype))
 
-    def read_field_array(self, hname, btype):
+    def read_field_option(self, hname, btype):
         vtype, count = self.read_fmt('<BB')
+        assert count in (0, 1)
         vtype = BinType(vtype)
-        return BinArrayField(hname, vtype, [self.read_bvalue(vtype) for _ in range(count)])
+        return BinOptionField(hname, vtype, None if count == 0 else self.read_bvalue(vtype))
 
     def read_field_map(self, hname, btype):
         ktype, vtype, _, count = self.read_fmt('<BBLL')
@@ -426,7 +427,7 @@ class BinReader:
         return BinMapField(hname, ktype, vtype, values)
 
     _vtype_to_bvalue_reader = {
-        BinType.VEC3_U16: read_vec3_u16,
+        BinType.EMPTY: read_empty,
         BinType.BOOL: read_bool,
         BinType.S8: read_s8,
         BinType.U8: read_u8,
@@ -447,11 +448,11 @@ class BinReader:
         BinType.STRUCT: read_struct,
         BinType.EMBEDDED: read_embedded,
         BinType.LINK: read_link,
-        BinType.PADDING: read_padding,
+        BinType.FLAG: read_flag,
     }
 
     _vtype_to_field_reader = {
-        BinType.VEC3_U16: read_field_basic,
+        BinType.EMPTY: read_field_basic,
         BinType.BOOL: read_field_basic,
         BinType.S8: read_field_basic,
         BinType.U8: read_field_basic,
@@ -473,9 +474,9 @@ class BinReader:
         BinType.STRUCT: read_field_struct,
         BinType.EMBEDDED: read_field_embedded,
         BinType.LINK: read_field_basic,
-        BinType.ARRAY: read_field_array,
+        BinType.OPTION: read_field_option,
         BinType.MAP: read_field_map,
-        BinType.PADDING: read_field_basic,
+        BinType.FLAG: read_field_basic,
     }
 
 
