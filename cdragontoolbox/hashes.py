@@ -420,13 +420,13 @@ class LcuHashGuesser(HashGuesser):
             # search for known paths formats
             # /fe/{plugin}/{subpath} -> plugins/rcp-fe-{plugin}/global/default/{subpath}
             self.check_iter(f"plugins/rcp-fe-{m.group(1)}/global/default/{m.group(2)}".lower()
-                            for m in re.finditer(r"/fe/([^/]+)/([a-zA-Z0-9/_.@-]+)", data))
+                            for m in re.finditer(r"\bfe/([^/]+)/([a-zA-Z0-9/_.@-]+)", data))
             # /DATA/{subpath} -> plugins/rcp-be-lol-game-data/global/default/data/{subpath}
             self.check_iter(f"plugins/rcp-be-lol-game-data/global/default/data/{m.group(1)}".lower()
                             for m in re.finditer(r"/DATA/([a-zA-Z0-9/_.@-]+)", data))
             # /lol-game-data/assets/{subpath} -> plugins/rcp-be-lol-game-data/global/default/{subpath}
             self.check_iter(f"plugins/rcp-be-lol-game-data/global/default/{m.group(1)}".lower()
-                            for m in re.finditer(r'[/"]lol-game-data/assets/([a-zA-Z0-9/_.@-]+)', data))
+                            for m in re.finditer(r'\blol-game-data/assets/([a-zA-Z0-9/_.@-]+)', data))
 
             # relative path starting with ./ or ../ (e.g. require() use)
             relpaths |= {m.group(1) for m in re.finditer(r'[^a-zA-Z0-9/_.\\-]((?:\.|\.\.)/[a-zA-Z0-9/_.-]+)', data)}
@@ -699,6 +699,7 @@ class GameHashGuesser(HashGuesser):
             "data/characters/{c}/skins/base/{c}.skl",
             "data/characters/{c}/skins/base/{c}.skn",
             "data/characters/{c}/skins/base/{c}_tx_cm.dds",
+            "data/characters/{c}/tiers/root.bin",
             "data/characters/{c}/{c}.bin",
             "data/characters/{c}/{c}.ddf",
             "data/characters/{c}/hud/{c}_circle.dds",
@@ -712,6 +713,7 @@ class GameHashGuesser(HashGuesser):
             self.check_iter(s.format(c=c) for s in formats)
             self.check_iter(f"data/characters/{c}/skins/skin{i}.bin" for i in range(200))
             self.check_iter(f"data/characters/{c}/animations/skin{i}.bin" for i in range(200))
+            self.check_iter(f"data/characters/{c}/tiers/tier{i}.bin" for i in range(200))
 
     def grep_wad(self, wad):
         """Find hashes from a wad file"""
@@ -722,14 +724,14 @@ class GameHashGuesser(HashGuesser):
             for wadfile in wad.files:
                 if wadfile.type == 2:
                     continue # softlink; contains no actual content
-                if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm','anm',
+                if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm', 'anm',
                                    'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'luabin64', 'bnk', 'wpk'):
                     continue # don't grep filetypes known to not contain full paths
 
                 data = wadfile.read_data(f)
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
-                    for m in re.finditer(br'(..)((?:ASSETS|DATA|Characters|Shaders)/[0-9a-zA-Z_. /-]+)', data):
+                    for m in re.finditer(br'(?=(..)((?:ASSETS|DATA|Characters|Shaders)/[0-9a-zA-Z_. /-]+))', data):
                         n, path = m.groups()
                         n = n[0] + (n[1] << 8)
                         path = path[:n].lower().decode('ascii')
