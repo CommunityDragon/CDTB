@@ -731,10 +731,13 @@ class GameHashGuesser(HashGuesser):
                 data = wadfile.read_data(f)
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
-                    for m in re.finditer(br'(?=(..)((?:ASSETS|DATA|Characters|Shaders)/[0-9a-zA-Z_. /-]+))', data):
-                        n, path = m.groups()
-                        n = n[0] + (n[1] << 8)
-                        path = path[:n].lower().decode('ascii')
+                    for m in re.finditer(br'(?:ASSETS|DATA|Characters|Shaders)/', data):
+                        i = m.start()
+                        n = data[i-2] + (data[i-1] << 8)
+                        try:
+                            path = data[i:i+n].lower().decode('ascii')
+                        except UnicodeDecodeError:
+                            continue
                         if path.startswith('characters'):
                             self.check(f"assets/{path}")
                             self.check(f"data/{path}")
