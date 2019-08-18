@@ -1,5 +1,5 @@
 requests
-hachoir3
+hachoir
 xxhash
 zstd
 Pillow
