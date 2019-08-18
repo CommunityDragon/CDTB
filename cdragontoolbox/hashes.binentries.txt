@@ -40805,6 +40805,7 @@ dbbfeabb Cheats/GameModes/StarGuardian/SG_CheatToWave_Up
 96dca3ee Cheats/GameModes/StarGuardian/SG_KillEnemies
 ae231183 Cheats/GameModes/StarGuardian/SG_Progression_Decrement
 ffe0126b Cheats/GameModes/StarGuardian/SG_Progression_Increment
+6c745ec9 Cheats/GameModes/StarGuardian/SG_SoloTuningBuff
 66b0609a Cheats/GameModes/StarGuardian/SG_Spawn_ChoGath
 d84c9e54 Cheats/GameModes/StarGuardian/SG_Spawn_FishThing
 5fd0820b Cheats/GameModes/StarGuardian/SG_Spawn_KhaZix
@@ -40825,7 +40826,9 @@ a1c73f8f Cheats/GameModes/TFT/TFT_AddLotsoGold
 5ceaeaaa Cheats/GameModes/TFT/TFT_ClearStageUI
 0f923f5b Cheats/GameModes/TFT/TFT_CloneArmy
 ed803ecc Cheats/GameModes/TFT/TFT_DecPlayerHealth
+1c98155f Cheats/GameModes/TFT/TFT_GetAllToggles
 be05371d Cheats/GameModes/TFT/TFT_GetMissionsProperties
+90dec4cf Cheats/GameModes/TFT/TFT_GetToggle
 1fb29c8a Cheats/GameModes/TFT/TFT_GoToRound
 ad059bb0 Cheats/GameModes/TFT/TFT_IncPlayerHealth
 7330f765 Cheats/GameModes/TFT/TFT_MatchmakingTable
@@ -40834,10 +40837,13 @@ ad059bb0 Cheats/GameModes/TFT/TFT_IncPlayerHealth
 af74f538 Cheats/GameModes/TFT/TFT_SetCameraToIsland
 d322c3d5 Cheats/GameModes/TFT/TFT_SetMissionsProperty
 4701abd9 Cheats/GameModes/TFT/TFT_SetStreak
+8618be13 Cheats/GameModes/TFT/TFT_SetToggle
 214b60d8 Cheats/GameModes/TFT/TFT_ShowTraitVFX
+56219281 Cheats/GameModes/TFT/TFT_SimulateMatchmaking
 ffe4d29b Cheats/GameModes/TFT/TFT_SpawnItem
 9a00bb4f Cheats/GameModes/TFT/TFT_StarUpUnits
 394b2f51 Cheats/GameModes/TFT/TFT_StressTest
+3579f630 Cheats/GameModes/TFT/TFT_SurrenderCheat
 7fe5f0eb Cheats/GameModes/TFT/TFT_TestRemoveUnit
 f7b6bd86 Cheats/GameModes/TFT/TFT_ToggleCameraTransitions
 dc62120b Cheats/GameModes/TFT/TFT_UpdateLocators
@@ -43475,6 +43481,7 @@ ed7643c3 Perks/Styles/Domination/ZombieWard
 97720998 Perks/Styles/Domination/ZombieWard/Particles/Perks_CorruptedWard_Spawn
 450a1a64 Perks/Styles/Domination/ZombieWard/Spells/ZombieWard_Mis
 dcd0891e Perks/Styles/Inspiration
+0d1fa0ec Perks/Styles/Inspiration/ApproachVelocity
 d57020c6 Perks/Styles/Inspiration/BiscuitDelivery
 2eddcd4b Perks/Styles/Inspiration/CelestialBody
 f4fa51eb Perks/Styles/Inspiration/CosmicInsight
@@ -43510,6 +43517,7 @@ dbb15a0e Perks/Styles/Inspiration/MagicalFootwear/Particles/Perks_MagicalFootwea
 af36107f Perks/Styles/Inspiration/MinionDematerializer
 8164c0d7 Perks/Styles/Inspiration/MinionDematerializer/Particles/Perks_ClearChoice_Active
 51b8e12f Perks/Styles/Inspiration/MinionDematerializer/Particles/Perks_ClearChoice_Impact
+28af38ab Perks/Styles/Inspiration/MinionDematerializer/Spells/PerksDashLeachOrb
 a0fd1a9e Perks/Styles/Inspiration/PerfectTiming
 4e669505 Perks/Styles/Inspiration/TimeWarpTonic
 1d3166f3 Perks/Styles/Inspiration/UnsealedSpellbook
@@ -43525,6 +43533,8 @@ ecdfdfa4 Perks/Styles/Precision/Conqueror/Particles/Perks_Conqueror_Activate
 b03d5048 Perks/Styles/Precision/FleetFootwork/Particles/Perks_FleetFootwork_Haste
 0470a713 Perks/Styles/Precision/FleetFootwork/Particles/Perks_FleetFootwork_Heal
 350acecf Perks/Styles/Precision/FleetFootwork/Particles/Perks_FleetFootwork_Heal_Mis
+0350467e Perks/Styles/Precision/FleetFootwork/Spells/FleetFootwork_HealMis
+1555a9e5 Perks/Styles/Precision/LastStand
 c4d1e2e5 Perks/Styles/Precision/LegendAlacrity
 a11d9ab0 Perks/Styles/Precision/LegendBloodline
 afd592c3 Perks/Styles/Precision/LegendBloodline/Particles/Perks_LegendBloodline_Max_Stacks
@@ -43543,6 +43553,7 @@ c43cd7f5 Perks/Styles/Precision/PreResSetBonus
 20fd5113 Perks/Styles/Precision/PreSorSetBonus
 be5de13b Perks/Styles/Precision/PresenceOfMind
 5c9ea84a Perks/Styles/Precision/PresenceOfMind/Particles/Perks_PresenceOfMind_Mis
+b77611e0 Perks/Styles/Precision/PresenceOfMind/spells/PerkPresenceOfMindVisualMissile
 4a4b57c9 Perks/Styles/Precision/PressTheAttack
 414bc4ee Perks/Styles/Precision/PressTheAttack/Particles/Perks_TunnelVision_03
 454bcb3a Perks/Styles/Precision/PressTheAttack/Particles/Perks_TunnelVision_07
@@ -43552,6 +43563,7 @@ e0a7184a Perks/Styles/Precision/PressTheAttack/Particles/Perks_TunnelVision_Tar
 d2edede6 Perks/Styles/Precision/PressTheAttack/Particles/Perks_TunnelVision_Target
 5be0ce9a Perks/Styles/Precision/Triumph
 1896332c Perks/Styles/Precision/Triumph/Particles/Perks_Triumph_Mis
+d06ce3cf Perks/Styles/Precision/Triumph/Spells/PerkSoulFeastVisualMissile
 7d755c92 Perks/Styles/Resolve
 6b426837 Perks/Styles/Resolve/Aftershock
 4c068af6 Perks/Styles/Resolve/Aftershock/Particles/Perks_Aftershock_AOE
@@ -43610,6 +43622,8 @@ b7a8270d Perks/Styles/Resolve/Guardian/Particles/Perk_Guardian_Break
 9848f7e3 Perks/Styles/Resolve/Guardian/Particles/Perks_Guardian_Active
 43792dd7 Perks/Styles/Resolve/Guardian/Particles/Perks_Guardian_Shield_AOE_Ally
 20d1abee Perks/Styles/Resolve/Guardian/Particles/Perks_Guardian_Timer
+5a0dc73c Perks/Styles/Resolve/Guardian/Spells/Runes_Guardian_Indicator_Mis
+0339a6d3 Perks/Styles/Resolve/Guardian/Spells/Runes_KSGuardian_Trail_Mis
 85977a9c Perks/Styles/Resolve/IronSkin
 4b0922c6 Perks/Styles/Resolve/MirrorShell
 966ece1e Perks/Styles/Resolve/Overgrowth
@@ -43621,6 +43635,7 @@ c5638aae Perks/Styles/Resolve/ResInsSetBonus
 1ba85522 Perks/Styles/Resolve/Revitalize
 d9ab9879 Perks/Styles/Resolve/SecondWind
 5a9fac7c Perks/Styles/Resolve/ShieldBash
+591629ba Perks/Styles/Resolve/Unflinching
 438e5ab6 Perks/Styles/Resolve/Unflinching/Particles/Perks_Perseverance_Buff
 c438eb3b Perks/Styles/Sorcery
 e6655bd7 Perks/Styles/Sorcery/AbsoluteFocus
@@ -43634,6 +43649,9 @@ f849f61a Perks/Styles/Sorcery/ArcaneComet
 79761c46 Perks/Styles/Sorcery/ArcaneComet/Particles/Perks_Meteor_Ready_Idle_Offset
 02bb9b53 Perks/Styles/Sorcery/ArcaneComet/Particles/Perks_Meteor_Ready_Idle_Offset_Child
 1f2ae6e9 Perks/Styles/Sorcery/ArcaneComet/Particles/Perks_Meteor_Tar
+0384e743 Perks/Styles/Sorcery/ArcaneComet/Spells/Perks_ArcaneComet_Mis
+b05e8f4c Perks/Styles/Sorcery/ArcaneComet/Spells/Perks_ArcaneComet_Mis_Arc
+c3319dfe Perks/Styles/Sorcery/ArcaneComet/Spells/Perks_ArcaneComet_Mis_Idle
 1b8bbb5d Perks/Styles/Sorcery/Celerity
 be4ec44e Perks/Styles/Sorcery/GatheringStorm
 d004c8ee Perks/Styles/Sorcery/GatheringStorm/Particles/Perks_GatheringStorm_Active
@@ -43680,6 +43698,7 @@ fe6822ea Perks/Styles/Sorcery/SummonAery/Particles/SummonAery_Target_Despawn
 dd49b569 Perks/Styles/Sorcery/SummonAery/Spells/Perks_Aery_Ally
 7c749d8f Perks/Styles/Sorcery/SummonAery/Spells/Perks_Aery_Hide
 62e2e1bd Perks/Styles/Sorcery/SummonAery/Spells/Perks_Aery_Return
+c515b3a6 Perks/Styles/Sorcery/SummonAery/Spells/Perks_Aery_Tar
 36c2309d Perks/Styles/Sorcery/TheUltimateHat
 4927a7bb Perks/Styles/Sorcery/Transcendence
 64707098 Perks/Styles/Sorcery/Transcendence/Particles/Perks_Transcendence_Active

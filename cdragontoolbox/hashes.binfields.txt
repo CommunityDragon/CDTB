@@ -2273,6 +2273,7 @@ a63ebd41 skinBasedRelativeColorScheme
 514b1c48 skinParent
 6f1dd68b skinRarityOverride
 a1f805da skinScale
+68f2b69c skinUpgradeData
 14854159 skipVOOverride
 0a65794d skyLightColor
 b39b0430 skyLightScale

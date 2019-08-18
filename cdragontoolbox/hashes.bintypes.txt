@@ -949,6 +949,7 @@ f77a936e PerkSubStyleBonusInstance
 5acfdf50 PlatformSpellInfo
 9160350b PlatformSpellInfoInstance
 a66424c6 PresetAnimatorCheat
+09b5d357 PresetEnvironmentArtCheat
 3ab46af0 PrototypeAkaliWMissileRender
 3cae34ab PrototypeAkaliWMissileRenderInstance
 bad95a7a RScript
@@ -966,12 +967,16 @@ f8ca5e60 RecallSkinUpgradeInstance
 9ddb195b RegionSettingsInstance
 94315a01 RegionsThatAllowContent
 454321de RegionsThatAllowContentInstance
+42c29efb ReloadScriptsCheat
+02e32738 ReloadWWiseCheat
 a9f7c49f RemapFloatMaterialDriver
 61f9065c RemapFloatMaterialDriverInstance
 a90263ef RemoveFromCustomTableBlock
 6572956c RemoveFromCustomTableBlockInstance
 fbfd48ce RenderStyleData
 19315b59 RenderStyleDataInstance
+784718b8 ReportGoldCheat
+63a7b8ed ResetFirstBloodCheat
 da0bc105 ResetGoldCheat
 59f539d2 ResetGoldCheatInstance
 ef3a0f33 ResourceResolver
@@ -1063,7 +1068,9 @@ a87e06c7 SkinUpgradeDataInstance
 9c566034 SoundEventData
 22fdb34f SoundEventDataInstance
 c7d4634c SpawnBotCheat
+ca0563ed SpawnBotClientCheat
 5c9e06d9 SpawnMinionCheat
+a088b090 SpawnMinionClientCheat
 5a999f4b SpawnSkinUpgrade
 d7b148b8 SpawnSkinUpgradeInstance
 5fd4b293 SpawningUIDefinition
@@ -1091,6 +1098,7 @@ bc49afde SpellRankUpRequirements
 5b5bff7f StatByNamedDataValueCalculationPartInstance
 ed237fc4 StatStoneData
 2be1af9f StatStoneDataInstance
+96766ff4 StatStoneSet
 127798fd StatUIData
 c145a43a StatUIDataInstance
 735b4c95 StaticMaterialChildTechniqueDef
@@ -1180,6 +1188,7 @@ e071f48b TextureAndColorDataInstance
 d186c31a TftItemData
 a2d042b0 TftMapSkin
 e52b8f5d TftShopData
+3bea5b98 TftSurrenderCheat
 6f870247 TftTraitData
 3d7f07ef TimeBlendData
 ee5fb96c TimeBlendDataInstance
@@ -1191,6 +1200,7 @@ f36e13f7 TimeMaterialDriver
 6736170a ToggleBarracksCheatInstance
 843f7edb ToggleBuffCheat
 d6aca6c8 ToggleBuffCheatInstance
+944d2643 ToggleDebugMessagescheat
 df6a8659 ToggleInvulnerableCheat
 882a63a6 ToggleInvulnerableCheatInstance
 a7fab94b TogglePlantFastRespawnCheat
