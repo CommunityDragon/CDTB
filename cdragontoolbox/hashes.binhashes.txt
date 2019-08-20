@@ -321,6 +321,7 @@ a16c6fa3 LeadInDelay
 208e33a1 LightingVolume_Base
 aec48679 Lighting_A
 7fbf2eff Lighting_Base
+1ecb4f1b LoadingScreen
 42b132e7 LockoutTimer
 5f4c2ae3 MRBase
 7308ec65 MRRatio
@@ -488,6 +489,8 @@ da1619ec ShieldMin
 d72beee1 ShieldValue
 de316207 ShopClose
 b894b475 ShopOpen
+d371a979 ShowMastery
+077c8ea7 ShowSummonerSpells
 f2aa916c Siege
 4b9514e4 SilenceDuration
 13efe61d SizeCoefficient

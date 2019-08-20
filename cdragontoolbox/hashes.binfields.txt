@@ -528,7 +528,9 @@ bc037de7 dynamics
 5a6d11ed eSportCharacter
 5129beed eSportLeagueTable
 6ba634bd eSportTeamTable
+4158aeed eSportsEventMutator
 007d6657 earthColoration
+05537a1b easy
 6e6e8d54 effect
 c13d6d31 effectAmounts
 1d71c6e2 effectFile
@@ -657,6 +659,10 @@ f6af0f2d friendlyUxOverrideIncludeTagsString
 7e80419a friendlyUxOverrideTeam
 23b0c558 frontTextureName
 08706237 fullName
+ca571faf gameIconFull
+74ee6ab3 gameIconLit
+615e74e1 gameIconMini
+dfd76796 gameIconUnlit
 ddeddc60 gameMode
 5d2489ca gameModeDescription
 0bf2ebe3 gameModeName
@@ -682,6 +688,7 @@ af6bcb6d groups
 d54e700a growthXScalar
 508d56d5 growthYScalar
 8d2fbd10 hangTime
+e4c35bdc hard
 34270dc1 hasFixedOrbit
 e013ab15 hasMaxGrowRange
 ed87335c hasPostRotateOrientation
@@ -740,6 +747,7 @@ f4ba5c9e initialSubmeshShadowsToHide
 6abaa1e5 innerTextureName
 0b99db0e inputTextLengthMax
 3c8368c0 intensityScale
+2e3d90b1 intro
 c68db52e inventoryIcon
 4ff2eb71 inventoryIconToOverlay
 c3130dac isAnimated
@@ -916,6 +924,7 @@ f0696c0b mBotOverrideSet
 7b5d1934 mBreakpoints
 890163aa mBrushCursor
 7f0f5a79 mBuff
+47fff22a mBuffAttributeFlags
 f1c99bd1 mBuffComparisons
 02490112 mBuffName
 6eac7015 mBuffScriptName
@@ -1020,6 +1029,7 @@ bae514d4 mCostAlwaysShownInUI
 bef40586 mCursorChangesInGrass
 1565f5bd mCursorChangesInTerrain
 e4928fe4 mCursorConfig
+f54e5965 mCursorConfigUpdate
 16877df3 mCustomIcons
 6f2107fb mCustomMinimapBackgrounds
 edbd6c35 mCustomTargeterDefinitions
@@ -1068,6 +1078,7 @@ f1f20d72 mDescription
 0a188a4f mDescriptionToAppend
 1e7f30f5 mDescriptionToPrepend
 07f7c001 mDescriptionToReplace
+70d05459 mDifficulty
 708696b4 mDisableCastBar
 95f1b682 mDisabledDescriptionOverride
 5a2297d3 mDisplayAsPercent
@@ -1118,6 +1129,7 @@ ab851fd5 mElementalSelectionAnimationData
 5df7536e mEmblemData
 b19d6a33 mEmblemId
 b698fb27 mEmblems
+0ecabde7 mEmoteFloatEnabled
 2bbef68d mEmoteID
 34462452 mEmotePopupData
 d8f8229d mEmotePopupTransitionIntro
@@ -1258,6 +1270,7 @@ b20a8093 mHotSpot
 bbe19802 mHotkey
 3522f9e3 mHotkeys
 180f1a00 mHoverNotUseableCursor
+d95eb979 mHudScoreData
 e723d68b mHudSpellSlotResetFeedbackData
 48144f19 mIconDataPriorityList
 10537b0c mIconFileName
@@ -1383,6 +1396,7 @@ dbe2e42d mLoadFromContentIds
 d0bbdce0 mLoadScreen
 64b22831 mLoadScreenTipConfiguration
 564eb981 mLoadingScreenAnchor
+9d6a47f4 mLoadingScreenBackground
 b0266352 mLoadingScreenScale
 102bc210 mLoadoutCategory
 5d50f6bd mLoadoutProperties
@@ -1521,6 +1535,12 @@ c914c010 mNoPixelSnappingY
 e202bca9 mNumber
 760558b0 mNumberOfCharacters
 ab8e7852 mNumberOfPeriods
+cd55b29a mNumberStyle
+2fcb722d mNumberStyleBonus
+74efd8a2 mNumberStyleBonusPercent
+47d5552b mNumberStylePercent
+b43f1aa2 mNumberStyleTotalAndCoefficient
+1bbc3b13 mNumberStyleTotalAndCoefficientPercent
 4a3183d0 mOMWPingRangeCutoffs
 b482c52c mObjectName
 1cbbc9a8 mObjectPath
@@ -1555,6 +1575,8 @@ e928ffc8 mParentEnchantmentGroup
 4500cac4 mParentIndex
 839fa9ff mParentRepulsion
 e449cc30 mParentScene
+46144074 mPart1
+4914452d mPart2
 60645d6a mParticleEventDataPairList
 fee87d39 mParticleName
 6972767d mParticleStartOffset
@@ -1614,6 +1636,7 @@ b0b16618 mPingData
 962f03ca mPingVOThrottleThreshold
 f2e0c42d mPingableWhileDisabled
 866d9a79 mPings
+d2ec57d7 mPipsHoverText
 4c725c11 mPixelSize
 65d50d20 mPlatformChatColor
 fb7195e8 mPlatformEnabled
@@ -1648,6 +1671,7 @@ ac9639d8 mProfileIcon
 64216a8e mRadius
 67cbaced mRange
 1f01e303 mRarity
+6e5ae53f mRarityGemId
 0a1fc240 mReadyForPlaytest
 3c797074 mRecastFrequency
 8ff0bc76 mRect
@@ -1702,6 +1726,8 @@ f55fd9ee mScalingPoints
 8e91ace0 mScene
 ed234463 mSceneName
 670a76a3 mSceneTransition
+bb7a4fb0 mSceneTransitionIn
+c6d9acd5 mSceneTransitionOut
 452d5fcb mScript
 081f96fc mScriptAsSubStyle
 c8e37ef0 mScriptName
@@ -1784,6 +1810,7 @@ d8a4574e mStartLocator
 5ecf040c mStartPositionOffset
 fa58c885 mStartTime
 d06c375d mStartValue
+37756d2f mStartingItemIds
 66379ea0 mStartingJoint
 c6a8e023 mStartingJointName
 4cec2c8a mStat
@@ -1880,6 +1907,8 @@ f8916e21 mTooltipEventWindow
 d00c4709 mTooltipRespawn
 da191984 mTooltipStyle
 feed6654 mTooltipText
+76b8af13 mTooltipTransitionIn
+6cdddf80 mTooltipTransitionOut
 cd1a1420 mTooltips
 74dea8d0 mTopdownZoom
 ce39623f mTotalKills
@@ -1927,6 +1956,7 @@ acc23ce7 mUseIconsForButtons
 cc364a15 mUseMinimapTargeting
 205b3658 mUseMissilePositionAsOrigin
 90d0acb0 mUseRectSourceResolutionAsFloor
+d6e00996 mUsesListValues
 9a4efe53 mVFXKey
 5f8284a2 mVFXResourceResolver
 3d94aedd mVOEvent
@@ -1941,6 +1971,7 @@ d14d2f3b mValueProcessorDataList
 bcad5522 mVertical
 1dcc5425 mVerticalOffset
 9f4faebd mVfxSpawnConditions
+3b2adacd mVfxSystem
 84313c65 mVisibleToOwnerTeamOnly
 4a5f2ebc mVisualPriority
 a5ca13e4 mVoiceChatData
@@ -1999,6 +2030,7 @@ d4c45abf maximumChatScale
 58b96400 maximumGlobalScale
 2c430c12 maximumMinimapScale
 3f1a9424 maximumPracticeToolScale
+35afd776 medium
 f83ca5b7 meshName
 19bdf4df meshRenderFlags
 af014196 meshScale
@@ -2313,6 +2345,7 @@ c85cceeb startLocator
 bcf77154 startOffsetX
 bdf772e7 startOffsetY
 8a708dee startTime
+63719185 statStoneSets
 ba72875f states
 03a46b6b staticSwitch
 3291437b staticSwitches
@@ -2403,6 +2436,7 @@ cef47d3f tooltipDelay
 51d8e2ad towerTargetingEffectDefinition
 678f8050 towerTargetingPriorityBoost
 e1ad931b transform
+a85dbde5 transitionOffset
 768e1c18 transitionSample
 c697af1f transitionSource
 18258575 transitionTexture

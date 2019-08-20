@@ -903,6 +903,8 @@ a855e6b2 NotScriptCondition
 f8eda32d NotScriptConditionInstance
 7a42f079 NullMovement
 042b54c6 NullMovementInstance
+1879879d NumberFormattingBehavior
+99d7e373 NumberFormattingData
 25210743 ObjectTags
 4042c200 ObjectTagsInstance
 c8898924 OneTrueMaterialDriver
@@ -1096,6 +1098,7 @@ bc49afde SpellRankUpRequirements
 9b423a76 StatByCoefficientCalculationPartInstance
 5f5c70a4 StatByNamedDataValueCalculationPart
 5b5bff7f StatByNamedDataValueCalculationPartInstance
+bc2357b4 StatStoneCategory
 ed237fc4 StatStoneData
 2be1af9f StatStoneDataInstance
 96766ff4 StatStoneSet
@@ -1132,6 +1135,7 @@ f3476533 SummonerSpellPerkReplacement
 1afdcd30 SummonerSpellPerkReplacementInstance
 b3ac19bb SummonerSpellPerkReplacementList
 ac6850a8 SummonerSpellPerkReplacementListInstance
+2c26c305 SurrenderTypeData
 707977c0 SwapChampionCheat
 b8bb4bfb SwapChampionCheatInstance
 ce3d6255 SwitchCase
