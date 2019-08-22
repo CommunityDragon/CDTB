@@ -44,6 +44,7 @@ class WadFileHeader:
         b'DDS ': 'dds',
         b'<svg': 'svg',
         b'PROP': 'bin',
+        b'PTCH': 'bin',
         b'BKHD': 'bnk',
         b'r3d2Mesh': 'scb',
         b'r3d2anmd': 'anm',

@@ -276,7 +276,13 @@ class BinFile:
     def __init__(self, f):
         if isinstance(f, str):
             f = open(f, 'rb')
-        if f.read(4) != b'PROP':
+        magic = f.read(4)
+        self.is_patch = magic == b'PTCH'
+        if self.is_patch:
+            patch_header = struct.unpack('<2L', f.read(8))
+            assert patch_header == (1, 0)
+            magic = f.read(4)
+        if magic != b'PROP':
             raise ValueError("missing magic code")
         reader = BinReader(f)
         self.version, self.linked_files, entry_types = reader.read_binfile_header()
