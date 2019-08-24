@@ -26,6 +26,8 @@ f84984d4 Armor
 168ae4d7 Art_B
 158ae344 Art_C
 3968c2d7 Art_Data
+1965bc52 AssistPoolMax
+035211f8 AssistPoolMin
 8b57d2cd AttachCooldown
 58b1ec4a Attack3
 dee32af0 AttackChampion2D
@@ -36,6 +38,7 @@ cdd2b9ad AttackMinion2D
 1acb7fe4 AttackSpeedMin
 4ca4732d AttackSpeedSlow
 950c6c4a Attack_INTO_Run
+e0613999 Audio
 bb0d0262 Audio_Data
 8df65353 Baron
 3ddc94d8 Base
@@ -69,6 +72,7 @@ c9a72b68 BonusMS
 b8781631 BonusTenacity
 fffa7852 Boots
 db634ca8 BounceDamage
+377db006 Bounty
 66d991d0 Browsing
 d955a324 BuffDuration
 595c3d6c BuyItem
@@ -194,6 +198,7 @@ aadc9d03 Death_INTO_Idle
 a2cd83b0 DefaultBilgewater
 0648f467 DelayBeforeBurst
 edc9a498 Design_Data
+d29691dd DisableScoreboard
 ea747a03 DisarmDuration
 50e0bb84 DistanceToTower
 78455c80 DotDuration
@@ -212,6 +217,7 @@ afc47051 EDamage
 e1bc2b5b FIRSTBLOOD
 f16d8413 Fade
 b9cec909 FeatherDamage
+6664d41e FirstBloodBonus
 12771576 FirstMove2D
 73406a1c FlatHeal
 2250ecf0 FlatHealAmount
@@ -322,6 +328,7 @@ a16c6fa3 LeadInDelay
 aec48679 Lighting_A
 7fbf2eff Lighting_Base
 1ecb4f1b LoadingScreen
+9b0f52c6 LoadscreenSettingsFile
 42b132e7 LockoutTimer
 5f4c2ae3 MRBase
 7308ec65 MRRatio
@@ -451,6 +458,7 @@ c7e8b7af RegenSeconds
 20fd0e45 Root
 35cefd8d RootDuration
 2acd4eca Run
+1c3f96c9 SNOWURF
 455218d0 SR
 8e883e52 STARGUARDIAN
 82971c71 Scale
@@ -489,6 +497,8 @@ da1619ec ShieldMin
 d72beee1 ShieldValue
 de316207 ShopClose
 b894b475 ShopOpen
+01700f2e ShowBeta
+a602be09 ShowDeathRecap
 d371a979 ShowMastery
 077c8ea7 ShowSummonerSpells
 f2aa916c Siege
@@ -821,6 +831,7 @@ ecca6f9a TriggerTime
 7510a868 Trinket
 8a04a74d TrophyIdle
 b12a3081 TurretHealth
+5c43327b UI
 e6673d68 ULT_Idlein
 75b18622 ULT_Taunt_loop
 cfcea746 ULT_TowerAttack
