@@ -1,7 +1,6 @@
+import argparse
 import json
 import glob
-import mmap
-import copy
 import re
 import os
 from json import JSONEncoder
@@ -17,7 +16,7 @@ class NaiveJsonEncoder(JSONEncoder):
         return other.__dict__
 
 
-class TFTTransformer:
+class TftTransformer:
     def parse(self, input):
         map22_file = os.path.join(input, "data", "maps", "shipping", "map22", "map22.bin")
         character_folder = os.path.join(input, "data", "characters")
@@ -33,7 +32,7 @@ class TFTTransformer:
 
         self.data = {"items": items, "traits": traits, "champs": champs}
 
-    def export(self, output, font_files=[], output_template=False):
+    def export(self, output, font_files=None, output_template=False):
         os.makedirs(output, exist_ok=True)
         template = json.dumps(self.data, cls=NaiveJsonEncoder, indent=4, sort_keys=True)
 
@@ -41,11 +40,14 @@ class TFTTransformer:
             with open(os.path.join(output, "template.json"), "w", encoding="utf-8") as f:
                 f.write(template)
 
+        if not font_files:
+            return
+
         for language in font_files:
             use = template
             code = os.path.basename(language)[11:-4]
 
-            with open(language, "r", encoding="utf-8") as f:
+            with open(language, encoding="utf-8") as f:
                 for line in f:
                     if line.startswith("tr"):
                         key, val = line.split("=", 1)
@@ -71,29 +73,27 @@ class TFTTransformer:
 
             items.append(
                 {
-                    "internal": {"hex": item.path.hex(), "name": item.getv("mName")},
+                    "internal": {"hex": item.path.h, "name": item.getv("mName")},
                     "id": item.getv("mId"),
-                    "name": item.getrv("c3143d66"),
-                    "desc": item.getrv("765f18da"),
+                    "name": item.getv(0xC3143D66),
+                    "desc": item.getv(0x765F18DA),
                     "icon": item.getv("mIconPath"),
-                    "from": [x.hex() for x in item.getrv("8b83ba8a")] if item.getr("8b83ba8a") else [],
+                    "from": [x.h for x in item.getv(0x8B83BA8A, [])],
                     "effects": effects,
                 }
             )
 
-        # replace the hex key gotten earlier with the id
+        item_ids = {x["internal"]["hex"]: x["id"] for x in items}
         for item in items:
-            # there must be some list comprehension way of doing this...
-            for old in item["from"]:
-                key = [x for x in items if x["internal"]["hex"] == old][0]["id"]
-                item["from"].insert(0, key)
-                item["from"].remove(old)
+            item["from"] = [item_ids[x] for x in item["from"]]
 
         return items
 
     def parse_champs(self, map22, traits, character_folder):
         champ_collection = [x for x in map22.entries if x.type == "TftShopData"]
         champs = []
+
+        trait_names = {x["internal"]["hash"]: x["internal"]["name"] for x in traits}
 
         for champ in champ_collection:
             name = champ.getv("mName")
@@ -104,16 +104,14 @@ class TFTTransformer:
             char_bin = BinFile(os.path.join(character_folder, name[4:], name[4:] + ".bin"))
             champ_id = [x.getv("characterToolData").getv("championId") for x in char_bin.entries if x.type == "CharacterRecord"][0]
 
-            champ_traits = []
             tft_bin = BinFile(os.path.join(character_folder, name, name + ".bin"))
             record = [x for x in tft_bin.entries if x.type == "TFTCharacterRecord"][0]
-            for trait in record.getv("mLinkedTraits"):
-                champ_traits.append([x["internal"]["name"] for x in traits if x["internal"]["hash"] == trait.hex()][0])
+            champ_traits = [trait_names[trait.h] for trait in record.getv("mLinkedTraits", [])]
 
             stats_obj = {
                 "hp": record.getv("baseHP"),
-                "mana": record.getv("primaryAbilityResource").getv("arBase"),
-                "initialMana": record.getv("mInitialMana") or 0,
+                "mana": record.getv("primaryAbilityResource").getv("arBase", 100),
+                "initialMana": record.getv("mInitialMana", 0),
                 "damage": record.getv("BaseDamage"),
                 "armor": record.getv("baseArmor"),
                 "magicResist": record.getv("baseSpellBlock"),
@@ -132,13 +130,13 @@ class TFTTransformer:
             for value in ability.getv("mDataValues"):
                 variables.append({"name": value.getv("mName"), "value": value.getv("mValues")})
 
-            ability_obj = {"name": champ.getrv("87a69a5e"), "desc": champ.getrv("bc4f18b3"), "icon": champ.getv("mPortraitIconPath"), "variables": variables}
+            ability_obj = {"name": champ.getv(0x87A69A5E), "desc": champ.getv(0xBC4F18B3), "icon": champ.getv("mPortraitIconPath"), "variables": variables}
 
             champs.append(
                 {
                     "id": champ_id,
-                    "name": champ.getrv("c3143d66"),
-                    "cost": champ.getv("mRarity") or 1,
+                    "name": champ.getv(0xC3143D66),
+                    "cost": champ.getv("mRarity", 1),
                     "icon": champ.getv("mIconPath"),
                     "traits": champ_traits,
                     "stats": stats_obj,
@@ -166,9 +164,9 @@ class TFTTransformer:
 
             traits.append(
                 {
-                    "internal": {"hash": trait.path.hex(), "name": trait.getv("mName")},
-                    "name": trait.getrv("c3143d66"),
-                    "desc": trait.getrv("765f18da"),
+                    "internal": {"hash": trait.path.h, "name": trait.getv("mName")},
+                    "name": trait.getv(0xC3143D66),
+                    "desc": trait.getv(0x765F18DA),
                     "icon": trait.getv("mIconPath"),
                     "effects": effects,
                 }
@@ -178,12 +176,16 @@ class TFTTransformer:
 
 
 if __name__ == "__main__":
-    input_folder = os.path.join("D:", "pbe")
-    output_folder = os.path.join("D:", "pbe", "tft_temp")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("input", help="directory with extracted bin files")
+    parser.add_argument("-o", "--output", default="tft", help="output directory")
+    args = parser.parse_args()
 
-    font_folder = os.path.join(input_folder, "data", "menu")
+    font_folder = os.path.join(args.input, "data", "menu")
     lang_files = glob.glob(f"{font_folder}/fontconfig_*_*.txt")
 
-    tft_transformer = TFTTransformer()
-    tft_transformer.parse(input_folder)
-    tft_transformer.export(output_folder, lang_files, True)
+    tft_transformer = TftTransformer()
+    tft_transformer.parse(args.input)
+    tft_transformer.export(args.output, lang_files, True)
+
+    #py tft.py -o D:/tft/ D:/pbe/

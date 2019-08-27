@@ -134,15 +134,6 @@ class BinObjectWithFields:
         except KeyError:
             return default
 
-    def getr(self, key, default=None):
-        for v in self.fields:
-            if v.name.hex() == key:
-                return v
-        return default
-
-    def getrv(self, key, default=None):
-        return self.getr(key, default).value
-
     def to_serializable(self):
         return dict(f.to_serializable() for f in self.fields)
 
