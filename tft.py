@@ -68,7 +68,7 @@ class TftTransformer:
                 continue
 
             effects = []
-            for effect in item.getv("effectAmounts") if item.get("effectAmounts") else []:
+            for effect in item.getv("effectAmounts", []):
                 effects.append({"name": effect.getv("name"), "value": effect.getv("value")})
 
             items.append(
@@ -157,7 +157,7 @@ class TftTransformer:
             effects = []
             for trait_set in trait.getv("mTraitSets"):
                 variables = []
-                for effect in trait_set.getv("effectAmounts") if trait_set.get("effectAmounts") else []:
+                for effect in trait_set.getv("effectAmounts", []):
                     variables.append({"name": effect.getv("name"), "value": effect.getv("value")})
 
                 effects.append({"minUnits": trait_set.getv("mMinUnits"), "maxUnits": trait_set.getv("mMaxUnits"), "variables": variables})
@@ -187,5 +187,3 @@ if __name__ == "__main__":
     tft_transformer = TftTransformer()
     tft_transformer.parse(args.input)
     tft_transformer.export(args.output, lang_files, True)
-
-    #py tft.py -o D:/tft/ D:/pbe/
