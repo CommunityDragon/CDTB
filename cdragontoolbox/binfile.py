@@ -51,13 +51,16 @@ class BinHashBase:
     def __str__(self):
         if self.s is not None:
             return self.s
-        return f"{{{self.h:08x}}}"
+        return f"{{{self.hex()}}}"
 
     __repr__ = __str__
     to_serializable = __str__
 
     def __hash__(self):
         return self.h
+
+    def hex(self):
+        return f"{self.h:08x}"
 
 class BinHashValue(BinHashBase):
     """Hashed name in bin files (hash type)"""
@@ -67,7 +70,7 @@ class BinHashValue(BinHashBase):
     def __repr__(self):
         if self.s is not None:
             return repr(self.s)
-        return f"{{{self.h:08x}}}"
+        return f"{{{self.hex()}}}"
 
 class BinEntryPath(BinHashBase):
     """Path of a bin entry (top level element)"""
@@ -77,7 +80,7 @@ class BinEntryPath(BinHashBase):
     def __repr__(self):
         if self.s is not None:
             return repr(self.s)
-        return f"{{{self.h:08x}}}"
+        return f"{{{self.hex()}}}"
 
 class BinFieldName(BinHashBase):
     """Name of a struct field"""
