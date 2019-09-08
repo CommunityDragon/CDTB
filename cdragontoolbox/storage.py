@@ -470,5 +470,5 @@ def parse_storage_component(storage: Storage, component: str) -> Union[None, Pat
             patch = patch.latest()
         return patch
     else:
-        return storage.patch_element(name, version, stored=True)
+        return storage.patch_element(name, version, stored=version is not None)
 
