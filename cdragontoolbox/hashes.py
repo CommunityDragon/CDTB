@@ -715,6 +715,17 @@ class GameHashGuesser(HashGuesser):
             self.check_iter(f"data/characters/{c}/animations/skin{i}.bin" for i in range(200))
             self.check_iter(f"data/characters/{c}/tiers/tier{i}.bin" for i in range(200))
 
+    def guess_shader_variants(self):
+        """Guess different extension variants for shader files, e.g. ".glsl_100" """
+
+        shader_paths = [path for path in self.known.values() if path.endswith(".ps_2_0") or path.endswith(".vs_2_0")]
+
+        for path in shader_paths:
+            self.check(f"{path}.dx9")
+            self.check(f"{path}.glsl")
+            self.check_iter(f"{path}.dx9_{n}" for n in range(0, 100000, 100))
+            self.check_iter(f"{path}.glsl_{n}" for n in range(0, 100000, 100))
+
     def grep_wad(self, wad):
         """Find hashes from a wad file"""
 
