@@ -101,10 +101,10 @@ class TftTransformer:
             if not name.startswith("TFT_") or name == "TFT_Template":
                 continue
 
-            char_bin = BinFile(os.path.join(character_folder, name[4:], name[4:] + ".bin"))
+            char_bin = BinFile(os.path.join(character_folder, name[4:], name[4:] + ".bin").lower())
             champ_id = [x.getv("characterToolData").getv("championId") for x in char_bin.entries if x.type == "CharacterRecord"][0]
 
-            tft_bin = BinFile(os.path.join(character_folder, name, name + ".bin"))
+            tft_bin = BinFile(os.path.join(character_folder, name, name + ".bin").lower())
             record = [x for x in tft_bin.entries if x.type == "TFTCharacterRecord"][0]
             champ_traits = [trait_names[trait.h] for trait in record.getv("mLinkedTraits", [])]
 
