@@ -92,7 +92,9 @@ class Exporter:
 
     def converted_exported_paths(self):
         """Generate paths of extracted files after conversion"""
-        yield from (self._get_converter(path)[0] for path in self.exported_paths())
+        for path in self.exported_paths():
+            converter = self._get_converter(path)
+            yield from converter.converted_paths(path)
 
     def walk_output_dir(self):
         """Generate a list of files on disk (even if not in exported files)
@@ -271,31 +273,22 @@ class Exporter:
 
 
     def _get_converter(self, path):
-        """Get converter for given path
-        Return (converted_path, converter) or (path, None).
-        """
+        """Get converter that handles the given path, or None"""
         for converter in self.converters:
-            converted_path = converter.handle_path(path)
-            if converted_path is not None:
-                return (converted_path, converter)
-        return (path, None)
+            if converter.is_handled(path):
+                return converter
+        return CopyConverter.singleton
 
     def _export_plain_file(self, export_path, source_path, overwrite=True):
         """Export a plain file"""
 
-        converted_path, converter = self._get_converter(export_path)
-
-        output_path = os.path.join(self.output, converted_path)
-        if not overwrite and os.path.lexists(output_path):
+        converter = self._get_converter(export_path)
+        if not overwrite and converter.converted_paths_exist(self.output, export_path):
             return
 
         try:
             with open(source_path, 'rb') as fin:
-                if converter is None:
-                    with write_file_or_remove(output_path) as fout:
-                        shutil.copyfileobj(fin, fout)
-                else:
-                    converter.convert(fin, output_path)
+                converter.convert(fin, self.output, export_path)
         except FileConversionError as e:
             logger.warning(f"cannot convert file '{source_path}': {e}")
 
@@ -307,9 +300,9 @@ class Exporter:
             for wadfile in wad.files:
                 if wadfile.path is None:
                     continue
-                converted_path, converter = self._get_converter(wadfile.path)
-                output_path = os.path.join(self.output, converted_path)
-                if not overwrite and os.path.lexists(output_path):
+
+                converter = self._get_converter(wadfile.path)
+                if not overwrite and converter.converted_paths_exist(self.output, wadfile.path):
                     continue
 
                 data = wadfile.read_data(fwad)
@@ -317,11 +310,7 @@ class Exporter:
                     continue  # should not happen, file redirections have been filtered already
 
                 try:
-                    if converter is None:
-                        with write_file_or_remove(output_path) as fout:
-                            fout.write(data)
-                    else:
-                        converter.convert(BytesIO(data), output_path)
+                    converter.convert(BytesIO(data), self.output, wadfile.path)
                 except FileConversionError as e:
                     logger.warning(f"cannot convert file '{wadfile.path}': {e}")
                 except OSError as e:
@@ -411,7 +400,7 @@ class CdragonRawPatchExporter:
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
             BinConverter(re.compile(r'game/.*\.bin$')),
-            SknConverter([".skn"]),
+            SknConverter(),
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -528,85 +517,113 @@ class CdragonRawPatchExporter:
 class FileConverter:
     """Base class for file conversions
 
-    Files can be converted either to a single file or a single directory.
+    Each single file can be converted to one or multiple files and/or
+    directories (as yielded by `converted_paths()`).
     """
 
-    output_is_dir = False
-
-    def handle_path(self, path):
-        """Return the path of the converted path or None if not handled"""
+    def is_handled(self, path):
+        """Return whether the path is handled"""
         raise NotImplementedError()
 
-    def convert(self, fin, output_path):
-        """Convert source file object to a file or directory"""
+    def converted_paths(self, path):
+        """Generate paths converted from `path`
 
-        if self.output_is_dir:
-            shutil.rmtree(output_path, ignore_errors=True)
-            with write_dir_or_remove(output_path):
-                self.convert_to_dir(fin, output_path)
-        else:
-            with write_file_or_remove(output_path) as fout:
-                self.convert_to_file(fin, fout)
-
-    def convert_to_file(self, fin, fout):
-        """Convert file object content and save it to given file object"""
+        `self.handled(path) is True` can be assumed.
+        """
         raise NotImplementedError()
 
-    def convert_to_dir(self, fin, path):
-        """Convert file object content and save it to given directory path"""
+    def converted_paths_exist(self, output, path):
+        """Return True if all converted paths exist"""
+        return all(os.path.lexists(os.path.join(output, p)) for p in self.converted_paths(path))
+
+    def convert(self, fin, output, path):
+        """Convert a source file object
+
+        `output` is the root output directory.
+        `path` is the relative path of the converted file.
+
+        Implementations should use `write_file_or_remove()` and
+        `write_dir_or_remove()` to ensure files are properly removed on error.
+
+        A `FileConversionError` should be raised on conversion error.
+
+        `self.handled(path) is True` can be assumed.
+        """
         raise NotImplementedError()
+
 
 class FileConversionError(RuntimeError):
     pass
+
+class CopyConverter(FileConverter):
+    """Converter that copy as-is (no actual conversion)"""
+
+    def is_handled(self, path):
+        return True
+
+    def converted_paths(self, path):
+        yield path
+
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, path)
+        with write_file_or_remove(output_path) as fout:
+            shutil.copyfileobj(fin, fout)
+
+# use as a singleton, to avoid multiple instanciations for nothing
+CopyConverter.singleton = CopyConverter()
 
 class ImageConverter(FileConverter):
     def __init__(self, extensions):
         self.extensions = extensions
 
-    def handle_path(self, path):
-        base, ext = os.path.splitext(path)
-        if ext in self.extensions:
-            return base + '.png'
-        return None
+    def is_handled(self, path):
+        return os.path.splitext(path)[1] in self.extensions
 
-    def convert_to_file(self, fin, fout):
-        try:
-            im = Image.open(fin)
-            im.save(fout)
-        except (OSError, NotImplementedError):
-            # "OSError: cannot identify image file" happen for some files with a wrong extension
-            raise FileConversionError("cannot convert image to PNG")
+    def converted_paths(self, path):
+        yield os.path.splitext(path)[0] + '.png'
+
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, os.path.splitext(path)[0] + '.png')
+        with write_file_or_remove(output_path) as fout:
+            try:
+                im = Image.open(fin)
+                im.save(fout)
+            except (OSError, NotImplementedError):
+                # "OSError: cannot identify image file" happen for some files with a wrong extension
+                raise FileConversionError("cannot convert image to PNG")
 
 class BinConverter(FileConverter):
     def __init__(self, regex):
         self.regex = regex
 
-    def handle_path(self, path):
-        if self.regex.search(path):
-            return path + '.json'
-        return None
+    def is_handled(self, path):
+        return self.regex.search(path) is not None
 
-    def convert_to_file(self, fin, fout):
-        binfile = BinFile(fin)
-        fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
+    def converted_paths(self, path):
+        yield path + '.json'
+
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, path + '.json')
+        with write_file_or_remove(output_path) as fout:
+            binfile = BinFile(fin)
+            fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
 
 class SknConverter(FileConverter):
-    output_is_dir = True
+    def __init__(self):
+        pass
 
-    def __init__(self, extensions):
-        self.extensions = extensions
+    def is_handled(self, path):
+        return path.endswith('.skn')
 
+    def converted_paths(self, path):
+        yield os.path.splitext(path)[0]
 
-    def handle_path(self, path):
-        if self.extensions:
-            base, ext = os.path.splitext(path)
-            if ext in self.extensions:
-                return base
-        return None
-
-    def convert_to_dir(self, fin, path):
-        sknfile = SknFile(fin)
-        for entry in sknfile.entries:
-            name = os.path.join(path, entry["name"] + ".obj")
-            with open(name, "w") as f:
-                f.write(sknfile.to_obj(entry))
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, os.path.splitext(path)[0])
+        shutil.rmtree(output_path, ignore_errors=True)
+        with write_dir_or_remove(output_path):
+            sknfile = SknFile(fin)
+            for entry in sknfile.entries:
+                name = os.path.join(output_path, entry["name"] + ".obj")
+                with open(name, "w") as f:
+                    f.write(sknfile.to_obj(entry))
