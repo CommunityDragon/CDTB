@@ -600,12 +600,15 @@ class BinConverter(FileConverter):
         return self.regex.search(path) is not None
 
     def converted_paths(self, path):
+        yield path
         yield path + '.json'
 
     def convert(self, fin, output, path):
-        output_path = os.path.join(output, path + '.json')
+        output_path = os.path.join(output, path)
         with write_file_or_remove(output_path) as fout:
-            binfile = BinFile(fin)
+            shutil.copyfileobj(fin, fout)
+        with write_file_or_remove(output_path + '.json') as fout:
+            binfile = BinFile(output_path)
             fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
 
 class SknConverter(FileConverter):
