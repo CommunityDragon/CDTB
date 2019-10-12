@@ -96,15 +96,18 @@ class Exporter:
             converter = self._get_converter(path)
             yield from converter.converted_paths(path)
 
-    def walk_output_dir(self):
+    def walk_output_dir(self, skip_recurse=None):
         """Generate a list of files on disk (even if not in exported files)
 
+        Don't recurse into directories in `skip_recurse`.
         Generate paths with forward slashes on all platforms.
         """
         # os.walk() handles symlinked directories as directories
         # due to this, it's simpler (and faster) to recurse ourselves
         if not os.path.exists(self.output):
             return
+        if skip_recurse is None:
+            skip_recurse = []
         to_visit = ['']
         while to_visit:
             base = to_visit.pop()
@@ -113,7 +116,9 @@ class Exporter:
                     if entry.is_symlink() or entry.is_file(follow_symlinks=False):
                         yield f"{base}{entry.name}"
                     elif entry.is_dir():
-                        to_visit.append(f"{base}{entry.name}/")
+                        path = f"{base}{entry.name}"
+                        if path not in skip_recurse:
+                            to_visit.append(f"{path}/")
 
 
     def add_path(self, source_path, export_path):
@@ -241,9 +246,10 @@ class Exporter:
         """
 
         # collect files to remove
+        # note: empty directories are not removed
         trees_to_remove = []
         files_to_remove = []
-        for path in self.walk_output_dir():
+        for path in self.walk_output_dir(kept_files):
             full_path = os.path.join(self.output, path)
             if os.path.islink(full_path):
                 if path not in kept_symlinks:
