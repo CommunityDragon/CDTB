@@ -1,7 +1,7 @@
 import json
 import glob
 import os
-from .binfile import BinFile, BinHashBase, BinHashValue
+from .binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
 
 
 class NaiveJsonEncoder(json.JSONEncoder):
@@ -125,7 +125,12 @@ class TftTransformer:
 
             tft_bin = BinFile(os.path.join(character_folder, name, name + ".bin").lower())
             record = [x for x in tft_bin.entries if x.type == "TFTCharacterRecord"][0]
-            champ_traits = [trait_names[trait.h] for trait in record.getv("mLinkedTraits", [])]
+            champ_traits = []
+            for trait in record.getv("mLinkedTraits", []):
+                if isinstance(trait, BinEmbedded):
+                    champ_traits.extend(trait_names[field.value.h] for field in trait.fields)
+                else:
+                    champ_traits.append(trait_names[trait.h])
 
             stats_obj = {
                 "hp": record.getv("baseHP"),
