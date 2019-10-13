@@ -1,10 +1,9 @@
-import argparse
 import json
 import glob
 import re
 import os
 from json import JSONEncoder
-from cdragontoolbox.binfile import BinFile, BinHashBase, BinHashValue
+from .binfile import BinFile, BinHashBase, BinHashValue
 
 
 class NaiveJsonEncoder(JSONEncoder):
@@ -176,6 +175,7 @@ class TftTransformer:
 
 
 if __name__ == "__main__":
+    import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="directory with extracted bin files")
     parser.add_argument("-o", "--output", default="tft", help="output directory")
