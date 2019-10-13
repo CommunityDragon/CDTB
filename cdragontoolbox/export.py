@@ -400,6 +400,17 @@ class CdragonRawPatchExporter:
             for path in sorted(new_paths):
                 print(path, file=f)
 
+        logger.info(f"export TFT data files")
+        self.export_tft_data()
+
+    def export_tft_data(self):
+        if self.patch.version != 'main' and self.patch.version < PatchVersion('9.14'):
+            return  # no supported TFT data before 9.14
+        # don't import in module to be able to execute tftdata module
+        from .tftdata import TftTransformer
+        transformer = TftTransformer(os.path.join(self.output, "game"))
+        transformer.export(os.path.join(self.output, "cdragon/tft"), langs=None)
+
     def _create_exporter(self, patch):
         exporter = Exporter(self.output)
         exporter.converters = [
