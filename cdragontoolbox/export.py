@@ -400,7 +400,6 @@ class CdragonRawPatchExporter:
             for path in sorted(new_paths):
                 print(path, file=f)
 
-
     def _create_exporter(self, patch):
         exporter = Exporter(self.output)
         exporter.converters = [

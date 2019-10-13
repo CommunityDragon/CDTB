@@ -1,13 +1,11 @@
 import json
 import glob
-import re
 import os
-from json import JSONEncoder
 from .binfile import BinFile, BinHashBase, BinHashValue
 
 
-class NaiveJsonEncoder(JSONEncoder):
-    def default(self, other):  # pylint: disable=method-hidden
+class NaiveJsonEncoder(json.JSONEncoder):
+    def default(self, other):
         if isinstance(other, BinHashBase):
             if other.s is None:
                 return other.hex()
@@ -16,9 +14,13 @@ class NaiveJsonEncoder(JSONEncoder):
 
 
 class TftTransformer:
-    def parse(self, input):
-        map22_file = os.path.join(input, "data", "maps", "shipping", "map22", "map22.bin")
-        character_folder = os.path.join(input, "data", "characters")
+    def __init__(self, input_dir):
+        self.input_dir = input_dir
+
+    def build_template(self):
+        """Parse bin data into template data"""
+        map22_file = os.path.join(self.input_dir, "data", "maps", "shipping", "map22", "map22.bin")
+        character_folder = os.path.join(self.input_dir, "data", "characters")
 
         map22 = BinFile(map22_file)
         items = self.parse_items(map22)
@@ -29,33 +31,51 @@ class TftTransformer:
         [x.pop("internal") for x in traits]
         [x.pop("internal") for x in items]
 
-        self.data = {"items": items, "traits": traits, "champs": champs}
+        return {"items": items, "traits": traits, "champs": champs}
 
-    def export(self, output, font_files=None, output_template=False):
+    def export(self, output, langs=None):
+        """Export TFT data for given languages
+
+        By default (`langs` is `None`), export all available languages.
+        Otherwise, export for given `xx_yy` language codes.
+        """
+
+        fontconfig_dir = os.path.join(self.input_dir, "data/menu")
+
+        if langs is None:
+            langs = []
+            for path in glob.glob(os.path.join(fontconfig_dir, "fontconfig_??_??.txt")):
+                langs.append(path[-9:-4])
+
         os.makedirs(output, exist_ok=True)
-        template = json.dumps(self.data, cls=NaiveJsonEncoder, indent=4, sort_keys=True)
 
-        if output_template:
-            with open(os.path.join(output, "template.json"), "w", encoding="utf-8") as f:
-                f.write(template)
-
-        if not font_files:
-            return
-
-        for language in font_files:
-            use = template
-            code = os.path.basename(language)[11:-4]
-
-            with open(language, encoding="utf-8") as f:
+        template = self.build_template()
+        for lang in langs:
+            replacements = {}
+            with open(os.path.join(fontconfig_dir, f"fontconfig_{lang}.txt"), encoding="utf-8") as f:
                 for line in f:
                     if line.startswith("tr"):
                         key, val = line.split("=", 1)
                         key = key[4:-2]
                         val = val[2:-2]
-                        use = use.replace(key, val)
+                        replacements[key] = val
 
-            with open(os.path.join(output, code + ".json"), "w", encoding="utf-8") as f:
-                f.write(use)
+            def replace_in_data(data):
+                for key in ("name", "desc"):
+                    if key in data and data[key] in replacements:
+                        data[key] = replacements[data[key]]
+
+            for data in template["champs"]:
+                replace_in_data(data)
+                if "ability" in data:
+                    replace_in_data(data["ability"])
+            for data in template["items"]:
+                replace_in_data(data)
+            for data in template["traits"]:
+                replace_in_data(data)
+
+            with open(os.path.join(output, f"{lang}.json"), "w", encoding="utf-8") as f:
+                json.dump(template, f, cls=NaiveJsonEncoder, indent=4, sort_keys=True)
 
     def parse_items(self, map22):
         item_collection = [x for x in map22.entries if x.type == "TftItemData"]
@@ -181,9 +201,5 @@ if __name__ == "__main__":
     parser.add_argument("-o", "--output", default="tft", help="output directory")
     args = parser.parse_args()
 
-    font_folder = os.path.join(args.input, "data", "menu")
-    lang_files = glob.glob(f"{font_folder}/fontconfig_*_*.txt")
-
-    tft_transformer = TftTransformer()
-    tft_transformer.parse(args.input)
-    tft_transformer.export(args.output, lang_files, True)
+    tft_transformer = TftTransformer(args.input)
+    tft_transformer.export(args.output, langs=None)
