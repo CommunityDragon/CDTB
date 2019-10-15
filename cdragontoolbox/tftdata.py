@@ -160,7 +160,7 @@ class TftTransformer:
                 {
                     "id": champ_id,
                     "name": champ.getv(0xC3143D66),
-                    "cost": champ.getv("mRarity", 1),
+                    "cost": champ.getv("mRarity", 1) + 1,
                     "icon": champ.getv("mIconPath"),
                     "traits": champ_traits,
                     "stats": stats_obj,
