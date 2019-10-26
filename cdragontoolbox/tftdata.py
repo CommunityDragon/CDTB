@@ -1,6 +1,7 @@
 import json
 import glob
 import os
+import copy
 from .binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
 
 
@@ -51,6 +52,7 @@ class TftTransformer:
 
         template = self.build_template()
         for lang in langs:
+            instance = copy.deepcopy(template)
             replacements = {}
             with open(os.path.join(fontconfig_dir, f"fontconfig_{lang}.txt"), encoding="utf-8") as f:
                 for line in f:
@@ -65,17 +67,17 @@ class TftTransformer:
                     if key in data and data[key] in replacements:
                         data[key] = replacements[data[key]]
 
-            for data in template["champs"]:
+            for data in instance["champs"]:
                 replace_in_data(data)
                 if "ability" in data:
                     replace_in_data(data["ability"])
-            for data in template["items"]:
+            for data in instance["items"]:
                 replace_in_data(data)
-            for data in template["traits"]:
+            for data in instance["traits"]:
                 replace_in_data(data)
 
             with open(os.path.join(output, f"{lang}.json"), "w", encoding="utf-8") as f:
-                json.dump(template, f, cls=NaiveJsonEncoder, indent=4, sort_keys=True)
+                json.dump(instance, f, cls=NaiveJsonEncoder, indent=4, sort_keys=True)
 
     def parse_items(self, map22):
         item_collection = [x for x in map22.entries if x.type == "TftItemData"]
