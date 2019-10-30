@@ -3,7 +3,7 @@ import json
 import glob
 import os
 import copy
-from cdragontoolbox.binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
+from .binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
 
 
 class NaiveJsonEncoder(json.JSONEncoder):
