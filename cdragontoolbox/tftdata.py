@@ -2,7 +2,8 @@ import math
 import json
 import glob
 import os
-from .binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
+import copy
+from cdragontoolbox.binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
 
 
 class NaiveJsonEncoder(json.JSONEncoder):
@@ -53,6 +54,7 @@ class TftTransformer:
 
         template = self.build_template()
         for lang in langs:
+            instance = copy.deepcopy(template)
             replacements = {}
             with open(os.path.join(fontconfig_dir, f"fontconfig_{lang}.txt"), encoding="utf-8") as f:
                 for line in f:
@@ -62,22 +64,22 @@ class TftTransformer:
                         val = val[2:-2]
                         replacements[key] = val
 
-            def replace_in_data(data):
+            def replace_in_data(entry):
                 for key in ("name", "desc"):
-                    if key in data and data[key] in replacements:
-                        data[key] = replacements[data[key]]
+                    if key in entry and entry[key] in replacements:
+                        entry[key] = replacements[entry[key]]
 
-            for data in [template["sets"][x]["traits"] for x in template["sets"]]:
+            for data in (y for x in instance["sets"].values() for y in x["traits"]):
                 replace_in_data(data)
-            for data in [template["sets"][x]["champions"] for x in template["sets"]]:
+            for data in (y for x in instance["sets"].values() for y in x["champions"]):
                 replace_in_data(data)
                 if "ability" in data:
                     replace_in_data(data["ability"])
-            for data in template["items"]:
+            for data in instance["items"]:
                 replace_in_data(data)
 
             with open(os.path.join(output, f"{lang}.json"), "w", encoding="utf-8") as f:
-                json.dump(template, f, cls=NaiveJsonEncoder, indent=4)
+                json.dump(instance, f, cls=NaiveJsonEncoder, indent=4)
 
     def generate_correct_set_info(self, sets, traits, champs):
 
@@ -91,7 +93,7 @@ class TftTransformer:
                     if char_name == real_char["internal"]["name"]:
                         set_champs.append(real_char)
 
-            set_traits = set([y for x in set_champs for y in x["traits"]])
+            set_traits = {y for x in set_champs for y in x["traits"]}
             set_traits = [x for x in traits for y in set_traits if y == x["internal"]["hash"]]
 
             for champ in set_champs:
@@ -110,6 +112,7 @@ class TftTransformer:
         return {x.path: x.getv("name") for x in map22.entries if x.type == "Character"}
 
     def parse_sets(self, map22, character_lookup):
+        character_lists = {x.path: x for x in map22.entries if x.type == "MapCharacterList"}
         set_collection = [x for x in map22.entries if x.type == 0x438850FF]
         sets = {}
 
@@ -120,14 +123,12 @@ class TftTransformer:
             set_name = set_info["SetName"]["mValue"].value
             set_characters = []
 
-            character_lists = [x for x in map22.entries if x.type == "MapCharacterList"]
-            for char_list_iter in character_lists:
-                if not char_list_iter.path == char_list:
-                    continue
+            if char_list not in character_lists:
+                continue
 
-                chars = char_list_iter.getv("Characters")
-                for char in chars:
-                    set_characters.append(character_lookup[char])
+            chars = character_lists[char_list].getv("Characters")
+            for char in chars:
+                set_characters.append(character_lookup[char])
 
             sets[set_no] = {"name": set_name, "internal": {"characters": set_characters}}
         return sets
@@ -143,9 +144,8 @@ class TftTransformer:
 
             effects = {}
             for effect in item.getv("effectAmounts", []):
-                name = effect.getv("name").s if effect.__contains__("name") else "null"
-                value = effect.getv("value", "null")
-                effects[name] = value
+                name = effect.getv("name").s if "name" in effect else effect.path.hex()
+                effects[name] = effect.getv("value", "null")
 
             items.append(
                 {
@@ -174,7 +174,7 @@ class TftTransformer:
 
             test = test[:-1]
 
-        return ""
+        return None
 
     def parse_champs(self, map22, traits, character_folder):
         champ_collection = [x for x in map22.entries if x.type == "TftShopData"]
@@ -186,7 +186,7 @@ class TftTransformer:
             if name in ["TFT_Template", "Sold", "SellAction", "GetXPAction", "RerollAction", "LockAction"]:
                 continue
 
-            real_name = name[name.rfind("_") + 1 :]
+            real_name = name.rsplit("_", 1)[-1]
             closest_path = self.find_closest_path(character_folder, real_name)
             char_bin = BinFile(closest_path)
             champ_id = [x.getv("characterToolData").getv("championId") for x in char_bin.entries if x.type == "CharacterRecord"][0]
@@ -256,15 +256,11 @@ class TftTransformer:
             effects = []
             for trait_set in trait.getv("mTraitSets"):
                 variables = {}
-                increment = 0
                 for effect in trait_set.getv("effectAmounts", []):
-                    name = effect.getv("name").s if effect.__contains__("name") else "unknown" + str(increment)
-                    name = "unknown" + str(increment) if name == "null" else "unknown" + str(increment)
-                    value = effect.getv("value", "null")
-                    variables[name] = value
-                    increment = increment + 1
+                    name = str(effect.getv("name")) if "name" in effect else "null"
+                    variables[name] = effect.getv("value", "null")
 
-                effects.append({"minUnits": trait_set.getv("mMinUnits"), "maxUnits": trait_set.getv("mMaxUnits"), "variables": variables})
+                effects.append({"minUnits": trait_set.getv("mMinUnits"), "maxUnits": trait_set.getv("mMaxUnits") or 25000, "variables": variables})
 
             traits.append(
                 {
