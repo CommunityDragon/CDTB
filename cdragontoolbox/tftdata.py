@@ -3,7 +3,7 @@ import json
 import glob
 import os
 import copy
-from .binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
+from .binfile import BinFile, BinHashBase, BinEmbedded
 
 
 class NaiveJsonEncoder(json.JSONEncoder):
@@ -94,7 +94,11 @@ class TftTransformer:
                         set_champs.append(real_char)
 
             set_traits = {y for x in set_champs for y in x["traits"]}
-            set_traits = [x for x in traits for y in set_traits if y == x["internal"]["hash"]]
+
+            if len(sets) > 1:
+                set_traits = [x for x in traits for y in set_traits if y == x["internal"]["hash"]]
+            else:
+                set_traits = [x for x in traits]
 
             for champ in set_champs:
                 champ["traits"] = [x["name"] for x in traits if x["internal"]["hash"] in champ["traits"]]
@@ -115,6 +119,18 @@ class TftTransformer:
         character_lists = {x.path: x for x in map22.entries if x.type == "MapCharacterList"}
         set_collection = [x for x in map22.entries if x.type == 0x438850FF]
         sets = {}
+
+        if not set_collection:
+            champion_list = max(character_lists.values(), key=lambda coll: len(coll.fields[0].value)).fields[0].value
+            set_characters = []
+
+            for char in champion_list:
+                set_characters.append(character_lookup[char] if char in character_lookup else None)
+
+            sets[1] = {
+                "name": "Base",
+                "internal": {"characters": set_characters}
+            }
 
         for item in set_collection:
             char_list = item.getv("characterLists")[0]
