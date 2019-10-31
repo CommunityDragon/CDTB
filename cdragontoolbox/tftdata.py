@@ -122,10 +122,7 @@ class TftTransformer:
 
         if not set_collection:
             champion_list = max(character_lists.values(), key=lambda coll: len(coll.fields[0].value)).fields[0].value
-            set_characters = []
-
-            for char in champion_list:
-                set_characters.append(character_lookup[char] if char in character_lookup else None)
+            set_characters = [character_lookup.get(char) for char in champion_list]
 
             sets[1] = {
                 "name": "Base",
