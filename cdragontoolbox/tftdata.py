@@ -70,7 +70,8 @@ class TftTransformer:
                 l[:] = [replacements.get(v, v) for v in l]
 
             for set_data in instance["sets"].values():
-                replace_list(set_data["traits"])
+                for trait_data in set_data["traits"]:
+                    replace_in_data(trait_data)
                 for champ_data in set_data["champions"]:
                     replace_in_data(champ_data)
                     replace_list(champ_data["traits"])
@@ -85,12 +86,14 @@ class TftTransformer:
     def build_output_sets(self, sets, traits, champs):
         """Build sets as output in the final JSON file"""
 
+        traits_by_name = {trait["name"]: trait for trait in traits.values()}
+
         set_map = {}
         for set_number, set_name, set_chars in sets:
             set_champs = [champs[name] for name in set_chars if name in champs]
             if len(sets) > 1:
-                set_traits = {trait for champ in set_champs for trait in champ["traits"]}
-                set_traits = list(set_traits)
+                set_traits_names = {trait for champ in set_champs for trait in champ["traits"]}
+                set_traits = [traits_by_name[t] for t in set_traits_names]
             else:
                 # backward compatibility
                 set_traits = list(traits.values())
