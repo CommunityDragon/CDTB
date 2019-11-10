@@ -165,6 +165,13 @@ class BinType(IntEnum):
     MAP = 23
     FLAG = 24
 
+    @classmethod
+    def from_byte(cls, v):
+        if v >= 0x80:
+            v = v - 0x80 + 18
+        return cls(v)
+
+
 class BinStruct(BinObjectWithFields):
     """Structured binary value"""
 
@@ -405,7 +412,7 @@ class BinReader:
 
     def read_field(self):
         hname, ftype = self.read_fmt('<LB')
-        ftype = BinType(ftype)
+        ftype = BinType.from_byte(ftype)
         return self._vtype_to_field_reader[ftype](self, hname, ftype)
 
     def read_field_basic(self, hname, btype):
@@ -413,7 +420,7 @@ class BinReader:
 
     def read_field_container(self, hname, btype):
         vtype, _, count = self.read_fmt('<BLL')
-        vtype = BinType(vtype)
+        vtype = BinType.from_byte(vtype)
         return BinContainerField(hname, vtype, [self.read_bvalue(vtype) for _ in range(count)])
 
     def read_field_struct(self, hname, btype):
@@ -425,12 +432,12 @@ class BinReader:
     def read_field_option(self, hname, btype):
         vtype, count = self.read_fmt('<BB')
         assert count in (0, 1)
-        vtype = BinType(vtype)
+        vtype = BinType.from_byte(vtype)
         return BinOptionField(hname, vtype, None if count == 0 else self.read_bvalue(vtype))
 
     def read_field_map(self, hname, btype):
         ktype, vtype, _, count = self.read_fmt('<BBLL')
-        ktype, vtype = BinType(ktype), BinType(vtype)
+        ktype, vtype = BinType.from_byte(ktype), BinType.from_byte(vtype)
         # assume key type is hashable
         values = dict((self.read_bvalue(ktype), self.read_bvalue(vtype)) for _ in range(count))
         return BinMapField(hname, ktype, vtype, values)
