@@ -86,28 +86,21 @@ class TftTransformer:
     def build_output_sets(self, sets, traits, champs):
         """Build sets as output in the final JSON file"""
 
-        traits_by_name = {trait["name"]: trait for trait in traits.values()}
-
         set_map = {}
         for set_number, set_name, set_chars in sets:
-            set_champs = [champs[name] for name in set_chars if name in champs]
-            if len(sets) > 1:
-                set_traits_names = {trait for champ in set_champs for trait in champ["traits"]}
-                set_traits = [traits_by_name[t] for t in set_traits_names]
-            else:
-                # backward compatibility
-                set_traits = list(traits.values())
-
+            set_champs_pairs = [champs[name] for name in set_chars if name in champs]
+            set_traits_paths = {h for p in set_champs_pairs for h in p[1]}
             set_map[set_number] = {
                 "name": set_name,
-                "traits": set_traits,
-                "champions": set_champs,
+                "traits": [traits[h] for h in set_traits_paths],
+                "champions": [p[0] for p in set_champs_pairs],
             }
         return set_map
 
     def parse_character_names(self, map22):
         """Parse character names, indexed by entry path"""
-        return {x.path: x.getv("name") for x in map22.entries if x.type == "Character"}
+        # always use lowercased name: required for files, and bin data is inconsistent
+        return {x.path: x.getv("name").lower() for x in map22.entries if x.type == "Character"}
 
     def parse_sets(self, map22, character_names):
         """Parse character sets to a list of `(name, number, characters)`"""
@@ -165,33 +158,23 @@ class TftTransformer:
 
         return items
 
-    @staticmethod
-    def find_closest_path(parent, name):
-        while name:
-            path = os.path.join(parent, name, name + ".bin")
-            if os.path.exists(path):
-                return path
-            name = name[:-1]
-        return None
-
     def parse_champs(self, map22, traits, character_folder):
-        """Parse champion information, return a map indexed by their internal name"""
+        """Parse champion information
+
+        Return a map of `(data, traits)`, indexed by champion internal names.
+        """
         champ_entries = [x for x in map22.entries if x.type == "TftShopData"]
         champs = {}
 
         for champ in champ_entries:
-            name = champ.getv("mName")
+            # always use lowercased name: required for files, and bin data is inconsistent
+            name = champ.getv("mName").lower()
             if name == "TFT_Template":
                 continue
-            lname = name.lower()
 
-            self_path = os.path.join(character_folder, lname, lname + ".bin")
+            self_path = os.path.join(character_folder, name, name + ".bin")
             if not os.path.exists(self_path):
                 continue
-
-            closest_path = self.find_closest_path(character_folder, lname.split("_", 1)[-1])
-            char_bin = BinFile(closest_path)
-            champ_id = next(x["characterToolData"].value.getv("championId") for x in char_bin.entries if x.type == "CharacterRecord")
 
             tft_bin = BinFile(self_path)
             record = next(x for x in tft_bin.entries if x.type == "TFTCharacterRecord")
@@ -202,8 +185,6 @@ class TftTransformer:
                     champ_traits.extend(field.value for field in trait.fields if field.name.h == 0x053A1F33)
                 else:
                     champ_traits.append(trait.h)
-            # convert trait hashes to names
-            champ_traits = [traits[h]["name"] for h in champ_traits]
 
             spell_name = record.getv("spellNames")[0]
             spell_name = spell_name.rsplit("/", 1)[-1]
@@ -211,12 +192,11 @@ class TftTransformer:
             ability_variables = [{"name": value.getv("mName"), "value": value.getv("mValues")} for value in ability["mDataValues"].value]
             rarity = champ.getv("mRarity", 0) + 1
 
-            champs[name] = {
-                "id": champ_id,
+            champs[name] = ({
                 "name": champ.getv(0xC3143D66),
                 "cost": rarity + int(rarity / 6),
                 "icon": champ.getv("mIconPath"),
-                "traits": champ_traits,
+                "traits": [traits[h]["name"] for h in champ_traits],
                 "stats": {
                     "hp": record.getv("baseHP"),
                     "mana": record["primaryAbilityResource"].value.getv("arBase", 100),
@@ -235,7 +215,7 @@ class TftTransformer:
                     "icon": champ.getv("mPortraitIconPath"),
                     "variables": ability_variables,
                 },
-            }
+            }, champ_traits)
 
         return champs
 
