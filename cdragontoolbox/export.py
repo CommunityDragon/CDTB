@@ -624,7 +624,10 @@ class BinConverter(FileConverter):
         with write_file_or_remove(output_path) as fout:
             shutil.copyfileobj(fin, fout)
         with write_file_or_remove(output_path + '.json') as fout:
-            binfile = BinFile(output_path)
+            try:
+                binfile = BinFile(output_path)
+            except ValueError as e:
+                raise FileConversionError(f"failed to parse bin file: {e}")
             fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
 
 class SknConverter(FileConverter):
