@@ -169,7 +169,7 @@ class TftTransformer:
         for champ in champ_entries:
             # always use lowercased name: required for files, and bin data is inconsistent
             name = champ.getv("mName").lower()
-            if name == "TFT_Template":
+            if name == "tft_template":
                 continue
 
             self_path = os.path.join(character_folder, name, name + ".bin")
