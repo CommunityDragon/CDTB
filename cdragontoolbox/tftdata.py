@@ -3,6 +3,7 @@ import glob
 import os
 import copy
 from .binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
+from .rstfile import RstFile
 
 
 class NaiveJsonEncoder(json.JSONEncoder):
@@ -12,6 +13,21 @@ class NaiveJsonEncoder(json.JSONEncoder):
                 return other.hex()
             return other.s
         return other.__dict__
+
+def load_translations(path):
+    with open(path, "rb") as f:
+        if f.read(3) == b"RST":
+            f.seek(0)
+            return RstFile(f)
+        else:
+            translations = []
+            for line in f:
+                if line.startswith('tr "'):
+                    key, val = line.split("=", 1)
+                    key = key[4:-2]
+                    val = val[2:-2]
+                    translations[key] = val
+            return translations
 
 
 class TftTransformer:
@@ -53,14 +69,7 @@ class TftTransformer:
         template = self.build_template()
         for lang in langs:
             instance = copy.deepcopy(template)
-            replacements = {}
-            with open(os.path.join(fontconfig_dir, f"fontconfig_{lang}.txt"), encoding="utf-8") as f:
-                for line in f:
-                    if line.startswith("tr"):
-                        key, val = line.split("=", 1)
-                        key = key[4:-2]
-                        val = val[2:-2]
-                        replacements[key] = val
+            replacements = load_translations(os.path.join(fontconfig_dir, f"fontconfig_{lang}.txt"))
 
             def replace_in_data(entry):
                 for key in ("name", "desc"):
