@@ -1,10 +1,10 @@
-from xxhash import xxh64_intdigest as intdigest
+from xxhash import xxh64_intdigest
 from .tools import BinaryParser
 
 
 def key_to_hash(key):
     if isinstance(key, str):
-        return intdigest(key.lower()) & 0xffffffffff
+        return xxh64_intdigest(key.lower()) & 0xffffffffff
     else:
         return key
 
