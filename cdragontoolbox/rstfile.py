@@ -1,10 +1,10 @@
-from xxhash import xxh64
+from xxhash import xxh64_intdigest
 from .tools import BinaryParser
 
 
 def key_to_hash(key):
     if isinstance(key, str):
-        return xxh64(key.lower()).intdigest() & 0xffffffffff
+        return xxh64_intdigest(key.lower()) & 0xffffffffff
     else:
         return key
 
@@ -66,4 +66,3 @@ class RstFile:
         entries = [(h, data[i:data.find(b"\0", i)]) for i, h in entries]
         # decode unless data starts with 0xFF (illegal UTF-8 sequence)
         self.entries = {h: v if v.startswith(b"\xff") else v.decode("utf-8") for h, v in entries}
-
