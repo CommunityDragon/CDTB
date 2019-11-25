@@ -17,7 +17,7 @@ class RstFile:
         if path_or_f is not None:
             if isinstance(path_or_f, str):
                 with open(path_or_f, "rb") as f:
-                    self.parse_rst(path_or_f)
+                    self.parse_rst(f)
             else:
                 self.parse_rst(path_or_f)
 
