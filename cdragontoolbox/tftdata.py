@@ -22,7 +22,8 @@ def load_translations(path):
         else:
             translations = []
             for line in f:
-                if line.startswith('tr "'):
+                if line.startswith(b'tr "'):
+                    line = line.decode()
                     key, val = line.split("=", 1)
                     key = key[4:-2]
                     val = val[2:-2]
