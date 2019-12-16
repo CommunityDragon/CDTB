@@ -203,6 +203,7 @@ class TftTransformer:
             rarity = champ.getv("mRarity", 0) + 1
 
             champs[name] = ({
+                "apiName": record.getv("mCharacterName"),
                 "name": champ.getv(0xC3143D66),
                 "cost": rarity + int(rarity / 6),
                 "icon": champ.getv("mIconPath"),
@@ -252,6 +253,7 @@ class TftTransformer:
                 })
 
             traits[trait.path] = {
+                "apiName": trait.getv("mName"),
                 "name": trait.getv(0xC3143D66),
                 "desc": trait.getv(0x765F18DA),
                 "icon": trait.getv("mIconPath"),
