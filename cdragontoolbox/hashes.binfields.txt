@@ -124,6 +124,7 @@ d78001b6 OutSize
 a69fdb94 OutValue
 695012cc OutWasFound
 46842bc8 OutputParameters
+9f992dc1 PARFadeColor
 b796acb9 PackAllDataIntoWadFile
 368b3015 ParticlePreloads
 5753b933 PercentMPPoolMod
@@ -206,6 +207,7 @@ ee172090 additionalCharacters
 101ec53f addressV
 0f1ec3ac addressW
 c0aa3297 airColoration
+4b6992bc airDrake
 164ae4e9 allowCharacterInking
 73e094f1 allyChampSpecificHealthSuffix
 c4663005 alphaErosionDefinition
@@ -378,6 +380,7 @@ d4c233b3 castRangeDisplayOverride
 b0dbb527 castShadows
 c01d7d11 castStaticShadows
 4ee9bb1f castTargetAdditionalUnitsRadius
+cf2f4271 category
 08b52819 censorModulateValue
 232d7bad censorPolicy
 d41d4fce centerLocator
@@ -402,6 +405,7 @@ a03664c8 childParticleSetDefinition
 f1d201d5 childrenProbability
 8d5a662d chromaColor1
 8a5a6174 chromaColor2
+5e0e1da3 chunks
 d7a7ef41 classification
 d1a3dbc8 clearUndoHistory
 5c7ea86f click
@@ -530,6 +534,7 @@ bc037de7 dynamics
 6ba634bd eSportTeamTable
 4158aeed eSportsEventMutator
 007d6657 earthColoration
+5ba19e7c earthDrake
 05537a1b easy
 6e6e8d54 effect
 c13d6d31 effectAmounts
@@ -537,6 +542,7 @@ c13d6d31 effectAmounts
 9b0300f3 effectKey
 48130c4f effectName
 91879aca effectRadius
+6c5e591c elderDrake
 5a94b0cc elements
 3e1c2d84 emblemLinks
 2135c4d4 emissionMeshName
@@ -605,12 +611,14 @@ b639c899 fieldDragDefinitions
 fa390047 fieldNoiseDefinitions
 6a906762 fieldOrbitalDefinitions
 0640657c fields
+3ee74090 files
 fd19bd42 fillPattern
 8feda1c8 fillTextureName
 4044d30e filterMag
 19310df1 filterMin
 23311daf filterMip
 23925b89 fireColoration
+40785f22 fireDrake
 6419f82d firstAcquisitionRange
 9a68e0da firstItem
 29b671c4 firstSelectionAnimationDelay
@@ -741,6 +749,7 @@ c76fd482 imageInfo
 f511a169 imagePath
 b9516a6f importance
 cd8310f1 inertia
+98c52469 inherits
 382825a9 initialSubmeshMouseOversToHide
 f4ba5c9e initialSubmeshShadowsToHide
 80b7f78f initialSubmeshToHide
@@ -769,6 +778,7 @@ e09d5ebb isRandomStartFrame
 c66ee598 isTexturePixelated
 3559e15b isUniformScale
 60e9fb6d italic
+ae56503a italics
 13bddc7b itemID
 565b9057 itemLinks
 4948dd56 itemType
@@ -823,6 +833,8 @@ ba383df4 lore1
 ef60a129 lowestWalkableHeight
 898c0cb7 luaOnMissileUpdateDistanceInterval
 e48ccf56 mAIData
+72b53dec mAbbreviation
+e27abe56 mAbilities
 9dd4fd78 mAbilitySlotCC
 82ff2d4c mAcceleration
 f96f7eec mAccelerationTimeKeyboard
@@ -949,6 +961,7 @@ a4c1dfb0 mCastRangeGrowthStartTime
 c1cff9a6 mCastRequirementsTarget
 90fb0576 mCastTime
 3a7f083f mCastType
+ccf99b44 mCategories
 8e257510 mCategory
 2a32f892 mCenterArrowToEndPoint
 0e7af56c mChampionLists
@@ -1003,6 +1016,7 @@ e1aca712 mColorblind
 b502f962 mColorizationPostEffect
 32f22728 mCompareOp
 cc5f418e mComparisonByLevel
+8b83ba8a mComposition
 308238bd mCondition
 2329eec5 mConditionFloatPairDataList
 8eaf0f33 mConditionRelationship
@@ -1093,10 +1107,12 @@ cf491eb4 mDisplayStatLocalizationKey
 aab0a793 mDistance
 2c3b0b36 mDistanceTarget
 5adabe6b mDistanceType
+924badf3 mDivision
 3f7c5bb3 mDoNotNeedToFaceTarget
 a4cd4aa5 mDoesNotConsumeCooldown
 8a26f0ab mDoesNotConsumeMana
 10fc84aa mDoesntBreakChannels
+330d73aa mDrag
 157a2d52 mDragMomentumDecay
 74f279b1 mDragMomentumRecencyWeight
 52aaf6e0 mDragScale
@@ -1675,6 +1691,8 @@ ac9639d8 mProfileIcon
 0a1fc240 mReadyForPlaytest
 3c797074 mRecastFrequency
 8ff0bc76 mRect
+9f670f80 mRectLayerName
+d119a3c3 mRectSourcePSDFilename
 348ac156 mRectSourceResolutionHeight
 2d24efbb mRectSourceResolutionWidth
 12b81054 mRegionList
@@ -1706,6 +1724,7 @@ c4ca4906 mRequiredSpellName
 4bcc9e00 mRequirements
 62286e7e mResourceResolver
 114db515 mResultScale
+6ed5f27e mRevives
 2a121d16 mRightClickSpellAction
 c9e2efe0 mRightSlicePercentage
 ff5d32f0 mRiverCursor
@@ -1748,6 +1767,7 @@ bcc47d7d mShadowChatColor
 e4e7426c mShopData
 c97373fb mShopOpenCount
 5f2170e9 mShortDescLocalizationKey
+cde41191 mShow
 d5cfa227 mShowAsModifiedInUI
 9c84545d mShowChannelBar
 d0066e81 mShowDuration
@@ -1800,6 +1820,7 @@ a51be889 mSpellScriptData
 045804f6 mSpellSlot
 3e1edbdb mSpellTags
 eb13f461 mSplineInfo
+cc5d1518 mStackable
 1df3e1f8 mStartAlpha
 b886d871 mStartBoneName
 0781908d mStartCooldown
@@ -1930,6 +1951,7 @@ cd89877e mTriggerEventAction
 a58fd26d mTurretPosition
 87edaeb0 mType
 6815a72d mUITexture
+591b87f7 mUVLayerName
 6b83f566 mUnit
 a5c70a5c mUnitBarFadeSpeed
 1c6a34fc mUnitFilterParamsExterior
@@ -1990,6 +2012,7 @@ e474fea4 mWorldParticlesDAT
 9e14bd6f mWorldParticlesINI
 8150d2e8 mYRange
 87d184b6 mYResolutionBaseline
+6c3a020b mZombies
 d2267878 mZoomEaseTime
 f10ed334 mZoomMaxDistance
 fa5b60e2 mZoomMinDistance
@@ -2031,6 +2054,7 @@ d4c45abf maximumChatScale
 2c430c12 maximumMinimapScale
 3f1a9424 maximumPracticeToolScale
 35afd776 medium
+37e24810 members
 f83ca5b7 meshName
 19bdf4df meshRenderFlags
 af014196 meshScale
@@ -2181,6 +2205,7 @@ d152340a randomOffsetMinY
 704ac699 rangeGrowthDuration
 48c5308d rangeGrowthMax
 9f76df12 rangeGrowthStartTime
+e498a15a rarities
 ae453411 rarityGemOverride
 ae839c67 rate
 50b7397d rateByVelocityFunction
@@ -2363,6 +2388,7 @@ cd909507 stencilReferenceVal
 122c3a82 stormColoration
 e07a18b0 strength
 dd6cdf21 stun
+b5575dbf styles
 30edbb67 subMeshName
 aad7612c submesh
 2d7b4ab4 submeshRenderOrder
@@ -2431,6 +2457,7 @@ eda78f54 themeMusicID
 88e125fe tips1
 87e1246b tips2
 86e122d8 tips3
+9865b509 title
 cef47d3f tooltipDelay
 61246780 towerBurstData
 51d8e2ad towerTargetingEffectDefinition
@@ -2449,6 +2476,7 @@ b36cff34 translationOverride
 a5f167ec uncensoredIconSquares
 7ccc9292 uncensoredLoadscreens
 4c914c8d uncensoredTextures
+e582347f underline
 3fcb5693 unitHealthBarStyle
 30d4aa13 unitTagsString
 98337779 untargetableAlpha
@@ -2513,8 +2541,11 @@ de8bc5db voiceOverPersistentDefault
 1503d8f1 wallOrientation
 7c81c34f wallRotation
 a1aafc4c waterColoration
+7eb7e9f1 waterDrake
 d3a1950d weaponMaterials
+6747c0fa wh
 4b92c1ec windingToCull
 45dc64bd windowLength
 eb9a4e0f worldAcceleration
 ba5121ec writeMask
+58637fda xy
