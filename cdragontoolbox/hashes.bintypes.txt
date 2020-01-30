@@ -105,6 +105,7 @@ d9f51778 CastOnHit
 8caf28a3 CastOnHitInstance
 9dac1d45 CastOnMovementComplete
 c9d6c912 CastOnMovementCompleteInstance
+00e7903e Challenge
 ea595ca6 Champion
 197b4441 ChampionInstance
 a5d193ef ChampionMasteryMap
@@ -334,6 +335,7 @@ b26e7d7d DecelToLocationMovement
 af4f2882 DefaultSplashedPerkStyleInstance
 d0ddfeb9 DefaultVisibilityInstance
 d2c1ea2e Defaultvisibility
+51afd9e4 DefenseModifierIcons
 c45b6745 Destroy
 4a38de49 DestroyChildrenOnMovementComplete
 1935fa16 DestroyChildrenOnMovementCompleteInstance
@@ -346,6 +348,7 @@ fb0dfd42 DestroyOnMovementComplete
 df6dc76a Direction
 9143dd55 DistanceToPlayerMaterialFloatDriver
 08c26f62 DistanceToPlayerMaterialFloatDriverInstance
+0af2666c DragDirection
 cdb319f6 DrawablePositionLocator
 b29e8d11 DrawablePositionLocatorInstance
 2d6bf1a2 DynamicMaterialDef
@@ -506,6 +509,7 @@ d122884a FunctionTableGetInstance
 48dd2f52 GDSMapObjectExtraInfo
 0d4217cd GDSMapObjectExtraInfoInstance
 b754d5b7 GDSMapObjectInstance
+e4564452 GameComponentData
 e343b9b0 GameFontDescription
 4ad4766b GameFontDescriptionInstance
 8a7481af GameModeChampionList
@@ -768,6 +772,7 @@ c22c2bc5 KillAllTurretsCheatInstance
 553e4ba3 LearnedSpellDynamicMaterialBoolDriverInstance
 b4c4e463 LerpMaterialDriver
 4a382a20 LerpMaterialDriverInstance
+2cdc6a27 LineTargetToCaster
 4388bb90 LinearTransformProcessorData
 db961a4b LinearTransformProcessorDataInstance
 38dd884c LiveFeatureToggles
@@ -788,6 +793,7 @@ d3be7d61 LoadingScreenSettingsInstance
 ea452f2f LoadoutFeatureData
 16f040ac LoadoutFeatureDataInstance
 3c136fac LocaleRarityOverride
+0bf5a9a6 Location
 c1133f98 LockRootOrientationEventData
 0b9ac9c3 LockRootOrientationEventDataInstance
 328299fa LockRootOrientationRigPoseModifierData
@@ -837,6 +843,7 @@ f537d9e7 MasteryBadgeConfig
 4fb68ac5 MasteryBadgeData
 99516692 MasteryBadgeDataInstance
 1e23331e MasteryData
+d1bd9b17 MaterialDef
 d6028241 MaxAllSkillsCheat
 7a6e1f1e MaxAllSkillsCheatInstance
 0006516a MaxMaterialDriver
@@ -923,6 +930,7 @@ c8fbfa9f ParametricPairData
 83ec465a ParticleEventDataInstance
 5dd693f9 ParticleEventDataPair
 975fe846 ParticleEventDataPairInstance
+4550017f PassDef
 54206ba9 PassThroughParamsTable
 ef095576 PassThroughParamsTableInstance
 1f728d34 PauseCheat
@@ -991,6 +999,7 @@ ef3a0f33 ResourceResolver
 ecd6cec9 SHDataInstance
 60b637a4 SameTeamCastRequirement
 3fc7a67f SameTeamCastRequirementInstance
+2063cb13 Scene
 aae83c5b SceneData
 be3f9448 SceneDataInstance
 dbf27281 ScriptCheat
@@ -1023,6 +1032,7 @@ beb722b5 SelectorClipDataInstance
 7c2ed8e3 SelectorPairDataInstance
 645ba277 Self
 ea5c9896 SelfAoe
+3c43ef68 Sequence
 8d30a7c0 SequencerClipData
 97287bfb SequencerClipDataInstance
 86e7be2a SetKeyValueInCustomTableBlock
@@ -1033,8 +1043,11 @@ bc67870e SetVarInTableBlock
 00f59899 SetVarInTableBlockInstance
 14a2befa ShaderLogicalParameter
 05e3ea65 ShaderLogicalParameterInstance
+81778d13 ShaderMacroDef
+3be4b1c0 ShaderParamDef
 816753d8 ShaderPhysicalParameter
 cd4c0c03 ShaderPhysicalParameterInstance
+ab0e654f ShaderSamplerDef
 60a292e6 ShaderStaticSwitch
 55a16681 ShaderStaticSwitchInstance
 31d1e223 ShaderTexture
@@ -1067,6 +1080,7 @@ f3336b38 SkinSummonerEmoteLoadout
 f9400f63 SkinSummonerEmoteLoadoutInstance
 68f2b69c SkinUpgradeData
 a87e06c7 SkinUpgradeDataInstance
+967673a3 SkipTerrain
 9c566034 SoundEventData
 22fdb34f SoundEventDataInstance
 c7d4634c SpawnBotCheat
@@ -1155,10 +1169,13 @@ cdf6b9aa SyncGroupDataInstance
 40ad689f SyncedAnimationRigPoseModifierData
 5b3f2a5c SyncedAnimationRigPoseModifierDataInstance
 304496f1 TFTCharacterRecord
+8799ac14 TableValue
 70a5b708 TableValueExistsScriptCondition
 fc3f79b3 TableValueExistsScriptConditionInstance
+32608848 Target
 1d36d6a8 TargetLaserComponentEffects
 62e96853 TargetLaserComponentEffectsInstance
+1fa28876 TargetOrLocation
 4c35e652 TargeterDefinition
 0de90522 TargeterDefinitionAOEInstance
 e23b3315 TargeterDefinitionAoe
@@ -1182,6 +1199,7 @@ c0b1025d TargeterDefinitionSkipTerrainInstance
 628b8dca TargeterDefinitionWall
 983397b5 TargeterDefinitionWallInstance
 7c972275 TeamBuffData
+73dca0f0 TechniqueDef
 ac9d3cf9 TempTable
 350f16ae TerrainType
 9c5792f6 TextElementData
@@ -1236,6 +1254,7 @@ a28ee006 ToonInkingFilterParamsInstance
 982a3d24 TrackData
 0946dbff TrackDataInstance
 54588ac6 TrackMouseMovement
+3888f53e TrailComponentData
 1620ad7f TransitionClipBlendData
 e18a883c TransitionClipBlendDataInstance
 17bf4ce7 TransitionMissileSpecification
