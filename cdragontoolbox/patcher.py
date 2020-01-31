@@ -133,7 +133,7 @@ class PatcherManifest:
 
         # merge files and directory data
         self.files = {}
-        for _, name, link, lang_ids, dir_id, filesize, chunk_ids in file_entries:
+        for name, link, lang_ids, dir_id, filesize, chunk_ids in file_entries:
             while dir_id is not None:
                 dir_name, dir_id = directories[dir_id]
                 name = f"{dir_name}/{name}"
@@ -185,76 +185,82 @@ class PatcherManifest:
         parser.skip(offset - 4)
         return (lang_id, parser.unpack_string())
 
-    @staticmethod
-    def _parse_file_entry(parser):
+    @classmethod
+    def _parse_file_entry(cls, parser):
         """Parse a file entry
-        (flags, name, link, lang_ids, directory_id, filesize, chunk_ids)
+        (name, link, lang_ids, directory_id, filesize, chunk_ids)
         """
-        parser.skip(4)  # skip offset table offset
-        pos = parser.tell()
+        fields = cls._parse_field_table(parser, (
+            None,
+            ('chunks', 'offset'),
+            ('file_id', '<Q'),
+            ('directory_id', '<Q'),
+            ('file_size', '<L'),
+            ('name', 'str'),
+            ('locales', '<Q'),
+            None,
+            None,
+            None,
+            None,
+            ('link', 'str'),
+            None,
+            None,
+            None,
+        ))
 
-        flags, = parser.unpack('<L')
-        if flags == 0x00010200 or (flags >> 24) != 0:
-            name_offset, = parser.unpack('<l')
-        else:
-            name_offset = flags - 4
-            flags = 0
-
-        struct_size, link_offset, _file_id = parser.unpack('<llQ')
-        # note: name and link_offset are read later, at the end
-
-        if struct_size > 28:
-            directory_id, = parser.unpack('<Q')
-        else:
-            directory_id = None
-
-        filesize, _ = parser.unpack('<LL')  # _ == 0
-
-        if struct_size > 36:
-            lang_mask, = parser.unpack('<Q')
+        lang_mask = fields['locales']
+        if lang_mask:
             lang_ids = [i+1 for i in range(64) if lang_mask & (1 << i)]
         else:
             lang_ids = None
 
-        _, chunk_count = parser.unpack('<LL')  # _ == 0
+        parser.seek(fields['chunks'])
+        chunk_count, = parser.unpack('<L')  # _ == 0
         chunk_ids = list(parser.unpack(f'<{chunk_count}Q'))
 
-        parser.seek(pos + 4 + name_offset)
-        name = parser.unpack_string()
-        parser.seek(pos + 12 + link_offset)
-        link = parser.unpack_string()
-        if not link:
-            link = None
+        return (fields['name'], fields['link'], lang_ids, fields['directory_id'], fields['file_size'], chunk_ids)
 
-        return (flags, name, link, lang_ids, directory_id, filesize, chunk_ids)
-
-    @staticmethod
-    def _parse_directory(parser):
+    @classmethod
+    def _parse_directory(cls, parser):
         """Parse a directory entry
         (name, directory_id, parent_id)
         """
-        offset_table_offset, = parser.unpack('<l')
-        pos = parser.tell()
-        # get offsets for directory and parent IDs
-        parser.skip(-offset_table_offset)
-        directory_id_offset, parent_id_offset = parser.unpack('<hh')
-        parser.seek(pos)
+        fields = cls._parse_field_table(parser, (
+            None,
+            None,
+            ('directory_id', '<Q'),
+            ('parent_id', '<Q'),
+            ('name', 'str'),
+        ))
+        return (fields['name'], fields['directory_id'], fields['parent_id'])
 
-        name_offset, = parser.unpack('<l')
-        # note: name is read later, at the end
-        if directory_id_offset > 0:
-            directory_id, = parser.unpack('<Q')
-        else:
-            directory_id = None
-        if parent_id_offset > 0:
-            parent_id, = parser.unpack('<Q')
-        else:
-            parent_id = None
-
-        parser.seek(pos + name_offset)
-        name = parser.unpack_string()
-
-        return (name, directory_id, parent_id)
+    @staticmethod
+    def _parse_field_table(parser, fields):
+        entry_pos = parser.tell()
+        fields_pos = entry_pos - parser.unpack('<l')[0]
+        nfields = len(fields)
+        output = {}
+        parser.seek(fields_pos)
+        for i, field, offset in zip(range(nfields), fields, parser.unpack(f'<{nfields}H')):
+            if field is None:
+                continue
+            name, fmt = field
+            if offset == 0 or fmt is None:
+                value = None
+            else:
+                pos = entry_pos + offset
+                if fmt == 'offset':
+                    value = pos
+                elif fmt == 'str':
+                    parser.seek(pos)
+                    value = parser.unpack('<l')[0]
+                    parser.seek(pos + value)
+                    value = parser.unpack_string()
+                else:
+                    parser.seek(pos)
+                    value = parser.unpack(fmt)[0]
+            output[name] = value
+        return output
 
 
 class PatcherStorage(Storage):
