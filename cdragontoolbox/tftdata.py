@@ -249,6 +249,7 @@ class TftTransformer:
                 effects.append({
                     "minUnits": trait_set.getv("mMinUnits"),
                     "maxUnits": trait_set.getv("mMaxUnits") or 25000,
+                    "style": trait_set.getv("mStyle", 1),
                     "variables": variables,
                 })
 
