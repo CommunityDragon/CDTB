@@ -23,6 +23,7 @@ f1695b8d AudioFlexValueParameterName
 f68eb447 AutoBuffActivateAttachBoneNames
 7f5cd9e0 AutoBuffActivateEffects
 52aecb41 BBScriptProfileDump
+250cef17 BannerData
 a2621347 BarrackMinion
 2fa68f7a BaseScale
 2d15f18c BaseSpellEffectiveness
@@ -46,6 +47,7 @@ d8c2bcff CCScore
 fd985966 Cases
 453edffa CastLockoutTime
 66257047 CastTime
+242ed7dc CatalogEntry
 9292a6c1 Chance
 2ac71ccc ChannelDuration
 be3da0e1 ChannelingEndAutoAttackReset
@@ -55,6 +57,7 @@ ac971e62 CharacterPreloads
 f6150a17 ClampTimeToAnimateCastTo0
 cea34a2c ClearUndoHistoryOnActivate
 125f7f6e ColorblindPalette
+56ecde12 Companions
 d212fabe Condition
 80e0d0b7 Conditions
 3b98458c ConeCheckFlagOverride
@@ -279,6 +282,7 @@ cb9f11d2 PrimaryAbilityResourceBar
 159dd1a8 PromoController
 cdbc1b2a QuestComplete
 0b13c31a QuestReceived
+5b5e3b46 QueueDisplayData
 7eb2af0c Rage
 9ee69c19 RecItemsOnServer
 8dcbab01 RecipeItems
@@ -325,6 +329,7 @@ e8373186 ShieldBonusDamage
 c7e4b297 ShowPAR
 b2eeb038 Silenced
 336b65b8 Skin
+7b34fa25 SkinID
 0e461aec SkipDrawToonInking
 366ba559 SlotType
 3eec020d SortedByKeys
@@ -345,6 +350,7 @@ bd04b6be SpotlightHealthbar
 85f5e202 SruRiftHerald
 ee2b8eac StacksExclusive
 62246441 StartingJointForTrailFollowTEMP
+cb67a17d StatStones
 daf2f7a2 StopAttackVerifiesSpell
 6e720d2b String1
 6f720ebe String2
@@ -357,9 +363,11 @@ ac307ed6 Style
 4a9c9bdf Table
 8799ac14 TableValue
 832871a2 Taunted
+a2fd7d0c Team
 d641623f TexSize
 bee64fd1 TexU
 bbe64b18 TexV
+eec29756 TextElement
 8eba997b TimerSyncForReplay
 a6517bab TotalNumberOfFrames
 62f83433 TowerCFHRadius
@@ -442,6 +450,7 @@ c74608c8 alternateRightLeft
 6ea2a666 alwaysDraw
 df73f8e2 alwaysSnapFacing
 3fda1a59 ambientEvent
+42edcab4 anchor
 2434c560 angelOffsetRadian
 654eb1b6 angleOffsetRadian
 8568e9e9 animTime
@@ -627,6 +636,7 @@ d4c233b3 castRangeDisplayOverride
 b0dbb527 castShadows
 c01d7d11 castStaticShadows
 4ee9bb1f castTargetAdditionalUnitsRadius
+242ed7dc catalogEntry
 cf2f4271 category
 08b52819 censorModulateValue
 232d7bad censorPolicy
@@ -830,6 +840,7 @@ f0f7a695 emoteLoadout
 e862b379 emoteYOffset
 02f3b39e enabled
 4f2cd510 endLocator
+2c317acb endOfGameAlias
 69ea6dab enemy
 f365a945 enemyChampSpecificHealthSuffix
 618581ea enemyTooltip
@@ -1170,6 +1181,7 @@ f0e4d6cd mAlignment
 683ae1b9 mAllyEventName
 8438af38 mAllyFacingDetectionRange
 64b3419c mAllyParams
+c1846e3c mAlpha
 44b7e8dd mAlternateName
 7e3c103c mAmmoCountHiddenInUI
 a1d133c1 mAmmoNotAffectedByCDR
@@ -1362,6 +1374,9 @@ d651c3bc mColorOff
 b60f7f4a mColorOn
 e1aca712 mColorblind
 b502f962 mColorizationPostEffect
+fd870d28 mCombat
+a35db49d mCombatArrival
+f84a6a84 mCombatDeparture
 32f22728 mCompareOp
 cc5f418e mComparisonByLevel
 8b83ba8a mComposition
@@ -1447,6 +1462,7 @@ f1f20d72 mDescription
 0a188a4f mDescriptionToAppend
 1e7f30f5 mDescriptionToPrepend
 07f7c001 mDescriptionToReplace
+799231b9 mDescriptor
 70d05459 mDifficulty
 708696b4 mDisableCastBar
 4c07a548 mDisableChannelBar
@@ -1460,6 +1476,7 @@ bfa4ce04 mDisplayNameToAppend
 7c46445c mDisplayNameToReplace
 d3657507 mDisplaySize
 cf491eb4 mDisplayStatLocalizationKey
+ffe4ee76 mDisplayType
 aab0a793 mDistance
 76240240 mDistanceOffset
 2c3b0b36 mDistanceTarget
@@ -1469,6 +1486,9 @@ aab0a793 mDistance
 a4cd4aa5 mDoesNotConsumeCooldown
 8a26f0ab mDoesNotConsumeMana
 10fc84aa mDoesntBreakChannels
+3a2fa1eb mDraft
+4b1f0de0 mDraftArrival
+5c191701 mDraftDeparture
 330d73aa mDrag
 157a2d52 mDragMomentumDecay
 74f279b1 mDragMomentumRecencyWeight
@@ -1476,6 +1496,7 @@ a4cd4aa5 mDoesNotConsumeCooldown
 3e2f4733 mDraggable
 85045366 mDriver
 7aceca0f mDrivers
+85f7d4c8 mDuration
 8208140d mDurationInGame
 612085e9 mDynamic
 2ea2820c mDynamicExtended
@@ -1493,6 +1514,7 @@ fbe9fe52 mEffectByLevelAmount
 f6386280 mEffectKey
 5a3dd1c2 mEffectName
 3a59b60d mEffectParams0
+ab9c3d8b mEffectsQuality
 74f081a9 mElementAlphaDefault
 084c8e1d mElementAlphaSelected
 8709cda6 mElementAlphaUnselected
@@ -1506,6 +1528,7 @@ b698fb27 mEmblems
 0ecabde7 mEmoteFloatEnabled
 2bbef68d mEmoteID
 34462452 mEmotePopupData
+7ffe8001 mEmotePopupDisplayTime
 d8f8229d mEmotePopupTransitionIntro
 6ebc227c mEmotePopupTransitionOutro
 8f089899 mEmotes
@@ -1538,6 +1561,7 @@ cb2e7de6 mEnemyFacingDetectionRange
 c4d422b4 mEnemyLaneMinionBarColor
 63e10492 mEnemyParams
 93956b93 mEngineToggles
+b1a9ed4a mEnvironmentQuality
 938f408a mEquipAnimation
 8ef72a50 mEventDataList
 f598463e mEventDataMap
@@ -1600,6 +1624,7 @@ ede3943e mFlipY
 f2e9292b mFloatValue
 1a2c7c10 mFloatVarsDecimals
 6f4b990e mFloatingTextDisplayName
+6df9c595 mFloatingTextOverride
 ba715832 mFloatingTextTypes
 8466a4a9 mFontDescription
 1563794b mForcePingable
@@ -1628,6 +1653,7 @@ dc6e7daa mGameModeName
 75d17289 mGameTimeInMinutes
 dd463d32 mGameplayConfig
 05bef2e9 mGameplayToggles
+639b0013 mGearData
 fcbce201 mGearIndex
 c8215e27 mGearSelectionData
 270fd712 mGearSelectionTransitionIntro
@@ -1746,6 +1772,7 @@ a19787d5 mIsUsed
 e114db54 mItemCalloutPlayer
 51c4b876 mItemCalloutSpectator
 926105cf mItemCanBePurchased
+57c6c7d0 mItemDataAvailability
 08e2e7c5 mItemDataBuild
 d92888a0 mItemDataClient
 ceaabb75 mItemDataModifiable
@@ -1785,6 +1812,7 @@ ee84dd0a mKillerBlurPassCount
 4b840ff9 mKillerColorFactor
 eef9cf66 mKillerSize
 e1dcc838 mLCUAssetFileMap
+c5e20b46 mLabel
 82a5ecad mLayer
 86d9f9d5 mLeftClickSpellAction
 2568dc28 mLegacySummonerSpells
@@ -2099,11 +2127,18 @@ e7852ecf mPhysicalShieldColor
 3032dcc9 mPingChatColor
 b0b16618 mPingData
 1c1d1cb5 mPingTextLocalizationKey
+58241602 mPingThresholdGreen
+a2fe81c9 mPingThresholdOrange
+e60de4c2 mPingThresholdRed
+0e2ef877 mPingThresholdYellow
 962f03ca mPingVOThrottleThreshold
 f2e0c42d mPingableWhileDisabled
 866d9a79 mPings
 d2ec57d7 mPipsHoverText
 4c725c11 mPixelSize
+0b0ae6f9 mPlanning
+7c4b581e mPlanningArrival
+07768113 mPlanningDeparture
 65d50d20 mPlatformChatColor
 fb7195e8 mPlatformEnabled
 9509c71b mPlatformSpellInfo
@@ -2141,6 +2176,7 @@ ac9639d8 mProfileIcon
 67cbaced mRange
 1f01e303 mRarity
 6e5ae53f mRarityGemId
+b8dcfcbb mRatio
 0a1fc240 mReadyForPlaytest
 3c797074 mRecastFrequency
 8ff0bc76 mRect
@@ -2220,6 +2256,7 @@ c0a5d6dd mSelfEventName
 621ecf65 mSettingsData
 47507603 mShaderJointList
 bcc47d7d mShadowChatColor
+a7bdbc3d mShadowQuality
 76a19ab7 mShieldParams
 4442ed57 mShopCloseCount
 e4e7426c mShopData
@@ -2310,6 +2347,8 @@ c6a8e023 mStartingJointName
 4cec2c8a mStat
 94cfefd7 mStatBoostedColor
 fc56285c mStatNormalColor
+fafd59df mStatStoneData
+23ed5414 mStatUIData
 10cacbfb mStats
 b6217025 mStiffness
 f2a16d4d mStyle
@@ -2320,6 +2359,7 @@ ffc85fbf mSubStyle
 6691fb92 mSubStyleBonus
 db63db58 mSubmeshesToDraw
 b1a2e185 mSubmeshesToDrawAlways
+1cd83c4b mSubpart
 a066cc28 mSubparts
 2581ca46 mSuccessesRequired
 5eb06a64 mSummonerIconId
@@ -2452,6 +2492,7 @@ b125744b mTrueClipID
 506c0c02 mTurnSpeedScalar
 a58fd26d mTurretPosition
 87edaeb0 mType
+132b2198 mTypeData
 d3586de1 mTypeValue
 6815a72d mUITexture
 591b87f7 mUVLayerName
@@ -2477,6 +2518,7 @@ beabdf6d mUpdaterDataList
 b11dcc84 mUseAbsoluteRect
 6a228b5d mUseAlpha
 1c232eba mUseAutoattackCastTime
+f589de4a mUseAutoattackCastTimeData
 fbcb224e mUseCCAnimations
 c3983aca mUseCascadeBlend
 b30198fe mUseChargeChanneling
@@ -2531,6 +2573,7 @@ eaa35cf6 mWallSearchRadius
 a3c80380 mWeightList
 b4065d05 mWhisperColor
 e8542bb4 mWidth
+3aadb0c3 mWidthPerSecond
 a2bc287d mWorldGeoLink
 ac49859c mWorldGeometry
 e474fea4 mWorldParticlesDAT
@@ -2579,6 +2622,7 @@ dde8c114 mapContainer
 d91ebe82 mapNameOverride
 d65a78b6 mapObjectSkinID
 cc5e808a mapPath
+2ed3b95d mapSkins
 b73427c1 mapStringId
 58d660b2 markedLineSizePx
 44bcafc5 markedOffsetY
@@ -2693,6 +2737,7 @@ c545bc21 orientation
 227b2783 outlineBBoxExpansion
 1352a6d0 outlineColor
 211cfbf4 outlineSize
+704eff50 overlays
 c3c64512 overrideAOERadius
 dddc3025 overrideBaseRange
 54b3b593 overrideBlendMode
@@ -2717,6 +2762,7 @@ ffa711fb paletteTexture
 162498f9 paramName
 d0ab46b8 paramValues
 48a52ed9 parameters
+215f6853 params
 e78466d2 parentEnchantmentLink
 0e5c4776 parentItemLink
 b696a5fe parentName
@@ -2755,6 +2801,7 @@ a77b63e1 percentBaseMPRegenMod
 82135982 perceptionBubbleRadius
 99c94704 period
 d5eeca48 pingEffectList
+bd324ab1 pitch
 b3716497 pitchYawRoll
 5c566942 pixelShader
 6d8233bf platformEnabled
@@ -2777,6 +2824,8 @@ a7084719 probabilityTables
 fc23f1cc purchaseIdentities
 416020ee quadType
 9ad55026 quality
+5b5e3b46 queueDisplayData
+e9790525 queueId
 34e71c29 queuedOrdersTriggerPreIssueOrder
 0dba4cb3 radius
 f813120b radiusScale
@@ -2792,6 +2841,7 @@ d152340a randomOffsetMinY
 48c5308d rangeGrowthMax
 9f76df12 rangeGrowthStartTime
 e498a15a rarities
+4b7f058a rarity
 ae453411 rarityGemOverride
 ae839c67 rate
 50b7397d rateByVelocityFunction
@@ -2978,6 +3028,7 @@ bdf772e7 startOffsetY
 8a708dee startTime
 95d2c754 statName
 63719185 statStoneSets
+cb67a17d statStones
 8a544bcf statType
 ba72875f states
 03a46b6b staticSwitch
@@ -3089,6 +3140,7 @@ f242e5df trailMaxAddedPerFrame
 ce17c84c trailMode
 6ab3a678 trailSmoothingMode
 ec3accba trailSmoothingOn
+88612808 traits
 e1ad931b transform
 a85dbde5 transitionOffset
 768e1c18 transitionSample
@@ -3198,3 +3250,4 @@ ba5121ec writeMask
 84cc956a writeR
 7a2bb090 writeStencil
 58637fda xy
+62a9e268 yaw
