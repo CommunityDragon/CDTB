@@ -119,8 +119,10 @@ a593637d AbilityResourceThresholdIndicator_Moonlight
 d9547c40 ActivationDelay
 ef1820ba ActivationDistance
 d975992f Active
+d928f29f ActiveBaseDamage
 1e8d73fe ActiveDamage
 481ba086 ActiveMaxDamage
+3ff396be ActiveMaxStacks
 f8c35e47 ActiveTotalExecuteDamage
 2d3bdaf2 ActualCooldown
 986561b6 ActualDamage
@@ -536,6 +538,7 @@ c5604522 Annie_W_cas_Left
 fcbed805 AoEDamage
 de273f67 AoEPercentRefund
 dba87fe5 AoeCoefficient
+32b5379a AoeDamagePercent
 b0edc0f9 Aphelios_BA_Infernum_hit_tar
 43714a38 Aphelios_BA_calibrum_cas
 1338726c Aphelios_BA_calibrum_hit
@@ -658,6 +661,7 @@ f84984d4 Armor
 158ae344 Art_C
 3968c2d7 Art_Data
 0e4bcae6 Art_Shared
+2eeaf1e1 AscRelic
 66fc71dc AscXerath
 77b32308 Ashe_BA_BowVFX01
 13e28fcc Ashe_BA_CritCast
@@ -871,6 +875,7 @@ f3c415b7 Attack4_to_run
 55b1e791 Attack6
 94dea58b AttackBuilding2D
 dee32af0 AttackChampion2D
+f34add68 AttackDamage
 cdd2b9ad AttackMinion2D
 3e50a936 AttackNeutral2D
 a222b5cc AttackPassiveFast
@@ -1234,6 +1239,7 @@ baaa4057 Bard_W_team_ring_red
 e04af600 BaseDamageCalc
 46e315e9 BaseDamageHigh
 68ed6c75 BaseDamageLow
+0952928d BaseDamageMax
 411dc52e BaseGold
 39ce8652 BaseHeal
 6a93f10e BaseHealing
@@ -2571,6 +2577,7 @@ fcd9a617 DoomBotsBossTeemo_W_buf
 6dfdb98c DoomBots_Annie_W_cas_Left
 f7656e11 DoomBots_Brand_W_POF_charge
 cf48129c DoomBots_Brand_W_POF_tar
+529eefe1 DoomBots_Cauldron
 263c7468 DoomBots_Leona_W_cas_minions
 c715147e Dormant
 68daea61 Dormant_Loop
@@ -3616,6 +3623,7 @@ f85e05fb Galio_W_Flares
 dd856f2a Galio_W_Taunt_Sound
 aa488909 Galio_W_tar
 ee3019ab GangPlank_R_tar
+74d2cc2e GangplankBarrel
 14b74b5f Gangplank_BA_Tar_Crit
 597d4368 Gangplank_BA_Trail1
 11c39e0a Gangplank_BA_tar
@@ -3673,6 +3681,7 @@ e0a868ad Gangplank_Taunt_gunpowder_ground
 afed73e5 Gangplank_Z_Recall_Vacuum
 58feeeb1 Gangplank_idle
 6c95ec4c Gangplank_idle_barrel_01
+420ae77a Garen
 83f0d65e Garen_AA_Atk_01
 82f0d4cb Garen_AA_Atk_02
 1f6c65b6 Garen_AA_Crit
@@ -4061,6 +4070,18 @@ b69d12c2 HAUpdate_Backtrack_Shield
 37301490 HAUpdate_Backtrack_Timer
 9acf2d3f HAUpdate_Return_Timing_buf_1
 32cee353 HAUpdate_Spell_Block_Spell_cas
+7e5bdbf5 HA_AP_Poro
+d5164459 HA_AP_Poro_Large
+d81360bd HA_AP_Poro_Small
+5a58aeb3 HA_AP_Poro_Snowman
+4bd7df61 HA_ChaosMinionMelee
+b10f2560 HA_ChaosMinionRanged
+06be6fe2 HA_ChaosMinionSiege
+24e2f712 HA_ChaosMinionSuper
+e30088c9 HA_OrderMinionMelee
+49dde7e8 HA_OrderMinionRanged
+c6ffa99a HA_OrderMinionSiege
+b340821a HA_OrderMinionSuper
 32694bc3 HEAD
 32fed486 HPMultiplier
 5610b17a HPPercent
@@ -5707,6 +5728,7 @@ fd6856ed Karma_W_indicator_ring_self
 0d0522da Karma_W_tar_04
 0e05246d Karma_W_tar_05
 c469189f Karma_W_tar_end_01
+6cf405e1 Karthus
 f2ad0106 Karthus_AA_Cas
 0e239708 Karthus_AA_Mis
 b8cf8754 Karthus_AA_Tar
@@ -6756,6 +6778,8 @@ f230ba56 Leona_Z_Respawn_Sword
 975dea50 Leona_Z_Taunt
 7e003731 Leona_Z_Taunt_L_Eye
 c0c58446 Leona_Z_Ult_Idle
+6cbe2121 LethalityAmount
+1de0007c LethalityRatio
 9b99e7dd Level
 df481884 Level1
 02c56c03 LevelCap
@@ -7495,6 +7519,7 @@ b7d9566c MaximumDamage
 52442866 MaximumSnowballDamage
 e9d8490d MaximumStunDuration
 50e753f4 Meditate
+8310c0cb MegaBaseDamage
 1b788522 MegaDamage
 b9179140 MegaGnar_I_Breath
 f3ecb132 MegaGnar_idle_snow
@@ -7525,7 +7550,9 @@ ad63ad98 MinDamageTotal
 4b0a52bf MinGoldPenaltyPercent
 016801c6 MinHealthDifference
 46204c72 MinStreakKills
+b57e1256 MiniBaseDamage
 19967337 MiniDamage
+e38304c5 MiniTotalDamage
 0ca0336a MinimumChannelDuration
 b57faec1 MinimumHealth
 b047722a MinionCritDamage
@@ -7535,6 +7562,7 @@ b047722a MinionCritDamage
 68aabc16 MinionKillRatio
 9ba42830 MinionKillValue
 bbbde607 MinutesRequired
+2fc941c2 Mirror
 78923309 Misc
 31ad4857 MissFortune_BA_Crit_Tar
 7c0942a9 MissFortune_BA_Crit_cas
@@ -7852,9 +7880,11 @@ cc7c0d0a Mount_Off_to_Run
 873cc4b2 MoveSpeedBoost
 5486c90e MoveSpeedCalc
 d51c30d3 MovementSpeed
+a4c98c84 NPC_KhazixStatue
 9e2e907a NPC_Pet_Glow_Common
 5d32b4a3 NPC_Pet_Glow_Rare
 815c247d NPC_Pet_Glow_Uncommon
+dc1f4984 NPC_WorldsCup
 b65f1a08 NPC_WorldsCup_Glow
 fba9ed0b N_Broken
 f35ba4fa N_Wind_Strong
@@ -8605,6 +8635,7 @@ d674bae5 OverrideStartingCameraPosition
 b5878221 OwnerSpeedMult
 a701361a PCooldown
 a780cfbe PDamage
+92e436db PORO
 5682efea PRACTICETOOL
 f4bd82be PROJECT
 ebfc3e7b Panda
@@ -9004,6 +9035,8 @@ c37ef60f PreSeason_Turret_Shield_Shielded
 4ae12e78 Preseason_Palisades_Resists_Stage_2
 4be1300b Preseason_Palisades_Resists_Stage_3
 50e137ea Preseason_Palisades_Resists_Stage_4
+8ccbdb54 PrimaryDamage
+0241644d PrimaryTargetDamage
 730c71aa ProcBaseMax
 5d1fd6c0 ProcBaseMin
 b3ab8db1 ProcDuration
@@ -9683,6 +9716,7 @@ e4f81c28 Rengar_Z_Idle
 0f742f8d Rengar_Z_RecallBoxStars
 9f77283f Respawn
 0b0f01e9 Respawn2D
+9dd39657 RespawnPoint
 0d675749 Respawn_Assassin
 c27bdd05 Respawn_End
 1c6c55cd Respawn_Idle_Hookup
@@ -10140,6 +10174,7 @@ e94caf23 Ryze_W_tar
 e45ebf01 Ryze_joke
 0936646a Ryze_taunt
 ece838e8 SCAN
+c52a268d SG_ChampionMinimapDeathIcon
 42910a3a SG_KhaZix_BA1
 419108a7 SG_KhaZix_BA2
 f997cd1f SG_KhaZix_BA_Tar
@@ -10358,9 +10393,29 @@ caa64c10 SRE_Brush
 392b87ae SRE_Dragon_Earth_Soul_Buff
 6ecef7c6 SRE_Dragon_Fire_Soul_Buff
 195d3691 SRE_Dragon_Water_Soul_Buff
+ba7c6f39 SRUAP_ChaosInhibitor
+da901150 SRUAP_ChaosNexus
+9da1aeb1 SRUAP_OrderInhibitor
+6bce5988 SRUAP_OrderNexus
+5f8fd5ed SRUAP_Turret_Chaos1
+188a6b30 SRUAP_Turret_Chaos1_Rubble
+5c8fd134 SRUAP_Turret_Chaos2
+5d8fd2c7 SRUAP_Turret_Chaos3
+5a8fce0e SRUAP_Turret_Chaos4
 5954b434 SRUAP_Turret_Fortification_DamageReduction
+f1a9e47d SRUAP_Turret_Order1
+0995a780 SRUAP_Turret_Order1_Rubble
+eea9dfc4 SRUAP_Turret_Order2
+efa9e157 SRUAP_Turret_Order3
+eca9dc9e SRUAP_Turret_Order4
 0812d4a5 SRU_10YearScreenEffect
+267c3360 SRU_Baron
+186578cf SRU_BaronSpawn
 dd688ef1 SRU_Baron_rune04
+af6f165a SRU_ChaosMinionMelee
+0337ff41 SRU_ChaosMinionRanged
+0b14a285 SRU_ChaosMinionSiege
+1373a831 SRU_ChaosMinionSuper
 b6b2b498 SRU_Crab_Ward_DeSpawn
 7473208a SRU_Crab_Ward_Shadow
 f8dbaa69 SRU_Crab_Ward_Splash
@@ -10375,6 +10430,7 @@ dc8cee23 SRU_Crab_Z_SpeedBoost_Audio
 6a84d161 SRU_Crab_Z_Speed_buff
 b1d26352 SRU_Crab_Z_VisionRing_Green
 f3714792 SRU_Crab_Z_VisionRing_Red
+003258e0 SRU_Dragon_Elder
 efec1751 SRU_Lion_Chess_Break
 193543d1 SRU_Lion_Chess_Spawn
 048fab2e SRU_MSI_Winner_TeamLogo_1
@@ -10390,10 +10446,16 @@ efec1751 SRU_Lion_Chess_Break
 068fae54 SRU_MSI_Winner_TeamLogo_7
 fd8fa029 SRU_MSI_Winner_TeamLogo_8
 fc8f9e96 SRU_MSI_Winner_TeamLogo_9
+35dcaa4a SRU_OrderMinionMelee
+84b2a071 SRU_OrderMinionRanged
+670a9295 SRU_OrderMinionSiege
+32671521 SRU_OrderMinionSuper
+25a1d297 SRU_PoroSprite
 69797dfd SRU_RiftHerald
 91916f87 SRU_RiftHerald_Spell1_Tar_Champ
 8931ad8f SRU_RiftHerald_Spell1_mis
 3cf92386 SRU_RiftHerald_Spell1_mis_child
+75cef65e SRU_SnowDown_Gingerbread
 7b790177 SRU_Wolf_Chess_Break
 40743ee7 SRU_Wolf_Chess_Spawn
 22181c8c SRU_Worlds_Winner_TeamLogo_1
@@ -10703,6 +10765,7 @@ dcce2308 Shared/Spells/SummonerTeleport
 34dfd7e6 Sheath_Run
 bcf84a8e Sheath_Run_Haste
 a25fdc1d Shen
+df82ab40 ShenSpirit
 4b474d59 Shen_BA_blood_crit_01
 2cc0acc9 Shen_BA_cas
 b5b4b0da Shen_BA_tar_blood_01
@@ -10804,6 +10867,7 @@ d72beee1 ShieldValue
 25c83b6f ShisaTrail
 f63bf5d4 ShivDamage
 de316207 ShopClose
+8a3b82bf ShopFX
 b894b475 ShopOpen
 ba226bd5 Short
 df3242a9 ShotgunBlast
@@ -12424,6 +12488,7 @@ ac7db0d9 Spell6_To_Run
 7884bf11 Spell6_Windup
 f4b93211 SpellAttack
 362e4fca SpellCast
+8bbe8444 SpellDamage
 b36ab16e SpellHit
 cf586424 SpellLevelUp
 591ff053 Spell_Hit
@@ -15497,6 +15562,7 @@ a3d2860a Urgot_W_tar
 979a9198 Urgot_Z_Flamey
 b20a78eb UseItem
 4edb26ea UseItemManager
+68db44ee UseRelicSystem
 c2b3a92f UseSummonerForStartOfGameConstants
 198a4488 VFX_Data
 68dac35d VFX_Shared
@@ -15966,6 +16032,8 @@ e972b9f4 Viktor_Recall_strt_01
 a2351358 Viktor_W_Aug
 214add7c Viktor_W_Catalyst_child01
 c0c63f64 Viktor_W_Catalyst_child_red01
+6384f3a2 Vilemaw
+331aed97 VisionWard
 32ddb300 Visor
 aec56341 Vladimir_BA_mis
 a2059ca5 Vladimir_BA_tar
@@ -17286,10 +17354,21 @@ bd6574bc audio_spider_recall_leadout
 7414e7c7 bar_MaxHP
 879bd5f1 bar_MaxHPTutorial
 a75279fa beam
+977128b2 bird
 214a2c3e birth
 07617589 blink
 4f2bc4b5 br
 786dd8a0 broken
+c9c79f14 brush_SRU_A
+ccc7a3cd brush_SRU_B
+cbc7a23a brush_SRU_C
+c6c79a5b brush_SRU_D
+c5c798c8 brush_SRU_E
+c8c79d81 brush_SRU_F
+c7c79bee brush_SRU_G
+c2c7940f brush_SRU_H
+c1c7927c brush_SRU_I
+c4c79735 brush_SRU_J
 fd3600a1 burst
 660b95e2 ca_MinCastRotationSpeed
 d5c80579 ca_RevealAttackerRange
@@ -17328,6 +17407,7 @@ aa2f59ae cam_MinY
 0374574e cas
 e2765a45 cauldron_candy
 f6ddaf8e chaos_blackMist
+48250562 claw
 6129a274 cn
 ceb875a9 cooldownPack
 86271efd cr_DragRepeatTime
@@ -17537,6 +17617,7 @@ af8e37f3 velkoz_emote_dance_sound
 4349c6e5 vn
 bd76f0b2 vn_VN
 6f332041 weapon
+78bb9249 wolf
 bfae455e zed_passive_proc_tar_Child
 19c0ddd5 zh_CN
 0ed8d16a zh_MY

@@ -1175,6 +1175,7 @@ f3a53c83 mAkaliWMissileMaterialReference
 f0e4d6cd mAlignment
 9dd694b8 mAllChatColor
 14306705 mAllShieldColor
+fe38cfb2 mAllowDynamicVisibility
 2e1300de mAllowRespawnMods
 879172b4 mAllowedSubStyles
 274ff989 mAllyColor
@@ -1252,6 +1253,7 @@ deface50 mBaseItemIds
 6d3ccfd7 mBaseP
 11fe674c mBaseTexture
 13deb887 mBaseTextureName
+1ee85e57 mBasicAttackCalculation
 d45614c7 mBeam
 dfccb378 mBehaviorTreeConfig
 17f26f6c mBelongsToAvatar
@@ -1377,6 +1379,7 @@ b502f962 mColorizationPostEffect
 fd870d28 mCombat
 a35db49d mCombatArrival
 f84a6a84 mCombatDeparture
+022b1787 mCombatRecapData
 32f22728 mCompareOp
 cc5f418e mComparisonByLevel
 8b83ba8a mComposition
@@ -1399,6 +1402,7 @@ ab245046 mCooldownNotAffectedByCDR
 92ec12c7 mCooldownQueueThreshold
 cb861ef8 mCooldownShowDisabledDuration
 bae514d4 mCostAlwaysShownInUI
+87444638 mCountdownTimer
 4cdbf15a mCounterClockwise
 14f998ea mCritBonusArmorPenPercent
 079e96f5 mCritGlobalDamageMultiplier
@@ -1511,6 +1515,7 @@ e30545e9 mEffect
 fbe9fe52 mEffectByLevelAmount
 93cd9fd4 mEffectColor0
 94cda167 mEffectColor1
+8afb1a5f mEffectIndex
 f6386280 mEffectKey
 5a3dd1c2 mEffectName
 3a59b60d mEffectParams0
@@ -1640,6 +1645,7 @@ fe0f0ccb mFriendlyLaneMinionBarColor
 89bb4c48 mFromAnimID
 663eb02a mFromAnyone
 8763f23f mFromOwner
+c4f41d79 mFullscreen
 5dbd6263 mGDSObjectPathTemplates
 27c03215 mGameComponentList
 fbfefcf1 mGameMode
@@ -1688,6 +1694,7 @@ f7f6b610 mHeightOffset
 62e224f3 mHideRangeIndicatorWhenCasting
 aa6dabb3 mHideSubmeshHash
 bb41a45b mHideSubmeshList
+6d230e2b mHidefromAll
 0a33f18f mHighlightColor
 0f66c380 mHighlightLeftTextureUvs
 0b923603 mHighlightMidTextureUvs
@@ -1856,6 +1863,7 @@ d0bbdce0 mLoadScreen
 64b22831 mLoadScreenTipConfiguration
 564eb981 mLoadingScreenAnchor
 9d6a47f4 mLoadingScreenBackground
+0cfd78f8 mLoadingScreenData
 b0266352 mLoadingScreenScale
 102bc210 mLoadoutCategory
 5d50f6bd mLoadoutProperties
@@ -1981,6 +1989,7 @@ ac59cf4b mMode
 0eb2f919 mModeKeyName
 bc476670 mModeName
 b1cd460b mModeNameInclusions
+7f93cf4e mModifiedGameCalculation
 6afd07fe mModifiedGroup
 68d2ec46 mModifiedIfBuildsFromItem
 7ef84e70 mModifiedItem
@@ -2048,6 +2057,7 @@ f2c20ffc mOutputMinValue
 64a3af1d mOutputType
 1db1ea09 mOverTimeForFlashSeconds
 fde2e93d mOverrideMovement
+eaf5285d mOverrideRange
 0dce8dc3 mOverrideSpec
 ea4fde50 mOverrideSpellLevel
 3536aa6a mOwnerTeamNetKillAdvantage
@@ -2154,6 +2164,7 @@ b6e6d737 mPositionSemiLockMaxXTop
 8e31d7b7 mPositionSemiLockMaxZUp
 a609a785 mPostCastLockoutDeltaTime
 f14bcafe mPreCastLockoutDeltaTime
+08d47ee4 mPrecision
 057dc136 mPreferredPerkStyle
 df8e3299 mPreloadList
 80ddd91b mPreserveSpeed
@@ -2162,7 +2173,9 @@ df8e3299 mPreloadList
 0f717330 mPriority
 63cb984f mProbability
 ac9639d8 mProfileIcon
+ec982f6c mProgressBarData
 614c784c mProgressBarEaseRate
+30ff3ce9 mProgressMeterSuffix
 27a5c707 mProjectTargetToCastRange
 04d81495 mProjection
 1fdd4e76 mPurchaseCooldown
@@ -2232,6 +2245,7 @@ d2ad3c7f mScalingIncrementTime
 90544da2 mScalingPercentIncrease
 f55fd9ee mScalingPoints
 4a3ffaf6 mScalingStartTime
+b5ab9222 mScalingTagKey
 8e91ace0 mScene
 ed234463 mSceneName
 670a76a3 mSceneTransition
@@ -2239,6 +2253,7 @@ bb7a4fb0 mSceneTransitionIn
 c6d9acd5 mSceneTransitionOut
 452d5fcb mScript
 081f96fc mScriptAsSubStyle
+eb952174 mScriptCallback
 c8e37ef0 mScriptName
 9e6daea8 mScripts
 8c615584 mScrollSpeed
@@ -2346,11 +2361,13 @@ d06c375d mStartValue
 c6a8e023 mStartingJointName
 4cec2c8a mStat
 94cfefd7 mStatBoostedColor
+7d3150ec mStatFormula
 fc56285c mStatNormalColor
 fafd59df mStatStoneData
 23ed5414 mStatUIData
 10cacbfb mStats
 b6217025 mStiffness
+cda0540d mStopAnimationName
 f2a16d4d mStyle
 c08117d8 mStyleId
 da2ad2dd mStyleVFXResourceResolver
@@ -2411,6 +2428,7 @@ b2c3dc7f mTeamRubberbandMaximumPercent
 22679d37 mTeamScoreMeterTypes
 46c2cf4a mTeamScoreTextType
 3fb39dd9 mTeamTextures
+0483c041 mTeamToBuff
 39f46977 mTeammateDeaths
 3c277802 mTemplate
 346bc94b mTerrainTextureName
@@ -2455,6 +2473,7 @@ ffa2af13 mTooltip
 b24b4946 mTooltipChatNameChaos
 df57bdc6 mTooltipChatNameOrder
 2831605b mTooltipData
+b302574b mTooltipDisplayData
 f8916e21 mTooltipEventWindow
 4fa5887e mTooltipIconNames
 698d6258 mTooltipName
@@ -2569,6 +2588,8 @@ e5617595 mVoiceChatDefaultTextColor
 e6fb27ab mWaitForChildren
 316428c4 mWaitTimeout
 3adc6ece mWallCursor
+b7ef2e20 mWallLength
+86ca4677 mWallOffset
 eaa35cf6 mWallSearchRadius
 a3c80380 mWeightList
 b4065d05 mWhisperColor
