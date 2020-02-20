@@ -399,15 +399,17 @@ class BinReader:
     def read_struct(self):
         htype, = self.read_fmt('<L')
         if htype == 0:
-            return None
-        _, count = self.read_fmt('<LH')
+            count = 0
+        else:
+            _, count = self.read_fmt('<LH')
         return BinStruct(htype, [self.read_field() for _ in range(count)])
 
     def read_embedded(self):
         htype, = self.read_fmt('<L')
         if htype == 0:
-            return None
-        _, count = self.read_fmt('<LH')
+            count = 0
+        else:
+            _, count = self.read_fmt('<LH')
         return BinEmbedded(htype, [self.read_field() for _ in range(count)])
 
     def read_field(self):
