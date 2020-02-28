@@ -30,6 +30,7 @@ a2621347 BarrackMinion
 d488fdc9 BasedOnMap
 4948cbcb BattleFury
 a1bef65d BaublesSpell
+091fa8ec BitIndex
 a2734825 Blinded
 c967b34f Bloodwell
 25834918 BlueTeamElementSelectedColor
@@ -47,7 +48,6 @@ d8c2bcff CCScore
 fd985966 Cases
 453edffa CastLockoutTime
 66257047 CastTime
-242ed7dc CatalogEntry
 9292a6c1 Chance
 2ac71ccc ChannelDuration
 be3da0e1 ChannelingEndAutoAttackReset
@@ -61,6 +61,7 @@ cea34a2c ClearUndoHistoryOnActivate
 d212fabe Condition
 80e0d0b7 Conditions
 3b98458c ConeCheckFlagOverride
+b2c3d7b9 Configuration
 39b1ddf4 Count
 bc7fb120 Countdown
 2bce6144 CursorDataInGDS
@@ -101,6 +102,8 @@ d3689f20 Dot
 f3cd2188 DotNoCombine
 da701865 DotSlow
 a0f67682 DragonFury
+73463200 EasingType
+5c1fc8bc EffectType
 6fb394db EnableCustomPlayerScoreColoring
 065db9cf EnableUnitStatusHealthBarNames
 5bf31310 EndingJointForTrailFollowTEMP
@@ -113,6 +116,7 @@ cf8231fa EnemyPhysicalDamageCritical
 29cc5095 Energy
 92f1f329 Experience
 96f6d338 Ferocity
+8bac98d3 FieldOfView
 da5d575f Fleeing
 4428d332 ForbiddenWordList
 ff72f56a FramesPerSecond
@@ -155,9 +159,11 @@ ec23b45f IsRecipe
 39648078 IvernPromo
 a639a645 KDAObjectivesDisplay
 6815c86c Key
+c82fcdcf KillingSpreeCount
 0a205249 KnockBackIcon
 acfd61e7 KnockUpIcon
 ffd37604 LOSNavGridAccurate
+8fb7915f Layers
 10bc0088 LevelDodge
 7b0cab18 LevelFiveIcon
 3f5fa588 LevelFourIcon
@@ -170,6 +176,7 @@ eb079194 LimitedTournamentPause
 db386b37 LineMissileTimePulseBetweenCollisionSpellHits
 19d25270 LoadLuaFilesFromWad
 554903f4 LoadingIndicator
+32c274bd LobbyCloseButton
 33b79d3d LogLargePacketGaps
 bd3842ad Lore2
 3386138c LuaMathExceptionRemoval
@@ -178,6 +185,7 @@ bd3842ad Lore2
 71e55eed MagicalDamageCritical
 541e7ba7 ManaDamage
 0e9d23cc ManaHeal
+dfa2efb1 Map
 58eccfa6 MapInclusions
 d7713c7b Margin
 ba74d8b8 MaskTexture
@@ -282,7 +290,6 @@ cb9f11d2 PrimaryAbilityResourceBar
 159dd1a8 PromoController
 cdbc1b2a QuestComplete
 0b13c31a QuestReceived
-5b5e3b46 QueueDisplayData
 7eb2af0c Rage
 9ee69c19 RecItemsOnServer
 8dcbab01 RecipeItems
@@ -293,6 +300,7 @@ af1fcb6f RedeTeamElementUnselectedColor
 caa4adcf ReflectionFresnelBlue
 cf0fb7aa ReflectionFresnelGreen
 25e2e9fa ReflectionFresnelRed
+031afe7d Region
 f762be03 RemoveNullRepMrgTemp
 5a4c5648 RenderComponent
 c2ad8ed4 RenderMiniMapToTexture
@@ -350,13 +358,13 @@ bd04b6be SpotlightHealthbar
 85f5e202 SruRiftHerald
 ee2b8eac StacksExclusive
 62246441 StartingJointForTrailFollowTEMP
-cb67a17d StatStones
 daf2f7a2 StopAttackVerifiesSpell
 6e720d2b String1
 6f720ebe String2
 67a830a4 Stunned
 ac307ed6 Style
 8e38f1e8 SummonerEmotesV2
+e04e3f61 Sun
 087253d7 Suppressed
 8bddc3a9 SuppressionIcon
 99f9c59d TEMP_RenderThisSkinWithMaterials
@@ -395,6 +403,7 @@ cf1950ea UseATBoundingCircles
 fe0887d7 UseDefaultPerksOnError
 668adc6f UseGDSCVars
 23eeffe4 UseGameObjectIDsInLUA
+5826f907 UseHeightScale
 507ce4f6 UseLegacyDamageFlow
 4e8e8149 UseMaterialsForCharacterPasses
 5304c905 UseMaterialsForLegacyMaps
@@ -407,6 +416,7 @@ b6e35b92 UseNewX3DSkinnedMesh
 4c24bf18 UseParticleMaterials
 5d630ffb UsePerksInsteadOfRunesAndMasteries
 b9051512 UseRiotRelationshipsForAllUnits
+5cf481e7 UseSimpleScaling
 40a72e5c UseSpellOriginationForSpellShields
 c592ad55 UseTargetingRefactor
 7647b421 Value1
@@ -451,6 +461,8 @@ c74608c8 alternateRightLeft
 df73f8e2 alwaysSnapFacing
 3fda1a59 ambientEvent
 42edcab4 anchor
+35b8ee35 anchorLeft
+ea0df64e anchorRight
 2434c560 angelOffsetRadian
 654eb1b6 angleOffsetRadian
 8568e9e9 animTime
@@ -496,6 +508,7 @@ ffbbe351 arrivalEffectFile
 e0e43e2f asleep
 3175593f assetCategory
 d01a2020 assetRemappingTable
+adce1b8d assistCount
 a8a558ff asynchrone
 4d5ff2d7 attachToBone
 0d0ab898 attachToHealthBar
@@ -529,6 +542,7 @@ b66d7a66 bLineMissileBounces
 2a21ad00 bankPath
 85bd6cfe bankPath2013
 f8f29f92 bankUnits
+416bc18f banner
 1a9e9484 bannerFlagId
 91c02319 bannerFrameId
 7b9fba40 bannerTheme
@@ -1013,6 +1027,7 @@ f0a3597c healthBarData_XOffset
 b48d00a2 healthBarFullParallax
 a02a904b healthBarHeight
 bbb9794b healthPerTick
+e2bc28b7 healthPercentage
 d5bdbb42 height
 6cb549bd heightSolver
 bbd43eee hideAfterSeconds
@@ -1042,6 +1057,7 @@ e67284f4 iconCircle
 241e976e iconCircleScale
 bfc599ad iconId
 ac473fef iconSquare
+8ddbeb4b iconTexture
 f9e1dd39 icons
 8acc5bba idleAnim
 84186f3c idleParticlesEffects
@@ -1314,6 +1330,7 @@ c1cff9a6 mCastRequirementsTarget
 3a7f083f mCastType
 ccf99b44 mCategories
 8e257510 mCategory
+9a4bd893 mCategoryName
 2a32f892 mCenterArrowToEndPoint
 5ae012cf mChampion
 4d2be76a mChampionDoubleResource
@@ -1392,6 +1409,7 @@ def080bd mConsideredAsAutoAttack
 50813848 mContentId
 827badde mContentTypeAllowedSettings
 f4165ecb mContext
+f7371ba8 mContexts
 d8f64a0d mContextualActionData
 a801a158 mControlPoint1
 ab01a611 mControlPoint2
@@ -1402,6 +1420,7 @@ ab245046 mCooldownNotAffectedByCDR
 92ec12c7 mCooldownQueueThreshold
 cb861ef8 mCooldownShowDisabledDuration
 bae514d4 mCostAlwaysShownInUI
+00643157 mCount
 87444638 mCountdownTimer
 4cdbf15a mCounterClockwise
 14f998ea mCritBonusArmorPenPercent
@@ -1440,6 +1459,7 @@ c77ee8fa mDeathRecapMinimumTimeWindow
 04eb0d69 mDeathRecapPriority
 bf714db8 mDeathTimes
 060df300 mDebugDrawEmblems
+0fb41153 mDebugPing
 e9aa032f mDecelerationTimeKeyboard
 dacae7b9 mDecelerationTimeMouse
 ec12a9d5 mDefault
@@ -1718,6 +1738,7 @@ bbe19802 mHotkey
 f4a2e4f3 mHovertipList
 d95eb979 mHudScoreData
 e723d68b mHudSpellSlotResetFeedbackData
+84fd9809 mIcon
 709556d9 mIconData
 bacc2055 mIconDataMap
 48144f19 mIconDataPriorityList
@@ -1893,6 +1914,7 @@ f83e2b67 mMagicShred
 b6cfa142 mMajorActiveItemToEnable
 c0d42723 mMajorChangePatchVersion
 960efd81 mMapContainerLink
+b4f470f3 mMapID
 5ccd1980 mMapIDs
 56d65eed mMapLocators
 e1281da0 mMapObjectsCFG
@@ -1948,6 +1970,7 @@ c8847abf mMinSpeed
 b21e8d4b mMinVal
 5154196d mMinValue
 42fcf599 mMinimapBackgroundConfig
+57841246 mMinimapIcon
 3ecfeece mMinimapIconDisplayFlag
 7e2571a5 mMinimapIconName
 ba6f462c mMinimapIconRotation
@@ -2192,6 +2215,7 @@ ec982f6c mProgressBarData
 b8dcfcbb mRatio
 0a1fc240 mReadyForPlaytest
 3c797074 mRecastFrequency
+828d0215 mRecommendedItems
 8ff0bc76 mRect
 9f670f80 mRectLayerName
 d119a3c3 mRectSourcePSDFilename
@@ -2295,6 +2319,7 @@ d778a31d mSiblingRepulsion
 0f9a648a mSidegradeItems
 d467e8c0 mSimpleMeshName
 634aa102 mSingleContextCursors
+80339a8b mSituationNameHash
 6f5eb901 mSituations
 6327fa09 mSize
 878fb675 mSkinIDs
@@ -2371,6 +2396,7 @@ cda0540d mStopAnimationName
 f2a16d4d mStyle
 c08117d8 mStyleId
 da2ad2dd mStyleVFXResourceResolver
+a1f5c7f8 mSubMeshName
 055d517a mSubRequirements
 ffc85fbf mSubStyle
 6691fb92 mSubStyleBonus
@@ -2512,6 +2538,7 @@ b125744b mTrueClipID
 a58fd26d mTurretPosition
 87edaeb0 mType
 132b2198 mTypeData
+db667233 mTypeName
 d3586de1 mTypeValue
 6815a72d mUITexture
 591b87f7 mUVLayerName
@@ -2659,6 +2686,7 @@ b1e439af maxAlpha
 166e1615 maxAngleFadeCos
 070b4922 maxAngleRangeFactor
 e6915cf6 maxDistance
+80f63e4f maxIndex
 53d4cc0f maxInstances
 a84930fc maxJointWeights
 9d399b92 maxLifeTime
@@ -2699,6 +2727,7 @@ fb22823e minAngle
 1be4b544 minAngleRangeFactor
 b835cf50 minDistance
 187ada21 minHealth
+435c641d minIndex
 bd76926a minPercentDamageToResetHold
 c472bf07 minSegmentCount
 782f286a minXVelocity
@@ -2723,6 +2752,7 @@ fe195c64 minionScoreValue
 fdfac367 movementComponent
 4ed28677 movementProjectionX
 4dd284e4 movementProjectionY
+63526f3d mrows
 00c425ad mtheme
 16c9c5b0 multipleRoundCombinationRule
 d7acc6be multipleRoundCombinationRuleAtEOG
@@ -2731,6 +2761,7 @@ f506c7e6 multiplier
 8d39bde6 name
 566f3406 nameOverride
 1f6232c0 nameTranslationKey
+a32e6947 navGridFileName
 39c8d824 nearsight
 8c4b1ad8 neutral
 99a7180f newAsset
@@ -2752,6 +2783,8 @@ c0f12fa9 occludedUnitSelectableDistance
 dc58e677 onByDefalt
 aae99956 onByDefault
 d6dad55f onDeathFadeSpeed
+3a31b3b8 onKillEvent
+568afbd0 onKillEventForSpectator
 ef286ca5 options
 c545bc21 orientation
 4b23dc69 orientationType
@@ -2787,6 +2820,7 @@ d0ab46b8 paramValues
 e78466d2 parentEnchantmentLink
 0e5c4776 parentItemLink
 b696a5fe parentName
+38134732 parentObject
 5154fb18 particleBind
 b56e8811 particleColorTexture
 d37f5c52 particleDefinition
@@ -2858,9 +2892,11 @@ d152340a randomOffsetMinY
 2b63ff18 randomStartOffsetMaxY
 9f010aa5 randomStartOffsetMinX
 9e010912 randomStartOffsetMinY
+62c2ad1f rangeEnd
 704ac699 rangeGrowthDuration
 48c5308d rangeGrowthMax
 9f76df12 rangeGrowthStartTime
+645606ca rangeStart
 e498a15a rarities
 4b7f058a rarity
 ae453411 rarityGemOverride
@@ -3039,6 +3075,7 @@ bfc37103 spellNames
 864343c8 splineWidth
 a0958d01 srcAlphaBlendFactor
 22c0c7d0 srcColorBlendFactor
+04a101fa stages
 826cd95e startDelay
 8349743d startEvent
 76f8ad24 startFrame
@@ -3121,6 +3158,7 @@ dce6908c textureConeOverrideName
 b311d4ef textureName
 16c24bfe textureOrientation
 9430c6d7 textureOverrideName
+f0a363e3 texturePath
 6311ca49 textureRadiusOverrideName
 2c148d65 textureSuffix
 e04e5e7d textureTargetMaxGrowName

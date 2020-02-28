@@ -23,6 +23,7 @@ f67b7f22 AboveHealthPercentCastRequirementInstance
 dcfc2f9f AbovePARPercentCastRequirementInstance
 af905da2 AcceleratingMovement
 c496a5dd AcceleratingMovementInstance
+3a7d0d25 AcceleratingMovementSpec
 387d0a6f AddExperienceCheat
 fe8b8bec AddExperienceCheatInstance
 c5c3e011 AddGoldCheat
@@ -61,6 +62,7 @@ d54b5581 AtomicClipDataInstance
 a3640c69 AudioTagListPropertiesInstance
 1ddbf456 AvatarVarsTable
 ff6fd571 AvatarVarsTableInstance
+f69490f9 BackdropElement
 a4416515 BankUnit
 4f437722 BankUnitInstance
 250cef17 BannerData
@@ -68,6 +70,7 @@ a4416515 BankUnit
 4e59189e BannerFlagDataInstance
 d47ce07c BannerFrameData
 59b164a7 BannerFrameDataInstance
+aff6e0d2 BarElement
 bd1b788b BaseBlendData
 743623f8 BaseBlendDataInstance
 bee45088 BaseElementData
@@ -81,6 +84,8 @@ be8b36ac BasePerk
 814185a9 BaseResourceResolverInstance
 b2dd588a BaseRigPoseModifierData
 ef141775 BaseRigPoseModifierDataInstance
+8a320759 BehaviorTreeConfig
+cc2ddcc0 BlendData
 505dd936 BlendableClipData
 7edc0651 BlendableClipDataInstance
 294cb1a0 BlendedLinearHeightSolver
@@ -92,6 +97,8 @@ bbb116a1 BoolTableGet
 0271a87e BoolTableGetInstance
 a2a7edad BoolTableSet
 c2c80e2a BoolTableSetInstance
+d6073b2e BoolValueGet
+8cc53493 BountyIndicator
 8e93d8ee Breakpoint
 4ad0847a BuffCounterByCoefficientCalculationPart
 5394dfe5 BuffCounterByCoefficientCalculationPartInstance
@@ -115,14 +122,17 @@ bd264fe3 CSSSheet
 9bae0be4 CallOnMissileBounce
 27906177 CallOnMissileBounceOnMovementComplete
 9a040e84 CallOnMissileBounceOnMovementCompleteInstance
+50c5aae0 CallOnMissileBounceOnMovementCompleteSpec
 dff5a8f8 CameraConfig
 2a406a23 CameraConfigInstance
 47fc4706 CameraTrapezoid
 aa25504e Cast
 d9f51778 CastOnHit
 8caf28a3 CastOnHitInstance
+b4ae5753 CastOnHitSpec
 9dac1d45 CastOnMovementComplete
 c9d6c912 CastOnMovementCompleteInstance
+2bdebf3e CastOnMovementCompleteSpec
 242ed7dc CatalogEntry
 7b548612 CelebrationViewController
 d06263ff CensoredImage
@@ -164,9 +174,11 @@ df40db9e CheatMenuUIDataInstance
 7f872c1f CheatSetInstance
 039b5ebc CircleMovement
 a66643e7 CircleMovementInstance
+4a9d1e4f CircleMovementSpec
 86e5b2a2 ClearAlreadyHitTracking
 26b675d9 ClearAlreadyHitTrackingOnMovementComplete
 2654c326 ClearAlreadyHitTrackingOnMovementCompleteInstance
+d9be2e1a ClearAlreadyHitTrackingOnMovementCompleteSpec
 e51cda17 ClearTargetAndKeepMoving
 44443cab ClearTargetAndKeepMovingOnMovementCompleteSpec
 7e2a6d18 ClearTargetAndKeepMovingOnMovementCompleteSpecInstance
@@ -367,10 +379,12 @@ ec41779d DamageUnitCheat
 6631b507 DeathTimesScalingPointInstance
 b26e7d7d DecelToLocationMovement
 136498ba DecelToLocationMovementInstance
+dd591356 DecelToLocationMovementSpec
 8f5daa75 DefaultSplashedPerkStyle
 af4f2882 DefaultSplashedPerkStyleInstance
 c0cf7934 DefaultStatModPerkSet
 d0ddfeb9 DefaultVisibilityInstance
+0cb3c269 DefaultVisibilitySpec
 d2c1ea2e Defaultvisibility
 51afd9e4 DefenseModifierIcons
 6f1365e4 DelayStart
@@ -378,12 +392,15 @@ d2c1ea2e Defaultvisibility
 c45b6745 Destroy
 4a38de49 DestroyChildrenOnMovementComplete
 1935fa16 DestroyChildrenOnMovementCompleteInstance
+effd890a DestroyChildrenOnMovementCompleteSpec
 cc1b8b67 DestroyCustomTableBlock
 7fd79a34 DestroyCustomTableBlockInstance
 066b4e65 DestroyOnHit
 c87c7232 DestroyOnHitInstance
+1c48485e DestroyOnHitSpec
 fb0dfd42 DestroyOnMovementComplete
 5d42067d DestroyOnMovementCompleteInstance
+124170c5 DestroyOnMovementCompleteSpec
 df6dc76a Direction
 9143dd55 DistanceToPlayerMaterialFloatDriver
 08c26f62 DistanceToPlayerMaterialFloatDriverInstance
@@ -426,6 +443,7 @@ b0095c04 EffectCooldownElementDataInstance
 8b5db0ed EffectCreationData
 4f9ee6c6 EffectDesaturateElementData
 22a71a61 EffectDesaturateElementDataInstance
+d0d0b2bc EffectElement
 a34b6ba4 EffectElementData
 e74f5a7f EffectElementDataInstance
 0d221f07 EffectFillPercentageElementData
@@ -457,6 +475,7 @@ a64d5210 EngineFeatureToggles
 114700cb EngineFeatureTogglesInstance
 92bb5993 EnterFOWVisibility
 c8681d90 EnterFOWVisibilityInstance
+f16fc504 EnterFOWVisibilitySpec
 d0d6e3f1 EsportsBannerConfiguration
 fc354530 EsportsBannerMaterialController
 0d64ddbd EsportsBannerOptions
@@ -489,10 +508,12 @@ f3122763 FixedShaderDef
 610acd20 FixedShaderDefInstance
 06302899 FixedSpeedMovement
 feaffee6 FixedSpeedMovementInstance
+7e59c4da FixedSpeedMovementSpec
 775dfd10 FixedSpeedSplineMovement
 fee20bcb FixedSpeedSplineMovementInstance
 f7318865 FixedTimeMovement
 5b8fec32 FixedTimeMovementInstance
+d9b8225e FixedTimeMovementSpec
 cac4f8b4 FixedTimeSplineMovement
 7256dbcf FixedTimeSplineMovementInstance
 2f7c7780 FlexTypeFloat
@@ -524,6 +545,7 @@ a2e77592 FloatTextDisplayOverridesInstance
 a104b6ba FloatTextFormattingDataInstance
 16d88f43 FloatTextIconData
 0c634a00 FloatTextIconDataInstance
+1bd8c826 FloatValueGet
 b9ef7871 FloatingTextDamageDisplayTypeList
 aa5cd90e FloatingTextDamageDisplayTypeListInstance
 81152d01 FloatingTextGlobalConfig
@@ -657,6 +679,7 @@ bda61d85 HasSpellRankSpawnConditionData
 f41edad1 HasTypeAndStatusFlags
 571d3ae6 HasUnitTagsCastRequirement
 47c90e81 HasUnitTagsCastRequirementInstance
+84828dfd HealthBarSettingsData
 d86512e7 HealthDynamicMaterialFloatDriver
 361a91b4 HealthDynamicMaterialFloatDriverInstance
 67e6da7d HealthbarImageInfo
@@ -665,6 +688,8 @@ d86512e7 HealthDynamicMaterialFloatDriver
 c4a09c22 HeightSolverTypeInstance
 51687c8c HermiteSplineInfo
 d9f28637 HermiteSplineInfoInstance
+fb821d03 HeroStatData
+01c51279 HeroStatsDefinition
 8478a093 HomeViewController
 dc0843de HomeguardSkinUpgrade
 61e623a9 HomeguardSkinUpgradeInstance
@@ -725,6 +750,7 @@ c31e29fe HudMenuTransitionData
 e9aec27b HudOptionalBinData
 d67ac5be HudPingData
 7470cf89 HudPingDataInstance
+912acac1 HudPurchaseDialog
 5904728c HudRadialWheelData
 eb573c37 HudRadialWheelDataInstance
 a76e64c1 HudReplayData
@@ -752,6 +778,7 @@ c4e0918d HudTeamScoreMeterProperties
 f4d6dd19 HudVoiceChatDataInstance
 c2e1b6cd HudWindowPlacementData
 b99e7b71 HybridMaterialDef
+254cd75d IBlock
 ae321e88 IBoolGet
 bd415133 IBoolGetInstance
 5c71eb26 ICastRequirement
@@ -903,6 +930,7 @@ b45ca61c JointSnapRigPoseModifilerDataInstance
 293abb5a KillAllTurretsCheat
 c22c2bc5 KillAllTurretsCheatInstance
 c2394d52 KillingSpreeFilter
+e7da7f6f LabelElement
 0e7be4b7 LaneData
 30eeda78 LearnedSpellDynamicMaterialBoolDriver
 553e4ba3 LearnedSpellDynamicMaterialBoolDriverInstance
@@ -1086,6 +1114,7 @@ f8eda32d NotScriptConditionInstance
 edb8a340 NotificationsViewPanelController
 7a42f079 NullMovement
 042b54c6 NullMovementInstance
+86641cba NullMovementSpec
 9ef92080 NumberCalculationPart
 1879879d NumberFormattingBehavior
 99d7e373 NumberFormattingData
@@ -1099,6 +1128,7 @@ c8898924 OneTrueMaterialDriver
 ca859188 OverrideAutoAttackCastTimeData
 351922b3 OverridePerkSelectionSet
 b9d9bab0 OverridePerkSelectionSetInstance
+e89f142e PARTypeConfig
 2160b3ec ParallelClipData
 4a91f197 ParallelClipDataInstance
 f2b2e7c1 ParametricClipData
@@ -1113,6 +1143,7 @@ dd7f9556 ParticleSystemElementData
 4550017f PassDef
 54206ba9 PassThroughParamsTable
 ef095576 PassThroughParamsTableInstance
+dd5707f9 PatchingRootScene
 09a308ea PatchingViewController
 1f728d34 PauseCheat
 b6f03cdd Perk
@@ -1189,6 +1220,7 @@ ef3a0f33 ResourceResolver
 d45fa322 ReturnToCaster
 20893a59 ReturnToCasterOnMovementComplete
 85eb97a6 ReturnToCasterOnMovementCompleteInstance
+1518ba9a ReturnToCasterOnMovementCompleteSpec
 55063179 RigResource
 4d75b5c6 RigResourceInstance
 6c1b4bfe SHData
@@ -1296,6 +1328,7 @@ d7b148b8 SpawnSkinUpgradeInstance
 59b39690 SpawningUIDefinitionInstance
 466b06ef SpecificColorMaterialDriver
 b5adf3b2 SpellCalculation
+eabdd4ca SpellCalculationConditional
 4b1a502d SpellCalculationInstance
 43368569 SpellDataResource
 7dd1a902 SpellDataResourceClient
@@ -1348,10 +1381,12 @@ f04c3008 StringTableGet
 109c12b3 StringTableGetInstance
 d56801d4 StringTableSet
 0c5ac0ef StringTableSetInstance
+50b6f5cb StringValueGet
 995bf516 SubPartScaledProportionalToStat
 bcf56e70 SubmeshVisibilityEventData
 fadc282b SubmeshVisibilityEventDataInstance
 84a63373 SumOfSubPartsCalculationPart
+8653e2d0 SummonerBadge
 743d2a1b SummonerEmote
 1e44db08 SummonerEmoteInstance
 1e4b24c6 SummonerEmoteSettings
@@ -1376,6 +1411,7 @@ e435625b SwitchScriptBlock
 284b7a48 SwitchScriptBlockInstance
 1c8f9f13 SyncCircleMovement
 280f9310 SyncCircleMovementInstance
+47a2e284 SyncCircleMovementSpec
 666aa92d SyncGroupData
 cdf6b9aa SyncGroupDataInstance
 7fa97211 SyncedAnimationEventData
@@ -1513,8 +1549,10 @@ a28ee006 ToonInkingFilterParamsInstance
 3888f53e TrailComponentData
 1620ad7f TransitionClipBlendData
 e18a883c TransitionClipBlendDataInstance
+714677dc TransitionClipData
 17bf4ce7 TransitionMissileSpecification
 d6420bb4 TransitionMissileSpecificationInstance
+58ad2cbf TransitionToData
 ff256668 TriggerFromScript
 b94b2351 TriggerOnDelay
 a3b7a209 TriggerOnDistanceFromCaster
@@ -1564,6 +1602,7 @@ e08fa9b9 ValueProcessorDataInstance
 32c4b16d VectorTableGetInstance
 92f4ecee VectorTableSet
 1466e379 VectorTableSetInstance
+43253f05 VectorValueGet
 98ab9d42 VelocityDynamicMaterialFloatDriver
 ccf3a67d VelocityDynamicMaterialFloatDriverInstance
 ece61617 VeritcalFacingMatchVelocity
@@ -1687,3 +1726,4 @@ a2603593 WardSkinDisablerInstance
 0125d45c X3DSharedConstantDef
 344a9a75 X3DSharedData
 3745189b X3DSharedTextureDef
+a2d2015e mapgeo
