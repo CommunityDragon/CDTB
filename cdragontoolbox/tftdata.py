@@ -102,7 +102,7 @@ class TftTransformer:
             set_traits_paths = {h for p in set_champs_pairs for h in p[1]}
             set_map[set_number] = {
                 "name": set_name,
-                "traits": [traits[h] for h in set_traits_paths],
+                "traits": [traits[h] for h in set_traits_paths if h in traits],
                 "champions": [p[0] for p in set_champs_pairs],
             }
         return set_map
@@ -188,6 +188,8 @@ class TftTransformer:
 
             tft_bin = BinFile(self_path)
             record = next(x for x in tft_bin.entries if x.type == "TFTCharacterRecord")
+            if "spellNames" not in record:
+                continue
 
             champ_traits = []  # trait paths, as hashes
             for trait in record.getv("mLinkedTraits", []):
@@ -207,7 +209,7 @@ class TftTransformer:
                 "name": champ.getv(0xC3143D66),
                 "cost": rarity + int(rarity / 6),
                 "icon": champ.getv("mIconPath"),
-                "traits": [traits[h]["name"] for h in champ_traits],
+                "traits": [traits[h]["name"] for h in champ_traits if h in traits],
                 "stats": {
                     "hp": record.getv("baseHP"),
                     "mana": record["primaryAbilityResource"].value.getv("arBase", 100),
