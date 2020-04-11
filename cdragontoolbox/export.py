@@ -412,10 +412,14 @@ class CdragonRawPatchExporter:
         transformer.export(os.path.join(self.output, "cdragon/tft"), langs=None)
 
     def _create_exporter(self, patch):
+        if patch.version != 'main' and patch.version < PatchVersion('10.8'):
+            btype_version = 1007
+        else:
+            btype_version = 1008
         exporter = Exporter(self.output)
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
-            BinConverter(re.compile(r'game/.*\.bin$')),
+            BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
             SknConverter(),
         ]
         exporter.add_patch_files(patch)
@@ -609,8 +613,9 @@ class ImageConverter(FileConverter):
                 raise FileConversionError("cannot convert image to PNG")
 
 class BinConverter(FileConverter):
-    def __init__(self, regex):
+    def __init__(self, regex, btype_version=None):
         self.regex = regex
+        self.btype_version = btype_version
 
     def is_handled(self, path):
         return self.regex.search(path) is not None
@@ -625,7 +630,7 @@ class BinConverter(FileConverter):
             shutil.copyfileobj(fin, fout)
         with write_file_or_remove(output_path + '.json') as fout:
             try:
-                binfile = BinFile(output_path)
+                binfile = BinFile(output_path, btype_version=self.btype_version)
             except ValueError as e:
                 raise FileConversionError(f"failed to parse bin file: {e}")
             fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
