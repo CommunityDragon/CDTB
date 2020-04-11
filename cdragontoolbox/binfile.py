@@ -165,11 +165,12 @@ class BinType(IntEnum):
     MAP = 23
     FLAG = 24
 
-    @classmethod
-    def from_byte(cls, v):
-        if v >= 0x80:
-            v = v - 0x80 + 18
-        return cls(v)
+    # Note: values from 128 are mapped to lower ones
+    # This mapping changed over time.
+    # - before patch 9.23: unused
+    # - patches 9.23 to 10.7: 128-134 mapped to 18-24
+    # - from patch 10.8: 128 mapped to 18, 130-135 mapped to 19-24
+    # See also BinReader.parse_bintype()
 
 
 class BinStruct(BinObjectWithFields):
@@ -283,7 +284,7 @@ class BinEntry(BinObjectWithFields):
         return f"<BinEntry {self.path!r} {self.type!r} {sfields}>"
 
 class BinFile:
-    def __init__(self, f):
+    def __init__(self, f, btype_version=None):
         if isinstance(f, str):
             f = open(f, 'rb')
         magic = f.read(4)
@@ -294,7 +295,7 @@ class BinFile:
             magic = f.read(4)
         if magic != b'PROP':
             raise ValueError("missing magic code")
-        reader = BinReader(f)
+        reader = BinReader(f, btype_version=btype_version)
         self.version, self.linked_files, entry_types = reader.read_binfile_header()
         self.entries = [reader.read_binfile_entry(htype) for htype in entry_types]
 
@@ -303,8 +304,15 @@ class BinFile:
 
 
 class BinReader:
-    def __init__(self, f):
+    def __init__(self, f, btype_version=None):
+        """
+        Initialize a reader for bin files and values
+
+        `btype_version` is a workaround to parse bin types differently
+        depending on patch version. Value is based on the patch version.
+        """
         self.f = f
+        self.btype_version = btype_version or 1070
 
     def read_fmt(self, fmt):
         length = struct.calcsize(fmt)
@@ -414,7 +422,7 @@ class BinReader:
 
     def read_field(self):
         hname, ftype = self.read_fmt('<LB')
-        ftype = BinType.from_byte(ftype)
+        ftype = self.parse_bintype(ftype)
         return self._vtype_to_field_reader[ftype](self, hname, ftype)
 
     def read_field_basic(self, hname, btype):
@@ -422,7 +430,7 @@ class BinReader:
 
     def read_field_container(self, hname, btype):
         vtype, _, count = self.read_fmt('<BLL')
-        vtype = BinType.from_byte(vtype)
+        vtype = self.parse_bintype(vtype)
         return BinContainerField(hname, vtype, [self.read_bvalue(vtype) for _ in range(count)])
 
     def read_field_struct(self, hname, btype):
@@ -434,15 +442,27 @@ class BinReader:
     def read_field_option(self, hname, btype):
         vtype, count = self.read_fmt('<BB')
         assert count in (0, 1)
-        vtype = BinType.from_byte(vtype)
+        vtype = self.parse_bintype(vtype)
         return BinOptionField(hname, vtype, None if count == 0 else self.read_bvalue(vtype))
 
     def read_field_map(self, hname, btype):
         ktype, vtype, _, count = self.read_fmt('<BBLL')
-        ktype, vtype = BinType.from_byte(ktype), BinType.from_byte(vtype)
+        ktype, vtype = self.parse_bintype(ktype), self.parse_bintype(vtype)
         # assume key type is hashable
         values = dict((self.read_bvalue(ktype), self.read_bvalue(vtype)) for _ in range(count))
         return BinMapField(hname, ktype, vtype, values)
+
+    def parse_bintype(self, v):
+        if self.btype_version < 1008:
+            if v > 0x80:
+                v = v - 0x80 + 18
+        else:
+            if v == 0x80:
+                v = 18
+            elif v > 0x80:
+                v = v - 0x80 + 17
+        return BinType(v)
+
 
     _vtype_to_bvalue_reader = {
         BinType.EMPTY: read_empty,
