@@ -209,7 +209,7 @@ class HashGuesser:
 
         names = {os.path.basename(p) for p in self.known.values()}
         dirs = self.directory_list()
-        logger.info(f"substitute basenames: {len(names)} basenames, {len(dirs)} directories")
+        logger.debug(f"substitute basenames: {len(names)} basenames, {len(dirs)} directories")
         for name in progress_iterator(sorted(names)):
             self.check_iter(f"{dir}/{name}" for dir in dirs)
 
@@ -232,7 +232,7 @@ class HashGuesser:
         formats = {fmt.replace("{sep}", sep) for fmt in temp_formats for sep in "-_"}
 
         product = itertools.product
-        logger.info(f"substitute basename words ({nold} by {nnew}): {len(formats)} formats, {len(words)} words")
+        logger.debug(f"substitute basename words ({nold} by {nnew}): {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt % p for p in product(words, repeat=nnew))
 
@@ -247,7 +247,7 @@ class HashGuesser:
                 formats.update('%s%%s%s%s' % (path[:m.start()], sep, path[m.start():]) for sep in "-_")
                 formats.update('%s%s%%s%s' % (path[:m.end()], sep, path[m.end():]) for sep in "-_")
 
-        logger.info(f"add basename word: {len(formats)} formats, {len(words)} words")
+        logger.debug(f"add basename word: {len(formats)} formats, {len(words)} words")
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt % w for w in words)
 
@@ -270,7 +270,7 @@ class HashGuesser:
                 formats.add(f'%s%s%s' % (path[:m.start()], fmt, path[m.end():]))
 
         nrange = range(nmax)
-        logger.info(f"substitute numbers: {len(formats)} formats, nmax = {nmax}")
+        logger.debug(f"substitute numbers: {len(formats)} formats, nmax = {nmax}")
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt % n for n in nrange)
 
@@ -284,7 +284,7 @@ class HashGuesser:
             prefixes.add(prefix)
             extensions.add(ext)
 
-        logger.info(f"substitute extensions: {len(prefixes)} prefixes, {len(extensions)} extensions")
+        logger.debug(f"substitute extensions: {len(prefixes)} prefixes, {len(extensions)} extensions")
         for prefix in progress_iterator(sorted(prefixes)):
             self.check_iter(prefix + ext for ext in extensions)
 
@@ -330,7 +330,7 @@ class LcuHashGuesser(HashGuesser):
         regex = re.compile(r'^plugins/([^/]+)/[^/]+/[^/]+/')
         region_lang_list = [(r, l) for r in regions for l in langs]
         known = list(self.known.values())
-        logger.info(f"substitute region and lang")
+        logger.debug(f"substitute region and lang")
         for region_lang in progress_iterator(region_lang_list, lambda rl: f"{rl[0]}/{rl[1]}"):
             replacement = r'plugins/\1/%s/%s/' % region_lang
             self.check_iter(regex.sub(replacement, p) for p in known)
@@ -371,14 +371,14 @@ class LcuHashGuesser(HashGuesser):
         plugins = {p.split('/', 2)[1] for p in all_paths}
         formats = {re.sub(r'^plugins/([^/]+)/', r'plugins/%s/', p) for p in all_paths}
 
-        logger.info(f"substitute plugin: {len(formats)} formats, {len(plugins)} plugins")
+        logger.debug(f"substitute plugin: {len(formats)} formats, {len(plugins)} plugins")
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt % p for p in plugins)
 
     def grep_wad(self, wad):
         """Find hashes from a wad file"""
 
-        logger.info(f"find LCU hashes in WAD {wad.path}")
+        logger.debug(f"find LCU hashes in WAD {wad.path}")
         # candidate relative subpaths (not lowercased yet)
         relpaths = set()
 
@@ -543,7 +543,7 @@ class GameHashGuesser(HashGuesser):
             path, basename = p.rsplit('/', 1)
             values.update(f"{path}/{prefix}{basename}" for prefix in prefixes)
 
-        logger.info(f"check basename prefixes: {len(prefixes)} prefixes with a total {len(values)} paths")
+        logger.debug(f"check basename prefixes: {len(prefixes)} prefixes with a total {len(values)} paths")
         self.check_iter(value for value in list(values))
 
     def substitute_basename_words(self):
@@ -567,7 +567,7 @@ class GameHashGuesser(HashGuesser):
             characters.add(char)
             formats.add(p.replace(char, '{}'))
 
-        logger.info(f"substitute characters: {len(formats)} formats, {len(characters)} characters")
+        logger.debug(f"substitute characters: {len(formats)} formats, {len(characters)} characters")
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt.replace('{}', s) for s in characters)
 
@@ -588,7 +588,7 @@ class GameHashGuesser(HashGuesser):
             c[1].add(re.subn(r'(?:base|skin\d+)', '%s', p))
 
         # generate all combinations
-        logger.info(f"substitute skin numbers: {len(characters)} characters")
+        logger.debug(f"substitute skin numbers: {len(characters)} characters")
         for char, (skins, formats) in progress_iterator(characters.items(), lambda v: v[0]):
             for fmt, nocc in formats:
                 self.check_iter(fmt % p for p in itertools.combinations(skins, nocc))
@@ -607,7 +607,7 @@ class GameHashGuesser(HashGuesser):
             formats.add(f"{prefix}%s{ext}")
 
         # generate all combinations
-        logger.info(f"substitute suffixes: {len(formats)} formats, {len(suffixes)} suffixes")
+        logger.debug(f"substitute suffixes: {len(formats)} formats, {len(suffixes)} suffixes")
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt % s for s in suffixes)
 
@@ -618,7 +618,7 @@ class GameHashGuesser(HashGuesser):
         langs_re = re.compile(r'(%s)' % '|'.join(langs))
         formats = {langs_re.sub('{}', p) for p in self.known.values() if langs_re.search(p)}
 
-        logger.info(f"substitute lang: {len(formats)} formats, {len(langs)} langs")
+        logger.debug(f"substitute lang: {len(formats)} formats, {len(langs)} langs")
         for fmt in progress_iterator(sorted(formats)):
             self.check_iter(fmt.replace('{}', l) for l in langs)
 
@@ -639,7 +639,7 @@ class GameHashGuesser(HashGuesser):
                 group_skin_ids.extend(d['id'] for d in skin_data['chromas'])
             char_to_skin_groups.setdefault(char_name, []).append([int(i) % 1000 for i in group_skin_ids])
 
-        logger.info(f"find skin groups .bin files using chroma groups")
+        logger.debug(f"find skin groups .bin files using chroma groups")
         for char, groups in progress_iterator(char_to_skin_groups.items(), lambda v: v[0]):
             str_groups = [[f"_skins_skin{i}" for i in group] for group in groups] + [["_skins_root"]]
             for n in range(len(str_groups)):
@@ -665,7 +665,7 @@ class GameHashGuesser(HashGuesser):
             char_to_skins.setdefault(char, {0}).add(nskin)
 
         # generate all combinations
-        logger.info(f"find skin groups .bin files")
+        logger.debug(f"find skin groups .bin files")
         for char, skins in progress_iterator(char_to_skins.items(), lambda v: v[0]):
             # note: skins are in lexicographic order: skin11 is before skin2
             str_skins = sorted(f"_skins_skin{i}" for i in skins)
@@ -708,7 +708,7 @@ class GameHashGuesser(HashGuesser):
             "assets/characters/{c}/hud/{c}_square.dds",
         ]
 
-        logger.info(f"guess characters files: {len(chars)} characters")
+        logger.debug(f"guess characters files: {len(chars)} characters")
         for c in progress_iterator(sorted(chars)):
             self.check_iter(s.format(c=c) for s in formats)
             self.check_iter(f"data/characters/{c}/skins/skin{i}.bin" for i in range(200))
@@ -729,7 +729,7 @@ class GameHashGuesser(HashGuesser):
     def grep_wad(self, wad):
         """Find hashes from a wad file"""
 
-        logger.info(f"find game hashes in WAD {wad.path}")
+        logger.debug(f"find game hashes in WAD {wad.path}")
 
         with open(wad.path, 'rb') as f:
             for wadfile in wad.files:
