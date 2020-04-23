@@ -312,7 +312,7 @@ class BinReader:
         depending on patch version. Value is based on the patch version.
         """
         self.f = f
-        self.btype_version = btype_version or 1070
+        self.btype_version = btype_version or 1008
 
     def read_fmt(self, fmt):
         length = struct.calcsize(fmt)
