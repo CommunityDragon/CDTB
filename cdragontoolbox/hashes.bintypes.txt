@@ -37,6 +37,7 @@ c5ea6ab8 AllItemsSet
 9233f657 AllTrueMaterialDriver
 59d8de64 AllTrueMaterialDriverInstance
 b0ea70cc AlwaysSpawnCondition
+7f0a1e81 AnchorBase
 6b130b1e AndScriptCondition
 a39160e9 AndScriptConditionInstance
 7fc1d873 AnimationFractionDynamicMaterialFloatDriver
@@ -401,6 +402,7 @@ c87c7232 DestroyOnHitInstance
 fb0dfd42 DestroyOnMovementComplete
 5d42067d DestroyOnMovementCompleteInstance
 124170c5 DestroyOnMovementCompleteSpec
+516ca527 DirectValueGet
 df6dc76a Direction
 9143dd55 DistanceToPlayerMaterialFloatDriver
 08c26f62 DistanceToPlayerMaterialFloatDriverInstance
@@ -525,6 +527,7 @@ f7f4626c FlexValueFloatInstance
 42608541 FlexValueVector3
 90bc9b17 FloatComparisonMaterialDriver
 36be7124 FloatComparisonMaterialDriverInstance
+2f2ca65e FloatDefaultTableGet
 5fe24f17 FloatGet
 1c66a524 FloatGetInstance
 d05c1920 FloatGraphMaterialDriver
@@ -813,6 +816,7 @@ e8edc65c IIntGetInstance
 f78bf15b ILineIndicatorType
 ecf76724 IMaterialDef
 044f45ff IMaterialDefInstance
+9ee5e504 IRSCondition
 20a178b8 IResource
 48f24ce3 IResourceInstance
 e9212d72 IResourceResolver
@@ -860,6 +864,7 @@ cd06946c InsertIntoCustomTableBlock
 89c36217 InsertIntoCustomTableBlockInstance
 f1b26498 InstanceVarsTable
 63d98ec3 InstanceVarsTableInstance
+db7fe297 IntDefaultTableGet
 2a35e80a IntGet
 0e3f16f5 IntGetInstance
 5b7cf44d IntOffsetTableGet
@@ -970,6 +975,8 @@ c1133f98 LockRootOrientationEventData
 ed042565 LockRootOrientationRigPoseModifierDataInstance
 6d1f19d7 LoginViewController
 69dae321 LolSpellScript
+5c1ba470 LootItem
+53b75245 LossOfControlIndicator
 dfa2efb1 Map
 e54c014f MapAlternateAsset
 32a5f174 MapAlternateAssets
@@ -1178,9 +1185,16 @@ a66424c6 PresetAnimatorCheat
 ad106e67 ProductOfSubPartsCalculationPart
 3ab46af0 PrototypeAkaliWMissileRender
 3cae34ab PrototypeAkaliWMissileRenderInstance
+eb4f00c2 PurchaseDialog
 47704df2 QualitySetting
 c89b6227 QuestUITunables
 5b5e3b46 QueueDisplayData
+ffe415f4 RSAndCondition
+b6c42b03 RSEqualCondition
+d12c8a58 RSNotCondition
+1dd04702 RSTableGet
+afc2369e RSTableSet
+c803bd35 RSValueGet
 bad95a7a RScript
 222275e5 RScriptInstance
 f663c272 RandomChanceScriptCondition
@@ -1203,6 +1217,7 @@ e42c72d0 RegaliaRankedCrestEntry
 9ddb195b RegionSettingsInstance
 94315a01 RegionsThatAllowContent
 454321de RegionsThatAllowContentInstance
+fcc7e08c Relic
 42c29efb ReloadScriptsCheat
 02e32738 ReloadWWiseCheat
 a9f7c49f RemapFloatMaterialDriver
@@ -1269,6 +1284,7 @@ ea5c9896 SelfAoe
 0f670515 SetKeyValueInCustomTableBlockInstance
 3e9d7b55 SetRespawnTimerCheat
 80f1cd62 SetRespawnTimerCheatInstance
+fd6c74ef SetTableValueBlock
 bc67870e SetVarInTableBlock
 00f59899 SetVarInTableBlockInstance
 0a4531fd SettingsViewController
@@ -1449,6 +1465,7 @@ f737def9 TFTStageData
 956ad097 TFTStreakData
 e007e6f5 TFTTraitContributionData
 c130c1e5 TFTTraitSetData
+5e6f0af9 TableGet
 8799ac14 TableValue
 70a5b708 TableValueExistsScriptCondition
 fc3f79b3 TableValueExistsScriptConditionInstance
@@ -1598,6 +1615,7 @@ e08fa9b9 ValueProcessorDataInstance
 68dc32b6 ValueVector3
 68a8e4ee VectorGet
 61a1db79 VectorGetInstance
+6d5de739 VectorOffsetTableGet
 9dd901f2 VectorTableGet
 32c4b16d VectorTableGetInstance
 92f4ecee VectorTableSet

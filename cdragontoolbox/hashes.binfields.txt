@@ -48,7 +48,6 @@ d8c2bcff CCScore
 fd985966 Cases
 453edffa CastLockoutTime
 66257047 CastTime
-242ed7dc CatalogEntry
 9292a6c1 Chance
 2ac71ccc ChannelDuration
 be3da0e1 ChannelingEndAutoAttackReset
@@ -63,6 +62,7 @@ d212fabe Condition
 80e0d0b7 Conditions
 3b98458c ConeCheckFlagOverride
 b2c3d7b9 Configuration
+b9e79a12 ContentScene
 39b1ddf4 Count
 bc7fb120 Countdown
 2bce6144 CursorDataInGDS
@@ -80,6 +80,7 @@ f6f283a3 DamageTakenPie
 1da36d92 DebugPrintCCScoreToChat
 933b5bde Default
 4ac45539 DefaultPalette
+0617e21f DefaultValue
 51afd9e4 DefenseModifierIcons
 9a032455 Dest
 b2de64bf Destination
@@ -105,6 +106,8 @@ da701865 DotSlow
 a0f67682 DragonFury
 73463200 EasingType
 5c1fc8bc EffectType
+ad003e37 EmoteWheelCenterButton
+623567bf EmoteWheelLeftButton
 6fb394db EnableCustomPlayerScoreColoring
 065db9cf EnableUnitStatusHealthBarNames
 5bf31310 EndingJointForTrailFollowTEMP
@@ -137,6 +140,7 @@ c83e08d0 GridSkipFirstCell
 832c2cd8 HeathBarShake
 6e9e07b3 HideEnemySpellsOnLoadingScreen
 99715a8f HorizontalRulesInSpellTooltips
+37386ae0 ID
 e64015f0 Icon
 fc31b31f IconMinimap
 50ce2e41 IconSize
@@ -276,6 +280,7 @@ f1ed03d1 PhysicalDamage
 d0d30c2a PlayerMinion
 c2c92932 Polymorphed
 c6247c5d PopupMessages
+f2c13b77 PortraitIcon
 8b376269 PostAttackMoveDelay
 98195bc5 PostponeTargetSpellOrders
 9386b547 PracticeToolDPS
@@ -289,9 +294,9 @@ ebf6f72a PreferBlndToGDS
 a97790c4 PrimalFury
 cb9f11d2 PrimaryAbilityResourceBar
 159dd1a8 PromoController
+52fd4a5b PropName
 cdbc1b2a QuestComplete
 0b13c31a QuestReceived
-5b5e3b46 QueueDisplayData
 7eb2af0c Rage
 9ee69c19 RecItemsOnServer
 8dcbab01 RecipeItems
@@ -315,6 +320,7 @@ be61dfc0 RestoreLuaStackAfterException
 d9ecc0a5 RiftHeraldUpdate
 a0c57a4c Rooted
 b4b9db47 RunPlaybackSpeedForTransitions
+1266affc SaveButton
 d22f9095 Score
 788c1f81 ScoreDarkStar
 21de82da ScoreProject0
@@ -360,7 +366,6 @@ bd04b6be SpotlightHealthbar
 85f5e202 SruRiftHerald
 ee2b8eac StacksExclusive
 62246441 StartingJointForTrailFollowTEMP
-cb67a17d StatStones
 daf2f7a2 StopAttackVerifiesSpell
 6e720d2b String1
 6f720ebe String2
@@ -1494,6 +1499,7 @@ f1f20d72 mDescription
 708696b4 mDisableCastBar
 4c07a548 mDisableChannelBar
 95f1b682 mDisabledDescriptionOverride
+3c916c06 mDisplay
 5a2297d3 mDisplayAsPercent
 74d44065 mDisplayName
 b7161590 mDisplayNameIcon
@@ -1835,6 +1841,7 @@ dc841418 mJointToOverrideIdx
 8a535919 mKeepMaxScale
 4fa72ba7 mKey
 9c3a66ad mKeyFrames
+3036b1a4 mKeyName
 9f22b137 mKeywordWhenAcquired
 970f6a93 mKillAdvantageCompareOp
 762a4468 mKillExistingMinions
@@ -2768,6 +2775,7 @@ a32e6947 navGridFileName
 39c8d824 nearsight
 8c4b1ad8 neutral
 99a7180f newAsset
+ab522155 nextID
 e672d557 normalMapTexture
 1e67b0f1 numFrames
 83fabffb numFramesMult
@@ -2871,6 +2879,7 @@ ca229a11 playerBuffsOffset
 df1e9ff3 polymorph
 934f4e0a position
 fa45ef23 postRotateOrientationAxis
+f510291e preset
 0b44452a price
 bbd81e0d primaryAbilityResource
 007b14f6 primitive
