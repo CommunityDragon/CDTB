@@ -722,8 +722,10 @@ class GameHashGuesser(HashGuesser):
 
         for path in shader_paths:
             self.check(f"{path}.dx9")
+            self.check(f"{path}.dx11")
             self.check(f"{path}.glsl")
             self.check_iter(f"{path}.dx9_{n}" for n in range(0, 100000, 100))
+            self.check_iter(f"{path}.dx11_{n}" for n in range(0, 100000, 100))
             self.check_iter(f"{path}.glsl_{n}" for n in range(0, 100000, 100))
 
     def grep_wad(self, wad):
