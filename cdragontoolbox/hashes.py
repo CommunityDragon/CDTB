@@ -540,8 +540,10 @@ class GameHashGuesser(HashGuesser):
         if prefixes is None:
             prefixes = ['2x_', '2x_sd_', '4x_', '4x_sd_', 'sd_']
         for p in self.known.values():
-            path, basename = p.rsplit('/', 1)
-            values.update(f"{path}/{prefix}{basename}" for prefix in prefixes)
+            path, basename = os.path.split(p)
+            if path:
+                path += '/'
+            values.update(f"{path}{prefix}{basename}" for prefix in prefixes)
 
         logger.debug(f"check basename prefixes: {len(prefixes)} prefixes with a total {len(values)} paths")
         self.check_iter(value for value in list(values))
