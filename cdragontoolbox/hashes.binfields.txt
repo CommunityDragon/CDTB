@@ -48,6 +48,7 @@ d8c2bcff CCScore
 fd985966 Cases
 453edffa CastLockoutTime
 66257047 CastTime
+242ed7dc CatalogEntry
 9292a6c1 Chance
 2ac71ccc ChannelDuration
 be3da0e1 ChannelingEndAutoAttackReset
@@ -297,6 +298,7 @@ cb9f11d2 PrimaryAbilityResourceBar
 52fd4a5b PropName
 cdbc1b2a QuestComplete
 0b13c31a QuestReceived
+5b5e3b46 QueueDisplayData
 7eb2af0c Rage
 9ee69c19 RecItemsOnServer
 8dcbab01 RecipeItems
@@ -366,6 +368,7 @@ bd04b6be SpotlightHealthbar
 85f5e202 SruRiftHerald
 ee2b8eac StacksExclusive
 62246441 StartingJointForTrailFollowTEMP
+cb67a17d StatStones
 daf2f7a2 StopAttackVerifiesSpell
 6e720d2b String1
 6f720ebe String2
