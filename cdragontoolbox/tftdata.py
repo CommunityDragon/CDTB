@@ -20,7 +20,7 @@ def load_translations(path):
             f.seek(0)
             return RstFile(f)
         else:
-            translations = []
+            translations = {}
             for line in f:
                 if line.startswith(b'tr "'):
                     line = line.decode()
