@@ -220,7 +220,7 @@ class TftTransformer:
                     "critMultiplier": record.getv("critDamageMultiplier"),
                     "critChance": record.getv("baseCritChance"),
                     "attackSpeed": record.getv("attackSpeed"),
-                    "range": record["attackRange"].value // 180,
+                    "range": record.getv("attackRange", 0) // 180,
                 },
                 "ability": {
                     "name": champ.getv(0x87A69A5E),
