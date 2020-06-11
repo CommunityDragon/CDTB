@@ -2,6 +2,7 @@ import os
 import re
 import io
 import json
+import time
 import hashlib
 import logging
 from typing import List, Optional, Generator
@@ -11,6 +12,7 @@ from .storage import (
     PatchElement,
     PatchVersion,
     get_system_yaml_version,
+    get_content_metadata_version,
     get_exe_version,
 )
 from .tools import (
@@ -273,13 +275,15 @@ class PatcherStorage(Storage):
           bundles/
           releases/
       cdtb/  -- CDTB files and exported files
-        channels/{channel}/{version}/  -- one directory per channel and release version
-          release.json  -- copy of release's JSON file
+        channels/  -- obsolete (used for the previous Riot release versionning)
+        releases/{patchline}/{timestamp}/  -- one directory per release (game/client pair)
+          release.json  -- release information (notably manifest URLs)
           files/  -- release files, extracted from bundles
           patch_version.{elem}  -- cached patch version for element `name`
+        releases/{patchline}/{region}/latest.timestamp  -- last timestamp version
         files/  -- extracted files, named after their hash (shared)
 
-    One instance handles a single channel, even if all channels are stored
+    One instance handles a single patchline, even if all channels are stored
     under the same file tree. This is because only bundles and chunks are
     shared between channels, not versions and extracted files.
 
@@ -289,7 +293,8 @@ class PatcherStorage(Storage):
     This can be disabled by setting the `use_extract_symlinks` option to false.
 
     Configuration options:
-      channel -- the channel name
+      patchline -- the patchline name (`live` or `pbe`)
+      region -- region from which use configuration
       use_extract_symlinks -- if false, disable use of symlinks for extracted files
 
     """
@@ -297,24 +302,29 @@ class PatcherStorage(Storage):
     storage_type = 'patcher'
 
     URL_BASE = "https://lol.dyn.riotcdn.net/"
-    DEFAULT_CHANNEL = 'live-euw-win'
+    DEFAULT_PATCHLINE = 'live'
+    CLIENT_LIVE_REGION = 'EUW'
+    GAME_LIVE_PLATFORM = 'EUW1'
 
-    def __init__(self, path, channel=DEFAULT_CHANNEL):
+    def __init__(self, path, patchline=DEFAULT_PATCHLINE):
         super().__init__(path, self.URL_BASE)
-        self.channel = channel
+        self.patchline = patchline
         self.use_extract_symlinks = True
 
     @classmethod
     def from_conf_data(cls, conf):
-        storage = cls(conf['path'], conf.get('channel', cls.DEFAULT_CHANNEL))
+        storage = cls(conf['path'], conf.get('patchline', cls.DEFAULT_PATCHLINE))
         if conf.get('use_extract_symlinks') is False:
             storage.use_extract_symlinks = False
         return storage
 
+    def base_release_path(self):
+        return self.fspath(f"cdtb/releases/{self.patchline}")
+
     def iter_releases(self) -> List['PatcherRelease']:
         """Generate releases available in the storage, latest first"""
 
-        base = self.fspath(f"cdtb/channels/{self.channel}")
+        base = self.base_release_path()
         if not os.path.isdir(base):
             return
         versions = []
@@ -322,7 +332,7 @@ class PatcherStorage(Storage):
             try:
                 versions.append(int(version))
             except ValueError:
-                continue
+                continue  # ignore extra files
 
         for version in sorted(versions, reverse=True):
             if os.path.isfile(f"{base}/{version}/release.json"):
@@ -339,12 +349,52 @@ class PatcherStorage(Storage):
 
     def fetch_latest_update(self):
         """Fetch the latest release from the CDN"""
-        PatcherRelease.fetch_latest(self)
 
-    def request_release_data(self):
-        r = self.request_get(f"channels/public/{self.channel}.json")
+        release_info = {
+            'client_patch_url': self.get_latest_client_manifest(),
+            'game_patch_url': self.get_latest_game_manifest(),
+        }
+
+        latest_timestamp = self.latest_timestamp()
+        if latest_timestamp is None:
+            latest_release = None
+        else:
+            latest_release = PatcherRelease(self, latest_timestamp)
+        if latest_release and release_info == latest_release.data:
+            return  # already up to date
+
+        # Create the release information file and update `latest.timestamp`
+        timestamp = int(time.time())
+        base = self.base_release_path()
+        with write_file_or_remove(f"{base}/{timestamp}/release.json", binary=False) as f:
+            json.dump(release_info, f)
+        with write_file_or_remove(f"{base}/latest.timestamp", binary=False) as f:
+            print(f"{timestamp}", file=f)
+
+    def get_latest_client_manifest(self):
+        r = self.s.get(f"https://clientconfig.rpg.riotgames.com/api/v1/config/public?namespace=keystone.products.league_of_legends.patchlines")
         r.raise_for_status()
-        return r.json()
+        data = r.json()
+        region = 'PBE' if self.patchline == 'pbe' else self.CLIENT_LIVE_REGION
+        for config in data[f"keystone.products.league_of_legends.patchlines.{self.patchline}"]["platforms"]["win"]["configurations"]:
+            if config['id'] == region:
+                return config['patch_url']
+        raise ValueError(f"client configuration not found for {self.patchline}")
+
+    def get_latest_game_manifest(self):
+        platform = 'PBE1' if self.patchline == 'pbe' else self.GAME_LIVE_PLATFORM
+        r = self.s.get(f"https://sieve.services.riotcdn.net/api/v1/products/lol/version-sets/{platform}?q[platform]=windows&q[published]=true")
+        r.raise_for_status()
+        data = r.json()
+        assert len(data["releases"]) == 1
+        return data["releases"][-1]["download"]["url"]
+
+    def latest_timestamp(self):
+        path = f"{self.base_release_path()}/latest.timestamp"
+        if not os.path.exists(path):
+            return None
+        with open(path) as f:
+            return int(f.read().strip())
 
     def download_manifest(self, id_or_url):
         """Download a manifest from its ID or full URL if needed, return its path in the storage"""
@@ -416,7 +466,7 @@ class PatcherRelease:
     def __init__(self, storage: PatcherStorage, version):
         self.storage = storage
         self.version = version
-        self.storage_dir = f"cdtb/channels/{storage.channel}/{version}"
+        self.storage_dir = f"{storage.base_release_path()}/{version}"
         with open(self.storage.fspath(f"{self.storage_dir}/release.json")) as f:
             self.data = json.load(f)
 
@@ -425,16 +475,6 @@ class PatcherRelease:
 
     def __repr__(self):
         return f"<{self.__class__.__qualname__} {self.version}>"
-
-    @classmethod
-    def fetch_latest(cls, storage: PatcherStorage):
-        data = storage.request_release_data()
-        version = data['version']
-        # store data in the storage, at the right place
-        path = storage.fspath(f"cdtb/channels/{storage.channel}/{version}/release.json")
-        with write_file_or_remove(path, binary=False) as f:
-            json.dump(data, f)
-        return cls(storage, version)
 
     def element(self, name) -> Optional['PatcherReleaseElement']:
         """Retrieve element with given name, None if not available"""
@@ -529,7 +569,7 @@ class PatcherReleaseElement:
         """
 
         # for PBE: version is always "main"
-        if self.release.storage.channel == "pbe-pbe-win":  #XXX better check
+        if self.release.storage.patchline == "pbe":
             return PatchVersion("main")
 
         cache = self.release.storage.fspath(f"{self.release.storage_dir}/patch_version.{self.name}")
@@ -560,7 +600,7 @@ class PatcherReleaseElement:
         retrievers = {
             # elem_name: (file_name, extractor)
             'client': ('system.yaml', get_system_yaml_version),
-            'game': ('League of Legends.exe', get_exe_version),
+            'game': ('content-metadata.json', get_content_metadata_version),
         }
 
         file_name, extractor = retrievers[self.name]

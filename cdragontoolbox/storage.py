@@ -447,6 +447,16 @@ def get_exe_version(path) -> str:
     return metadata.get('version')
 
 
+def get_content_metadata_version(path) -> str:
+    """Return branch version from content-metadata.json file"""
+    with open(path) as f:
+        data = json.load(f)
+        m = re.match(r"^(\d+\.\d+)\.", data['version'])
+        if m:
+            return m.group(1)
+        return None
+
+
 def parse_storage_component(storage: Storage, component: str) -> Union[None, Patch, PatchElement]:
     """Parse a component string representation to patch elements"""
 
