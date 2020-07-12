@@ -713,9 +713,11 @@ class GameHashGuesser(HashGuesser):
         logger.debug(f"guess characters files: {len(chars)} characters")
         for c in progress_iterator(sorted(chars)):
             self.check_iter(s.format(c=c) for s in formats)
-            self.check_iter(f"data/characters/{c}/skins/skin{i}.bin" for i in range(200))
-            self.check_iter(f"data/characters/{c}/animations/skin{i}.bin" for i in range(200))
-            self.check_iter(f"data/characters/{c}/tiers/tier{i}.bin" for i in range(200))
+            nskins = 500 if c == 'sightward' else 200
+            self.check_iter(f"data/characters/{c}/skins/skin{i}.bin" for i in range(nskins))
+            self.check_iter(f"data/characters/{c}/animations/skin{i}.bin" for i in range(nskins))
+            if c.startswith('pet'):
+                self.check_iter(f"data/characters/{c}/tiers/tier{i}.bin" for i in range(10))
 
     def guess_shader_variants(self):
         """Guess different extension variants for shader files, e.g. ".glsl_100" """
