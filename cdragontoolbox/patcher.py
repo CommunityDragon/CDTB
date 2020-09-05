@@ -467,7 +467,7 @@ class PatcherRelease:
         self.storage = storage
         self.version = version
         self.storage_dir = f"{storage.base_release_path()}/{version}"
-        with open(self.storage.fspath(f"{self.storage_dir}/release.json")) as f:
+        with open(f"{self.storage_dir}/release.json") as f:
             self.data = json.load(f)
 
     def __str__(self):
@@ -556,7 +556,7 @@ class PatcherReleaseElement:
 
     def extract_path(self, file: PatcherFile):
         """Return the path to which a file is extracted"""
-        return self.release.storage.fspath(f"{self.release.storage_dir}/files/{file.name}")
+        return f"{self.release.storage_dir}/files/{file.name}"
 
     def extract_file(self, file: PatcherFile, overwrite=False):
         """Extract a single file"""
@@ -572,7 +572,7 @@ class PatcherReleaseElement:
         if self.release.storage.patchline == "pbe":
             return PatchVersion("main")
 
-        cache = self.release.storage.fspath(f"{self.release.storage_dir}/patch_version.{self.name}")
+        cache = f"{self.release.storage_dir}/patch_version.{self.name}"
         if os.path.isfile(cache):
             logger.debug(f"retrieving patch version for {self} from cache")
             with open(cache) as f:
