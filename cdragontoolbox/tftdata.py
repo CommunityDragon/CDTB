@@ -128,9 +128,11 @@ class TftTransformer:
         for item in set_collection:
             char_list = item.getv("characterLists")[0]
             set_info = item[0xD2538E5A].value
-            set_number = set_info["SetNumber"]["mValue"].value
-            set_name = set_info["SetName"]["mValue"].value
+            set_number = set_info["SetNumber"].getv("mValue")
+            set_name = set_info["SetName"].getv("mValue")
 
+            if set_number is None or set_name is None:
+                continue
             if char_list not in character_lists:
                 continue
 
