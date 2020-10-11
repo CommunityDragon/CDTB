@@ -38,6 +38,8 @@ c5ea6ab8 AllItemsSet
 59d8de64 AllTrueMaterialDriverInstance
 b0ea70cc AlwaysSpawnCondition
 7f0a1e81 AnchorBase
+df1207c9 AnchorDouble
+5338e7f0 AnchorSingle
 6b130b1e AndScriptCondition
 a39160e9 AndScriptConditionInstance
 7fc1d873 AnimationFractionDynamicMaterialFloatDriver
@@ -165,6 +167,7 @@ d84541a5 CharacterToolDataInstance
 f647f655 CharacterVarsTableInstance
 13866e1b ChatThrottlerData
 9af29f08 ChatThrottlerDataInstance
+84d4571e ChatViewData
 946adb4c Cheat
 61369df7 CheatInstance
 141c2ec1 CheatMenuUIData
@@ -176,6 +179,7 @@ df40db9e CheatMenuUIDataInstance
 039b5ebc CircleMovement
 a66643e7 CircleMovementInstance
 4a9d1e4f CircleMovementSpec
+744d14ad ClashLogo
 86e5b2a2 ClearAlreadyHitTracking
 26b675d9 ClearAlreadyHitTrackingOnMovementComplete
 2654c326 ClearAlreadyHitTrackingOnMovementCompleteInstance
@@ -479,6 +483,7 @@ a64d5210 EngineFeatureToggles
 c8681d90 EnterFOWVisibilityInstance
 f16fc504 EnterFOWVisibilitySpec
 d0d6e3f1 EsportsBannerConfiguration
+2d5c96cd EsportsBannerData
 fc354530 EsportsBannerMaterialController
 0d64ddbd EsportsBannerOptions
 0edf1cf3 EsportsData
@@ -964,6 +969,7 @@ d3be7d61 LoadingScreenSettingsInstance
 0a42222f LoadoutCompanionInfoPanel
 ea452f2f LoadoutFeatureData
 16f040ac LoadoutFeatureDataInstance
+a928a446 LoadoutSelectViewController
 00b1e2f6 LoadoutViewController
 08a15686 LobbyViewController
 3c136fac LocaleRarityOverride
@@ -976,6 +982,7 @@ ed042565 LockRootOrientationRigPoseModifierDataInstance
 6d1f19d7 LoginViewController
 69dae321 LolSpellScript
 5c1ba470 LootItem
+28e2b381 LootStatus
 53b75245 LossOfControlIndicator
 dfa2efb1 Map
 e54c014f MapAlternateAsset
@@ -1047,6 +1054,7 @@ d6028241 MaxAllSkillsCheat
 7a6e1f1e MaxAllSkillsCheatInstance
 0006516a MaxMaterialDriver
 03609f55 MaxMaterialDriverInstance
+e07a9f31 MessageBoxDialog
 064c011f MicroTicksPerTickData
 f7c852dc MicroTicksPerTickDataInstance
 3607cf10 MinMaterialDriver
@@ -1087,6 +1095,7 @@ c869f406 MissileTriggerSpec
 53bfa1d1 MissileTriggeredActionSpec
 684792b0 MissileVisibilitySpec
 16da6f6b MissileVisibilitySpecInstance
+72a9c8c7 MissionAsset
 f2cb0060 MissionBuffData
 94400f01 MobileQualitySettings
 0023f1da ModeProgressionRewardData
@@ -1117,6 +1126,8 @@ d5a6ab25 NotMaterialDriver
 d2c26ff2 NotMaterialDriverInstance
 a855e6b2 NotScriptCondition
 f8eda32d NotScriptConditionInstance
+9b9b3633 NotificationSettings
+16a40caa NotificationsPanelViewController
 6f18d402 NotificationsViewController
 edb8a340 NotificationsViewPanelController
 7a42f079 NullMovement
@@ -1129,6 +1140,25 @@ edb8a340 NotificationsViewPanelController
 4042c200 ObjectTagsInstance
 c8898924 OneTrueMaterialDriver
 6ec3a7ff OneTrueMaterialDriverInstance
+f362fded OptionItemBorder
+9c74b21a OptionItemCheckbox
+c2aa47a6 OptionItemColumns
+d79b9cc2 OptionItemGroup
+920d412e OptionItemHotkeys
+761a2ea3 OptionItemLabel
+a9abb748 OptionItemSliderFloat
+26350e63 OptionItemSliderInt
+db80ae6c OptionItemSliderVolume
+caf4d6ac OptionTemplateBorder
+aa338aeb OptionTemplateCheckbox
+67652271 OptionTemplateGroup
+29fa9119 OptionTemplateHotkeys
+bc916fb0 OptionTemplateHotkeysKey
+555dc791 OptionTemplateHotkeysLabel
+12a88974 OptionTemplateLabel
+1ed10843 OptionTemplateSlider
+af9f3bac OptionsTab
+bc08ce70 OptionsViewController
 18fea228 OrScriptCondition
 97af23d3 OrScriptConditionInstance
 57b5ff8c OverrideAttackTimeData
@@ -1370,6 +1400,7 @@ bc49afde SpellRankUpRequirements
 5b5bff7f StatByNamedDataValueCalculationPartInstance
 cd156c7f StatBySubPartCalculationPart
 bc2357b4 StatStoneCategory
+f5567460 StatStoneCollection
 ed237fc4 StatStoneData
 2be1af9f StatStoneDataInstance
 f72d6994 StatStoneEventToTrack
@@ -1391,6 +1422,7 @@ e8e2a06c StaticMaterialShaderParamDefInstance
 060a4413 StaticMaterialTechniqueDef
 4919d810 StaticMaterialTechniqueDefInstance
 f4d0f73f StopAnimationEventData
+44544233 StoreViewController
 dbc5c2a4 StringGet
 8c5d917f StringGetInstance
 f04c3008 StringTableGet
@@ -1417,6 +1449,7 @@ a033f9cd SurrenderData
 2c26c305 SurrenderTypeData
 707977c0 SwapChampionCheat
 b8bb4bfb SwapChampionCheatInstance
+37d7a217 SwapCompanionCheat
 ce3d6255 SwitchCase
 e2479462 SwitchCaseInstance
 ab8dec42 SwitchMaterialDriver
@@ -1520,6 +1553,7 @@ a2d042b0 TftMapSkin
 e52b8f5d TftShopData
 3bea5b98 TftSurrenderCheat
 6f870247 TftTraitData
+5bbce8a7 TftTraitList
 3d7f07ef TimeBlendData
 ee5fb96c TimeBlendDataInstance
 f36e13f7 TimeMaterialDriver

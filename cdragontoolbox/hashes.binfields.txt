@@ -542,6 +542,7 @@ f47a22e5 bHaveHitEffect
 b66d7a66 bLineMissileBounces
 008d99dc bLineMissileUsesAccelerationForBounce
 24575496 bState
+4bd96f8f backgroundElement
 3a5746e5 badgeId
 090986cc badgeTroyFile
 4ac1dc46 bandData
@@ -553,6 +554,7 @@ f8f29f92 bankUnits
 416bc18f banner
 1a9e9484 bannerFlagId
 91c02319 bannerFrameId
+3f74778c bannerName
 7b9fba40 bannerTheme
 3ddc94d8 base
 0787f1cf baseArmor
@@ -622,9 +624,11 @@ a8c6303b botEnabled
 7dfe4c9d botEnabledMM
 84a0987a botIconSize
 ff2a3108 botLeftOffset
+83422eb0 boundChampion
 706468a8 boundingCylinderHeight
 0506a4c5 boundingCylinderRadius
 96169cd6 boundingSphereRadius
+5d42c230 boundsElement
 bf563566 boundsMax
 b14297a4 boundsMin
 f2c99cb4 boxMax
@@ -712,6 +716,7 @@ f0ec2f06 colorblindColor
 8be090f2 colorblindOutlineColor
 9b6dceee colorblindShadowColor
 1c9772b0 colorblindTextureFile
+468da513 colorblindVisibility
 f8f489b1 colors
 41df9215 combinableCounterCategory
 40b53231 combinableCounterDisplay
@@ -1040,6 +1045,7 @@ d5bdbb42 height
 6cb549bd heightSolver
 bbd43eee hideAfterSeconds
 be0bee70 hideWithLineIndicator
+a19ebeb8 highlightHealthbarIcons
 b0ef060f highlightTimeoutSeconds
 fc2725ce hitFxScale
 fd3d43af horizonColor
@@ -1078,6 +1084,7 @@ d0f1f287 imageAssets
 c76fd482 imageInfo
 f511a169 imagePath
 b9516a6f importance
+40c6c39e indicatorType
 cd8310f1 inertia
 98c52469 inherits
 09dbf7c7 initialDensityMapAsset
@@ -1124,11 +1131,13 @@ b0b6713c jetChaos
 d9c60e55 jointForAnimAdjustedSelection
 40c351da keyTimes
 e44b7382 keyValues
+f94a08cd keys
 c178fac7 keywordsExcluded
 47cc1fe9 keywordsIncluded
 14435bb0 keywordsRequired
 c09dbcb8 knockback
 297cd14a knockup
+e7da7f6f labelElement
 174d75d3 leagueName
 810fe019 leagues
 a1fb09f0 leftTextureName
@@ -1149,7 +1158,10 @@ e7c742df life
 986a4d5c lightMapColorScale
 5cc5ea61 lineStopsAtEndPosition
 1d6ab889 lineWidth
+df96c96e lingerAcceleration
 e9ca82a1 lingerColor
+fac5e298 lingerDrag
+098a338d lingerVelocity
 57413af1 loadoutsIcon
 97f7188d loadscreen
 bc8eefad loadscreenVintage
@@ -1476,6 +1488,7 @@ ec12a9d5 mDefault
 86a1120a mDefaultPageLocalizationKey
 4f3f0590 mDefaultPerksWhenSplashed
 1064f3f9 mDefaultPriority
+f792d796 mDefaultQuality
 ae686ed6 mDefaultSplash
 fe66e5ff mDefaultTextureName
 b8890051 mDefaultTftCompanion
@@ -1611,6 +1624,7 @@ a1117109 mExperienceGrantedForKillPerLevel
 bba38682 mExperienceRequiredPerLevel
 7231ce56 mEyeCandy
 946f6dff mFacingOption
+c9b9d398 mFadeBehavior
 6c79a091 mFadeColor
 d8f5e671 mFadeSpeed
 a3be6eb4 mFadeTimeEnd
@@ -1665,7 +1679,9 @@ ba715832 mFloatingTextTypes
 7cb6e8bd mFormName
 57b8b11b mFormat
 e7b832f2 mFormula
+50f145c0 mFormulaParts
 7ea94c85 mFrame
+1df36b7b mFrameCap
 312c8ca6 mFrequency
 b9406ead mFrictionMultiplier
 d614c26c mFriendlyChatColor
@@ -1796,6 +1812,7 @@ ae26f217 mIsAdvancedStyle
 6737b34f mIsDisabledWhileDead
 a465e2b9 mIsEnchantment
 0ad15951 mIsFill
+e2c38f96 mIsFloating
 72a03ff8 mIsKillEvent
 d91e32ee mIsLoop
 4e8e0def mIsPlayerFacing
@@ -1909,6 +1926,7 @@ e79da182 mLockMeshToAttachment
 ef392699 mLockedSpellOriginationCastID
 24274dcd mLockedToolTipTRAKey
 a04b3023 mLogCombatEvents
+71e13ff8 mLogoPath
 ff81b9ad mLollipopAreaRadiusBegin
 5239d3fd mLollipopAreaRadiusEnd
 a1ed05f5 mLongDescLocalizationKey
@@ -1950,6 +1968,7 @@ b3ef371f mMaxGroupOwnable
 307b0406 mMaxOccurences
 7b72e9c8 mMaxPercentageForMostReadHealth
 fd39cb94 mMaxScale
+e3c3f079 mMaxSlope
 ef7f4569 mMaxSpeed
 647c1dc9 mMaxUnits
 833f062d mMaxVal
@@ -2531,6 +2550,7 @@ d39243c4 mTrackDataName
 5e661fd4 mTrail
 5c302717 mTrailMode
 9e0b0655 mTraitSets
+518955ed mTraits
 14a5150f mTransitionAnimID
 c2287909 mTransitionClipDataList
 cdff6b3d mTransitionDurationIntoCinematicMode
@@ -2686,6 +2706,7 @@ b73427c1 mapStringId
 44bcafc5 markedOffsetY
 1e23331e masteryData
 d2e4d060 material
+7ac73608 materialController
 c50d04d7 materialDrivers
 24725910 materialOverride
 332b2c86 materialOverrideDefinitions
@@ -2796,6 +2817,8 @@ aae99956 onByDefault
 d6dad55f onDeathFadeSpeed
 3a31b3b8 onKillEvent
 568afbd0 onKillEventForSpectator
+e7e19b94 option
+057f028e optionScale
 ef286ca5 options
 c545bc21 orientation
 4b23dc69 orientationType
@@ -3113,7 +3136,10 @@ b06c36e4 stencilPassDepthFailOp
 599391f5 stencilPassDepthPassOp
 7b43e2ec stencilRef
 cd909507 stencilReferenceVal
+77a4e581 stoneName
 73d3ba3f stopEvent
+6086f717 storeDisplayName
+56b8abdb storeOverlayImage
 122c3a82 stormColoration
 e07a18b0 strength
 dd6cdf21 stun
@@ -3150,6 +3176,7 @@ bc9c8463 taunt
 59b2e247 teamName
 844f384e techniques
 a6a7c844 tempAmbientColor
+694aaa0b template
 2d38abc6 templateDefinition
 324f9f10 texAddressModeBase
 5b249407 texAddressModeMult
@@ -3199,6 +3226,7 @@ eda78f54 themeMusicID
 86e122d8 tips3
 9865b509 title
 cef47d3f tooltipDelay
+d6b7a622 tooltipOnly
 fb014d9a topCenterOffset
 7b4ebcc4 topIconSize
 61246780 towerBurstData
@@ -3206,6 +3234,7 @@ fb014d9a topCenterOffset
 d9bf88d3 towerTargetingEffect2Definition
 51d8e2ad towerTargetingEffectDefinition
 678f8050 towerTargetingPriorityBoost
+33be3414 trackingType
 810cab86 trailCutoff
 f242e5df trailMaxAddedPerFrame
 ce17c84c trailMode
@@ -3221,6 +3250,7 @@ c697af1f transitionSource
 b36cff34 translationOverride
 5127f14d type
 7b285eed typeData
+a8953bd8 typeId
 33c02d93 typeIndex
 1cbde0ff uScrolling
 8ce04c3d uncensoredIconCircles
@@ -3249,6 +3279,7 @@ a7dd8c85 useGDSBinaries
 2349df32 useGlobalLineIndicator
 43e9e8dd useHeroSpellName
 5a17fe18 useKeywordsForVFXOwner
+1af87706 useLingerColor
 dddde180 useNavmeshMask
 2e8c1941 useNewAttackSpeed
 ec6dac89 useRiotRelationships
@@ -3276,6 +3307,7 @@ aaa9488d uvScrolling
 387c77b1 uvTransformCenterMult
 fc926160 vScrolling
 425ed3ca value
+9da861c2 valueElement
 34474c3b values
 32741c32 velocity
 0bad81a4 velocityDelta
