@@ -456,9 +456,9 @@ def create_parser():
     return parser
 
 
-def main():
+def main(argv = None):
     parser = create_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if not args.command:
         parser.print_help()
