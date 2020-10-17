@@ -1,7 +1,8 @@
 import os
 from enum import IntEnum
 import struct
-from .hashes import HashFile
+from .hashes import HashFile, hashfile_game
+from xxhash import xxh64_intdigest
 
 
 def _repr_indent(v):
@@ -17,6 +18,7 @@ hashfile_binentries = HashFile(os.path.join(os.path.dirname(__file__), "hashes.b
 hashfile_binhashes = HashFile(os.path.join(os.path.dirname(__file__), "hashes.binhashes.txt"), hash_size=8)
 hashfile_binfields = HashFile(os.path.join(os.path.dirname(__file__), "hashes.binfields.txt"), hash_size=8)
 hashfile_bintypes = HashFile(os.path.join(os.path.dirname(__file__), "hashes.bintypes.txt"), hash_size=8)
+hashfile_binpaths = hashfile_game
 
 def compute_binhash(s):
     """Compute a hash used in BIN files
@@ -42,7 +44,7 @@ class BinHashBase:
             return self.h == other.h
         elif isinstance(other, str):
             if self.s is None:
-                return self.h == compute_binhash(other)
+                return self.h == self.compute_hash(other)
             else:
                 return self.s == other
         else:
@@ -58,6 +60,10 @@ class BinHashBase:
 
     def __hash__(self):
         return self.h
+
+    @classmethod
+    def compute_hash(cls, s):
+        return compute_binhash(s)
 
     def hex(self):
         return f"{self.h:08x}"
@@ -91,6 +97,23 @@ class BinTypeName(BinHashBase):
     """Name of a type"""
 
     hashfile = hashfile_bintypes
+
+class BinPathValue(BinHashBase):
+    """Hashed WAD path in bin files"""
+
+    hashfile = hashfile_binpaths
+
+    def hex(self):
+        return f"{self.h:16x}"
+
+    @classmethod
+    def compute_hash(cls, s):
+        return xxh64_intdigest(s.lower())
+
+    def __repr__(self):
+        if self.s is not None:
+            return repr(self.s)
+        return f"{{{self.hex()}}}"
 
 
 def key_to_hash(key):
@@ -139,6 +162,7 @@ class BinObjectWithFields:
 
 
 class BinType(IntEnum):
+    # See parse_bintype() for remapping depending on version
     EMPTY = 0
     BOOL = 1
     S8 = 2
@@ -157,20 +181,16 @@ class BinType(IntEnum):
     RGBA = 15
     STRING = 16
     HASH = 17
-    CONTAINER = 18
-    STRUCT = 19
-    EMBEDDED = 20
-    LINK = 21
-    OPTION = 22
-    MAP = 23
-    FLAG = 24
-
-    # Note: values from 128 are mapped to lower ones
-    # This mapping changed over time.
-    # - before patch 9.23: unused
-    # - patches 9.23 to 10.7: 128-134 mapped to 18-24
-    # - from patch 10.8: 128 mapped to 18, 130-135 mapped to 19-24
-    # See also BinReader.parse_bintype()
+    PATH = 18  # introduced in 10.23
+    # Complex types (0x80 flag introduced in 9.23)
+    CONTAINER = 0x80
+    CONTAINER2 = 0x81  # introduced in 10.8
+    STRUCT = 0x82
+    EMBEDDED = 0x83
+    LINK = 0x84
+    OPTION = 0x85
+    MAP = 0x86
+    FLAG = 0x87
 
 
 class BinStruct(BinObjectWithFields):
@@ -398,6 +418,9 @@ class BinReader:
     def read_hash(self):
         return BinHashValue(self.read_fmt('<L')[0])
 
+    def read_path(self):
+        return BinPathValue(self.read_fmt('<Q')[0])
+
     def read_link(self):
         return BinEntryPath(self.read_fmt('<L')[0])
 
@@ -453,14 +476,14 @@ class BinReader:
         return BinMapField(hname, ktype, vtype, values)
 
     def parse_bintype(self, v):
-        if self.btype_version < 1008:
-            if v > 0x80:
-                v = v - 0x80 + 18
-        else:
-            if v == 0x80:
-                v = 18
-            elif v > 0x80:
-                v = v - 0x80 + 17
+        if self.btype_version < 923:
+            if v == 18:
+                v = 0x80
+            elif v >= 19:
+                v = 0x80 + v - 18
+        elif self.btype_version < 1008:
+            if v >= 0x81:
+                v += 1
         return BinType(v)
 
 
@@ -483,6 +506,7 @@ class BinReader:
         BinType.RGBA: read_rgba,
         BinType.STRING: read_string,
         BinType.HASH: read_hash,
+        BinType.PATH: read_path,
         BinType.STRUCT: read_struct,
         BinType.EMBEDDED: read_embedded,
         BinType.LINK: read_link,
@@ -508,7 +532,9 @@ class BinReader:
         BinType.RGBA: read_field_basic,
         BinType.STRING: read_field_basic,
         BinType.HASH: read_field_basic,
+        BinType.PATH: read_field_basic,
         BinType.CONTAINER: read_field_container,
+        BinType.CONTAINER2: read_field_container,
         BinType.STRUCT: read_field_struct,
         BinType.EMBEDDED: read_field_embedded,
         BinType.LINK: read_field_basic,

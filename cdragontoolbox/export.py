@@ -412,10 +412,11 @@ class CdragonRawPatchExporter:
         transformer.export(os.path.join(self.output, "cdragon/tft"), langs=None)
 
     def _create_exporter(self, patch):
-        if patch.version != 'main' and patch.version < PatchVersion('10.8'):
-            btype_version = 1007
+        if patch.version == 'main':
+            btype_version = 9999  # also use the latest version
         else:
-            btype_version = 1008
+            v0, v1 = patch.version.t
+            btype_version = v0 * 100 + v1
         exporter = Exporter(self.output)
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
