@@ -378,10 +378,12 @@ e7cb7ccb DamageSourceTemplate
 f9d15638 DamageSourceTemplateInstance
 ec41779d DamageUnitCheat
 3cebd9da DamageUnitCheatInstance
+2e548aaf DeathEventPriority
 1307c9ed DeathTimes
 21243f6a DeathTimesInstance
 99f97edc DeathTimesScalingPoint
 6631b507 DeathTimesScalingPointInstance
+4409fb8b DebugRenderFlags
 b26e7d7d DecelToLocationMovement
 136498ba DecelToLocationMovementInstance
 dd591356 DecelToLocationMovementSpec
@@ -1217,6 +1219,7 @@ ad106e67 ProductOfSubPartsCalculationPart
 3cae34ab PrototypeAkaliWMissileRenderInstance
 eb4f00c2 PurchaseDialog
 47704df2 QualitySetting
+ab48cfd8 QuestDefinition
 c89b6227 QuestUITunables
 5b5e3b46 QueueDisplayData
 ffe415f4 RSAndCondition

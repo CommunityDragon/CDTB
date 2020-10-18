@@ -542,6 +542,7 @@ f47a22e5 bHaveHitEffect
 b66d7a66 bLineMissileBounces
 008d99dc bLineMissileUsesAccelerationForBounce
 24575496 bState
+d0838f6a backButton
 4bd96f8f backgroundElement
 3a5746e5 badgeId
 090986cc badgeTroyFile
@@ -618,6 +619,7 @@ cb37fca4 blendWithAlpha
 de96f676 bold
 1ecb978c boneName
 64fe08ec boneToSpawnAt
+1f523237 border
 fc56964a botDefaultSpell1
 fb5694b7 botDefaultSpell2
 a8c6303b botEnabled
@@ -643,6 +645,7 @@ e4d83b53 buoyancy
 3264f70f burstHealData
 952a2284 burstTimeWindow
 283f8a9c burstTriggerPercent
+df989f94 buttonDefinition
 1e4e8270 canCastOrQueueWhileCasting
 db633223 canCastWhileDisabled
 9acfbbaf canOnlyCastWhileDead
@@ -697,6 +700,7 @@ d1a3dbc8 clearUndoHistory
 5c7ea86f click
 f028019b clickable
 280c558b clientAssets
+b490a3cb closeButton
 46019bf0 closeOnEndGameAfterDelay
 25215373 collectionsIcon
 3d7e6258 color
@@ -764,6 +768,8 @@ d315e55d decay
 cbaf0880 decayDelay
 edf1840c defaultAnimation
 123393ed defaultAnimations
+37fd915d defaultSound
+1bf466b2 defaultStateElements
 28da4278 defaultTechnique
 32b374fa defaultTexturePath
 1eb71cc8 defaultWordWrapMargin
@@ -807,6 +813,7 @@ d32430e5 disableVerticalReverse
 33f36f05 disabled
 42ab4c4a disabledRegions
 b44b0b57 disarm
+072d935c displayElements
 4fd51a36 displayName
 e89ff5ca displayTypes
 a6248fb6 dissipation
@@ -821,6 +828,7 @@ e21d4240 doesNotGiveMinionScore
 10ea55cd doesParticleLifetimeScale
 06216465 doubleSided
 b88c0d43 drag
+4652f49d dragRegionElement
 f810361e dragon
 543e52eb drawType
 c803c9f6 drawingLayer
@@ -864,6 +872,8 @@ e19d1593 emitterUvScrollRateMult
 29306858 emoteBuffbone
 f0f7a695 emoteLoadout
 5909d642 emotePopupDisplayTime
+911be685 emoteStartButton
+cb80af27 emoteVictoryButton
 e862b379 emoteYOffset
 02f3b39e enabled
 4f2cd510 endLocator
@@ -875,6 +885,7 @@ f365a945 enemyChampSpecificHealthSuffix
 c245e974 enlargeTime
 a8a3777b environmentSHIrradiance
 5ee3c453 epicness
+39ad7a1b equipButton
 c6fbacd5 erosionDriveCurve
 d3f8680f erosionDriveSource
 34bee0ea erosionFeatherIn
@@ -883,6 +894,9 @@ d3f8680f erosionDriveSource
 b0794a80 erosionMapChannelMixer
 5da05f9b erosionMapName
 7c7970d8 erosionSliceWidth
+1bffa622 errorText
+b9a56802 esportsTeam
+f10a1a1f eventMutator
 12d8e384 events
 6d31463e evolutionData
 fa640713 excludedAttachmentTypes
@@ -906,6 +920,7 @@ ebedd74e fadeSpeed
 7c82be94 fallbackDirection
 6370ff58 falloffColor
 a5b8cdf4 falloffTexture
+bcf819ee far
 c2049353 farLeftIconSize
 81e09bd8 farLeftOffset
 17f4ca3c farRightIconSize
@@ -1013,6 +1028,7 @@ de37b388 glossTexture
 f5a07bed goldGivenOnDeath
 6694c2c1 goldRadius
 b9780647 graph
+c7a58552 gridItemButton
 583befe1 groundColor
 4b74257f grounded
 ecf5aab6 groupDividerGapSize
@@ -1048,8 +1064,10 @@ be0bee70 hideWithLineIndicator
 a19ebeb8 highlightHealthbarIcons
 b0ef060f highlightTimeoutSeconds
 fc2725ce hitFxScale
+6bf3194e hitRegionElement
 fd3d43af horizonColor
 f4867212 horizontalAlignment
+49b51f19 hotkeyModifierText
 8fa18585 hoverIndicatorMinimapOverride
 36cddb74 hoverIndicatorRadius
 4789ec63 hoverIndicatorRadiusMinimap
@@ -1059,6 +1077,7 @@ e0346e4b hoverLineIndicatorBaseTextureName
 5bb930bf hoverLineIndicatorTargetTextureName
 2a062e78 hoverLineIndicatorWidth
 53ac2647 hoverLineIndicatorWidthMinimap
+bcd200cf hoverStateElements
 0fd6a4da hpPerLevel
 643cb399 hpPerTick
 cc3ef161 hpRegenPerLevel
@@ -1095,12 +1114,14 @@ ff578b94 inkFillRate
 1bf2d68f inkFillTime
 6abaa1e5 innerTextureName
 0b99db0e inputTextLengthMax
+8563e50a intensity
 3c8368c0 intensityScale
 cedd8578 interval
 2e3d90b1 intro
 c68db52e inventoryIcon
 4ff2eb71 inventoryIconToOverlay
 c3130dac isAnimated
+abaecc4b isClickable
 518c8edb isClockwiseArc
 943de481 isColorBindedWithDistance
 70f58633 isConstrainedToRange
@@ -1123,9 +1144,12 @@ c66ee598 isTexturePixelated
 ae56503a italics
 13bddc7b itemID
 565b9057 itemLinks
+4d5e9d13 itemLists
 4948dd56 itemType
 2103d934 itemVOGroup
 3a79338f items
+afbfd186 itemsLeft
+6ccd463b itemsRight
 b0b6713c jetChaos
 8c437bf8 jetKinetics
 d9c60e55 jointForAnimAdjustedSelection
@@ -1162,6 +1186,7 @@ df96c96e lingerAcceleration
 e9ca82a1 lingerColor
 fac5e298 lingerDrag
 098a338d lingerVelocity
+46334bc4 loadoutsButton
 57413af1 loadoutsIcon
 97f7188d loadscreen
 bc8eefad loadscreenVintage
@@ -1179,6 +1204,7 @@ b471dc2a locators
 74672198 logicalParameters
 72fdbb19 logicalParamters
 7593992d looping
+6e95967d lootTableButton
 ba383df4 lore1
 7d09edbb lowestProjectableHeight
 ef60a129 lowestWalkableHeight
@@ -1219,6 +1245,7 @@ fe38cfb2 mAllowDynamicVisibility
 8438af38 mAllyFacingDetectionRange
 64b3419c mAllyParams
 c1846e3c mAlpha
+c7c088eb mAlternateAssets
 44b7e8dd mAlternateName
 7e3c103c mAmmoCountHiddenInUI
 a1d133c1 mAmmoNotAffectedByCDR
@@ -1247,6 +1274,7 @@ b49f754e mAnimationResourceData
 147f071c mAnimationVariants
 eefcf01b mAnimationWinddownName
 be7340e7 mAnimationWindownName
+48c4a837 mAnnouncementData
 b2bc22d9 mApplyAttackDamage
 0b720c29 mApplyAttackEffect
 a4b8b264 mApplyMaterialOnHitSound
@@ -1329,6 +1357,7 @@ f1c99bd1 mBuffComparisons
 ca93d232 mBuffSpellObject
 f68b3a51 mBuffTimerSimulationType
 0f2abdbe mBuffs
+614e7a4d mBuildDepth
 708df348 mCCScoreMultipliers
 61a2c496 mCampIsAlive
 8a2a7466 mCampName
@@ -1340,6 +1369,9 @@ b653f849 mCanTriggerChargeSpellWhileDisabled
 5a1a9490 mCancelChargeOnRecastTime
 551b248c mCantCancelWhileChanneling
 e321919c mCantCancelWhileWindingUp
+f475ad10 mCardConfig
+59447d06 mCardType
+346391b2 mCarouselData
 1e53f13e mCascadeBlendValue
 0166abbf mCastRangeGrowthDuration
 bcaeb6d3 mCastRangeGrowthMax
@@ -1536,6 +1568,7 @@ a4cd4aa5 mDoesNotConsumeCooldown
 4b1f0de0 mDraftArrival
 5c191701 mDraftDeparture
 330d73aa mDrag
+b40ed25a mDragData
 157a2d52 mDragMomentumDecay
 74f279b1 mDragMomentumRecencyWeight
 52aaf6e0 mDragScale
@@ -1544,6 +1577,7 @@ a4cd4aa5 mDoesNotConsumeCooldown
 7aceca0f mDrivers
 85f7d4c8 mDuration
 8208140d mDurationInGame
+062bb8f5 mDurationSeconds
 612085e9 mDynamic
 2ea2820c mDynamicExtended
 9a5a3a84 mDynamicTooltip
@@ -1554,6 +1588,7 @@ ee900fd3 mDynamicTooltipText
 16542c30 mEducationToolData
 e30545e9 mEffect
 251a5225 mEffectAmount
+98be1607 mEffectAmountPerMode
 fbe9fe52 mEffectByLevelAmount
 93cd9fd4 mEffectColor0
 94cda167 mEffectColor1
@@ -1675,6 +1710,7 @@ f2e9292b mFloatValue
 6df9c595 mFloatingTextOverride
 ba715832 mFloatingTextTypes
 8466a4a9 mFontDescription
+2e97ceab mForceLoad
 1563794b mForcePingable
 7cb6e8bd mFormName
 57b8b11b mFormat
@@ -1769,6 +1805,7 @@ bacc2055 mIconDataMap
 48144f19 mIconDataPriorityList
 dcacc44e mIconDrawSize
 10537b0c mIconFileName
+008dde20 mIconKey
 fecf09e2 mIconName
 b0ec0f43 mIconNames
 ba86fc76 mIconOffset
@@ -1869,6 +1906,7 @@ eef9cf66 mKillerSize
 e1dcc838 mLCUAssetFileMap
 c5e20b46 mLabel
 82a5ecad mLayer
+191799c5 mLeagueClientDescLocalizationKey
 86d9f9d5 mLeftClickSpellAction
 2568dc28 mLegacySummonerSpells
 1fa6a484 mLength
@@ -1902,6 +1940,7 @@ ae6437ed mListGridPostfix
 406abd0c mListGridPrefix
 69d8c4f7 mListGridSeparator
 1ba20390 mListNames
+3b1802e2 mListStyles
 5ed28d40 mListTypeChoices
 00cd8f78 mListValueSeparator
 91ed07c9 mLists
@@ -2402,6 +2441,7 @@ cc5d1518 mStackable
 b886d871 mStartBoneName
 0781908d mStartCooldown
 31bf4ae9 mStartDeathTimerForZombies
+a6d8df53 mStartDelay
 cfcb6bee mStartFlashAlpha
 250cfbe1 mStartFrame
 d8a4574e mStartLocator
@@ -2444,6 +2484,7 @@ d05e7643 mSummonerSpellRequired
 658a2555 mSummonerSpellUpgradeColor
 403d8d94 mSummonerSpellUpgradeDescription
 ac0671eb mSummonerSpells
+e8d1eedb mSurrenderSettings
 248f04da mSyncGroupData
 cc7cd596 mSyncGroupDataList
 af884184 mSyncGroupDataMap
@@ -2468,6 +2509,7 @@ c27f318b mTargeterDefinition
 8f73dfe7 mTargetingType
 5d46764f mTargetingTypeData
 ab269b81 mTeam
+d6b397d8 mTeamBased
 388d0d4e mTeamChatColor
 9f2f23b5 mTeamColors
 d51c6887 mTeamCompareOp
@@ -2777,6 +2819,7 @@ fe195c64 minionScoreValue
 165e061e missileSpeed
 6592b854 modulationFactor
 0c134bb4 momentumFromHit
+0574b158 moreInfoButton
 184b0014 move
 8074e15c moveDensity
 56063fa2 moveKick
@@ -2798,11 +2841,13 @@ a32e6947 navGridFileName
 99a7180f newAsset
 ab522155 nextID
 e672d557 normalMapTexture
+095e577f notificationsButton
 1e67b0f1 numFrames
 83fabffb numFramesMult
 fc5a9e01 numOfInnerAOE
 1bd670a0 number
 1d369c29 objectPath
+d60a2f6a objectiveQuest
 c0f12fa9 occludedUnitSelectableDistance
 73db4a28 offerId
 14c8d3ca offset
@@ -2902,15 +2947,22 @@ ca229a11 playerBuffsOffset
 df1e9ff3 polymorph
 934f4e0a position
 fa45ef23 postRotateOrientationAxis
+7e6634de prefabDefinition
 f510291e preset
 0b44452a price
 bbd81e0d primaryAbilityResource
+56760111 primaryQuest
 007b14f6 primitive
 94e4e309 priority
 a7084719 probabilityTables
 053f960b profileIcon
 719111e1 projectionFading
 28f08d30 projectionYRange
+0da7c432 pulseDuration
+197a43db pulseInterval
+f121a509 pulseOffset
+4c8efa77 pulseTime
+56dcec2a purchaseButton
 fc23f1cc purchaseIdentities
 416020ee quadType
 9ad55026 quality
@@ -2960,6 +3012,7 @@ a926157f regaliaCrown4
 d96b2535 regaliaSplit1
 d66b207c regaliaSplit2
 d76b220f regaliaSplit3
+cade8247 regionsFilename
 2d6871c0 register
 fc6183f5 relativeColorSwapTable
 4e61e3d4 relativeOffsetMax
@@ -2974,6 +3027,7 @@ faadcc70 requiredItemLinks
 11413a17 resolutionData
 d78560b4 resolutions
 d2f58721 resourceMap
+176acc5e restorePurchaseButton
 450192dc resurrectingAlpha
 9aa1ff1e reverbPreset
 e9c98281 rigPoseModifierData
@@ -3007,15 +3061,21 @@ a7bf26c3 scaleStart
 f9c34fa6 scaleUpFromOrigin
 10d1460c scanWidthOverride
 b0d0037c sceneLayer
+6683355b scissorRegionElement
+c96dae5d scoreDisplayQuest
 065faaf6 screenHeight
+dcf513e8 scrollRegionElement
 dfc96107 scrollSpeed
+90adba64 scrollingScene
 f9205db4 searchTags
 8dbf769e searchTagsSecondary
 c26c72f8 secondSelectionAnimationDelay
 f95bc325 secondaryAbilityResource
+44893c99 secondaryQuest
 e431b198 secondaryResourceHudDisplayData
 2b7c8c37 selectedLineSizePx
 59d93fa2 selectedOffsetY
+46564588 selectedStateElements
 34495375 selectionButtonDelayTime
 eb5e3232 selectionHeight
 54642500 selectionIcon
@@ -3026,6 +3086,7 @@ c36777a6 selfCBChampSpecificHealthSuffix
 252f6884 selfIllumination
 46493f5f sellBackModifier
 f9f16781 sequences
+6564a4bc settingsButton
 6f1b97bb settleTime
 652d264e sfxASyncBank
 fe851cf9 sfxASyncBankAssetPath
@@ -3079,12 +3140,15 @@ a1f805da skinScale
 0a65794d skyLightColor
 b39b0430 skyLightScale
 0a5eb702 sliceTechniqueRange
+f75a6d4d sliderIcon
 70954771 slot
 6d9542b8 slow
+99f1b03a socialButton
 763e4b15 softDisabled
 bfb0efdd softParticleParams
 0e0d9594 sound
 cbfb033d soundAssets
+a30565cd soundEvents
 e0c375ae soundOnCreateDefault
 9406ff56 soundOnCreateName
 5a6a73e2 soundPersistentDefault
@@ -3112,6 +3176,7 @@ a0958d01 srcAlphaBlendFactor
 22c0c7d0 srcColorBlendFactor
 04a101fa stages
 826cd95e startDelay
+3edc338f startDisabled
 8349743d startEvent
 76f8ad24 startFrame
 a2957722 startFrameMult
@@ -3164,6 +3229,7 @@ e4f768f6 systemScale
 9509a9f4 systemTagEventList
 5fc76f67 systemTranslation
 094b363d systems
+96650108 tabButton
 95f72993 tag
 d65bac4d tagEventList
 4c6966c6 tagToEnableSpawnSkinOffset
@@ -3214,6 +3280,7 @@ eda78f54 themeMusicID
 5644c61a thicknessOffset
 49e6e09c throttleLimit
 5c51b509 tier
+97fa2c9d tierButton
 17d9c5ce timeActiveDuringPeriod
 22e763bc timeBeforeFirstEmission
 7bd48f4e timeToNotTrollPingCorpses
@@ -3240,6 +3307,7 @@ f242e5df trailMaxAddedPerFrame
 ce17c84c trailMode
 6ab3a678 trailSmoothingMode
 ec3accba trailSmoothingOn
+b10ce033 traitList
 88612808 traits
 e1ad931b transform
 a85dbde5 transitionOffset
@@ -3262,6 +3330,12 @@ e582347f underline
 30d4aa13 unitTagsString
 98337779 untargetableAlpha
 952a8343 untargetableSpawnTime
+d53df2e7 upgradeButton
+b6260380 upgradeErrorText
+0f609c14 upgradeInfoText
+af2b5cc2 upgradePassButton
+96f48c90 upgradeText
+7c509957 upgradeTierButton
 8f449c8b usableInStore
 8f364f0f useAnimationProperties
 d13b3d08 useAnimatorFramerate
