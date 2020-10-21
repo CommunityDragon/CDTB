@@ -1419,6 +1419,8 @@ d7037b1c Book_Glow
 c79493aa Boom
 16fa9c87 Booth
 fffa7852 Boots
+0745b96e BootsOfSpeed
+ed9e3c75 BootsWithoutActives
 ce27ffbc BorrowVfx
 a033e740 Boss_Channel
 adad26fd Boss_Slash1
@@ -1639,6 +1641,7 @@ fa289863 BuffTrack
 6da2e4e0 Buffbones_Additive
 7fd0bcce Buffbones_Idle
 8d11c272 Buildings
+cb948e7a BuildsFromStopwatchGroup
 5ff28d1b BulletVfx
 50722f91 BurnlockoutDuration
 130bfaba Burrow
@@ -2678,6 +2681,7 @@ f7656e11 DoomBots_Brand_W_POF_charge
 cf48129c DoomBots_Brand_W_POF_tar
 529eefe1 DoomBots_Cauldron
 263c7468 DoomBots_Leona_W_cas_minions
+332399be DoransItems
 c715147e Dormant
 68daea61 Dormant_Loop
 78455c80 DotDuration
@@ -3020,6 +3024,7 @@ ebf62f06 Elise_human_legs_idle
 c2f7802c Elise_spider_E_descent_sound
 591ed603 Elise_spider_E_land_sound
 fcc87949 Elise_spider_E_peak_sound
+483cfa2a Elixir
 6ddf99b2 Embrace
 5ad01cc3 Emote
 b849f242 Emote_Enter_Minigun
@@ -3761,6 +3766,9 @@ dd856f2a Galio_W_Taunt_Sound
 aa488909 Galio_W_tar
 ee3019ab GangPlank_R_tar
 74d2cc2e GangplankBarrel
+d2dcf223 GangplankRUpgrade01
+d3dcf3b6 GangplankRUpgrade02
+d4dcf549 GangplankRUpgrade03
 14b74b5f Gangplank_BA_Tar_Crit
 597d4368 Gangplank_BA_Trail1
 11c39e0a Gangplank_BA_tar
@@ -4195,6 +4203,7 @@ e361d1fe Ground_Base
 91d029be Ground_Worlds
 ab9f84ad Grow_Idle
 474c6362 GuardDuration
+3207ba02 GuardianItems
 617679ec GunDrop
 aa016f9e Gun_1to6
 1e13c7c8 Gun_Active
@@ -4939,6 +4948,12 @@ fed55839 IsBattleTraining
 96877e20 IsOn
 cf680540 Item3161_Active_Hit
 a62f171a Item3161_Hit_Trail
+01c379b2 ItemGroupSwapToSummonerDot
+1e6249f7 ItemGroupSwapToSummonerFlash
+7dea76a2 ItemGroupSwapToSummonerHaste
+c0cbbc55 ItemGroupSwapToSummonerHeal
+f6fcdb91 ItemGroupSwapToSummonerSmite
+d193e790 ItemGroupSwapToSummonerTeleport
 ca2c6c39 ItemLoot_Bronze
 e425a84b ItemLoot_Gold
 b921d558 ItemLoot_Silver
@@ -6916,6 +6931,7 @@ e3057e5a Leesin_Respawn_Bell
 124aec70 Left
 3bb970df LeftCast
 34dbc2a2 LeftImpact
+a75d142f LegendaryClearingItems
 1470ebb4 Leona_BA_hit
 ca0ef68f Leona_Death
 c651cfbf Leona_Death_Sound
@@ -6977,6 +6993,7 @@ f230ba56 Leona_Z_Respawn_Sword
 7e003731 Leona_Z_Taunt_L_Eye
 c0c58446 Leona_Z_Ult_Idle
 6cbe2121 LethalityAmount
+ef2c01e7 LethalityItems
 1de0007c LethalityRatio
 9b99e7dd Level
 df481884 Level1
@@ -8422,6 +8439,7 @@ bdb0cc0a Neeko_W_P_cas
 fe29be00 Neeko_W_clone_death
 25999158 Net
 f0d736d3 NeutralCampCleared
+0978bdb2 NewDoransItems
 5689bc4b NewEvent
 35c53528 NewTrack
 b20ea197 NexusBlitz_ChampionSpecific
@@ -8685,6 +8703,7 @@ ceb08791 ODIN
 bc2f6bda OMW
 4771ab81 ONEFORALL
 c70e4aa1 ObjectiveTakeByMyTeam
+1d5672c2 OdysseySustainItems
 a3887979 Odyssey_AugBug
 e23d8f12 Odyssey_Barrel
 b1204734 Odyssey_Design_Base
@@ -8980,6 +8999,8 @@ c9b7364c PercentManaRestoreCooldown
 b00c27b0 PercentRefund
 338cd83e PercentupFront
 aece8ca5 Performance
+cdad9f49 PerksElixir
+f1a603b7 PerksElixirAdvanced
 9f89e295 Perk_Guardian_Break
 261ce832 Perk_Guardian_GroundIndicator
 acd0b189 Perk_Guardian_Mis
@@ -9281,6 +9302,7 @@ b9ee3062 Poro_Throw_Skin11
 150c5d8b Portal
 7b46a0d1 PortalVfx
 e3914edc Portal_Fog
+bdfad7ea Potion
 dc494029 PowerBeam
 9386b547 PracticeToolDPS
 db586aaf PracticeToolLastHit
@@ -11273,6 +11295,18 @@ f10068d3 Shyvana_flameBreath_reignite
 e498900a Shyvana_human_idle_left
 cad2af57 Shyvana_human_idle_right
 f2aa916c Siege
+88ed78e7 SiegeEmergencyShieldGroup
+b9ead5e3 SiegeFlashZoneGroup
+d4a6619e SiegeLaserAffixGroup
+bb9cda6b SiegeMissileBarrageGroup
+2d7d669f SiegePortableBarracksGroup
+5ecdec19 SiegeRefundGroup
+78a7da9d SiegeShieldGeneratorGroup
+60e7042d SiegeSniperCannonGroup
+3c228a0b SiegeTeleportPadGroup
+d7692a06 SiegeTimefieldGroup
+b432b977 SightstoneActiveItems
+81b83e1c SightstoneDisableGroup
 321fc3d4 SightWard_135_SpawnDust
 450fe494 SightWard_136_Idle
 c86ce58d SightWard_136_Landing
@@ -11763,6 +11797,7 @@ f733647a SlashTrail_Left
 37ec8e47 SlashTrail_Right
 ca205aab Sleigh
 64600b90 SleighSnow
+690e7f2e SLIMEStarterItems
 8cbf9724 SlowAmount
 de31fe11 SlowAmountBase
 6e9bca99 SlowAmountCalc
@@ -12905,6 +12940,7 @@ a7a564b4 StealthEvent
 d7c684ec Stealth_Run_Haste_Transition
 cb532ae5 Stop
 aa44e49a StopTurn
+9372d7eb StopwatchGroup
 64fa0bbe StrumVfx
 dd6cdf21 Stun
 29f3d7f1 StunDuration
@@ -15111,6 +15147,7 @@ b105e50c TestKey
 aae48aa4 TestPose
 24eadbe0 Test_AurelionSol_Z_ManeTrail
 17c543dc TextureOverride
+f030db34 TheBlackSpear
 b6c95618 ThreshLantern_lantern_smoke
 ac20938d ThreshTaunt
 dff4bece Thresh_BA_2_mid_trail
@@ -15285,6 +15322,7 @@ fb737933 TopTrack
 dd9d7631 TotalAoEDamagePerTick
 1319f201 TotalBaseDamage
 be21248a TotalBaseHeal
+4ee89448 TotalBiscuit
 24ceef4c TotalDaisyAD
 46e67e21 TotalDaisyHP
 1ddee768 TotalDamage
@@ -16420,6 +16458,7 @@ b41ec152 Vi_emote_taunt2_sound
 56515050 Vi_emote_taunt2_vo
 38b91cf4 Vi_emote_taunt_sound
 e43b5632 Vi_emote_taunt_vo
+4cbd3804 ViktorHexCore
 97996f02 Viktor_Augment
 f69107fe Viktor_E_Aug_Mis
 f24f4624 Viktor_E_Aug_Mis2
@@ -16573,6 +16612,7 @@ d1272783 Walk01
 89e14a50 WallDamage
 7afa5b33 Ward
 cd6ec2a7 WardDuration
+87a0e252 WardGreen
 056b5c43 WardPink
 b2005984 Ward_Hide
 40dc8e30 Ward_Run_ToGround
