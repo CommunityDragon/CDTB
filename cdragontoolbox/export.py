@@ -644,14 +644,18 @@ class SknConverter(FileConverter):
         return path.endswith('.skn')
 
     def converted_paths(self, path):
+        yield path
         yield os.path.splitext(path)[0]
 
     def convert(self, fin, output, path):
-        output_path = os.path.join(output, os.path.splitext(path)[0])
-        shutil.rmtree(output_path, ignore_errors=True)
-        with write_dir_or_remove(output_path):
-            sknfile = SknFile(fin)
+        output_path = os.path.join(output, path)
+        with write_file_or_remove(output_path) as fout:
+            shutil.copyfileobj(fin, fout)
+        obj_output_path = os.path.join(output, os.path.splitext(path)[0])
+        shutil.rmtree(obj_output_path, ignore_errors=True)
+        with write_dir_or_remove(obj_output_path):
+            sknfile = SknFile(output_path)
             for entry in sknfile.entries:
-                name = os.path.join(output_path, entry["name"] + ".obj")
+                name = os.path.join(obj_output_path, entry["name"] + ".obj")
                 with open(name, "w") as f:
                     f.write(sknfile.to_obj(entry))
