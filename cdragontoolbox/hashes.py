@@ -722,7 +722,8 @@ class GameHashGuesser(HashGuesser):
     def guess_shader_variants(self):
         """Guess different extension variants for shader files, e.g. ".glsl_100" """
 
-        shader_paths = [path for path in self.known.values() if os.path.splitext(path)[-1] in [f".{variant}s_{n}_0" for variant in "pv" for n in "23"]]
+        shader_extensions = [f".{variant}s_{n}_0" for variant in "pv" for n in "23"]
+        shader_paths = [path for path in self.known.values() if os.path.splitext(path)[-1] in shader_extensions]
         for path in shader_paths:
             self.check(f"{path}.dx9")
             self.check(f"{path}.dx11")
