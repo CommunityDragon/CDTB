@@ -158,8 +158,9 @@ class BinObjectWithFields:
             return default
 
     def to_serializable(self):
-        return dict(f.to_serializable() for f in self.fields)
-
+        result = dict(f.to_serializable() for f in self.fields)
+        result["__type"] = self.type.to_serializable()
+        return result
 
 class BinType(IntEnum):
     # See parse_bintype() for remapping depending on version
@@ -240,12 +241,7 @@ class BinContainerField(BinField):
         return f"<{self.name!r} CONTAINER({self.type.name}) {svalues}>"
 
     def to_serializable(self):
-        serialized_values = [_to_serializable(v) for v in self.value]
-        for i, v in enumerate(serialized_values):
-            if v == {}:
-                serialized_values[i] = self.value[i].type.to_serializable()
-
-        return (self.name.to_serializable(), serialized_values)
+        return (self.name.to_serializable(), [_to_serializable(v) for v in self.value])
 
 class BinStructField(BinField):
     def __init__(self, hname, value):
@@ -257,8 +253,7 @@ class BinStructField(BinField):
         return f"<{self.name!r} STRUCT {self.value.type!r} {sfields}>"
 
     def to_serializable(self):
-        serialized_value = self.value.to_serializable()
-        return (self.name.to_serializable(), self.value.type.to_serializable() if serialized_value == {} else serialized_value)
+        return (self.name.to_serializable(), self.value.to_serializable())
 
 class BinEmbeddedField(BinField):
     def __init__(self, hname, value):
