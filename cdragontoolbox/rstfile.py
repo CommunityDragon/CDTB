@@ -41,17 +41,20 @@ class RstFile:
     def parse_rst(self, f):
         parser = BinaryParser(f)
 
-        magic, version_major, version_minor = parser.unpack("<3sBB")
+        magic, version = parser.unpack("<3sB")
         if magic != b'RST':
             raise ValueError("invalid magic code")
-        if (version_major, version_minor) not in ((2, 0), (2, 1)):
-            raise ValueError(f"unsupported RST version: {version_major}.{version_minor}")
 
-        if version_minor == 1:
-            n, = parser.unpack("<L")
-            self.font_config = parser.raw(n).decode("utf-8")
+        if version == 2:
+            if parser.unpack("<B")[0]:
+                n, = parser.unpack("<L")
+                self.font_config = parser.raw(n).decode("utf-8")
+            else:
+                self.font_config = None
+        elif version == 3:
+            pass
         else:
-            self.font_config = None
+            raise ValueError(f"unsupported RST version: {version}")
 
         count, = parser.unpack("<L")
         entries = []
@@ -59,8 +62,7 @@ class RstFile:
             v, = parser.unpack("<Q")
             entries.append((v >> 40, v & 0xffffffffff))
 
-        b = parser.raw(1)
-        assert b[0] == version_minor
+        b = parser.raw(1)  # 0 or 1
 
         data = parser.f.read()
         entries = [(h, data[i:data.find(b"\0", i)]) for i, h in entries]
