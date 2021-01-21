@@ -83,14 +83,19 @@ class TftTransformer:
             def replace_list(l):
                 l[:] = [replacements.get(v, v) for v in l]
 
-            for set_data in instance["sets"].values():
-                for trait_data in set_data["traits"]:
+            def replace_set_data(entry):
+                for trait_data in entry["traits"]:
                     replace_in_data(trait_data)
-                for champ_data in set_data["champions"]:
+                for champ_data in entry["champions"]:
                     replace_in_data(champ_data)
                     replace_list(champ_data["traits"])
                     if "ability" in champ_data:
                         replace_in_data(champ_data["ability"])
+
+            for set_data in instance["sets"].values():
+                replace_set_data(set_data)
+            for set_data in instance["setData"]:
+                replace_set_data(set_data)
             for data in instance["items"]:
                 replace_in_data(data)
 
