@@ -46,10 +46,14 @@ class TftTransformer:
         sets = self.parse_sets(map22, character_names)
         traits = self.parse_traits(map22)
         champs = self.parse_champs(map22, traits, character_folder)
-        output_sets = self.build_output_sets(sets, traits, champs)
+        output_sets, output_set_data = self.build_output_sets(sets, traits, champs)
         items = self.parse_items(map22)
 
-        return {"sets": output_sets, "items": items}
+        return {
+            "sets": output_sets,
+            "setData": output_set_data,
+            "items": items,
+        }
 
     def export(self, output, langs=None):
         """Export TFT data for given languages
@@ -96,16 +100,26 @@ class TftTransformer:
     def build_output_sets(self, sets, traits, champs):
         """Build sets as output in the final JSON file"""
 
-        set_map = {}
-        for set_number, set_name, set_chars in sets:
+        output_sets = {}
+        output_set_data = []
+        for set_number, set_mutator, set_name, set_chars in sets:
             set_champs_pairs = [champs[name] for name in set_chars if name in champs]
             set_traits_paths = {h for p in set_champs_pairs for h in p[1]}
-            set_map[set_number] = {
+            set_traits = [traits[h] for h in set_traits_paths if h in traits]
+            set_champions = [p[0] for p in set_champs_pairs]
+            output_set_data.append({
+                "number": set_number,
+                "mutator": set_mutator,
                 "name": set_name,
-                "traits": [traits[h] for h in set_traits_paths if h in traits],
-                "champions": [p[0] for p in set_champs_pairs],
+                "traits": set_traits,
+                "champions": set_champions,
+            })
+            output_sets[set_number] = {
+                "name": set_name,
+                "traits": set_traits,
+                "champions": set_champions,
             }
-        return set_map
+        return output_sets, output_set_data
 
     def parse_character_names(self, map22):
         """Parse character names, indexed by entry path"""
@@ -126,9 +140,10 @@ class TftTransformer:
 
         sets = []
         for item in set_collection:
+            set_number = item.getv("number")
+            set_mutator = item.getv("Mutator")
             char_list = item.getv("characterLists")[0]
             set_info = item[0xD2538E5A].value
-            set_number = set_info["SetNumber"].getv("mValue")
             set_name = set_info["SetName"].getv("mValue")
 
             if set_number is None or set_name is None:
@@ -137,7 +152,7 @@ class TftTransformer:
                 continue
 
             set_characters = [character_names[char] for char in character_lists[char_list].getv("Characters")]
-            sets.append((set_number, set_name, set_characters))
+            sets.append((set_number, set_mutator, set_name, set_characters))
         return sets
 
     def parse_items(self, map22):
