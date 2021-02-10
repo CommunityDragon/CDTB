@@ -810,7 +810,7 @@ class GameHashGuesser(HashGuesser):
 
         # find path-like strings, then try to parse the length
         paths = set()
-        for m in re.finditer(br'(?:ASSETS|DATA|DATA_SOON|Global|LEVELS|UX)/[0-9a-zA-Z_. /-]+', data):
+        for m in re.finditer(br'(?:ASSETS|Common|DATA|DATA_SOON|Gameplay|Global|LEVELS|UX)/[0-9a-zA-Z_. /-]+', data):
             path = m.group(0).lower().decode('ascii')
             paths.add(path.replace("data_soon/", "data/"))
             pos = m.start()
