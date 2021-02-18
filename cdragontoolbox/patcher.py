@@ -47,11 +47,11 @@ class PatcherBundle:
         self.chunks.append(PatcherChunk(chunk_id, self, offset, size, target_size))
 
 class PatcherFile:
-    def __init__(self, name, size, link, langs, chunks):
+    def __init__(self, name, size, link, flags, chunks):
         self.name = name
         self.size = size
         self.link = link
-        self.langs = langs
+        self.flags = flags
         self.chunks = chunks
 
     def hexdigest(self):
@@ -63,22 +63,22 @@ class PatcherFile:
 
     @staticmethod
     def langs_predicate(langs):
-        """Return a predicate function for a `langs` filtering parameter"""
+        """Return a predicate function for a locale filtering parameter"""
         if langs is False:
-            return lambda f: f.langs is None
+            # assume only locales flags follow this pattern
+            return lambda f: f.flags is None or not any('_' in f and len(f) == 5 for f in f.flags)
         elif langs is True:
             return lambda f: True
-        elif isinstance(langs, Language):
-            return lambda f: f.langs == [langs]
         else:
-            return lambda f: f.langs is not None and langs in f.langs
+            lang = langs.lower()  # compare lowercased
+            return lambda f: f.flags is not None and any(f.lower() == lang for f in f.flags)
 
 
 class PatcherManifest:
     def __init__(self, path_or_f=None):
         self.bundles = None
         self.chunks = None
-        self.langs = None
+        self.flags = None
         self.files = None
 
         if path_or_f is not None:
@@ -89,7 +89,7 @@ class PatcherManifest:
                 self.parse_rman(f)
 
     def filter_files(self, langs=True) -> List[PatcherFile]:
-        """Filter files from the manifest with provided language(s)"""
+        """Filter files from the manifest with provided filters"""
         return filter(PatcherFile.langs_predicate(langs), self.files.values())
 
     def parse_rman(self, f):
@@ -123,7 +123,7 @@ class PatcherManifest:
         self.bundles = list(self._parse_table(parser, self._parse_bundle))
 
         parser.seek(offsets[1])
-        self.langs = {k: Language(v.lower()) for k, v in self._parse_table(parser, self._parse_lang)}
+        self.flags = dict(self._parse_table(parser, self._parse_flag))
 
         # build a list of chunks, indexed by ID
         self.chunks = {chunk.chunk_id: chunk for bundle in self.bundles for chunk in bundle.chunks}
@@ -135,16 +135,16 @@ class PatcherManifest:
 
         # merge files and directory data
         self.files = {}
-        for name, link, lang_ids, dir_id, filesize, chunk_ids in file_entries:
+        for name, link, flag_ids, dir_id, filesize, chunk_ids in file_entries:
             while dir_id is not None:
                 dir_name, dir_id = directories[dir_id]
                 name = f"{dir_name}/{name}"
-            if lang_ids is not None:
-                langs = [self.langs[i] for i in lang_ids]
+            if flag_ids is not None:
+                flags = [self.flags[i] for i in flag_ids]
             else:
-                langs = None
+                flags = None
             file_chunks = [self.chunks[chunk_id] for chunk_id in chunk_ids]
-            self.files[name] = PatcherFile(name, filesize, link, langs, file_chunks)
+            self.files[name] = PatcherFile(name, filesize, link, flags, file_chunks)
 
         # note: last two tables are unresolved
 
@@ -181,16 +181,16 @@ class PatcherManifest:
         return bundle
 
     @staticmethod
-    def _parse_lang(parser):
+    def _parse_flag(parser):
         parser.skip(4)  # skip offset table offset
-        lang_id, offset, = parser.unpack('<xxxBl')
+        flag_id, offset, = parser.unpack('<xxxBl')
         parser.skip(offset - 4)
-        return (lang_id, parser.unpack_string())
+        return (flag_id, parser.unpack_string())
 
     @classmethod
     def _parse_file_entry(cls, parser):
         """Parse a file entry
-        (name, link, lang_ids, directory_id, filesize, chunk_ids)
+        (name, link, flag_ids, directory_id, filesize, chunk_ids)
         """
         fields = cls._parse_field_table(parser, (
             None,
@@ -199,7 +199,7 @@ class PatcherManifest:
             ('directory_id', '<Q'),
             ('file_size', '<L'),
             ('name', 'str'),
-            ('locales', '<Q'),
+            ('flags', '<Q'),
             None,
             None,
             None,
@@ -210,17 +210,17 @@ class PatcherManifest:
             None,
         ))
 
-        lang_mask = fields['locales']
-        if lang_mask:
-            lang_ids = [i+1 for i in range(64) if lang_mask & (1 << i)]
+        flag_mask = fields['flags']
+        if flag_mask:
+            flag_ids = [i+1 for i in range(64) if flag_mask & (1 << i)]
         else:
-            lang_ids = None
+            flag_ids = None
 
         parser.seek(fields['chunks'])
         chunk_count, = parser.unpack('<L')  # _ == 0
         chunk_ids = list(parser.unpack(f'<{chunk_count}Q'))
 
-        return (fields['name'], fields['link'], lang_ids, fields['directory_id'], fields['file_size'], chunk_ids)
+        return (fields['name'], fields['link'], flag_ids, fields['directory_id'], fields['file_size'], chunk_ids)
 
     @classmethod
     def _parse_directory(cls, parser):
