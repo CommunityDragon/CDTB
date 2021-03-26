@@ -3174,6 +3174,7 @@ e3614d47 DroolDrops
 578a157f DummyPrefix_Yorick_E_Tar
 93837c15 Duo_Recall
 546b6bfd Duo_Recall_Ready
+02390400 Duo_Recall_Unto
 2fa0fd0d Duration
 45035bf1 DurationOfEffect
 ec2615e8 DurationTooltip
@@ -3800,6 +3801,7 @@ ae01fb20 FadeIn
 20407665 FadeOut
 cb44b69b Fade_In
 0cd6f948 Fade_Out
+f5468783 FallOffMod
 16d67340 FalloffDamage
 2bf07bb8 FalloffHealValue
 f5468783 FalloffMod
@@ -8773,6 +8775,7 @@ b4d8f040 MovementSpeedPercent
 552b8146 MultiHitRatio
 d366aae3 MultiMissileReduction
 58e0fa20 MultiMissileTotal
+eac0eef1 Mystic_Dody
 c7601d82 MythicADPerLegendary
 e6d8f4aa MythicASBonus
 541fd81e MythicBonus
@@ -13201,6 +13204,7 @@ f7460210 Spell2ALT
 3940bc02 Spell2Cast
 3ce29ed1 Spell2Down
 59f0968f Spell2Miss_Run
+b5a27079 Spell2U
 fde148a4 Spell2Up
 7b1ca9e4 Spell2_-180
 5a7fb1dc Spell2_-90
