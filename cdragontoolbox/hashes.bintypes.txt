@@ -48,6 +48,7 @@ f5fb07c7 AnimationGraphData
 322a4094 AnimationGraphDataInstance
 9a4b299d AnimationResourceData
 b739cbda AnimationResourceDataInstance
+2b7134b7 AnnouncementIcon
 9b0f2144 Area
 3031745a AreaClamped
 c9b0aa7f AssistCountFilter
@@ -167,6 +168,7 @@ d84541a5 CharacterToolDataInstance
 f647f655 CharacterVarsTableInstance
 13866e1b ChatThrottlerData
 9af29f08 ChatThrottlerDataInstance
+79888d5e ChatViewController
 84d4571e ChatViewData
 946adb4c Cheat
 61369df7 CheatInstance
@@ -589,6 +591,8 @@ ed7c7d0c FunctionDefinition
 d122884a FunctionTableGetInstance
 4b3bfec1 FunctionTableSet
 988aab9e FunctionTableSetInstance
+d5e43918 FxActionSfx
+a307bd8b FxActionTimeDilate
 892e1ff2 GDSMapObjectAnimationInfo
 7cdf8f6d GDSMapObjectAnimationInfoInstance
 69f67d4a GDSMapObjectBannerInfo
@@ -863,6 +867,7 @@ db7bbc6d IVectorGet
 d132d7b0 IVfxMaterialDriverInstance
 3bf00ea0 IconElementData
 f3b028db IconElementDataInstance
+6ab3b588 IdentityInstance
 77c7801e IdleParticlesVisibilityEventData
 7242d99b IncBotCheat
 8c7f4009 IndicatorTypeGlobal
@@ -987,6 +992,7 @@ ed042565 LockRootOrientationRigPoseModifierDataInstance
 28e2b381 LootStatus
 53b75245 LossOfControlIndicator
 dfa2efb1 Map
+7f3c5086 MapActionPlaySoundAtLocation
 e54c014f MapAlternateAsset
 32a5f174 MapAlternateAssets
 b36da9ac MapAudioDataProperties
@@ -1148,6 +1154,8 @@ c2aa47a6 OptionItemColumns
 d79b9cc2 OptionItemGroup
 920d412e OptionItemHotkeys
 761a2ea3 OptionItemLabel
+bb6f8e53 OptionItemSecondaryHotkeys1Column
+6a9faeda OptionItemSecondaryHotkeys2Column
 a9abb748 OptionItemSliderFloat
 26350e63 OptionItemSliderInt
 db80ae6c OptionItemSliderVolume
@@ -1489,6 +1497,7 @@ dade98fa TFTHudMobileDownscaleData
 37149d68 TFTHudUnitShopData
 977716a6 TFTItemList
 85bb4e73 TFTItemMaterialController
+6c831cc9 TFTMapCharacterLists
 01d7548e TFTModeData
 7d28a28a TFTNotificationData
 474e7388 TFTOutOfGameCharData
@@ -1767,6 +1776,7 @@ a8eb52f4 VfxSpawnConditions
 00c2a390 VfxTrailDefinitionData
 a525024b VfxTrailDefinitionDataInstance
 ed511190 ViewController
+36ad71fa VoiceChatViewController
 a36e0358 WadFileDescriptor
 aac92b83 WadFileDescriptorInstance
 8fa548d5 WallFollowMovement
