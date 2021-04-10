@@ -49,6 +49,7 @@ f5fb07c7 AnimationGraphData
 9a4b299d AnimationResourceData
 b739cbda AnimationResourceDataInstance
 059ff22b AnnouncementDefinition
+1df88cb3 AnnouncementDefinitionData
 2b7134b7 AnnouncementIcon
 0d6825c4 AnnouncementMap
 50ac95fe AnnouncementsViewController
@@ -71,6 +72,7 @@ a3640c69 AudioTagListPropertiesInstance
 1ddbf456 AvatarVarsTable
 ff6fd571 AvatarVarsTableInstance
 f69490f9 BackdropElement
+eaf3699f BackdropElementParams
 a4416515 BankUnit
 4f437722 BankUnitInstance
 d5a2d9af BannerConfiguration
@@ -81,6 +83,7 @@ d47ce07c BannerFrameData
 59b164a7 BannerFrameDataInstance
 1808fd6b BannerOptions
 aff6e0d2 BarElement
+0a3a1690 BarElementParams
 bd1b788b BaseBlendData
 743623f8 BaseBlendDataInstance
 bee45088 BaseElementData
@@ -213,6 +216,7 @@ e2fd6db7 CollectiblesEsportsTeamData
 fb1dfaec ColorGraphMaterialDriverInstance
 0971f3ea CombatTextOverride
 40085ddb CommentBlock
+a2ed9c8a CommonUiTunables
 995f3c95 Companion
 7cc20e55 CompanionData
 8e3b8299 CompanionSpeciesData
@@ -488,7 +492,10 @@ a82317ef EffectRotatingIconElementData
 9f75c96c EffectRotatingIconElementDataInstance
 8bc08357 EffectValueCalculationPart
 1a4a0b64 EffectValueCalculationPartInstance
+d608195e ElementGroupButtonData
 f4562ede ElementGroupData
+2d6438c6 ElementGroupGridData
+02d5626b ElementGroupSliderData
 66244ec3 EmblemData
 70b77980 EmblemDataInstance
 5db58898 EmblemPosition
@@ -616,11 +623,15 @@ d122884a FunctionTableGetInstance
 07e41284 FxActionAnimate
 210c24a0 FxActionContinue
 f57eb3e0 FxActionMove
+3c877925 FxActionMoveBase
+6fa6889f FxActionMoveReset
+08b38a69 FxActionMoveTo
 d5e43918 FxActionSfx
 a307bd8b FxActionTimeDilate
 f90f84e3 FxActionVfx
 2b778de2 FxSequence
 61a9c995 FxTable
+14ef6b63 FxTableEntry
 0533a8d6 FxTarget
 dbc7b64d FxTiming
 2cf7e065 FxTransform
@@ -726,12 +737,14 @@ bda61d85 HasSpellRankSpawnConditionData
 f41edad1 HasTypeAndStatusFlags
 571d3ae6 HasUnitTagsCastRequirement
 47c90e81 HasUnitTagsCastRequirementInstance
+7afe52dc HealthBarIconSettings
 84828dfd HealthBarSettingsData
 d86512e7 HealthDynamicMaterialFloatDriver
 361a91b4 HealthDynamicMaterialFloatDriverInstance
 524ead67 HealthbarBreakpoint
 67e6da7d HealthbarImageInfo
 5f6b95ba HealthbarImageInfoInstance
+0e1d44db HealthbarStyleTemplate
 41ac97ba HealthbarTemplate
 3a12ea15 HeightSolverType
 c4a09c22 HeightSolverTypeInstance
@@ -832,6 +845,7 @@ c4e0918d HudTeamScoreMeterProperties
 f4d6dd19 HudVoiceChatDataInstance
 c2e1b6cd HudWindowPlacementData
 b99e7b71 HybridMaterialDef
+62e639d2 HybridMaterialDefPreset
 254cd75d IBlock
 ae321e88 IBoolGet
 bd415133 IBoolGetInstance
@@ -965,7 +979,9 @@ dce83da1 IsOwnerHeroConditionData
 df4753bf IsSpecifiedUnitCastRequirement
 f297367c IsSpecifiedUnitCastRequirementInstance
 3b832d22 ItemAdvice
+222cbfee ItemAdviceAttribute
 a84012f3 ItemCareyOverrideStartingItemSet
+41ae8051 ItemCareyOverrideStartingItemSetSet
 244c26e6 ItemData
 c03becd9 ItemDataAvailability
 e535c1de ItemDataBuild
@@ -982,6 +998,7 @@ a25d9452 ItemGridRow
 da2b8486 ItemGroupInstance
 7db9ab0b ItemModifier
 9fd82678 ItemModifierInstance
+e2eb03e8 ItemPurchaseModifier
 5ebbc52b ItemRecommendationChoices
 17a2cb2a ItemRecommendationCondition
 fe4cf7d0 ItemRecommendationContext
@@ -1052,6 +1069,7 @@ cb05e946 LoginRootScene
 6d1f19d7 LoginViewController
 69dae321 LolSpellScript
 5c1ba470 LootItem
+634c3066 LootItemDetails
 28e2b381 LootStatus
 89cb439a LossOfControlIcons
 53b75245 LossOfControlIndicator
@@ -1126,6 +1144,9 @@ f537d9e7 MasteryBadgeConfig
 1e23331e MasteryData
 d1bd9b17 MaterialDef
 e77e04da MaterialInstanceDef
+751cef21 MaterialInstanceDynamicParam
+45d01ffc MaterialInstanceDynamicSwitch
+40948bab MaterialInstanceDynamicTexture
 5934419f MaterialInstanceParamDef
 fce8f360 MaterialInstanceSamplerDef
 a21cf9ea MaterialInstanceSwitchDef
@@ -1257,6 +1278,7 @@ ca859188 OverrideAutoAttackCastTimeData
 b9d9bab0 OverridePerkSelectionSetInstance
 da99f3bb OverrideResourceResolver
 e89f142e PARTypeConfig
+2ed0810d ParStateData
 8022f348 ParTypeData
 2160b3ec ParallelClipData
 4a91f197 ParallelClipDataInstance
@@ -1307,6 +1329,7 @@ a66424c6 PresetAnimatorCheat
 09b5d357 PresetEnvironmentArtCheat
 ad106e67 ProductOfSubPartsCalculationPart
 8107e04c ProgressionGraph
+0f4765d4 ProgressionNode
 3ab46af0 PrototypeAkaliWMissileRender
 3cae34ab PrototypeAkaliWMissileRenderInstance
 eb4f00c2 PurchaseDialog
@@ -1344,6 +1367,7 @@ e42c72d0 RegaliaRankedCrestEntry
 94315a01 RegionsThatAllowContent
 454321de RegionsThatAllowContentInstance
 fcc7e08c Relic
+544202f4 RelicList
 fe20aa7c RelicLoadoutData
 42c29efb ReloadScriptsCheat
 02e32738 ReloadWWiseCheat
@@ -1405,6 +1429,7 @@ a270293a SecondaryResourceDisplayFractional
 ea1001a5 SecondaryResourceDisplayFractionalInstance
 49f4b8ca SelectorClipData
 beb722b5 SelectorClipDataInstance
+5a3fe98a SelectorClipPairData
 6d8884b8 SelectorPairData
 7c2ed8e3 SelectorPairDataInstance
 645ba277 Self
@@ -1509,6 +1534,7 @@ a3bd0d60 SplineInfo
 5b5bff7f StatByNamedDataValueCalculationPartInstance
 cd156c7f StatBySubPartCalculationPart
 b7fafb8f StatFormulaData
+4a864ad7 StatFormulaDataList
 bc2357b4 StatStoneCategory
 f5567460 StatStoneCollection
 ed237fc4 StatStoneData
@@ -1547,8 +1573,10 @@ fadc282b SubmeshVisibilityEventDataInstance
 84a63373 SumOfSubPartsCalculationPart
 8653e2d0 SummonerBadge
 9168ddb8 SummonerBadgeData
+a2b6fb58 SummonerBadgeList
 743d2a1b SummonerEmote
 1e44db08 SummonerEmoteInstance
+26889e9f SummonerEmoteManagerSettings
 1e4b24c6 SummonerEmoteSettings
 2fdd1861 SummonerEmoteSettingsInstance
 a5efff10 SummonerIconData
@@ -1663,11 +1691,14 @@ ac9d3cf9 TempTable
 37b92611 TextElementDataInstance
 eef72ed0 TextureAndColorData
 e071f48b TextureAndColorDataInstance
+d6ff2a28 TftDamageSkinDescriptor
 62ff42f4 TftEffectAmount
 65c2c560 TftItemComposition
 d186c31a TftItemData
 80808160 TftMapCharacterData
 ae83d1c0 TftMapCharacterList
+0db03ead TftMapCharacterRecordData
+9e2461e1 TftMapCharacterSkinData
 851d819c TftMapGroupData
 a2d042b0 TftMapSkin
 e52b8f5d TftShopData
@@ -1747,6 +1778,7 @@ a68fa594 UIButtonState
 ee41cf31 UVScaleBiasFromAnimationDynamicMaterialDriver
 4bebf6c1 UnitStatusData
 f441a39e UnitStatusDataInstance
+05ef7ba4 UnitStatusIconData
 c0dbabdd UnitStatusIcons
 9fbe4012 UnitStatusIndicator
 e7ae6ff1 UnitStatusPriorityList
@@ -1814,6 +1846,7 @@ b520045a VfxChildParticleSetDefinitionData
 89d194c5 VfxChildParticleSetDefinitionDataInstance
 2bf817b1 VfxColorOverLifeMaterialDriver
 5dcc2b4e VfxColorOverLifeMaterialDriverInstance
+85b14d00 VfxComplexEmitterDefinitionData
 9b9fab12 VfxComplexParticleDefinitionData
 49d51b69 VfxDistortionDefinitionData
 1a72ed36 VfxDistortionDefinitionDataInstance
@@ -1888,6 +1921,7 @@ af8038c0 VfxProjectionDefinitionDataInstance
 34d71640 VfxReflectionDefinitionDataInstance
 77cf93a8 VfxShape
 5bbcc553 VfxShapeInstance
+ee3bf0b0 VfxSimpleEmitterDefinitionData
 2adf4b75 VfxSineMaterialDriver
 d6c3e982 VfxSineMaterialDriverInstance
 1daa3fb0 VfxSoftParticleDefinitionData
