@@ -36,6 +36,7 @@ e0ef6fa3 AllItemsPage
 c5ea6ab8 AllItemsSet
 9233f657 AllTrueMaterialDriver
 59d8de64 AllTrueMaterialDriverInstance
+24513314 AlternateSpellAssets
 b0ea70cc AlwaysSpawnCondition
 7f0a1e81 AnchorBase
 df1207c9 AnchorDouble
@@ -52,6 +53,7 @@ b739cbda AnimationResourceDataInstance
 1df88cb3 AnnouncementDefinitionData
 2b7134b7 AnnouncementIcon
 0d6825c4 AnnouncementMap
+de683827 AnnouncementStyleBasic
 50ac95fe AnnouncementsViewController
 9b0f2144 Area
 3031745a AreaClamped
@@ -73,6 +75,7 @@ a3640c69 AudioTagListPropertiesInstance
 ff6fd571 AvatarVarsTableInstance
 f69490f9 BackdropElement
 eaf3699f BackdropElementParams
+1a1a3dfe BackdropElementTeamParams
 a4416515 BankUnit
 4f437722 BankUnitInstance
 d5a2d9af BannerConfiguration
@@ -84,6 +87,7 @@ d47ce07c BannerFrameData
 1808fd6b BannerOptions
 aff6e0d2 BarElement
 0a3a1690 BarElementParams
+a75d0fc9 BarElementTeamParams
 bd1b788b BaseBlendData
 743623f8 BaseBlendDataInstance
 bee45088 BaseElementData
@@ -105,6 +109,7 @@ cc2ddcc0 BlendData
 294cb1a0 BlendedLinearHeightSolver
 b01e2bdb BlendedLinearHeightSolverInstance
 5703b96f BlendingSwitchMaterialDriver
+da87dd3f Blnd2GdsMapping
 cee38e26 BoolDefaultTableGet
 451a117f BoolGet
 5fcc6c3c BoolGetInstance
@@ -192,6 +197,9 @@ df40db9e CheatMenuUIDataInstance
 36c211b4 CheatPageInstance
 4577ec44 CheatSet
 7f872c1f CheatSetInstance
+374bca72 ChildMissileParentRepulsion
+64a056ca ChildMissileRepulsion
+911cbd12 ChildMissileSiblingRepulsion
 039b5ebc CircleMovement
 a66643e7 CircleMovementInstance
 4a9d1e4f CircleMovementSpec
@@ -410,6 +418,7 @@ aa80b456 DefaultHeightSolver
 8f5daa75 DefaultSplashedPerkStyle
 af4f2882 DefaultSplashedPerkStyleInstance
 c0cf7934 DefaultStatModPerkSet
+6d8293ee DefaultVerticalFacing
 d0ddfeb9 DefaultVisibilityInstance
 0cb3c269 DefaultVisibilitySpec
 d2c1ea2e Defaultvisibility
@@ -485,6 +494,7 @@ ee4da73f EffectGlowElementData
 d77305c5 EffectGlowingRotatingIconElementDataInstance
 acf7065b EffectInstancedElementData
 091d9e48 EffectInstancedElementDataInstance
+a7bcd5d8 EffectKeyFrame
 5e46619e EffectLineElementData
 50c90769 EffectLineElementDataInstance
 f16343d4 EffectMaskElementData
@@ -493,9 +503,12 @@ a82317ef EffectRotatingIconElementData
 8bc08357 EffectValueCalculationPart
 1a4a0b64 EffectValueCalculationPartInstance
 d608195e ElementGroupButtonData
+ce08d3c3 ElementGroupButtonState
 f4562ede ElementGroupData
 2d6438c6 ElementGroupGridData
 02d5626b ElementGroupSliderData
+a20c7c54 ElementGroupSliderState
+8475c68b ElementSoundEvents
 66244ec3 EmblemData
 70b77980 EmblemDataInstance
 5db58898 EmblemPosition
@@ -512,6 +525,7 @@ a64d5210 EngineFeatureToggles
 92bb5993 EnterFOWVisibility
 c8681d90 EnterFOWVisibilityInstance
 f16fc504 EnterFOWVisibilitySpec
+544cbe0c EpicMinionFilter
 d0d6e3f1 EsportsBannerConfiguration
 2d5c96cd EsportsBannerData
 fc354530 EsportsBannerMaterialController
@@ -539,6 +553,7 @@ f2b58198 FeatureAudioDataProperties
 aa034bc3 FeatureAudioDataPropertiesInstance
 26178188 FeatureId
 d4901433 FeatureIdInstance
+365c9447 FinisherParticleData
 bdcb777c FixedDistanceIgnoringTerrain
 cddbdba7 FixedDistanceIgnoringTerrainInstance
 03b2a48c FixedDurationTriggeredBoolDriver
@@ -585,6 +600,7 @@ a104b6ba FloatTextFormattingDataInstance
 16d88f43 FloatTextIconData
 0c634a00 FloatTextIconDataInstance
 1bd8c826 FloatValueGet
+3a73bed4 FloatingHealthbarDefaults
 b9ef7871 FloatingTextDamageDisplayTypeList
 aa5cd90e FloatingTextDamageDisplayTypeListInstance
 81152d01 FloatingTextGlobalConfig
@@ -676,6 +692,7 @@ dd64c892 GameModeConstantsInstance
 e9396ed2 GameModeContentInstance
 05b2020c GameModeContentManager
 75773bb7 GameModeContentManagerInstance
+8910b554 GameModeDefaultStats
 17eff517 GameModeItemList
 ccc30b24 GameModeItemListInstance
 89ce9636 GameModeMapData
@@ -691,6 +708,7 @@ b43441ae GearData
 f693c639 GearDataInstance
 27dd6361 GearSkinUpgrade
 d152733e GearSkinUpgradeInstance
+f500f869 GeneralSettingsGroup
 8bed760b GenericMapPlaceable
 97da5178 GenericMapPlaceableInstance
 62e76455 GenericSplineMovementSpec
@@ -755,6 +773,7 @@ fb821d03 HeroStatData
 8478a093 HomeViewController
 dc0843de HomeguardSkinUpgrade
 61e623a9 HomeguardSkinUpgradeInstance
+eb80f693 HoverTips
 ffd00de2 HudAbilityPromptData
 e4f6101d HudAbilityPromptDataInstance
 a2d5062c HudBannerData
@@ -796,6 +815,7 @@ fd17d903 HudHealthBarBurstHealData
 92c02342 HudHealthBarProgressiveTickDataInstance
 ff64dacf HudInputBoxData
 ad42f74c HudInputBoxDataInstance
+a0b5cb99 HudItemShopData
 e5c63ea2 HudKillCalloutData
 7e9e8de9 HudLevelUpData
 8c682fb6 HudLevelUpDataInstance
@@ -805,6 +825,7 @@ faaecad6 HudLoadingScreenData
 a17be19c HudLoadingScreenWidgetCarousel
 72faf454 HudLoadingScreenWidgetChat
 4207eb5f HudLoadingScreenWidgetClash
+70d93148 HudLoadingScreenWidgetMapInfo
 cbea7482 HudLoadingScreenWidgetPing
 da8af650 HudLoadingScreenWidgetPlayers
 1986e72a HudLoadingScreenWidgetProgressBar
@@ -882,6 +903,7 @@ c214849f IIntGet
 e8edc65c IIntGetInstance
 f78bf15b ILineIndicatorType
 88b8380c ILoadoutFeatureDataBehavior
+7f580dbe ILoadoutInfoPanel
 ecf76724 IMaterialDef
 044f45ff IMaterialDefInstance
 7971fbee IOptionItem
@@ -933,6 +955,8 @@ d132d7b0 IVfxMaterialDriverInstance
 3bf00ea0 IconElementData
 db6e9d8d IconElementDataExtension
 f3b028db IconElementDataInstance
+d4441c55 IconElementGradientExtension
+0a7e3f16 IdMappingEntry
 6ab3b588 IdentityInstance
 77c7801e IdleParticlesVisibilityEventData
 888416c3 IfBlock
@@ -980,6 +1004,7 @@ df4753bf IsSpecifiedUnitCastRequirement
 f297367c IsSpecifiedUnitCastRequirementInstance
 3b832d22 ItemAdvice
 222cbfee ItemAdviceAttribute
+fb0c2876 ItemAdviceReason
 a84012f3 ItemCareyOverrideStartingItemSet
 41ae8051 ItemCareyOverrideStartingItemSetSet
 244c26e6 ItemData
@@ -1013,6 +1038,7 @@ a422530f ItemRecommendationOverrideSet
 9860cec6 ItemRecommendationOverrideStartingItemSet
 f4063972 ItemRecommendationPath
 f49573c3 ItemShopGameModeData
+e501834f ItemShopViewController
 bbd81d5f ItemSlotHasChargesCastRequirement
 9aaf8f1c ItemSlotHasChargesCastRequirementInstance
 aeae0877 Joint
@@ -1050,7 +1076,9 @@ f725cf62 LoadScreenTipSet
 65619bbd LoadingScreenRankedProperties
 df58e9c6 LoadingScreenSettings
 d3be7d61 LoadingScreenSettingsInstance
+a75a77b3 LoadoutArenaSkinInfoPanel
 0a42222f LoadoutCompanionInfoPanel
+3266720b LoadoutDamageSkinInfoPanel
 f46ab681 LoadoutEmoteInfoPanel
 ea452f2f LoadoutFeatureData
 16f040ac LoadoutFeatureDataInstance
@@ -1070,7 +1098,10 @@ cb05e946 LoginRootScene
 69dae321 LolSpellScript
 5c1ba470 LootItem
 634c3066 LootItemDetails
+95693f97 LootOutputBase
 28e2b381 LootStatus
+3c67f748 LootTableDialogViewController
+f3a893ed LossOfControlIconData
 89cb439a LossOfControlIcons
 53b75245 LossOfControlIndicator
 ec1a0f26 LossOfControlTemplate
@@ -1107,6 +1138,7 @@ a844df61 MapLocator
 acfa07ea MapLocatorArray
 6604a5d5 MapLocatorArrayInstance
 c1ad6f3e MapLocatorInstance
+7abcb65c MapMotionPath
 1c7aba6e MapNavGrid
 38d3b701 MapNavigationGridOverlay
 e749c876 MapNavigationGridOverlays
@@ -1114,6 +1146,9 @@ e749c876 MapNavigationGridOverlays
 48d3750b MapParticleGroups
 ea213078 MapParticleGroupsInstance
 616f2180 MapParticleInstance
+6eee108e MapPathCurveSegment
+9973a3d9 MapPathLineSegment
+9b34beab MapPathSegment
 223400cf MapPerInstanceInfo
 6f10dd4c MapPerInstanceInfoInstance
 598b82e8 MapPlaceable
@@ -1132,6 +1167,7 @@ d7d66467 MapSkinInstance
 09fb9fc7 MapSunPropertiesInstance
 d3e01da6 MapTerrainPaint
 56792541 MapTerrainPaintInstance
+df8fd03d MapThemeMusic
 2b8acbbe MapVisibilityFlagDefinition
 587ed3b7 MapVisibilityFlagDefinitions
 11c525b8 MapVisibilityFlagRange
@@ -1142,6 +1178,7 @@ f537d9e7 MasteryBadgeConfig
 4fb68ac5 MasteryBadgeData
 99516692 MasteryBadgeDataInstance
 1e23331e MasteryData
+6fb8aab5 MaterialDataCollections
 d1bd9b17 MaterialDef
 e77e04da MaterialInstanceDef
 751cef21 MaterialInstanceDynamicParam
@@ -1152,6 +1189,14 @@ fce8f360 MaterialInstanceSamplerDef
 a21cf9ea MaterialInstanceSwitchDef
 4dcdc8c1 MaterialInstanceTextureDef
 55ee72f9 MaterialOverrideCallbackDynamicMaterial
+53df6397 MaterialParameterData
+e9c1f997 MaterialParameterDataCollection
+065d4118 MaterialSamplerData
+dc333374 MaterialSamplerDataCollection
+4f258a74 MaterialSwitchData
+b77bfdb8 MaterialSwitchDataCollection
+e1fcfd23 MaterialTextureData
+684e7d3b MaterialTextureDataCollection
 d6028241 MaxAllSkillsCheat
 7a6e1f1e MaxAllSkillsCheatInstance
 0006516a MaxMaterialDriver
@@ -1224,6 +1269,7 @@ f378db76 NeutralTimerDataInstance
 b22d5652 NeutralTimerSourceIconDataInstance
 4c7bb73e NeutralTimers
 05ae7109 NeutralTimersInstance
+c3f33ef3 NewSpellCastFlowToggles
 321d6e25 NextBuffVarsTable
 b36e92f2 NextBuffVarsTableInstance
 77f1af88 NextSpellVarsTable
@@ -1244,27 +1290,34 @@ edb8a340 NotificationsViewPanelController
 99d7e373 NumberFormattingData
 25210743 ObjectTags
 4042c200 ObjectTagsInstance
+2d52e77f OmwPingRange
 c8898924 OneTrueMaterialDriver
 6ec3a7ff OneTrueMaterialDriverInstance
 f362fded OptionItemBorder
 9c74b21a OptionItemCheckbox
 c2aa47a6 OptionItemColumns
+b2705faa OptionItemDropdown
+433d3f61 OptionItemDropdownItem
 d79b9cc2 OptionItemGroup
 920d412e OptionItemHotkeys
 761a2ea3 OptionItemLabel
+4b11add4 OptionItemResolutionDropdown
 bb6f8e53 OptionItemSecondaryHotkeys1Column
 6a9faeda OptionItemSecondaryHotkeys2Column
 76ae967a OptionItemSlider
 a9abb748 OptionItemSliderFloat
+5adb5634 OptionItemSliderGraphicsQuality
 26350e63 OptionItemSliderInt
 db80ae6c OptionItemSliderVolume
 caf4d6ac OptionTemplateBorder
 aa338aeb OptionTemplateCheckbox
+7e65aa5f OptionTemplateDropdown
 67652271 OptionTemplateGroup
 29fa9119 OptionTemplateHotkeys
 bc916fb0 OptionTemplateHotkeysKey
 555dc791 OptionTemplateHotkeysLabel
 12a88974 OptionTemplateLabel
+fd590d0f OptionTemplateMuteButton
 c8dd1ef4 OptionTemplateSecondaryHotkeys1Column
 0f656f11 OptionTemplateSecondaryHotkeys2Column
 1ed10843 OptionTemplateSlider
@@ -1291,6 +1344,7 @@ c8fbfa9f ParametricPairData
 5dd693f9 ParticleEventDataPair
 975fe846 ParticleEventDataPairInstance
 dd7f9556 ParticleSystemElementData
+bc7980ca ParticleWadFileDescriptor
 4550017f PassDef
 54206ba9 PassThroughParamsTable
 ef095576 PassThroughParamsTableInstance
@@ -1318,10 +1372,26 @@ ccdefa76 PerkSlotInstance
 9c8c5d29 PerkStyleInstance
 ba68ded1 PerkSubStyleBonus
 f77a936e PerkSubStyleBonusInstance
+447e12b4 PerkSummonerSpecialistChoices
+7cd6c78b PfxAnimatedColorVariableData
+7aca7486 PfxAnimatedFloatVariableData
+2cd152ef PfxAnimatedVector2fVariableData
+fd536c7a PfxAnimatedVector3fVariableData
+01f6ac4e PfxComplexEmitterDefinitionData
+0b350782 PfxFieldAccelerationDefinitionData
+b27eabcf PfxFieldAttractionDefinitionData
+7c5fe256 PfxFieldCollectionDefinitionData
+60d5accc PfxFieldDragDefinitionData
+43a1e5a2 PfxFieldNoiseDefinitionData
+09e1a1e9 PfxFieldOrbitalDefinitionData
+bdc38071 PfxGroupDefinitionData
+8ee2930c PfxProbabilityTableData
+84e88606 PfxSimpleEmitterDefinitionData
 1c081003 PhysicsMovement
 1cdb6bc0 PhysicsMovementInstance
 5acfdf50 PlatformSpellInfo
 9160350b PlatformSpellInfoInstance
+9303df07 PlayGameRootScene
 4e5647fc PlayGameViewController
 520b38ec PlayerCardWidgetConfig
 ddcd3678 PostGameViewController
@@ -1330,11 +1400,13 @@ a66424c6 PresetAnimatorCheat
 ad106e67 ProductOfSubPartsCalculationPart
 8107e04c ProgressionGraph
 0f4765d4 ProgressionNode
+bbb1d9bc ProgressionNodeData
 3ab46af0 PrototypeAkaliWMissileRender
 3cae34ab PrototypeAkaliWMissileRenderInstance
 eb4f00c2 PurchaseDialog
 47704df2 QualitySetting
 ab48cfd8 QuestDefinition
+4aef2936 QuestTrackerViewController
 c89b6227 QuestUITunables
 5b5e3b46 QueueDisplayData
 ffe415f4 RSAndCondition
@@ -1367,8 +1439,11 @@ e42c72d0 RegaliaRankedCrestEntry
 94315a01 RegionsThatAllowContent
 454321de RegionsThatAllowContentInstance
 fcc7e08c Relic
+495b04fb RelicDropConfig
+f17a61fb RelicDropScenario
 544202f4 RelicList
 fe20aa7c RelicLoadoutData
+25539aaa RelicSubList
 42c29efb ReloadScriptsCheat
 02e32738 ReloadWWiseCheat
 a9f7c49f RemapFloatMaterialDriver
@@ -1390,6 +1465,8 @@ d45fa322 ReturnToCaster
 1518ba9a ReturnToCasterOnMovementCompleteSpec
 55063179 RigResource
 4d75b5c6 RigResourceInstance
+633a5e0d RootCrowdControlFilter
+8b0cfc93 RootScene
 ce27639e RsCase
 8557bc54 RsComparisonCondition
 66c6c9d8 RsOrCondition
@@ -1407,6 +1484,8 @@ dbf27281 ScriptCheat
 f5beca5e ScriptCheatInstance
 2aeacee8 ScriptCommentBlock
 31240b93 ScriptCommentBlockInstance
+60e00531 ScriptDataObject
+bd0c529d ScriptDataObjectList
 be608a4c ScriptGlobalProperties
 44d32cf7 ScriptGlobalPropertiesInstance
 2f787f62 ScriptPreloadCharacter
@@ -1457,6 +1536,7 @@ ab0e654f ShaderSamplerDef
 55a16681 ShaderStaticSwitchInstance
 31d1e223 ShaderTexture
 5c9ed5e0 ShaderTextureInstance
+99443cf6 ShieldParams
 947b858f ShowObjectsCheat
 f4dc8ec5 ShowServerMissilesCheat
 312aaf93 SineMaterialDriver
@@ -1489,6 +1569,7 @@ f9400f63 SkinSummonerEmoteLoadoutInstance
 a87e06c7 SkinUpgradeDataInstance
 ce3b9427 SkinnedMeshDataMaterialController
 967673a3 SkipTerrain
+324176a4 SlowCrowdControlFilter
 f9d969a5 SocialPanelViewController
 9c566034 SoundEventData
 22fdb34f SoundEventDataInstance
@@ -1499,6 +1580,7 @@ c7d4634c SpawnBotCheat
 ca0563ed SpawnBotClientCheat
 5c9e06d9 SpawnMinionCheat
 a088b090 SpawnMinionClientCheat
+0f1a0871 SpawnOnCreate
 5a999f4b SpawnSkinUpgrade
 d7b148b8 SpawnSkinUpgradeInstance
 5fd4b293 SpawningUIDefinition
@@ -1533,6 +1615,7 @@ a3bd0d60 SplineInfo
 5f5c70a4 StatByNamedDataValueCalculationPart
 5b5bff7f StatByNamedDataValueCalculationPartInstance
 cd156c7f StatBySubPartCalculationPart
+53a23c14 StatFilterDefinition
 b7fafb8f StatFormulaData
 4a864ad7 StatFormulaDataList
 bc2357b4 StatStoneCategory
@@ -1558,6 +1641,7 @@ e8e2a06c StaticMaterialShaderParamDefInstance
 060a4413 StaticMaterialTechniqueDef
 4919d810 StaticMaterialTechniqueDefInstance
 f4d0f73f StopAnimationEventData
+f29721ff StoreCategoryButtonDefinition
 44544233 StoreViewController
 101afdc9 StringDefaultTableGet
 dbc5c2a4 StringGet
@@ -1574,6 +1658,7 @@ fadc282b SubmeshVisibilityEventDataInstance
 8653e2d0 SummonerBadge
 9168ddb8 SummonerBadgeData
 a2b6fb58 SummonerBadgeList
+f861f822 SummonerBadgeManagerSettings
 743d2a1b SummonerEmote
 1e44db08 SummonerEmoteInstance
 26889e9f SummonerEmoteManagerSettings
@@ -1585,6 +1670,7 @@ f3476533 SummonerSpellPerkReplacement
 1afdcd30 SummonerSpellPerkReplacementInstance
 b3ac19bb SummonerSpellPerkReplacementList
 ac6850a8 SummonerSpellPerkReplacementListInstance
+28903b1f SummonerSpellUpgradeDescription
 a033f9cd SurrenderData
 2c26c305 SurrenderTypeData
 707977c0 SwapChampionCheat
@@ -1641,6 +1727,7 @@ f737def9 TFTStageData
 956ad097 TFTStreakData
 e007e6f5 TFTTraitContributionData
 c130c1e5 TFTTraitSetData
+7504f4c1 TFTUnitUpgradeData
 5e6f0af9 TableGet
 8799ac14 TableValue
 000760c1 TableValueExistsCondition
@@ -1678,6 +1765,7 @@ c0b1025d TargeterDefinitionSkipTerrainInstance
 983397b5 TargeterDefinitionWallInstance
 7fcf3f30 TargetingTypeData
 7c972275 TeamBuffData
+86dca50c TeamFightUiTunables
 f934934d TeamScoreMeterUITunables
 73dca0f0 TechniqueDef
 ac9d3cf9 TempTable
@@ -1691,8 +1779,11 @@ ac9d3cf9 TempTable
 37b92611 TextElementDataInstance
 eef72ed0 TextureAndColorData
 e071f48b TextureAndColorDataInstance
+cb928b94 TftChangeDamageSkinCheat
 d6ff2a28 TftDamageSkinDescriptor
+f2a4458b TftDropRates
 62ff42f4 TftEffectAmount
+13f6b804 TftGameStartViewController
 65c2c560 TftItemComposition
 d186c31a TftItemData
 80808160 TftMapCharacterData
@@ -1703,14 +1794,17 @@ ae83d1c0 TftMapCharacterList
 a2d042b0 TftMapSkin
 e52b8f5d TftShopData
 3bea5b98 TftSurrenderCheat
+ec3ec171 TftTeamPlannerViewController
 6f870247 TftTraitData
 5bbce8a7 TftTraitList
+aeea2f8a TftUnitShopViewController
 3d7f07ef TimeBlendData
 ee5fb96c TimeBlendDataInstance
 f36e13f7 TimeMaterialDriver
 49559104 TimeMaterialDriverInstance
 1265278a TimeMultiplierCheat
 1466c675 TimeMultiplierCheatInstance
+56eb979d ToggleAfkDetectionCheat
 77e4ed8d ToggleBarracksCheat
 6736170a ToggleBarracksCheatInstance
 843f7edb ToggleBuffCheat
@@ -1724,6 +1818,7 @@ b5b0ef71 ToggleRegenCheat
 0076300e ToggleRegenCheatInstance
 a6b5ba1b ToggleTeamCheat
 ed3f6b08 ToggleTeamCheatInstance
+d01d25c0 ToolAiPresence
 19ac04e1 ToolAlternateForm
 b11164b7 ToolEducationData
 39bf50c4 ToolEducationDataInstance
@@ -1776,6 +1871,7 @@ ae63c237 TrueDamageGivenFilter
 6c68755e UIButtonDefinition
 a68fa594 UIButtonState
 ee41cf31 UVScaleBiasFromAnimationDynamicMaterialDriver
+eaf3a43d UiComboBoxDefinition
 4bebf6c1 UnitStatusData
 f441a39e UnitStatusDataInstance
 05ef7ba4 UnitStatusIconData
@@ -1933,7 +2029,9 @@ a8eb52f4 VfxSpawnConditions
 a525024b VfxTrailDefinitionDataInstance
 796bf215 VideoDefinition
 ed511190 ViewController
+8ae2a6b7 ViewPaneDefinition
 36ad71fa VoiceChatViewController
+a2b8c408 VoiceChatViewSelfSlot
 a36e0358 WadFileDescriptor
 aac92b83 WadFileDescriptorInstance
 8fa548d5 WallFollowMovement
