@@ -134,7 +134,7 @@ class TftTransformer:
     def parse_sets(self, map22, character_names):
         """Parse character sets to a list of `(name, number, characters)`"""
         character_lists = {x.path: x for x in map22.entries if x.type == "MapCharacterList"}
-        set_collection = [x for x in map22.entries if x.type == 0x438850FF]
+        set_collection = [x for x in map22.entries if x.type == "TFTSetData"]
 
         if not set_collection:
             # backward compatibility
@@ -148,7 +148,7 @@ class TftTransformer:
             set_number = item.getv("number")
             set_mutator = item.getv("Mutator")
             char_list = item.getv("characterLists")[0]
-            set_info = item[0xD2538E5A].value
+            set_info = item["ScriptData"].value
             set_name = set_info["SetName"].getv("mValue")
 
             if set_number is None or set_name is None:
@@ -177,10 +177,10 @@ class TftTransformer:
 
             items.append({
                 "id": item.getv("mId"),
-                "name": item.getv(0xC3143D66),
-                "desc": item.getv(0x765F18DA),
+                "name": item.getv("mDisplayNameTra"),
+                "desc": item.getv("mDescriptionNameTra"),
                 "icon": item.getv("mIconPath"),
-                "from": [x.h for x in item.getv(0x8B83BA8A, [])],
+                "from": [x.h for x in item.getv("mComposition", [])],
                 "effects": effects,
             })
             item_ids[item.path.h] = item.getv("mId")
@@ -216,7 +216,7 @@ class TftTransformer:
             champ_traits = []  # trait paths, as hashes
             for trait in record.getv("mLinkedTraits", []):
                 if isinstance(trait, BinEmbedded):
-                    champ_traits.extend(field.value for field in trait.fields if field.name.h == 0x053A1F33)
+                    champ_traits.extend(field.value for field in trait.fields if field.name.h == "TraitData")
                 else:
                     champ_traits.append(trait.h)
 
@@ -228,7 +228,7 @@ class TftTransformer:
 
             champs[name] = ({
                 "apiName": record.getv("mCharacterName"),
-                "name": champ.getv(0xC3143D66),
+                "name": champ.getv("mDisplayNameTra"),
                 "cost": rarity + int(rarity / 6),
                 "icon": champ.getv("mIconPath"),
                 "traits": [traits[h]["name"] for h in champ_traits if h in traits],
@@ -245,8 +245,8 @@ class TftTransformer:
                     "range": record.getv("attackRange", 0) // 180,
                 },
                 "ability": {
-                    "name": champ.getv(0x87A69A5E),
-                    "desc": champ.getv(0xBC4F18B3),
+                    "name": champ.getv("mAbilityNameTra"),
+                    "desc": champ.getv("mDescriptionTra"),
                     "icon": champ.getv("mPortraitIconPath"),
                     "variables": ability_variables,
                 },
@@ -279,8 +279,8 @@ class TftTransformer:
 
             traits[trait.path] = {
                 "apiName": trait.getv("mName"),
-                "name": trait.getv(0xC3143D66),
-                "desc": trait.getv(0x765F18DA),
+                "name": trait.getv("mDisplayNameTra"),
+                "desc": trait.getv("mDescriptionNameTra"),
                 "icon": trait.getv("mIconPath"),
                 "effects": effects,
             }
