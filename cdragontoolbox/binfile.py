@@ -226,6 +226,13 @@ class BinEmbedded(BinObjectWithFieldsAndType):
         sfields = _repr_indent_list(self.fields)
         return f"<EMBEDDED {self.type!r} {sfields}>"
 
+class BinNested(BinObjectWithFields):
+    """Nested binary value"""
+
+    def __repr__(self):
+        sfields = _repr_indent_list(self.fields)
+        return f"<{sfields}>"
+
 class BinField:
     """Base class for binary fields
 
@@ -312,20 +319,6 @@ class BinMapField(BinField):
     def to_serializable(self):
         return (self.name.to_serializable(), {_to_serializable(k): _to_serializable(v) for k,v in self.value.items()})
 
-class BinNested(BinObjectWithFields):
-    """Nested binary value"""
-
-    def __init__(self, fields):
-        super().__init__(fields)
-
-    def __repr__(self):
-        sfields = _repr_indent_list(self.fields)
-        return f"<{sfields}>"
-
-    def to_serializable(self):
-        result = dict(f.to_serializable() for f in self.fields)
-        return result
-
 class BinNestedField(BinField):
     def __init__(self, hname, value):
         super().__init__(hname)
@@ -338,6 +331,7 @@ class BinNestedField(BinField):
     def to_serializable(self):
         return (self.name.to_serializable(), self.value.to_serializable())
 
+
 class BinPtchEntry(BinObjectWithFields):
     def __init__(self, hpath, fields):
         self.path = BinEntryPath(hpath)
@@ -346,10 +340,6 @@ class BinPtchEntry(BinObjectWithFields):
     def __repr__(self):
         sfields = _repr_indent_list(self.fields)
         return f"<BinPtchEntry {self.path!r} {sfields}>"
-
-    def to_serializable(self):
-        result = dict(f.to_serializable() for f in self.fields)
-        return result
 
 class BinEntry(BinObjectWithFieldsAndType):
     def __init__(self, hpath, htype, fields):
@@ -382,6 +372,7 @@ class BinFile:
 
     def to_serializable(self):
         return (({entry.path.to_serializable(): entry.to_serializable() for entry in self.entries},) + (({entry.path.to_serializable(): entry.to_serializable() for entry in self.patch_entries},) if self.patch_entries else ()))
+
 
 class BinReader:
     def __init__(self, f, btype_version=None):
