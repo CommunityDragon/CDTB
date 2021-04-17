@@ -371,7 +371,10 @@ class BinFile:
             self.patch_entries = None
 
     def to_serializable(self):
-        return (({entry.path.to_serializable(): entry.to_serializable() for entry in self.entries},) + (({entry.path.to_serializable(): entry.to_serializable() for entry in self.patch_entries},) if self.patch_entries else ()))
+        serialized = {entry.path.to_serializable(): entry.to_serializable() for entry in self.entries}
+        if self.patch_entries is not None:
+            serialized["__patches"] = {entry.path.to_serializable(): entry.to_serializable() for entry in self.patch_entries}
+        return serialized
 
 
 class BinReader:
