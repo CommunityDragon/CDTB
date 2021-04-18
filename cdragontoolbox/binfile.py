@@ -482,7 +482,7 @@ class BinReader:
                 v = 0x80
             elif v >= 19:
                 v = 0x80 + v - 18
-        elif self.btype_version < 1008:
+        if self.btype_version < 1008:
             if v >= 0x81:
                 v += 1
         return BinType(v)
