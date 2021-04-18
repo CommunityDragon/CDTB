@@ -332,14 +332,17 @@ class BinNestedField(BinField):
         return (self.name.to_serializable(), self.value.to_serializable())
 
 
-class BinPtchEntry(BinObjectWithFields):
-    def __init__(self, hpath, fields):
+class BinPtchEntry:
+    def __init__(self, hpath, value):
         self.path = BinEntryPath(hpath)
-        super().__init__(fields)
+        self.value = value
 
     def __repr__(self):
-        sfields = _repr_indent_list(self.fields)
+        sfields = _repr_indent_list(self.value.fields)
         return f"<BinPtchEntry {self.path!r} {sfields}>"
+
+    def to_serializable(self):
+        return self.value.to_serializable()
 
 class BinEntry(BinObjectWithFieldsAndType):
     def __init__(self, hpath, htype, fields):
@@ -426,12 +429,9 @@ class BinReader:
             parts = objectpath.split('.')
             binvalue = self.read_field_basic(compute_binhash(parts[-1]), btype)
             if hpath not in patch_entries:
-                if len(parts) > 1:
-                    patch_entries[hpath] = BinPtchEntry(hpath, [BinNestedField(compute_binhash(parts[0]), BinNested([]))])
-                else:
-                    patch_entries[hpath] = BinPtchEntry(hpath, [])
+                patch_entries[hpath] = BinPtchEntry(hpath, BinNested([]))
 
-            current_nesting = patch_entries[hpath]
+            current_nesting = patch_entries[hpath].value
             for i in range(0, len(parts)-1):
                 if parts[i] not in current_nesting:
                     current_nesting[parts[i]] = BinNestedField(compute_binhash(parts[i]), BinNested([]))
