@@ -432,10 +432,10 @@ class BinReader:
                 patch_entries[hpath] = BinPtchEntry(hpath, BinNested([]))
 
             current_nesting = patch_entries[hpath].value
-            for i in range(0, len(parts)-1):
-                if parts[i] not in current_nesting:
-                    current_nesting[parts[i]] = BinNestedField(compute_binhash(parts[i]), BinNested([]))
-                current_nesting = current_nesting.getv(parts[i])
+            for part in parts[:-1]:
+                if part not in current_nesting:
+                    current_nesting[part] = BinNestedField(compute_binhash(part), BinNested([]))
+                current_nesting = current_nesting.getv(part)
 
             current_nesting[parts[-1]] = binvalue
 
