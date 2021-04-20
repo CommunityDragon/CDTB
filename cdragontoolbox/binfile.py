@@ -127,8 +127,7 @@ def key_to_hash(key):
 class BinObjectWithFields:
     """Base class for bin object with fields"""
 
-    def __init__(self, htype, fields):
-        self.type = BinTypeName(htype)
+    def __init__(self, fields):
         self.fields = fields
 
     def __getitem__(self, key):
@@ -137,6 +136,15 @@ class BinObjectWithFields:
             if v.name.h == h:
                 return v
         raise KeyError(key)
+
+    def __setitem__(self, key, value):
+        h = key_to_hash(key)
+        for n, v in enumerate(self.fields):
+            if v.name.h == h:
+                self.fields[n] = value
+                break
+        else:
+            self.fields.append(value)
 
     def __contains__(self, key):
         h = key_to_hash(key)
@@ -158,9 +166,19 @@ class BinObjectWithFields:
             return default
 
     def to_serializable(self):
-        result = dict(f.to_serializable() for f in self.fields)
-        result["__type"] = self.type.to_serializable()
-        return result
+        return dict(f.to_serializable() for f in self.fields)
+
+class BinObjectWithFieldsAndType(BinObjectWithFields):
+    """Base class for bin objects with fields and type"""
+
+    def __init__(self, htype, fields):
+        super().__init__(fields)
+        self.type = BinTypeName(htype)
+
+    def to_serializable(self):
+        serialized = super().to_serializable()
+        serialized["__type"] = self.type.to_serializable()
+        return serialized
 
 class BinType(IntEnum):
     # See parse_bintype() for remapping depending on version
@@ -194,19 +212,26 @@ class BinType(IntEnum):
     FLAG = 0x87
 
 
-class BinStruct(BinObjectWithFields):
+class BinStruct(BinObjectWithFieldsAndType):
     """Structured binary value"""
 
     def __repr__(self):
         sfields = _repr_indent_list(self.fields)
         return f"<STRUCT {self.type!r} {sfields}>"
 
-class BinEmbedded(BinObjectWithFields):
+class BinEmbedded(BinObjectWithFieldsAndType):
     """Embedded binary value"""
 
     def __repr__(self):
         sfields = _repr_indent_list(self.fields)
         return f"<EMBEDDED {self.type!r} {sfields}>"
+
+class BinNested(BinObjectWithFields):
+    """Nested binary value"""
+
+    def __repr__(self):
+        sfields = _repr_indent_list(self.fields)
+        return f"<{sfields}>"
 
 class BinField:
     """Base class for binary fields
@@ -294,8 +319,32 @@ class BinMapField(BinField):
     def to_serializable(self):
         return (self.name.to_serializable(), {_to_serializable(k): _to_serializable(v) for k,v in self.value.items()})
 
+class BinNestedField(BinField):
+    def __init__(self, hname, value):
+        super().__init__(hname)
+        self.value = value
 
-class BinEntry(BinObjectWithFields):
+    def __repr__(self):
+        sfields = _repr_indent_list(self.value.fields)
+        return f"<{self.name!r} {sfields}>"
+
+    def to_serializable(self):
+        return (self.name.to_serializable(), self.value.to_serializable())
+
+
+class BinPtchEntry:
+    def __init__(self, hpath, value):
+        self.path = BinEntryPath(hpath)
+        self.value = value
+
+    def __repr__(self):
+        sfields = _repr_indent_list(self.value.fields)
+        return f"<BinPtchEntry {self.path!r} {sfields}>"
+
+    def to_serializable(self):
+        return self.value.to_serializable()
+
+class BinEntry(BinObjectWithFieldsAndType):
     def __init__(self, hpath, htype, fields):
         self.path = BinEntryPath(hpath)
         super().__init__(htype, fields)
@@ -319,9 +368,16 @@ class BinFile:
         reader = BinReader(f, btype_version=btype_version)
         self.version, self.linked_files, entry_types = reader.read_binfile_header()
         self.entries = [reader.read_binfile_entry(htype) for htype in entry_types]
+        if self.is_patch and self.version >= 3:
+            self.patch_entries = reader.read_patch_section()
+        else:
+            self.patch_entries = None
 
     def to_serializable(self):
-        return {entry.path.to_serializable(): entry.to_serializable() for entry in self.entries}
+        serialized = {entry.path.to_serializable(): entry.to_serializable() for entry in self.entries}
+        if self.patch_entries is not None:
+            serialized["__patches"] = {entry.path.to_serializable(): entry.to_serializable() for entry in self.patch_entries}
+        return serialized
 
 
 class BinReader:
@@ -360,6 +416,30 @@ class BinReader:
         entry = BinEntry(hpath, htype, values)
         assert self.f.tell() - pos == length
         return entry
+
+    def read_patch_section(self):
+        """Reads the entire PTCH section"""
+
+        count = self.read_u32()
+        patch_entries = {}
+        for _ in range(count):
+            hpath = self.read_fmt('<2L')[0]
+            btype = self.parse_bintype(self.read_u8())
+            objectpath = self.read_string()
+            parts = objectpath.split('.')
+            binvalue = self.read_field_basic(compute_binhash(parts[-1]), btype)
+            if hpath not in patch_entries:
+                patch_entries[hpath] = BinPtchEntry(hpath, BinNested([]))
+
+            current_nesting = patch_entries[hpath].value
+            for part in parts[:-1]:
+                if part not in current_nesting:
+                    current_nesting[part] = BinNestedField(compute_binhash(part), BinNested([]))
+                current_nesting = current_nesting.getv(part)
+
+            current_nesting[parts[-1]] = binvalue
+
+        return list(patch_entries.values())
 
 
     def read_bvalue(self, vtype):
