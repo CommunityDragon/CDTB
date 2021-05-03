@@ -180,6 +180,7 @@ class TftTransformer:
                 "name": item.getv(0xC3143D66),
                 "desc": item.getv(0x765F18DA),
                 "icon": item.getv("mIconPath"),
+                "unique": item.getv(0x9596A387, False),
                 "from": [x.h for x in item.getv(0x8B83BA8A, [])],
                 "effects": effects,
             })
@@ -300,4 +301,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
