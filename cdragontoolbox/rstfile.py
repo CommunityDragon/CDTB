@@ -2,9 +2,9 @@ from xxhash import xxh64_intdigest
 from .tools import BinaryParser
 
 
-def key_to_hash(key):
+def key_to_hash(key, bits=40):
     if isinstance(key, str):
-        return xxh64_intdigest(key.lower()) & 0xffffffffff
+        return xxh64_intdigest(key.lower()) & ((1 << bits) - 1)
     else:
         return key
 
@@ -13,6 +13,7 @@ class RstFile:
     def __init__(self, path_or_f=None):
         self.font_config = None
         self.entries = {}
+        self.hash_bits = 40
 
         if path_or_f is not None:
             if isinstance(path_or_f, str):
@@ -22,14 +23,14 @@ class RstFile:
                 self.parse_rst(path_or_f)
 
     def __getitem__(self, key):
-        h = key_to_hash(key)
+        h = key_to_hash(key, self.hash_bits)
         try:
             return self.entries[h]
         except KeyError:
             raise KeyError(key)
 
     def __contains__(self, key):
-        h = key_to_hash(key)
+        h = key_to_hash(key, self.hash_bits)
         return h in self.entries
 
     def get(self, key, default=None):
@@ -53,14 +54,17 @@ class RstFile:
                 self.font_config = None
         elif version == 3:
             pass
+        elif version == 4:
+            self.hash_bits = 39
         else:
             raise ValueError(f"unsupported RST version: {version}")
 
+        hash_mask = (1 << self.hash_bits) - 1
         count, = parser.unpack("<L")
         entries = []
         for _ in range(count):
             v, = parser.unpack("<Q")
-            entries.append((v >> 40, v & 0xffffffffff))
+            entries.append((v >> self.hash_bits, v & hash_mask))
 
         b = parser.raw(1)  # 0 or 1
 
