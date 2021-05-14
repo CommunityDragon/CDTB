@@ -750,7 +750,7 @@ class GameHashGuesser(HashGuesser):
                 data = wadfile.read_data(f)
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
-                    for m in re.finditer(br'(?:ASSETS|DATA|Characters|Shaders|Maps/MapGeometry)/', data):
+                    for m in re.finditer(br'(?:ASSETS|DATA|Characters|Shaders|Maps/MapGeometry|Gameplay)/', data):
                         i = m.start()
                         n = data[i-2] + (data[i-1] << 8)
                         try:
