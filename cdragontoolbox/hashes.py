@@ -786,8 +786,6 @@ class GameHashGuesser(HashGuesser):
                         elif wadfile.path:
                             fmt = os.path.dirname(wadfile.path) + '/%s.preload'
                             self.check(fmt % path)
-                        else: # should this really be done?
-                            self.check_basenames(f"{path}.preload")
 
                 elif wadfile.ext in ('hls', 'ps_2_0', 'ps_3_0', 'vs_2_0', 'vs_3_0'):
                     # shader: search for includes
