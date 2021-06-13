@@ -310,8 +310,9 @@ def command_bin_dump(parser, args):
     else:
         for entry in binfile.entries:
             print(entry)
-        for entry in binfile.patch_entries:
-            print(entry)
+        if binfile.patch_entries is not None:
+            for entry in binfile.patch_entries:
+                print(entry)
 
 
 def create_parser():
