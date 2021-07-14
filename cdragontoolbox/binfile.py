@@ -104,7 +104,7 @@ class BinPathValue(BinHashBase):
     hashfile = hashfile_binpaths
 
     def hex(self):
-        return f"{self.h:16x}"
+        return f"{self.h:016x}"
 
     @classmethod
     def compute_hash(cls, s):
