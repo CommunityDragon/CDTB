@@ -671,11 +671,15 @@ class RstConverter(FileConverter):
         return self.regex.search(path) is not None
 
     def converted_paths(self, path):
+        yield path
         yield path + '.json'
 
     def convert(self, fin, output, path):
-        output_path = os.path.join(output, path + '.json')
-        rstfile = RstFile(fin)
+        output_path = os.path.join(output, path)
+        with write_file_or_remove(output_path) as fout:
+            shutil.copyfileobj(fin, fout)
+
+        rstfile = RstFile(output_path)
         hashes = {key_to_rsthash(hash, rstfile.hash_bits): value for hash, value in self.hashes.items()}
         rst_json = {"entries": {}, "version": rstfile.version}
         for key, value in rstfile.entries.items():
@@ -685,5 +689,5 @@ class RstConverter(FileConverter):
                 key = f"{{{key:010x}}}"
             rst_json["entries"][key] = value
 
-        with write_file_or_remove(output_path, False) as fout:
+        with write_file_or_remove(output_path + '.json', False) as fout:
             fout.write(json.dumps(rst_json, ensure_ascii=False))
