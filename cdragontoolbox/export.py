@@ -11,12 +11,11 @@ from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
 from .sknfile import SknFile
-from .rstfile import RstFile
+from .rstfile import hashfile_rst, RstFile, key_to_hash as key_to_rsthash
 from .tools import (
     write_file_or_remove,
     write_dir_or_remove,
 )
-from .hashes import HashFile
 
 logger = logging.getLogger(__name__)
 
@@ -666,7 +665,7 @@ class SknConverter(FileConverter):
 class RstConverter(FileConverter):
     def __init__(self, regex):
         self.regex = regex
-        self.hashes = HashFile(os.path.join(os.path.dirname(__file__), "hashes.rst.txt"), hash_size=16).load()
+        self.hashes = hashfile_rst.load()
 
     def is_handled(self, path):
         return self.regex.search(path) is not None
@@ -677,8 +676,7 @@ class RstConverter(FileConverter):
     def convert(self, fin, output, path):
         output_path = os.path.join(output, path + '.json')
         rstfile = RstFile(fin)
-        bit_mask = (1 << rstfile.hash_bits) - 1
-        hashes = {hash & bit_mask: value for hash, value in self.hashes.items()}
+        hashes = {key_to_rsthash(hash, rstfile.hash_bits): value for hash, value in self.hashes.items()}
         rst_json = {}
         if rstfile.font_config:
             rst_json["__fontconfig"] = rstfile.font_config
@@ -688,5 +686,5 @@ class RstConverter(FileConverter):
             rst_json[key] = value
         rst_json["__version"] = rstfile.version
 
-        with write_file_or_remove(output_path) as fout:
-            fout.write(json.dumps(rst_json, ensure_ascii=False).encode('utf-8'))
+        with write_file_or_remove(output_path, True) as fout:
+            fout.write(json.dumps(rst_json, ensure_ascii=False))

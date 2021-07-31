@@ -1,13 +1,16 @@
+import os
 from xxhash import xxh64_intdigest
 from .tools import BinaryParser
+from .hashes import HashFile
 
 
 def key_to_hash(key, bits=40):
     if isinstance(key, str):
-        return xxh64_intdigest(key.lower()) & ((1 << bits) - 1)
-    else:
-        return key
+        key = xxh64_intdigest(key.lower())
+    return key & ((1 << bits) - 1)
 
+
+hashfile_rst = HashFile(os.path.join(os.path.dirname(__file__), "hashes.rst.txt"), hash_size=16)
 
 class RstFile:
     def __init__(self, path_or_f=None):
