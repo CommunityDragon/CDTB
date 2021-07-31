@@ -75,5 +75,5 @@ class RstFile:
 
         data = parser.f.read()
         entries = [(h, data[i:data.find(b"\0", i)]) for i, h in entries]
-        # decode unless data starts with 0xFF (illegal UTF-8 sequence)
-        self.entries = {h: v if v.startswith(b"\xff") else v.decode("utf-8") for h, v in entries}
+        # decode with utf-8 unless data starts with 0xFF (illegal UTF-8 sequence)
+        self.entries = {h: v.decode("utf-16") if v.startswith(b"\xff") else v.decode("utf-8") for h, v in entries}

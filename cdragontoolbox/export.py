@@ -678,8 +678,6 @@ class RstConverter(FileConverter):
         rstfile = RstFile(fin)
         hashes = {key_to_rsthash(hash, rstfile.hash_bits): value for hash, value in self.hashes.items()}
         rst_json = {}
-        if rstfile.font_config:
-            rst_json["__fontconfig"] = rstfile.font_config
         for key, value in rstfile.entries.items():
             if key in hashes:
                 key = hashes[key]
