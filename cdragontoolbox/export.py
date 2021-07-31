@@ -677,12 +677,12 @@ class RstConverter(FileConverter):
         output_path = os.path.join(output, path + '.json')
         rstfile = RstFile(fin)
         hashes = {key_to_rsthash(hash, rstfile.hash_bits): value for hash, value in self.hashes.items()}
-        rst_json = {}
+        rst_json = {"entries": {}}
         for key, value in rstfile.entries.items():
             if key in hashes:
                 key = hashes[key]
-            rst_json[key] = value
-        rst_json["__version"] = rstfile.version
+            rst_json["entries"][key] = value
+        rst_json["version"] = rstfile.version
 
         with write_file_or_remove(output_path, False) as fout:
             fout.write(json.dumps(rst_json, ensure_ascii=False))
