@@ -14,6 +14,7 @@ class RstFile:
         self.font_config = None
         self.entries = {}
         self.hash_bits = 40
+        self.version = None
 
         if path_or_f is not None:
             if isinstance(path_or_f, str):
@@ -58,6 +59,7 @@ class RstFile:
             self.hash_bits = 39
         else:
             raise ValueError(f"unsupported RST version: {version}")
+        self.version = version
 
         hash_mask = (1 << self.hash_bits) - 1
         count, = parser.unpack("<L")

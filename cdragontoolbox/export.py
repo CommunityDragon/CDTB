@@ -11,10 +11,12 @@ from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
 from .sknfile import SknFile
+from .rstfile import RstFile
 from .tools import (
     write_file_or_remove,
     write_dir_or_remove,
 )
+from .hashes import HashFile
 
 logger = logging.getLogger(__name__)
 
@@ -422,6 +424,7 @@ class CdragonRawPatchExporter:
             ImageConverter(('.dds', '.tga')),
             BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
             SknConverter(),
+            RstConverter(re.compile(r'game/data/menu/.*\.(txt|stringtable)$'))
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -659,3 +662,31 @@ class SknConverter(FileConverter):
                 name = os.path.join(obj_output_path, entry["name"] + ".obj")
                 with open(name, "w") as f:
                     f.write(sknfile.to_obj(entry))
+
+class RstConverter(FileConverter):
+    def __init__(self, regex):
+        self.regex = regex
+        self.hashes = HashFile(os.path.join(os.path.dirname(__file__), "hashes.rst.txt"), hash_size=16).load()
+
+    def is_handled(self, path):
+        return self.regex.search(path) is not None
+
+    def converted_paths(self, path):
+        yield path + '.json'
+
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, path + '.json')
+        rstfile = RstFile(fin)
+        bit_mask = (1 << rstfile.hash_bits) - 1
+        hashes = {hash & bit_mask: value for hash, value in self.hashes.items()}
+        rst_json = {}
+        if rstfile.font_config:
+            rst_json["__fontconfig"] = rstfile.font_config
+        for key, value in rstfile.entries.items():
+            if key in hashes:
+                key = hashes[key]
+            rst_json[key] = value
+        rst_json["__version"] = rstfile.version
+
+        with write_file_or_remove(output_path) as fout:
+            fout.write(json.dumps(rst_json, ensure_ascii=False).encode('utf-8'))
