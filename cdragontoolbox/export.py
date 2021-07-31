@@ -11,6 +11,7 @@ from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
 from .sknfile import SknFile
+from .rstfile import hashfile_rst, RstFile, key_to_hash as key_to_rsthash
 from .tools import (
     write_file_or_remove,
     write_dir_or_remove,
@@ -422,6 +423,7 @@ class CdragonRawPatchExporter:
             ImageConverter(('.dds', '.tga')),
             BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
             SknConverter(),
+            RstConverter(re.compile(r'game/data/menu/.*\.(txt|stringtable)$'))
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -659,3 +661,29 @@ class SknConverter(FileConverter):
                 name = os.path.join(obj_output_path, entry["name"] + ".obj")
                 with open(name, "w") as f:
                     f.write(sknfile.to_obj(entry))
+
+class RstConverter(FileConverter):
+    def __init__(self, regex):
+        self.regex = regex
+        self.hashes = hashfile_rst.load()
+
+    def is_handled(self, path):
+        return self.regex.search(path) is not None
+
+    def converted_paths(self, path):
+        yield path + '.json'
+
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, path + '.json')
+        rstfile = RstFile(fin)
+        hashes = {key_to_rsthash(hash, rstfile.hash_bits): value for hash, value in self.hashes.items()}
+        rst_json = {"entries": {}, "version": rstfile.version}
+        for key, value in rstfile.entries.items():
+            if key in hashes:
+                key = hashes[key]
+            else:
+                key = f"{{{key:010x}}}"
+            rst_json["entries"][key] = value
+
+        with write_file_or_remove(output_path, False) as fout:
+            fout.write(json.dumps(rst_json, ensure_ascii=False))
