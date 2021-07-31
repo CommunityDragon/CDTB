@@ -686,5 +686,5 @@ class RstConverter(FileConverter):
             rst_json[key] = value
         rst_json["__version"] = rstfile.version
 
-        with write_file_or_remove(output_path, True) as fout:
+        with write_file_or_remove(output_path, False) as fout:
             fout.write(json.dumps(rst_json, ensure_ascii=False))
