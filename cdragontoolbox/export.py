@@ -321,8 +321,7 @@ class Exporter:
                 except FileConversionError as e:
                     logger.warning(f"cannot convert file '{wadfile.path}': {e}")
                 except OSError as e:
-                    # Windows does not support path components longer than 255
-                    # ignore such files
+                    # Path components longer than 255 are not supported, ignore such files
                     if e.errno in (errno.EINVAL, errno.ENAMETOOLONG):
                         logger.warning(f"ignore file with invalid path: {wad.path}")
                     else:
@@ -490,7 +489,14 @@ class CdragonRawPatchExporter:
             os.makedirs(dst_dir, exist_ok=True)
             src = os.path.relpath(os.path.realpath(os.path.join(src_output, link)), os.path.realpath(dst_dir))
             logger.info(f"create symlink {dst}")
-            os.symlink(src, dst)
+            try:
+                os.symlink(src, dst)
+            except OSError as e:
+                # Path components longer than 255 are not supported, ignore such files
+                if e.errno in (errno.EINVAL, errno.ENAMETOOLONG):
+                    logger.warning(f"ignore symlink with invalid path: {dst}")
+                else:
+                    raise
 
     @classmethod
     def from_directory(cls, storage, output: str, first: PatchVersion=None, symlinks=None):

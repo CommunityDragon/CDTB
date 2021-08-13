@@ -107,8 +107,7 @@ class WadFileHeader:
             with write_file_or_remove(output_path) as fout:
                 fout.write(data)
         except OSError as e:
-            # Windows does not support path components longer than 255
-            # ignore such files
+            # Path components longer than 255 are not supported, ignore such files
             # TODO: Find a better way of handling these files
             if e.errno in (errno.EINVAL, errno.ENAMETOOLONG):
                 logger.warning(f"ignore file with invalid path: {self.path}")
