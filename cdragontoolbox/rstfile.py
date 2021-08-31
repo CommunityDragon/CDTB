@@ -58,7 +58,7 @@ class RstFile:
                 self.font_config = None
         elif version == 3:
             pass
-        elif version == 4:
+        elif version in (4, 5):
             self.hash_bits = 39
         else:
             raise ValueError(f"unsupported RST version: {version}")
@@ -71,7 +71,8 @@ class RstFile:
             v, = parser.unpack("<Q")
             entries.append((v >> self.hash_bits, v & hash_mask))
 
-        b = parser.raw(1)  # 0 or 1
+        if version < 5:
+            b = parser.raw(1)  # 0 or 1
 
         data = parser.f.read()
         entries = [(h, data[i:data.find(b"\0", i)]) for i, h in entries]
