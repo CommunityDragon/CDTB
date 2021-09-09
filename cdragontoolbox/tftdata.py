@@ -265,16 +265,22 @@ class TftTransformer:
                 continue
 
             effects = []
-            for trait_set in trait.getv("mTraitSets"):
+            if "mTraitSets" in trait:
+                trait_sets = trait.getv("mTraitSets")
+                field_prefix = 'm'
+            else:
+                trait_sets = trait.getv(0x93dd1f25)
+                field_prefix = ''
+            for trait_set in trait_sets:
                 variables = {}
                 for effect in trait_set.getv("effectAmounts", []):
                     name = str(effect.getv("name")) if "name" in effect else "null"
                     variables[name] = effect.getv("value", "null")
 
                 effects.append({
-                    "minUnits": trait_set.getv("mMinUnits"),
-                    "maxUnits": trait_set.getv("mMaxUnits") or 25000,
-                    "style": trait_set.getv("mStyle", 1),
+                    "minUnits": trait_set.getv(field_prefix + "MinUnits"),
+                    "maxUnits": trait_set.getv(field_prefix + "MaxUnits") or 25000,
+                    "style": trait_set.getv(field_prefix + "Style", 1),
                     "variables": variables,
                 })
 

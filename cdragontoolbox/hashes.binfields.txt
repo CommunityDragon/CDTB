@@ -977,6 +977,7 @@ de708c93 abilitySlotCC
 2fa0ba9d acceleration
 63ee70e9 acquisitionRange
 83ac3b37 activateWheelDelayTime
+233072a6 activatedBuffName
 ee172090 additionalCharacters
 111ec6d2 addressU
 101ec53f addressV
@@ -3618,6 +3619,7 @@ b43f812d maxScale
 fb47bef6 maxSegmentLength
 8ccddbb3 maxStack
 6810ef40 maxStacks
+03d26b40 maxUnits
 d6f82397 maxViewableQuests
 999b31c4 maxXVelocity
 c7091613 maxYVelocity
@@ -3652,6 +3654,7 @@ b835cf50 minDistance
 435c641d minIndex
 bd76926a minPercentDamageToResetHold
 c472bf07 minSegmentCount
+8912eb52 minUnits
 782f286a minXVelocity
 33f22b71 minYVelocity
 daf5dedd minimapIconOverride
@@ -4094,6 +4097,7 @@ da428935 targetBoneName
 c781dd3c targetEffectDefinition
 31ee2bf7 targetLaserEffects
 61272aeb targetName
+24593d1d targetStrategy
 bc9c8463 taunt
 3c83f301 teamId
 59b2e247 teamName
