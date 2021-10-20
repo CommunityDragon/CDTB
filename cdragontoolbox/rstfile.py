@@ -27,15 +27,18 @@ class RstFile:
                 self.parse_rst(path_or_f)
 
     def __getitem__(self, key):
-        h = key_to_hash(key, self.hash_bits)
         try:
+            h = key_to_hash(key, self.hash_bits)
             return self.entries[h]
-        except KeyError:
+        except (TypeError, KeyError):
             raise KeyError(key)
 
     def __contains__(self, key):
-        h = key_to_hash(key, self.hash_bits)
-        return h in self.entries
+        try:
+            h = key_to_hash(key, self.hash_bits)
+            return h in self.entries
+        except TypeError:
+            return False
 
     def get(self, key, default=None):
         try:
