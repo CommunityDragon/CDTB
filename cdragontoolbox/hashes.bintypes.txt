@@ -778,6 +778,7 @@ ffd00de2 HudAbilityPromptData
 e4f6101d HudAbilityPromptDataInstance
 a2d5062c HudBannerData
 9b976ed7 HudBannerDataInstance
+0b1f9937 HudButtonElements
 f76fa580 HudChatData
 891b36bb HudChatDataInstance
 795ddf5a HudCheatMenuData

@@ -1182,6 +1182,8 @@ e4d83b53 buoyancy
 952a2284 burstTimeWindow
 283f8a9c burstTriggerPercent
 df989f94 buttonDefinition
+46d5e740 buttonElements
+5df249a0 buttonSelected
 1e4e8270 canCastOrQueueWhileCasting
 db633223 canCastWhileDisabled
 9acfbbaf canOnlyCastWhileDead
@@ -1237,6 +1239,7 @@ d7a7ef41 classification
 d1a3dbc8 clearUndoHistory
 5c7ea86f click
 f028019b clickable
+341bdc2e clicked
 280c558b clientAssets
 b490a3cb closeButton
 46019bf0 closeOnEndGameAfterDelay
@@ -1613,6 +1616,7 @@ fc2725ce hitFxScale
 fd3d43af horizonColor
 f4867212 horizontalAlignment
 49b51f19 hotkeyModifierText
+70ceab2d hover
 8fa18585 hoverIndicatorMinimapOverride
 36cddb74 hoverIndicatorRadius
 4789ec63 hoverIndicatorRadiusMinimap
