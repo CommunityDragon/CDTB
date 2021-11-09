@@ -723,13 +723,15 @@ class GameHashGuesser(HashGuesser):
         """Guess different extension variants for shader files, e.g. ".glsl_100" """
 
         shader_extensions = [f".{variant}s_{n}_0" for variant in "pv" for n in "23"]
-        shader_paths = [path for path in self.known.values() if os.path.splitext(path)[-1] in shader_extensions]
+        shader_paths = [path for path in self.known.values() if any(extension in path for extension in shader_extensions)]
         for path in shader_paths:
             self.check(f"{path}.dx9")
+            self.check(f"{path}.dx9sm3")
             self.check(f"{path}.dx11")
             self.check(f"{path}.glsl")
             self.check(f"{path}.metal")
             self.check_iter(f"{path}.dx9_{n}" for n in range(0, 100000, 100))
+            self.check_iter(f"{path}.dx9sm3_{n}" for n in range(0, 100000, 100))
             self.check_iter(f"{path}.dx11_{n}" for n in range(0, 100000, 100))
             self.check_iter(f"{path}.glsl_{n}" for n in range(0, 100000, 100))
             self.check_iter(f"{path}.metal_{n}" for n in range(0, 100000, 100))
@@ -765,7 +767,11 @@ class GameHashGuesser(HashGuesser):
                             self.check(path[:-4] + '.luabin64')
                         elif path.startswith('shaders'):
                             self.check(f"assets/shaders/generated/{path}.ps_2_0")
+                            self.check(f"assets/shaders/generated/{path}.ps_2_0.dx9")
+                            self.check(f"assets/shaders/generated/{path}.ps_2_0.dx9sm3")
                             self.check(f"assets/shaders/generated/{path}.vs_2_0")
+                            self.check(f"assets/shaders/generated/{path}.vs_2_0.dx9")
+                            self.check(f"assets/shaders/generated/{path}.vs_2_0.dx9sm3")
                         elif path.startswith('maps'):
                             self.check(f"data/{path}.mapgeo")
                             self.check(f"data/{path}.materials.bin")
