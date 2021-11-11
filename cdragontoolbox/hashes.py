@@ -722,19 +722,12 @@ class GameHashGuesser(HashGuesser):
     def guess_shader_variants(self):
         """Guess different extension variants for shader files, e.g. ".glsl_100" """
 
-        shader_extensions = [f".{variant}s_{n}_0" for variant in "pv" for n in "23"]
-        shader_paths = [path for path in self.known.values() if any(extension in path for extension in shader_extensions)]
-        for path in shader_paths:
-            self.check(f"{path}.dx9")
-            self.check(f"{path}.dx9sm3")
-            self.check(f"{path}.dx11")
-            self.check(f"{path}.glsl")
-            self.check(f"{path}.metal")
-            self.check_iter(f"{path}.dx9_{n}" for n in range(0, 100000, 100))
-            self.check_iter(f"{path}.dx9sm3_{n}" for n in range(0, 100000, 100))
-            self.check_iter(f"{path}.dx11_{n}" for n in range(0, 100000, 100))
-            self.check_iter(f"{path}.glsl_{n}" for n in range(0, 100000, 100))
-            self.check_iter(f"{path}.metal_{n}" for n in range(0, 100000, 100))
+        shader_pattern = re.compile(r'.*\.[pv]s_[23]_0')
+        shader_paths = {match.group(0) for path in self.known.values() if (match := shader_pattern.match(path)) is not None}
+        shader_extensions = ["dx9", "dx9sm3", "dx11", "glsl", "metal"]
+        for path in sorted(shader_paths):
+            self.check_iter(f"{path}.{ext}" for ext in shader_extensions)
+            self.check_iter(f"{path}.{ext}_{n}" for ext in shader_extensions for n in range(0, 100000, 100))
 
     def grep_wad(self, wad):
         """Find hashes from a wad file"""
