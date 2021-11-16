@@ -528,6 +528,9 @@ class GameHashGuesser(HashGuesser):
                 chars.add(m.group(1))
         return sorted(chars)
 
+    shader_extensions = [".ps_2_0", ".ps_3_0", ".vs_2_0", ".vs_3_0", ".ps", ".vs"]
+    shader_variants = [".dx11", ".dx9", ".dx9sm3", ".glsl", ".metal"]
+
     def substitute_numbers(self, nmax=100, digits=None):
         paths = self.known.values()
         super()._substitute_numbers(paths, nmax, digits)
@@ -722,12 +725,11 @@ class GameHashGuesser(HashGuesser):
     def guess_shader_variants(self):
         """Guess different extension variants for shader files, e.g. ".glsl_100" """
 
-        shader_pattern = re.compile(r'.*\.[pv]s_[23]_0')
+        shader_pattern = re.compile(r'.*\.[pv]s(_[23]_0|(?=$|\.))')
         shader_paths = {match.group(0) for path in self.known.values() if (match := shader_pattern.match(path)) is not None}
-        shader_extensions = ["dx9", "dx9sm3", "dx11", "glsl", "metal"]
         for path in sorted(shader_paths):
-            self.check_iter(f"{path}.{ext}" for ext in shader_extensions)
-            self.check_iter(f"{path}.{ext}_{n}" for ext in shader_extensions for n in range(0, 100000, 100))
+            self.check_iter(f"{path}{variant}" for variant in self.shader_variants)
+            self.check_iter(f"{path}{variant}_{n}" for variant in self.shader_variants for n in range(0, 20000, 100))
 
     def grep_wad(self, wad):
         """Find hashes from a wad file"""
@@ -759,12 +761,8 @@ class GameHashGuesser(HashGuesser):
                             self.check(path[:-4] + '.luabin')
                             self.check(path[:-4] + '.luabin64')
                         elif path.startswith('shaders'):
-                            self.check(f"assets/shaders/generated/{path}.ps_2_0")
-                            self.check(f"assets/shaders/generated/{path}.ps_2_0.dx9")
-                            self.check(f"assets/shaders/generated/{path}.ps_2_0.dx9sm3")
-                            self.check(f"assets/shaders/generated/{path}.vs_2_0")
-                            self.check(f"assets/shaders/generated/{path}.vs_2_0.dx9")
-                            self.check(f"assets/shaders/generated/{path}.vs_2_0.dx9sm3")
+                            self.check_iter(f"assets/shaders/generated/{path}{ext}" for ext in self.shader_extensions)
+                            self.check_iter(f"assets/shaders/generated/{path}{ext}{variant}" for ext in self.shader_extensions for variant in self.shader_variants)
                         elif path.startswith('maps'):
                             self.check(f"data/{path}.mapgeo")
                             self.check(f"data/{path}.materials.bin")
