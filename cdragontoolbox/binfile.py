@@ -427,7 +427,7 @@ class BinReader:
             btype = self.parse_bintype(self.read_u8())
             objectpath = self.read_string()
             parts = objectpath.split('.')
-            binvalue = self.read_field_basic(compute_binhash(parts[-1]), btype)
+            binvalue = self._vtype_to_field_reader[btype](self, compute_binhash(parts[-1]), btype)
             if hpath not in patch_entries:
                 patch_entries[hpath] = BinPtchEntry(hpath, BinNested([]))
 
