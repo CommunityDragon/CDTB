@@ -3,6 +3,7 @@ import errno
 import json
 import re
 import shutil
+import struct
 import logging
 from io import BytesIO
 from PIL import Image
@@ -420,6 +421,7 @@ class CdragonRawPatchExporter:
         exporter = Exporter(self.output)
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
+            TexConverter(),
             BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
             SknConverter(),
             RstConverter(re.compile(r'game/data/menu/.*\.(txt|stringtable)$'))
@@ -459,7 +461,7 @@ class CdragonRawPatchExporter:
             _, ext = os.path.splitext(path)
             if ext == '.bin':
                 return '_skins_' not in path
-            return ext in ('.dds', '.tga', '.skn', '.txt')
+            return ext in ('.dds', '.tga', '.tex', '.skn', '.txt')
 
         for path, wad in exporter.wads.items():
             if path.endswith('.wad.client'):
@@ -620,6 +622,44 @@ class ImageConverter(FileConverter):
             except (OSError, NotImplementedError):
                 # "OSError: cannot identify image file" happen for some files with a wrong extension
                 raise FileConversionError("cannot convert image to PNG")
+
+class TexConverter(FileConverter):
+    def __init__(self):
+        pass
+
+    def is_handled(self, path):
+        return path.endswith('.tex')
+
+    def converted_paths(self, path):
+        yield os.path.splitext(path)[0] + '.png'
+
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, os.path.splitext(path)[0] + '.png')
+        fdds = BytesIO(self.tex_to_dds(fin.read()))
+        with write_file_or_remove(output_path) as fout:
+            try:
+                im = Image.open(fdds)
+                im.save(fout)
+            except (OSError, NotImplementedError):
+                raise FileConversionError("cannot convert image to PNG")
+
+    @staticmethod
+    def tex_to_dds(data):
+        if len(data) < 12 or data[:4] != b'TEX\0':
+            raise FileConversionError("invalid TEX file")
+        _, width, height, flags = struct.unpack('<4sHHL', data[:12])
+        if flags == 0x0c01:
+            dxt = b'DXT5'
+        elif flags == 0x0a01:
+            dxt = b'DXT1'
+        else:
+            raise FileConversionError(f"unsupported TEX flags: {flags:x}")
+
+        # Static parts of the DDS header
+        prefix = b'DDS |\0\0\0\x07\x10\x08\0'
+        middle = b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x20\0\0\0\x04\0\0\0'
+        suffix = b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'
+        return prefix + struct.pack('<LLL', height, width, len(data[12:])) + middle + dxt + suffix + data[12:]
 
 class BinConverter(FileConverter):
     def __init__(self, regex, btype_version=None):
