@@ -1,5 +1,5 @@
 requests
 hachoir
 xxhash
-zstd
+pyzstd
 Pillow

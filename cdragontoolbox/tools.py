@@ -3,12 +3,8 @@ import shutil
 import struct
 from contextlib import contextmanager
 
-import zstd
-# support both zstd and zstandard implementations
-if hasattr(zstd, 'decompress'):
-    zstd_decompress = zstd.decompress
-else:
-    zstd_decompress = zstd.ZstdDecompressor().decompress
+import pyzstd
+zstd_decompress = pyzstd.decompress
 
 
 @contextmanager
