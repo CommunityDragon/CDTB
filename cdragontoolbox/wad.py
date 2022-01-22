@@ -90,6 +90,9 @@ class WadFileHeader:
             return None
         elif self.type == 3:
             return zstd_decompress(data)
+        elif self.type == 52:
+            # Used at least for .tex files; data is split into multiple zstd frames
+            return zstd_decompress(data)
         raise ValueError(f"unsupported file type: {self.type}")
 
     def extract(self, fwad, output_path):
