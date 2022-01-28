@@ -57,17 +57,19 @@ class WadFileHeader:
         b'\x1bLuaQ\x00\x01\x04\x08': 'luabin64',
         bytes.fromhex('023d0028'): 'troybin',
         b'[ObjectBegin]': 'sco',
-        b'OEGM': 'mapgeo'
+        b'OEGM': 'mapgeo',
+        b'TEX\0': 'tex'
     }
 
-    def __init__(self, path_hash, offset, compressed_size, size, type, duplicate=None, unk0=None, unk1=None, sha256=None):
+    def __init__(self, path_hash, offset, compressed_size, size, type, duplicate=None, first_subchunk_index=None, sha256=None):
         self.path_hash = path_hash
         self.offset = offset
         self.size = size
-        self.type = type
+        self.subchunk_count = (type & 0xF0) >> 4
+        self.type = type & 0xF
         self.compressed_size = compressed_size
         self.duplicate = bool(duplicate)
-        self.unk0, self.unk1 = unk0, unk1
+        self.first_subchunk_index = first_subchunk_index
         self.sha256 = sha256
         # values that can be guessed
         self.path = None
@@ -90,8 +92,8 @@ class WadFileHeader:
             return None
         elif self.type == 3:
             return zstd_decompress(data)
-        elif self.type == 52:
-            # Used at least for .tex files; data is split into multiple zstd frames
+        elif self.type == 4:
+            # Data is split into individual subchunks that are zstd compressed
             return zstd_decompress(data)
         raise ValueError(f"unsupported file type: {self.type}")
 
@@ -183,7 +185,7 @@ class Wad:
             if version_major == 1:
                 self.files = [WadFileHeader(*parser.unpack("<QIIII")) for _ in range(entry_count)]
             else:
-                self.files = [WadFileHeader(*parser.unpack("<QIIIBBBBQ")) for _ in range(entry_count)]
+                self.files = [WadFileHeader(*parser.unpack("<QIIIB?HQ")) for _ in range(entry_count)]
 
     def resolve_paths(self, hashes=None):
         """Guess path of files"""
