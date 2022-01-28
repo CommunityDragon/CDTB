@@ -647,14 +647,14 @@ class TexConverter(FileConverter):
     def tex_to_dds(data):
         if len(data) < 12 or data[:4] != b'TEX\0':
             raise FileConversionError("invalid TEX file")
-        _, width, height, flags = struct.unpack('<4sHHL', data[:12])
-        if flags == 0x0c01 or flags == 0x01000c01:
+        _, width, height, format, has_mipmaps = struct.unpack('<4sHHxBx?', data[:12])
+        if format == 0x0c:
             dxt = b'DXT5'
-        elif flags == 0x0a01:
+        elif format == 0x0a:
             dxt = b'DXT1'
         else:
-            raise FileConversionError(f"unsupported TEX flags: {flags:x}")
-        if flags & 0x01000000:
+            raise FileConversionError(f"unsupported TEX format: {format:x}")
+        if has_mipmaps:
             # Note: ignore mipmaps, use only the largest image
             # Assume pixel format with 1 byte per pixel
             pixels = data[- width * height:]
