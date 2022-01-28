@@ -577,7 +577,7 @@ class GameHashGuesser(HashGuesser):
             self.check_iter(fmt.replace('{}', s) for s in characters)
 
     def substitute_skin_numbers(self):
-        """Replace skinNN, multiple combinaisons"""
+        """Replace skinNN, multiple combinations"""
 
         characters = {}  # {char: ({skin}, {(format, N})}
         regex = re.compile(r'/characters/([^/]+)/skins/(base|skin\d+)/')
