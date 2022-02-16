@@ -225,12 +225,16 @@ class TftTransformer:
             spell_name = spell_name.rsplit("/", 1)[-1].lower()
             ability = next(x.getv("mSpell") for x in tft_bin.entries if x.type == "SpellObject" and x.getv("mScriptName").lower() == spell_name)
             ability_variables = [{"name": value.getv("mName"), "value": value.getv("mValues")} for value in ability.getv("mDataValues", [])]
-            rarity = champ.getv("mRarity", 0) + 1
+
+            cost = record.getv("tier", None)
+            if cost is None:
+                rarity = champ.getv("mRarity", 0) + 1
+                cost = rarity + int(rarity / 6)
 
             champs[name] = ({
                 "apiName": record.getv("mCharacterName"),
                 "name": champ.getv(0xC3143D66),
-                "cost": rarity + int(rarity / 6),
+                "cost": cost,
                 "icon": champ.getv("mIconPath"),
                 "traits": [traits[h]["name"] for h in champ_traits if h in traits],
                 "stats": {
