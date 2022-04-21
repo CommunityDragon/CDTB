@@ -648,10 +648,20 @@ class TexConverter(FileConverter):
         if len(data) < 12 or data[:4] != b'TEX\0':
             raise FileConversionError("invalid TEX file")
         _, width, height, format, has_mipmaps = struct.unpack('<4sHHxBx?', data[:12])
+        dds_flags = 0x01007
+        pixel_format_flags = 0x04
+        rgba_mask = b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'
         if format == 0x0c:
             dxt = b'DXT5'
+            dds_flags |= 0x80000
         elif format == 0x0a:
             dxt = b'DXT1'
+            dds_flags |= 0x80000
+        elif format == 0x14:
+            dxt = b'\0\0\0\0'
+            dds_flags |= 0x8
+            pixel_format_flags = 0x41
+            rgba_mask = b'\x20\0\0\0\0\0\xff\0\0\xff\0\0\xff\0\0\0\0\0\0\xff'
         else:
             raise FileConversionError(f"unsupported TEX format: {format:x}")
         if has_mipmaps:
@@ -660,12 +670,13 @@ class TexConverter(FileConverter):
             pixels = data[- width * height:]
         else:
             pixels = data[12:]
+        pitch = width * 4 if format == 0x14 else len(pixels)
 
         # Static parts of the DDS header
-        prefix = b'DDS |\0\0\0\x07\x10\x08\0'
-        middle = b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x20\0\0\0\x04\0\0\0'
-        suffix = b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'
-        return prefix + struct.pack('<LLL', height, width, len(pixels)) + middle + dxt + suffix + pixels
+        prefix = b'DDS |\0\0\0'
+        middle = b'\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x20\0\0\0'
+        suffix = b'\0\x10\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0'
+        return prefix + struct.pack('<LLLL', dds_flags, height, width, pitch) + middle + struct.pack('<L', pixel_format_flags) + dxt + rgba_mask + suffix + pixels
 
 class BinConverter(FileConverter):
     def __init__(self, regex, btype_version=None):
