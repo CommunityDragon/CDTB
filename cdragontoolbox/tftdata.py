@@ -147,6 +147,8 @@ class TftTransformer:
         for item in set_collection:
             set_number = item.getv("number")
             set_mutator = item.getv("Mutator")
+            if set_mutator is None:
+                set_mutator = item.getv("name")
             char_list = item.getv("characterLists")[0]
             set_info = item[0xD2538E5A].value
             set_name = set_info["SetName"].getv("mValue")
