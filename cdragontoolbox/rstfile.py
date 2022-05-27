@@ -1,5 +1,6 @@
 import os
 from xxhash import xxh64_intdigest
+from base64 import b64encode
 from .tools import BinaryParser
 from .hashes import HashFile
 
@@ -74,10 +75,18 @@ class RstFile:
             v, = parser.unpack("<Q")
             entries.append((v >> self.hash_bits, v & hash_mask))
 
+        has_trenc = False
         if version < 5:
-            b = parser.raw(1)  # 0 or 1
+            has_trenc = parser.unpack("<B")[0]
 
         data = parser.f.read()
-        entries = [(h, data[i:data.find(b"\0", i)]) for i, h in entries]
-        # decode with utf-8 unless data starts with 0xFF (illegal UTF-8 sequence)
-        self.entries = {h: v.decode("utf-16-le") if v.startswith(b"\xff") else v.decode("utf-8") for h, v in entries}
+        
+        for i, h in entries:
+            if has_trenc and data[i] == 0xFF:
+                size = int.from_bytes(data[i+1:][:2], 'little')
+                d = b64encode(data[i+3:][:size])
+                self.entries[h] = d.decode('utf-8')
+            else:
+                end = data.find(b"\0", i)
+                d = data[i:end]
+                self.entries[h] = d.decode('utf-8')
