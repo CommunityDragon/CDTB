@@ -48,13 +48,11 @@ class TftTransformer:
         champs = self.parse_champs(map22, traits, character_folder)
         output_sets, output_set_data = self.build_output_sets(sets, traits, champs)
         items = self.parse_items(map22)
-        augments = self.parse_augments(map22)
 
         return {
             "sets": output_sets,
             "setData": output_set_data,
             "items": items,
-            "augments": augments,
         }
 
     def export(self, output, langs=None):
@@ -99,8 +97,6 @@ class TftTransformer:
             for set_data in instance["setData"]:
                 replace_set_data(set_data)
             for data in instance["items"]:
-                replace_in_data(data)
-            for data in instance["augments"]:
                 replace_in_data(data)
 
             with open(os.path.join(output, f"{lang}.json"), "w", encoding="utf-8") as f:
@@ -171,7 +167,7 @@ class TftTransformer:
         item_ids = {}  # {item_hash: item_id}
         for item in item_entries:
             name = item.getv("mName")
-            if "Template" in name or name == "TFT_Item_Null" or "Augment" in name:
+            if "Template" in name or name == "TFT_Item_Null":
                 continue
 
             effects = {}
@@ -182,6 +178,7 @@ class TftTransformer:
             items.append({
                 "id": item.getv("mId"),
                 "name": item.getv(0xC3143D66),
+                "apiName": item.getv("mName"),
                 "desc": item.getv(0x765F18DA),
                 "icon": item.getv("mIconPath"),
                 "unique": item.getv(0x9596A387, False),
@@ -301,26 +298,6 @@ class TftTransformer:
             }
 
         return traits
-
-    def parse_augments(self, map22):
-        augment_entries = [x for x in map22.entries if x.type == "TftItemData" and "Augment" in x.getv("mName")]
-
-        augments = []
-        for augment in augment_entries:
-            effects = {}
-            for effect in augment.getv("effectAmounts", []):
-                name = str(effect.getv("name")) if "name" in effect else effect.path.hex()
-                effects[name] = effect.getv("value", "null")
-
-            augments.append({
-                "name": augment.getv(0xC3143D66),
-                "apiName": augment.getv("mName"),
-                "desc": augment.getv(0x765F18DA),
-                "icon": augment.getv("mIconPath"),
-                "effects": effects,
-            })
-
-        return augments
 
 
 def main():
