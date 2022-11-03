@@ -27,6 +27,9 @@ Here are some examples, use `python3 -m cdragontoolbox -h` for details.
 # (files from the new patcher will be used)
 python3 -m cdragontoolbox -v download -s patcher:cdn patch=
 
+# download and extract files from the PBE to the directory `cdn`
+python3 -m cdragontoolbox -v download -s patcher:cdn --patchline pbe patch=main
+
 # same, but don't download language-specific files
 python3 -m cdragontoolbox download -s patcher:cdn --no-lang patch=
 
@@ -42,11 +45,11 @@ python3 -m cdragontoolbox wad-extract path/to/assets.wad
 # list content of a WAD file
 python3 -m cdragontoolbox wad-list path/to/assets.wad
 
-# export files of patch 7.23 into export/7.23
-python3 -m cdragontoolbox export -o export 7.23
-
 # export files from PBE
-python3 -m cdragontoolbox export --cdn pbe --full main
+python3 -m cdragontoolbox export -s patcher:cdn --patchline pbe --full main
+
+# export files of patch 7.23 into export/7.23 (deprecated)
+python3 -m cdragontoolbox export -o export 7.23
 ```
 
 ## Components
