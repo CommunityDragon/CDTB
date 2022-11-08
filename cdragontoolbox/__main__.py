@@ -74,6 +74,11 @@ def parse_storage_args(parser, args) -> Storage:
             conf['cdn'] = cdn
         elif cdn != 'default':
             parser.error("--cdn is only supported for 'rads' storage")
+        if args.patchline is not None:
+            if conf['type'] == 'patcher':
+                conf['patchline'] = args.patchline
+            else:
+                parser.error("--patchline is only supported for 'patcher' storage")
     return Storage.from_conf(conf)
 
 
@@ -355,6 +360,8 @@ def create_parser():
                                 help="path to downloaded files, with an optional storage type prefix (`type:path`)")
     storage_parser.add_argument('--cdn', choices=["default", "pbe", "kr"], default=None,
                                 help="use a different CDN")
+    storage_parser.add_argument('--patchline', choices=["pbe", "live"], default=None,
+                                help="select a patchline")
 
     # component-based commands
 
