@@ -78,7 +78,7 @@ def parse_storage_args(parser, args) -> Storage:
             if conf['type'] == 'patcher':
                 conf['patchline'] = args.patchline
             else:
-                parser.error("--pbe is only supported for 'patcher' storage")
+                parser.error("--patchline is only supported for 'patcher' storage")
     return Storage.from_conf(conf)
 
 
