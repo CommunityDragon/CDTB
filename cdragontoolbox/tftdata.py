@@ -2,6 +2,7 @@ import json
 import glob
 import os
 import copy
+import re
 from .binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
 from .rstfile import RstFile
 
@@ -62,19 +63,29 @@ class TftTransformer:
         Otherwise, export for given `xx_yy` language codes.
         """
 
-        fontconfig_dir = os.path.join(self.input_dir, "data/menu")
+        stringtable_dir = os.path.join(self.input_dir, "data/menu")
+        # Support both 'font_config_*.txt' (old) and 'main_*.stringtable' (new)
+        if os.path.exists(os.path.join(stringtable_dir, "fontconfig_en_us.txt")):
+            stringtable_pattern = "fontconfig_??_??.txt"
+            stringtable_format = "fontconfig_%s.txt"
+        else:
+            stringtable_pattern = "main_??_??.stringtable"
+            stringtable_format = "main_%s.stringtable"
 
         if langs is None:
             langs = []
-            for path in glob.glob(os.path.join(fontconfig_dir, "fontconfig_??_??.txt")):
-                langs.append(path[-9:-4])
+            for path in glob.glob(os.path.join(stringtable_dir, stringtable_pattern)):
+                # Note: must be adjusted if format changes
+                m = re.search(r'/\w*_(.._..)\.\w*$', path)
+                if m:
+                    langs.append(m.group(1))
 
         os.makedirs(output, exist_ok=True)
 
         template = self.build_template()
         for lang in langs:
             instance = copy.deepcopy(template)
-            replacements = load_translations(os.path.join(fontconfig_dir, f"fontconfig_{lang}.txt"))
+            replacements = load_translations(os.path.join(stringtable_dir, stringtable_format % lang))
 
             def replace_in_data(entry):
                 for key in ("name", "desc"):
