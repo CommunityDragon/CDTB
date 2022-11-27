@@ -461,7 +461,7 @@ class CdragonRawPatchExporter:
             _, ext = os.path.splitext(path)
             if ext == '.bin':
                 return '_skins_' not in path
-            return ext in ('.dds', '.tga', '.tex', '.skn', '.txt')
+            return ext in ('.dds', '.tga', '.tex', '.skn', '.txt', '.stringtable')
 
         for path, wad in exporter.wads.items():
             if path.endswith('.wad.client'):
