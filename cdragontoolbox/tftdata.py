@@ -160,7 +160,10 @@ class TftTransformer:
             set_mutator = item.getv("Mutator")
             if set_mutator is None:
                 set_mutator = item.getv("name")
-            char_list = item.getv("characterLists")[0]
+            char_lists = item.getv("characterLists")
+            if char_lists is None:
+                continue
+            char_list = char_lists[0]
             set_info = item[0xD2538E5A].value
             set_name = set_info["SetName"].getv("mValue")
 
