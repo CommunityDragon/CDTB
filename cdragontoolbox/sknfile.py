@@ -29,7 +29,7 @@ class SknFile:
 
         if self.major == 4:
             self.vertex_size, = f.unpack("<I")
-            self.contains_tangent = bool(f.unpack("<I")[0])
+            self.vertex_type = f.unpack("<I")[0]
             self.bounding_box_min = f.unpack("<fff")
             self.bounding_box_max = f.unpack("<fff")
             self.bounding_sphere_location = f.unpack("<fff")
@@ -67,7 +67,8 @@ class SknFile:
             "weight": f.unpack("<ffff"),
             "normal": f.unpack("<fff"),
             "uv": f.unpack("<ff"),
-            "tangent": f.unpack("<BBBB") if hasattr(self, "contains_tangent") and self.contains_tangent else None,
+            "color": f.unpack("<BBBB") if hasattr(self, "vertex_type") and self.vertex_type >= 1 else None,
+            "tangent": f.unpack("<ffff") if hasattr(self, "vertex_type") and self.vertex_type == 2 else None
         }
 
     def to_obj(self, entry) -> str:
