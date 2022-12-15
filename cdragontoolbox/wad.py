@@ -75,7 +75,7 @@ class WadFileHeader:
         self.path = None
         self.ext = None
 
-    def read_data(self, f):
+    def read_data(self, f, subchunkTOC=None):
         """Retrieve (uncompressed) data from WAD file object"""
 
         f.seek(self.offset)
@@ -93,18 +93,34 @@ class WadFileHeader:
         elif self.type == 3:
             return zstd_decompress(data)
         elif self.type == 4:
-            # Data is split into individual subchunks that are zstd compressed
-            return zstd_decompress(data)
+            # Data is split into individual subchunks that may be zstd compressed
+            if subchunkTOC is not None:
+                subchunkEntries = [struct.unpack('<IIQ', subchunkTOC[16*(subchunkIndex := self.first_subchunk_index+i):16*(subchunkIndex+1)]) for i in range(self.subchunk_count)]
+                output = bytes()
+                offset = 0
+                for subchunk in subchunkEntries:
+                    subchunkData = data[offset:offset+subchunk[0]]
+                    if subchunk[0] == subchunk[1]: # assume uncompressed
+                        output += subchunkData
+                    else:
+                        output += zstd_decompress(subchunkData)
+                    offset += subchunk[0]
+                return output
+            else:
+                try:
+                    return zstd_decompress(data)
+                except:
+                    return data # possibly wrong, but what else to do when the subchunkTOC isn't given and decompression fails?
         raise ValueError(f"unsupported file type: {self.type}")
 
-    def extract(self, fwad, output_path):
+    def extract(self, fwad, output_path, subchunkTOC=None):
         """Read data, convert it if needed, and write it to a file
 
         On error, partially retrieved files are removed.
         File redirections are skipped.
         """
 
-        data = self.read_data(fwad)
+        data = self.read_data(fwad, subchunkTOC)
         if data is None:
             return
 
@@ -157,6 +173,7 @@ class Wad:
         self.path = path
         self.version = None
         self.files = None
+        self.subchunkTOC = None
         self.parse_headers()
         self.resolve_paths(hashes)
 
@@ -196,6 +213,10 @@ class Wad:
             if wadfile.path_hash in hashes:
                 wadfile.path = hashes[wadfile.path_hash]
                 wadfile.ext = wadfile.path.rsplit('.', 1)[1]
+        subchunkTOCFile = next((file for file in self.files if file.path is not None and file.path.endswith(".subchunktoc")), None)
+        if subchunkTOCFile is not None:
+            with open(self.path, 'rb') as fwad:
+                self.subchunkTOC = subchunkTOCFile.read_data(fwad)
 
     def guess_extensions(self):
         # avoid opening the file if not needed
@@ -211,7 +232,7 @@ class Wad:
         with open(self.path, 'rb') as f:
             for wadfile in self.files:
                 if not wadfile.path and not wadfile.ext:
-                    data = wadfile.read_data(f)
+                    data = wadfile.read_data(f, self.subchunkTOC)
                     if not data:
                         continue
                     wadfile.ext = WadFileHeader.guess_extension(data)
@@ -258,4 +279,4 @@ class Wad:
                     logger.debug(f"skipping {wadfile.path_hash:016x} {wadfile.path} (already extracted)")
                     continue
                 logger.debug(f"extracting {wadfile.path_hash:016x} {wadfile.path}")
-                wadfile.extract(fwad, output_path)
+                wadfile.extract(fwad, output_path, self.subchunkTOC)

@@ -313,7 +313,7 @@ class Exporter:
                 if not overwrite and converter.converted_paths_exist(self.output, wadfile.path):
                     continue
 
-                data = wadfile.read_data(fwad)
+                data = wadfile.read_data(fwad, wad.subchunkTOC)
                 if data is None:
                     continue  # should not happen, file redirections have been filtered already
 
