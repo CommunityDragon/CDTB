@@ -744,7 +744,9 @@ class GameHashGuesser(HashGuesser):
                                    'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'luabin64', 'bnk', 'wpk'):
                     continue # don't grep filetypes known to not contain full paths
 
-                data = wadfile.read_data(f)
+                data = wad.read_file_data(f, wadfile)
+                if data is None:
+                    continue
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
                     for m in re.finditer(br'(?:ASSETS|DATA|Characters|Shaders|Maps/MapGeometry|Gameplay)/', data):
