@@ -32,8 +32,6 @@ _hash_to_guessed_extensions = {}
 class MalformedSubchunkException(BaseException):
     """Subchunk data is invalid or doesn't match the provided subchunktoc"""
 
-    wad_data = None
-
     def __init__(self, data):
         self.wad_data = data
 
