@@ -75,7 +75,7 @@ class WadFileHeader:
         self.path = None
         self.ext = None
 
-    def read_data(self, f, subchunkTOC=None):
+    def read_data(self, f, subchunk_toc=None):
         """Retrieve (uncompressed) data from WAD file object"""
 
         f.seek(self.offset)
@@ -94,17 +94,17 @@ class WadFileHeader:
             return zstd_decompress(data)
         elif self.type == 4:
             # Data is split into individual subchunks that may be zstd compressed
-            if subchunkTOC is not None:
-                subchunkEntries = [struct.unpack('<IIQ', subchunkTOC[16*(subchunkIndex := self.first_subchunk_index+i):16*(subchunkIndex+1)]) for i in range(self.subchunk_count)]
+            if subchunk_toc is not None:
+                subchunk_entries = [struct.unpack('<IIQ', subchunk_toc[16*(subchunk_index := self.first_subchunk_index+i):16*(subchunk_index+1)]) for i in range(self.subchunk_count)]
                 output = bytes()
                 offset = 0
-                for subchunk in subchunkEntries:
-                    subchunkData = data[offset:offset+subchunk[0]]
-                    if subchunk[0] == subchunk[1]: # assume uncompressed
-                        output += subchunkData
+                for (compressed_size, uncompressed_size, _hash) in subchunk_entries:
+                    subchunk_data = data[offset:offset+compressed_size]
+                    if compressed_size == uncompressed_size: # assume data is uncompressed
+                        output += subchunk_data
                     else:
-                        output += zstd_decompress(subchunkData)
-                    offset += subchunk[0]
+                        output += zstd_decompress(subchunk_data)
+                    offset += compressed_size
                 return output
             else:
                 try:
@@ -113,14 +113,14 @@ class WadFileHeader:
                     return data # possibly wrong, but what else to do when the subchunkTOC isn't given and decompression fails?
         raise ValueError(f"unsupported file type: {self.type}")
 
-    def extract(self, fwad, output_path, subchunkTOC=None):
+    def extract(self, fwad, output_path, subchunk_toc=None):
         """Read data, convert it if needed, and write it to a file
 
         On error, partially retrieved files are removed.
         File redirections are skipped.
         """
 
-        data = self.read_data(fwad, subchunkTOC)
+        data = self.read_data(fwad, subchunk_toc)
         if data is None:
             return
 
@@ -173,7 +173,7 @@ class Wad:
         self.path = path
         self.version = None
         self.files = None
-        self.subchunkTOC = None
+        self.subchunk_toc = None
         self.parse_headers()
         self.resolve_paths(hashes)
 
@@ -213,10 +213,10 @@ class Wad:
             if wadfile.path_hash in hashes:
                 wadfile.path = hashes[wadfile.path_hash]
                 wadfile.ext = wadfile.path.rsplit('.', 1)[1]
-        subchunkTOCFile = next((file for file in self.files if file.path is not None and file.path.endswith(".subchunktoc")), None)
-        if subchunkTOCFile is not None:
+        subchunk_toc_file = next((file for file in self.files if file.path is not None and file.path.endswith(".subchunktoc")), None)
+        if subchunk_toc_file is not None:
             with open(self.path, 'rb') as fwad:
-                self.subchunkTOC = subchunkTOCFile.read_data(fwad)
+                self.subchunk_toc = subchunk_toc_file.read_data(fwad)
 
     def guess_extensions(self):
         # avoid opening the file if not needed
@@ -232,7 +232,7 @@ class Wad:
         with open(self.path, 'rb') as f:
             for wadfile in self.files:
                 if not wadfile.path and not wadfile.ext:
-                    data = wadfile.read_data(f, self.subchunkTOC)
+                    data = wadfile.read_data(f, self.subchunk_toc)
                     if not data:
                         continue
                     wadfile.ext = WadFileHeader.guess_extension(data)
@@ -279,4 +279,4 @@ class Wad:
                     logger.debug(f"skipping {wadfile.path_hash:016x} {wadfile.path} (already extracted)")
                     continue
                 logger.debug(f"extracting {wadfile.path_hash:016x} {wadfile.path}")
-                wadfile.extract(fwad, output_path, self.subchunkTOC)
+                wadfile.extract(fwad, output_path, self.subchunk_toc)
