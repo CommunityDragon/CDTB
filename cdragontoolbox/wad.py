@@ -5,6 +5,7 @@ import gzip
 import json
 import imghdr
 import logging
+from xxhash import xxh3_64_intdigest
 
 from .hashes import default_hashfile
 from .tools import (
@@ -28,6 +29,13 @@ logger = logging.getLogger(__name__)
 # read file data, caching will reduce I/Os
 _hash_to_guessed_extensions = {}
 
+class MalformedSubchunkException(BaseException):
+    """Subchunk data is invalid or doesn't match the provided subchunktoc"""
+
+    wad_data = None
+
+    def __init__(self, data):
+        self.wad_data = data
 
 class WadFileHeader:
     """Single file entry in a WAD archive"""
@@ -98,7 +106,10 @@ class WadFileHeader:
                 subchunk_entries = [struct.unpack('<IIQ', subchunk_toc[16*(subchunk_index := self.first_subchunk_index+i):16*(subchunk_index+1)]) for i in range(self.subchunk_count)]
                 output = bytes()
                 offset = 0
-                for (compressed_size, uncompressed_size, _hash) in subchunk_entries:
+                for (compressed_size, uncompressed_size, hash) in subchunk_entries:
+                    # ensure wad data matches with the subchunktoc data
+                    if len(data) < offset + compressed_size or xxh3_64_intdigest(data[offset:offset+compressed_size]) != hash:
+                        raise MalformedSubchunkException(data)
                     subchunk_data = data[offset:offset+compressed_size]
                     if compressed_size == uncompressed_size: # assume data is uncompressed
                         output += subchunk_data
@@ -106,11 +117,11 @@ class WadFileHeader:
                         output += zstd_decompress(subchunk_data)
                     offset += compressed_size
                 return output
-            else:
-                try:
-                    return zstd_decompress(data)
-                except:
-                    return data # possibly wrong, but what else to do when the subchunkTOC isn't given and decompression fails?
+
+            try:
+                return zstd_decompress(data)
+            except:
+                raise MalformedSubchunkException(data)
         raise ValueError(f"unsupported file type: {self.type}")
 
     def extract(self, fwad, output_path, subchunk_toc=None):
@@ -120,7 +131,10 @@ class WadFileHeader:
         File redirections are skipped.
         """
 
-        data = self.read_data(fwad, subchunk_toc)
+        try:
+            data = self.read_data(fwad, subchunk_toc)
+        except MalformedSubchunkException:
+            return
         if data is None:
             return
 
@@ -232,7 +246,10 @@ class Wad:
         with open(self.path, 'rb') as f:
             for wadfile in self.files:
                 if not wadfile.path and not wadfile.ext:
-                    data = wadfile.read_data(f, self.subchunk_toc)
+                    try:
+                        data = wadfile.read_data(f, self.subchunk_toc)
+                    except MalformedSubchunkException:
+                        continue
                     if not data:
                         continue
                     wadfile.ext = WadFileHeader.guess_extension(data)

@@ -12,6 +12,7 @@ from contextlib import contextmanager
 from typing import Dict
 from xxhash import xxh64_intdigest
 from .data import REGIONS, Language
+from .wad import MalformedSubchunkException
 
 logger = logging.getLogger(__name__)
 
@@ -744,7 +745,10 @@ class GameHashGuesser(HashGuesser):
                                    'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'luabin64', 'bnk', 'wpk'):
                     continue # don't grep filetypes known to not contain full paths
 
-                data = wadfile.read_data(f, wad.subchunk_toc)
+                try:
+                    data = wadfile.read_data(f, wad.subchunk_toc)
+                except MalformedSubchunkException:
+                    continue
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
                     for m in re.finditer(br'(?:ASSETS|DATA|Characters|Shaders|Maps/MapGeometry|Gameplay)/', data):

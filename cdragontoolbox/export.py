@@ -9,7 +9,7 @@ from io import BytesIO
 from PIL import Image
 
 from .storage import PatchVersion
-from .wad import Wad
+from .wad import Wad, MalformedSubchunkException
 from .binfile import BinFile
 from .sknfile import SknFile
 from .rstfile import hashfile_rst, RstFile, key_to_hash as key_to_rsthash
@@ -313,7 +313,10 @@ class Exporter:
                 if not overwrite and converter.converted_paths_exist(self.output, wadfile.path):
                     continue
 
-                data = wadfile.read_data(fwad, wad.subchunk_toc)
+                try:
+                    data = wadfile.read_data(fwad, wad.subchunk_toc)
+                except MalformedSubchunkException:
+                    continue # prefer not exporting anything than exporting a wrong file
                 if data is None:
                     continue  # should not happen, file redirections have been filtered already
 
