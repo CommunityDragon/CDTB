@@ -938,6 +938,7 @@ bdda148a Labels
 ee4fc60b LastItemPadding
 f2fb8359 Latency
 109b461a LatencyText
+07a640f6 Layer
 8fb7915f Layers
 cac17cff Layout
 e5e1d1d7 LayoutRegion
@@ -1502,6 +1503,9 @@ b837c165 RecItemsSwaps
 897c69b7 RecRoleSwaps
 7722a5c2 RecentlyChangedIcon
 8dcbab01 RecipeItems
+eae44d07 Rect
+6240fc33 RectSourceResolutionHeight
+df3f6504 RectSourceResolutionWidth
 64806c29 ReconnectScriptsWhilePaused
 593058cc Record
 0c263131 RedTeamElementSelectedColor
