@@ -2,7 +2,7 @@ from enum import Enum
 
 
 REGIONS = ['br', 'cn', 'eun', 'eune', 'euw', 'garena2', 'garena3', 'id', 'jp', 'kr', 'la', 'la1', 'la2', 'lan', 'las',
-           'na', 'oc', 'oc1', 'oce', 'pbe', 'ph', 'ru', 'sg', 'tencent', 'th', 'tr', 'tw', 'vn']
+           'na', 'oc', 'oc1', 'oce', 'pbe', 'ph', 'ph2', 'ru', 'sg', 'tencent', 'th', 'th2', 'tr', 'tw', 'tw2', 'vn', 'vn2']
 
 class Language(Enum):
     ar_ae = 'ar_ae'
