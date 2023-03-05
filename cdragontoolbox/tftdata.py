@@ -257,7 +257,7 @@ class TftTransformer:
                 "apiName": record.getv("mCharacterName"),
                 "name": champ.getv(0xC3143D66),
                 "cost": cost,
-                "icon": champ.getv("mIconPath"),
+                "icon": champ.getv(0x466DC3CC) or champ.getv("mIconPath"),
                 "traits": [traits[h]["name"] for h in champ_traits if h in traits],
                 "stats": {
                     "hp": record.getv("baseHP"),
@@ -274,7 +274,7 @@ class TftTransformer:
                 "ability": {
                     "name": champ.getv(0x87A69A5E),
                     "desc": champ.getv(0xBC4F18B3),
-                    "icon": champ.getv("mPortraitIconPath"),
+                    "icon": champ.getv(0xDF0AD83B) or champ.getv("mPortraitIconPath"),
                     "variables": ability_variables,
                 },
             }, champ_traits)
