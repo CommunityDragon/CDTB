@@ -180,7 +180,7 @@ class TftTransformer:
         item_entries = [x for x in map22.entries if x.type == "TftItemData"]
 
         items = []
-        item_ids = {}  # {item_hash: item_id}
+        items_by_hash = {}  # {item_hash: item}
         for item in item_entries:
             name = item.getv("mName")
             if "Template" in name or name == "TFT_Item_Null":
@@ -191,20 +191,27 @@ class TftTransformer:
                 name = str(effect.getv("name")) if "name" in effect else effect.path.hex()
                 effects[name] = effect.getv("value", "null")
 
-            items.append({
+            item_data = {
                 "id": item.getv("mId"),
                 "name": item.getv(0xC3143D66),
                 "apiName": item.getv("mName"),
                 "desc": item.getv(0x765F18DA),
                 "icon": item.getv("mIconPath"),
                 "unique": item.getv(0x9596A387, False),
-                "from": [x.h for x in item.getv(0x8B83BA8A, [])],
+                "composition": [x.h for x in item.getv(0x8B83BA8A, [])],  # updated below
                 "effects": effects,
-            })
-            item_ids[item.path.h] = item.getv("mId")
+            }
+            items.append(item_data)
+            items_by_hash[item.path.h] = item_data
+
 
         for item in items:
-            item["from"] = [item_ids[x] for x in item["from"]]
+            if item["id"] is not None:
+                # patchs < 13.5: mId exist and "from" is a list of those IDs
+                item["from"] = [items_by_hash[h]["id"] for h in item["composition"]]
+            else:
+                item["from"] = None
+            item["composition"] = [items_by_hash[h]["apiName"] for h in item["composition"]]
 
         return items
 
