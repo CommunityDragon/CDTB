@@ -178,6 +178,14 @@ class TftTransformer:
 
     def parse_items(self, map22):
         item_entries = [x for x in map22.entries if x.type == "TftItemData"]
+        trait_entries = [x for x in map22.entries if x.type == "TftTraitData"]
+
+        traits_by_hash = {}
+        for trait in trait_entries:
+            trait_apiName = trait.getv("mName")
+            if "Template" in trait_apiName:
+                continue
+            traits_by_hash[trait.path.h] = trait_apiName
 
         items = []
         items_by_hash = {}  # {item_hash: item}
@@ -199,6 +207,8 @@ class TftTransformer:
                 "icon": item.getv("mIconPath"),
                 "unique": item.getv(0x9596A387, False),
                 "composition": [x.h for x in item.getv(0x8B83BA8A, [])],  # updated below
+                "AssociatedTraits": [x.h for x in item.getv("AssociatedTraits", [])], # updated below
+                "IncompatibleTraits": [x.h for x in item.getv("IncompatibleTraits", [])], # updated below
                 "effects": effects,
             }
             items.append(item_data)
@@ -212,7 +222,8 @@ class TftTransformer:
             else:
                 item["from"] = None
             item["composition"] = [items_by_hash[h]["apiName"] for h in item["composition"]]
-
+            item["IncompatibleTraits"] = [traits_by_hash[h] for h in item["IncompatibleTraits"]]
+            item["AssociatedTraits"] = [traits_by_hash[h] for h in item["AssociatedTraits"]]
         return items
 
     def parse_champs(self, map22, traits, character_folder):
