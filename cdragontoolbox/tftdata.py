@@ -180,10 +180,7 @@ class TftTransformer:
         item_entries = [x for x in map22.entries if x.type == "TftItemData"]
         trait_entries = [x for x in map22.entries if x.type == "TftTraitData"]
 
-        traits_by_hash = {}
-        for trait in trait_entries:
-            trait_apiName = trait.getv("mName")
-            traits_by_hash[trait.path.h] = trait_apiName
+        traits_by_hash = {trait.path.h: trait.getv("mName") for trait in trait_entries}
 
         items = []
         items_by_hash = {}  # {item_hash: item}
