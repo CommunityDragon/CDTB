@@ -183,8 +183,6 @@ class TftTransformer:
         traits_by_hash = {}
         for trait in trait_entries:
             trait_apiName = trait.getv("mName")
-            if "Template" in trait_apiName:
-                continue
             traits_by_hash[trait.path.h] = trait_apiName
 
         items = []
