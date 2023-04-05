@@ -93,8 +93,10 @@ class WadFileHeader:
         elif self.type == 3:
             return zstd_decompress(data)
         elif self.type == 4:
-            # Data is split into individual subchunks that are zstd compressed
-            return zstd_decompress(data)
+            # Data is split into individual subchunks that are sometimes zstd compressed
+            if data[:4] == b'\x28\xb5\x2f\xfd':  # zstd header
+                return zstd_decompress(data)
+            return data
         raise ValueError(f"unsupported file type: {self.type}")
 
     def extract(self, fwad, output_path):
