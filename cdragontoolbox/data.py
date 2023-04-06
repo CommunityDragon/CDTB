@@ -37,3 +37,9 @@ class Language(Enum):
     zh_cn = 'zh_cn'
     zh_my = 'zh_my'
     zh_tw = 'zh_tw'
+
+class MalformedSubchunkException(BaseException):
+    """Subchunk data is invalid or doesn't match the provided subchunktoc"""
+
+    def __init__(self, data):
+        self.wad_data = data

@@ -13,6 +13,7 @@ from .tools import (
     write_file_or_remove,
     zstd_decompress,
 )
+from .data import MalformedSubchunkException
 
 def test_jpeg_photoshop(h, f):
     if h[:4] == b'\xff\xd8\xff\xe1':
@@ -28,12 +29,6 @@ logger = logging.getLogger(__name__)
 # Caching is possible because the same hash should always have the same extension. Since guessing extension requires to
 # read file data, caching will reduce I/Os
 _hash_to_guessed_extensions = {}
-
-class MalformedSubchunkException(BaseException):
-    """Subchunk data is invalid or doesn't match the provided subchunktoc"""
-
-    def __init__(self, data):
-        self.wad_data = data
 
 class WadFileHeader:
     """Single file entry in a WAD archive"""

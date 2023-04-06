@@ -11,8 +11,7 @@ import logging
 from contextlib import contextmanager
 from typing import Dict
 from xxhash import xxh64_intdigest
-from .data import REGIONS, Language
-from .wad import MalformedSubchunkException
+from .data import REGIONS, Language, MalformedSubchunkException
 
 logger = logging.getLogger(__name__)
 
