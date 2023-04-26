@@ -160,21 +160,21 @@ class PatcherManifest:
             yield entry_parser(parser)
             parser.seek(pos + 4)
 
-    @staticmethod
-    def _parse_bundle(parser):
+    @classmethod
+    def _parse_bundle(cls, parser):
         """Parse a bundle entry"""
 
         def parse_chunklist(parser):
-            fields = PatcherManifest._parse_field_table(parser, (
+            fields = cls._parse_field_table(parser, (
                 ('chunk_id', '<Q'),
                 ('compressed_size', '<L'),
-                ('uncompressed_size', '<L')
+                ('uncompressed_size', '<L'),
             ))
             yield fields['chunk_id'], fields['compressed_size'], fields['uncompressed_size']
 
-        fields = PatcherManifest._parse_field_table(parser, (
+        fields = cls._parse_field_table(parser, (
             ('bundle_id', '<Q'),
-            ('chunks_offset', 'offset')
+            ('chunks_offset', 'offset'),
         ))
 
         bundle = PatcherBundle(fields['bundle_id'])
