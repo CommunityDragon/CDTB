@@ -170,7 +170,7 @@ class PatcherManifest:
                 ('compressed_size', '<L'),
                 ('uncompressed_size', '<L'),
             ))
-            yield fields['chunk_id'], fields['compressed_size'], fields['uncompressed_size']
+            return fields['chunk_id'], fields['compressed_size'], fields['uncompressed_size']
 
         fields = cls._parse_field_table(parser, (
             ('bundle_id', '<Q'),
@@ -179,7 +179,7 @@ class PatcherManifest:
 
         bundle = PatcherBundle(fields['bundle_id'])
         parser.seek(fields['chunks_offset'])
-        for (chunk_id, compressed_size, uncompressed_size), in PatcherManifest._parse_table(parser, parse_chunklist):
+        for (chunk_id, compressed_size, uncompressed_size) in PatcherManifest._parse_table(parser, parse_chunklist):
             bundle.add_chunk(chunk_id, compressed_size, uncompressed_size)
 
         return bundle
