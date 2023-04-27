@@ -160,23 +160,27 @@ class PatcherManifest:
             yield entry_parser(parser)
             parser.seek(pos + 4)
 
-    @staticmethod
-    def _parse_bundle(parser):
+    @classmethod
+    def _parse_bundle(cls, parser):
         """Parse a bundle entry"""
-        _, n, bundle_id = parser.unpack('<llQ')
-        # skip remaining header part, if any
-        parser.skip(n - 12)
 
-        bundle = PatcherBundle(bundle_id)
-        n, = parser.unpack('<l')
-        for _ in range(n):
-            pos = parser.tell()
-            offset, = parser.unpack('<l')
-            parser.seek(pos + offset)
-            parser.skip(4)  # skip offset table offset
-            compressed_size, uncompressed_size, chunk_id = parser.unpack('<LLQ')
+        def parse_chunklist(parser):
+            fields = cls._parse_field_table(parser, (
+                ('chunk_id', '<Q'),
+                ('compressed_size', '<L'),
+                ('uncompressed_size', '<L'),
+            ))
+            return fields['chunk_id'], fields['compressed_size'], fields['uncompressed_size']
+
+        fields = cls._parse_field_table(parser, (
+            ('bundle_id', '<Q'),
+            ('chunks_offset', 'offset'),
+        ))
+
+        bundle = PatcherBundle(fields['bundle_id'])
+        parser.seek(fields['chunks_offset'])
+        for (chunk_id, compressed_size, uncompressed_size) in cls._parse_table(parser, parse_chunklist):
             bundle.add_chunk(chunk_id, compressed_size, uncompressed_size)
-            parser.seek(pos + 4)
 
         return bundle
 
@@ -193,8 +197,6 @@ class PatcherManifest:
         (name, link, flag_ids, directory_id, filesize, chunk_ids)
         """
         fields = cls._parse_field_table(parser, (
-            None,
-            ('chunks', 'offset'),
             ('file_id', '<Q'),
             ('directory_id', '<Q'),
             ('file_size', '<L'),
@@ -202,7 +204,7 @@ class PatcherManifest:
             ('flags', '<Q'),
             None,
             None,
-            None,
+            ('chunks', 'offset'),
             None,
             ('link', 'str'),
             None,
@@ -228,8 +230,6 @@ class PatcherManifest:
         (name, directory_id, parent_id)
         """
         fields = cls._parse_field_table(parser, (
-            None,
-            None,
             ('directory_id', '<Q'),
             ('parent_id', '<Q'),
             ('name', 'str'),
@@ -243,6 +243,8 @@ class PatcherManifest:
         nfields = len(fields)
         output = {}
         parser.seek(fields_pos)
+        parser.skip(2) # vtable size
+        parser.skip(2) # object size
         for i, field, offset in zip(range(nfields), fields, parser.unpack(f'<{nfields}H')):
             if field is None:
                 continue
@@ -251,15 +253,14 @@ class PatcherManifest:
                 value = None
             else:
                 pos = entry_pos + offset
+                parser.seek(pos)
                 if fmt == 'offset':
-                    value = pos
+                    value = pos + parser.unpack('<l')[0]
                 elif fmt == 'str':
-                    parser.seek(pos)
                     value = parser.unpack('<l')[0]
                     parser.seek(pos + value)
                     value = parser.unpack_string()
                 else:
-                    parser.seek(pos)
                     value = parser.unpack(fmt)[0]
             output[name] = value
         return output
@@ -764,4 +765,3 @@ class MultiPatcherPatchElement(PatchElement):
     def paths(self, langs=True):
         pred = PatcherFile.langs_predicate(langs)
         return ((elem.extract_path(f), f.name.lower()) for elem, f in self.files if pred(f))
-
