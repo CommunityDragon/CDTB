@@ -70,8 +70,10 @@ c576c85a AllowDefaultCharacterMaterialCreation
 10bbe6e9 AmmoFx
 eb99b458 AmmoText
 f785ce49 Amount
+42edcab4 Anchor
 7f0a1e81 AnchorBase
 80adf252 AnchorTft
+23563745 Anchors
 3df4c838 AnimData
 e04c974f AnimIn
 3626e800 AnimLink
@@ -180,6 +182,7 @@ ba467ec4 Bias
 999ec9a6 BlendInTime
 8d1a7a7d BlendOutTime
 a2734825 Blinded
+98ba36f3 BlockInputEvents
 44b4862a BlockPlayerIcon
 c967b34f Bloodwell
 25834918 BlueTeamElementSelectedColor
@@ -475,6 +478,7 @@ d46d37b7 DefaultOn
 4ac45539 DefaultPalette
 e55627ef DefaultPipSpacer
 db62c463 DefaultState
+1bf466b2 DefaultStateElements
 4f50f19a DefaultTextureName
 acee7679 DefaultTitleTra
 0617e21f DefaultValue
@@ -503,6 +507,8 @@ cded8c63 Disable
 498f96ad DisableAutoSNR
 a4aefed3 DisableDDR
 336b8266 DisableDisasterRecovery2Temporary
+d8348057 DisablePixelSnappingX
+d7347ec4 DisablePixelSnappingY
 92daa0f7 DisableRenderUIChatOSX
 6347bcb8 DisableRenderUIChatWindows
 7d19fee1 DisableRenderUiChatFrames
@@ -512,6 +518,7 @@ a5b85430 DisabledIcon
 8e2676a9 DisabledIds
 cd11c337 DisabledTargetLaserEffects
 54819796 Disarmed
+072d935c DisplayElements
 cd255b9e DisplayNameTraKey
 196dddee DisplayText
 99ab9d4e DisplayVisionScoreOnScoreboard
@@ -539,6 +546,8 @@ c9abc1cd DoubleTitleText
 ff786d5a DragGroup
 528183cf DragOverlayScene
 0dfd634b DragRegion
+4652f49d DragRegionElement
+8c7e787b DragType
 a0f67682 DragonFury
 00a36a0a DragonNames
 ee85ad97 Dragons
@@ -561,6 +570,11 @@ a59d87e5 EditButton
 7d009a51 EffectNameForOtherTeam
 5c1fc8bc EffectType
 fa144e3e ElementGroup
+5a94b0cc Elements
+3d3bcb26 Elements[0]
+39398643 Elements[1]
+3941d508 Elements[2]
+7d3e6e7d Elements[3]
 0a46a43a EmblemElements
 aef7b46b EmoteData
 d7e81a83 EmoteIcons
@@ -580,6 +594,7 @@ a03379b8 EmptyPips
 6fb394db EnableCustomPlayerScoreColoring
 fea35e52 EnableExtendedTooltip
 065db9cf EnableUnitStatusHealthBarNames
+02f3b39e Enabled
 7b9b52c3 EnabledWidgets
 6a8e75aa End
 bd8e2d9b EndFrame
@@ -650,6 +665,7 @@ da5d575f Fleeing
 817da519 FlexInstanceScale
 f6898e98 FloatSource
 033d98d7 FollowPath
+403767da FontDescription
 10c450de FontFilePathBold
 6b777382 FontFilePathItalics
 4428d332 ForbiddenWordList
@@ -730,6 +746,7 @@ c83e08d0 GridSkipFirstCell
 5fb91e8c Group
 af939497 GroupFramed
 fb59da5c GroupLink
+e1d30578 HTMLStyleSheet
 cfbebd9f Halo
 cec577d1 Hash
 e488d460 Header
@@ -762,6 +779,7 @@ cd880326 HighlightIcon
 f581291f HintText
 b6f9350f HitArea
 f3eb6a16 HitRegion
+6bf3194e HitRegionElement
 2c79840f Honor
 e5c73ef5 HorizontalFillDirection
 a1527ead HorizontalJustification
@@ -777,6 +795,7 @@ c9a8f32b HoverFrameIcon
 dcfb1668 HoverIcon
 0177d8c9 HoverIconDefinition
 c67f5ef5 HoverRegion
+bcd200cf HoverStateElements
 4841faf0 HoverTarget
 0bdd80f6 HoverText
 67ddf4a7 HoverVfx
@@ -802,8 +821,10 @@ fc31b31f IconMinimap
 32073228 IconOverlayElement
 77274757 IconPath
 ddbda0d2 IconRight
+0f4122b2 IconScale
 50ce2e41 IconSize
 74180b10 IdleAnimationName
+487fcd1a IgnoreGlobalScale
 59c20478 IgnoreTimer
 678523a2 IllustrationIcon
 a3a2f55a IllustrationIconElement
@@ -939,6 +960,7 @@ ee4fc60b LastItemPadding
 f2fb8359 Latency
 109b461a LatencyText
 07a640f6 Layer
+50021e55 LayerName
 8fb7915f Layers
 cac17cff Layout
 e5e1d1d7 LayoutRegion
@@ -1061,6 +1083,7 @@ d7a2e319 Max
 41aa9616 MaxItemSlot
 f75a1005 MaxNumChoices
 6dcc04ea MaxPartySize
+668788d6 MaxPlayCount
 80ba1308 MaxSize
 a7e69fc7 MaxSlowDoesntRoot
 18e4be8d MaxWeight
@@ -1153,6 +1176,7 @@ c6f52794 Moonlight
 13c8cdf7 MoreAccurateBuffTimeouts
 d84e3078 MouseDownEvent
 84b6cf03 MouseUpEvent
+b416d0a8 MouseUpSelected
 5083dbe2 MoveDelta
 9f49799f MoveSpeed
 e24cb0da MovementCharmIcon
@@ -1409,6 +1433,7 @@ f6ef1749 PortraitPath
 558e874a PortraitScene
 4e20b84b PortraitTimer
 76e1ca64 PortraitUiData
+934f4e0a Position
 e0b29ef4 PositiveBuffs
 8b376269 PostAttackMoveDelay
 98195bc5 PostponeTargetSpellOrders
@@ -1426,6 +1451,8 @@ ebf6f72a PreferBlndToGDS
 794ec41d PremiumText
 45cbd6de PrestigeCrestBase
 9a05d1e0 PrestigeCrests
+138e5c64 PreviewElementSource
+53798b70 PreviewText
 98850381 PriceText
 a97790c4 PrimalFury
 cb9f11d2 PrimaryAbilityResourceBar
@@ -1506,6 +1533,8 @@ b837c165 RecItemsSwaps
 64806c29 ReconnectScriptsWhilePaused
 593058cc Record
 eae44d07 Rect
+026d560b RectLayerName
+a27d84d4 RectSourcePSDFilename
 6240fc33 RectSourceResolutionHeight
 df3f6504 RectSourceResolutionWidth
 0c263131 RedTeamElementSelectedColor
@@ -1531,6 +1560,7 @@ e84fb211 RegenText
 f36dc80c RelativeDisplayTime
 cd92a830 RemoveFriendIcon
 f762be03 RemoveNullRepMrgTemp
+150b9c4d RenderAtElementLayer
 5a4c5648 RenderComponent
 c2ad8ed4 RenderMiniMapToTexture
 3bf05b38 RenderUIPingMenu
@@ -1562,7 +1592,7 @@ d9ecc0a5 RiftHeraldUpdate
 2c09f8fd RiftHeraldValue
 35400ee4 RightBias
 7a865b10 RightIcon
-a55a6b7c RolloverEvent
+a55a6b7c RollOverEvent
 bbf7c1da RootNodes
 8b0cfc93 RootScene
 63025e38 RootSkin
@@ -1588,6 +1618,7 @@ cc5d06d5 SceneHandle
 bd81c797 SceneLink
 88635bfb SceneRegion
 ef8b25c1 SceneTemplate
+8fcafd84 SceneToScissor
 e0184cdc SceneTransition
 e9484e15 SceneTransitionElements
 87ef0b13 SceneTransitionIn
@@ -1604,6 +1635,7 @@ d22f9095 Score
 d2538e5a ScriptData
 88668caa ScriptDataObjectLists
 69400df7 ScriptHistoryIsAStack
+dcf513e8 ScrollRegionElement
 3c99e7ed SearchIconDefinition
 3c4f003d SearchItemDescriptionDefinition
 cb7a6a6b SearchViewPaneDefinition
@@ -1712,12 +1744,15 @@ a46aab48 SocialTooltipAnchor
 3eec020d SortedByKeys
 ebac5e4c SoulGivenOnDeath
 0262b4a7 SoundEventName
+a30565cd SoundEvents
 6cfc6633 SoundKey
 a059ebf8 SoundOnActivate
 03406fbb SoundOnDeActivate
 1bcf29d8 Source
 7e67db69 SourceIcon
 177de9ee SourceIcons
+d1b791ba SourcePSDFilename
+a19b2e69 SourceResolutionHeight
 f6647cd6 SourceResolutionWidth
 462ba792 SourceResolver
 465802ea SourceStat
@@ -1852,6 +1887,7 @@ bedae0ce SwapData
 48fb391a SwoshAnim
 99f9c59d TEMP_RenderThisSkinWithMaterials
 357f3c83 TFTUnitLabel
+b157685d TRAKey
 98f72e4c Tab
 3bae3969 TabButtonDefinition
 2a9bbd14 TabData
@@ -1911,6 +1947,8 @@ d641623f TexSize
 bee64fd1 TexU
 bbe64b18 TexV
 bde64e3e Text
+ceaf4fab TextAlignmentHorizontal
+e094aee5 TextAlignmentVertical
 8b9f2cf5 TextAvailable
 89f785d6 TextByIcon
 af3fbdc5 TextComplete
@@ -2015,7 +2053,6 @@ aee644a1 TouchFeedbackElement
 3f6fb5cb TowerDetectionRadius
 bb45cdaf TowerIcon
 4f809608 TowerScore
-b157685d TraKey
 919de1f4 TrackDuration
 88d10c22 TrackObjectiveSteal
 0e48d4d3 TrackerData
@@ -2036,6 +2073,7 @@ bb0173ee TransactionId
 8f80acad TransitionIn
 b077b518 TransitionMaxAlpha
 9200c8ce TransitionMinAlpha
+2686a483 TransitionTime
 8d6d21cf Transitional
 21328a43 Transitions
 9d0cca5b TriggeredBy
@@ -2046,6 +2084,7 @@ d5ce2141 TrueDamageCritical
 c5612cad TutorialVfx
 b56b83fd TwoStar
 2640188a TwoStars
+3a8bfbed UIRect
 189cbd4b UVScroll
 4431e0e3 UiData
 af2504aa UiSound
@@ -2140,6 +2179,7 @@ f00a885b VerticalJustification
 8a3730df Vfx
 6b1b4e23 VfxBrighterInFowAsDisabledFow
 9fb0e5e5 VfxResourceResolver
+2adc883e VfxSystem
 080bb6b9 VideoEncoding
 643fd448 VideoPrefix
 7b10d5cb VietnameseRatingLabel
@@ -2207,7 +2247,6 @@ c74608c8 alternateRightLeft
 6ea2a666 alwaysDraw
 df73f8e2 alwaysSnapFacing
 3fda1a59 ambientEvent
-42edcab4 anchor
 35b8ee35 anchorLeft
 ea0df64e anchorRight
 2434c560 angelOffsetRadian
@@ -2519,7 +2558,6 @@ edf1840c defaultAnimation
 123393ed defaultAnimations
 2ffc1bc2 defaultIndex
 37fd915d defaultSound
-1bf466b2 defaultStateElements
 28da4278 defaultTechnique
 32b374fa defaultTexturePath
 1eb71cc8 defaultWordWrapMargin
@@ -2563,7 +2601,6 @@ d32430e5 disableVerticalReverse
 33f36f05 disabled
 42ab4c4a disabledRegions
 b44b0b57 disarm
-072d935c displayElements
 4fd51a36 displayName
 e89ff5ca displayTypes
 a6248fb6 dissipation
@@ -2578,7 +2615,6 @@ e21d4240 doesNotGiveMinionScore
 10ea55cd doesParticleLifetimeScale
 06216465 doubleSided
 b88c0d43 drag
-4652f49d dragRegionElement
 f810361e dragon
 543e52eb drawType
 c803c9f6 drawingLayer
@@ -2606,7 +2642,6 @@ c13d6d31 effectAmounts
 48130c4f effectName
 91879aca effectRadius
 6c5e591c elderDrake
-5a94b0cc elements
 3e1c2d84 emblemLinks
 2135c4d4 emissionMeshName
 bda98597 emissionMeshScale
@@ -2625,7 +2660,6 @@ f0f7a695 emoteLoadout
 911be685 emoteStartButton
 cb80af27 emoteVictoryButton
 e862b379 emoteYOffset
-02f3b39e enabled
 3adcf3d2 endAlpha
 4f2cd510 endLocator
 2c317acb endOfGameAlias
@@ -2818,7 +2852,6 @@ be0bee70 hideWithLineIndicator
 a19ebeb8 highlightHealthbarIcons
 b0ef060f highlightTimeoutSeconds
 fc2725ce hitFxScale
-6bf3194e hitRegionElement
 fd3d43af horizonColor
 f4867212 horizontalAlignment
 49b51f19 hotkeyModifierText
@@ -2832,7 +2865,6 @@ e0346e4b hoverLineIndicatorBaseTextureName
 5bb930bf hoverLineIndicatorTargetTextureName
 2a062e78 hoverLineIndicatorWidth
 53ac2647 hoverLineIndicatorWidthMinimap
-bcd200cf hoverStateElements
 0fd6a4da hpPerLevel
 643cb399 hpPerTick
 cc3ef161 hpRegenPerLevel
@@ -2844,7 +2876,6 @@ c6d57a29 hudLayerStretchFullscreen
 e67284f4 iconCircle
 241e976e iconCircleScale
 bfc599ad iconId
-0f4122b2 iconScale
 ac473fef iconSquare
 8ddbeb4b iconTexture
 f9e1dd39 icons
@@ -3621,7 +3652,7 @@ fe0f0ccb mFriendlyLaneMinionBarColor
 663eb02a mFromAnyone
 b9e1c243 mFromAttacker
 8763f23f mFromOwner
-c4f41d79 mFullscreen
+c4f41d79 mFullScreen
 1cda45ec mFxAa
 5dbd6263 mGDSObjectPathTemplates
 27c03215 mGameComponentList
@@ -3658,6 +3689,7 @@ dcabad81 mGrassTintTextureName
 2012eb40 mGroupName
 f67cce12 mGroupProperties
 dc844b78 mGroups
+7c0a8359 mHTMLStyleSheet
 0653b97c mHasSmallImage
 b03e913a mHashedAnimationName
 9d3b489d mHashedSituationTrigger
@@ -3695,6 +3727,10 @@ c081dea7 mHitEffectName
 dfb7cd9a mHitEffectPlayerName
 ee826aec mHitResult
 8f8488e1 mHitTestPolygon
+68008d85 mHitTestPolygon[0]
+a4032a90 mHitTestPolygon[1]
+a3fc6ecb mHitTestPolygon[2]
+67fe4eee mHitTestPolygon[3]
 0a34462c mHitTexture
 698c1a07 mHoldAnimationToHigher
 36c34479 mHoldAnimationToLower
@@ -3708,7 +3744,6 @@ bbe19802 mHotkey
 392bdb3c mHoverDescription
 180f1a00 mHoverNotUseableCursor
 f4a2e4f3 mHovertipList
-7c0a8359 mHtmlStyleSheet
 d95eb979 mHudScoreData
 e723d68b mHudSpellSlotResetFeedbackData
 84fd9809 mIcon
@@ -4726,6 +4761,7 @@ cc364a15 mUseMinimapTargeting
 f33a4c45 mUseNavmeshMask
 fa2421b4 mUseOldData
 90d0acb0 mUseRectSourceResolutionAsFloor
+94b088ea mUseUserScale
 d6e00996 mUsesListValues
 9a4efe53 mVFXKey
 5f8284a2 mVFXResourceResolver
@@ -5030,7 +5066,6 @@ dc62fe84 playStyleUtility
 a2364252 playerBuffsOffeset
 ca229a11 playerBuffsOffset
 df1e9ff3 polymorph
-934f4e0a position
 fa45ef23 postRotateOrientationAxis
 7e6634de prefabDefinition
 f510291e preset
@@ -5151,7 +5186,6 @@ b0d0037c sceneLayer
 c96dae5d scoreDisplayQuest
 065faaf6 screenHeight
 ca504a1d scrollDirection
-dcf513e8 scrollRegionElement
 dfc96107 scrollSpeed
 90adba64 scrollingScene
 f9205db4 searchTags
@@ -5237,7 +5271,6 @@ f75a6d4d sliderIcon
 bfb0efdd softParticleParams
 0e0d9594 sound
 cbfb033d soundAssets
-a30565cd soundEvents
 e0c375ae soundOnCreateDefault
 9406ff56 soundOnCreateName
 5a6a73e2 soundPersistentDefault
@@ -5407,7 +5440,6 @@ a85dbde5 transitionOffset
 768e1c18 transitionSample
 c697af1f transitionSource
 18258575 transitionTexture
-2686a483 transitionTime
 b36cff34 translationOverride
 5127f14d type
 7b285eed typeData
@@ -5482,7 +5514,6 @@ fc926160 vScrolling
 12804f14 verticalAlignment
 018bb815 verticalFacing
 f54aa658 verticalOffset
-2adc883e vfxSystem
 73f9c3e6 victoryBannerSound
 d25da809 victoryMusicID
 4eb9a495 videoAssets
