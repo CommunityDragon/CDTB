@@ -1,4 +1,5 @@
 e4460934 AFKDetection2
+a2564d38 ASSETS
 8b2e412d AbilitiesData
 b78525db AbilitiesUiData
 b88bfcb2 AbilityHasteMax
@@ -89,6 +90,7 @@ cf15f26a Animations
 1df05e4b Announcements
 25e5198f AnnouncementsMapping
 5af22504 AntiTrollPingAfterDeath
+65bba5e8 Arena
 0f9e7be2 ArenaIconPath
 e7d30d42 ArenaInfoPanel
 5a439ba5 ArmLength
@@ -112,6 +114,7 @@ e5644351 AttachmentOverrides
 c360bba5 AttachmentSlots
 0d1788bd AttackBlindIcon
 439d079f AttackLossIcon
+e0613999 Audio
 3b182105 AudioBankPaths
 189600ee AudioBankUnits
 7ea3e8d8 AudioEventName
@@ -148,6 +151,7 @@ bcdd8d75 BannerEntries
 a08a6b31 BannerFlag
 95e59d55 BannerSet
 44508cd7 BannerTrim
+f8a25fb4 Banners
 83d47180 BarBackdrop
 a2a39d73 BarElements
 b16f7307 BarFill
@@ -221,6 +225,7 @@ c7878a1b BounceRadius
 0e1a23ca BriefTextBackdrop
 3f0d4c0f BuffAddType
 b8c35392 BuffEffects
+a10ad504 BuffType
 5fd8c182 BuildTreeDisplayRegionDefinition
 2ac59a87 BuildTreeIconDefinition
 6e43f0a2 BuildingBlocksDontLookToPTP
@@ -257,6 +262,7 @@ d65e723c CameraAnimation
 6495fab8 CameraBone
 b587877d CameraLockButton
 64fe3d2f CameraView
+a0e8bf2a CampLevel
 f135454f CampName
 6463e656 CanBeMadeObsolete
 5a1d6084 CanLoadLuaFromLooseFiles
@@ -324,6 +330,7 @@ ce0447f6 ChatVisibilityKey
 4577ec44 CheatSet
 6e8692a2 CheckboxTemplate
 8e5e6618 ChildClipName
+67a9c9d2 Children
 9df91392 ChosenBadge
 2d4bd10e ChromaColor
 f76d4989 ClaimCeremonyVfx
@@ -523,6 +530,7 @@ cd255b9e DisplayNameTraKey
 196dddee DisplayText
 99ab9d4e DisplayVisionScoreOnScoreboard
 2eb31462 Distance
+a05361b0 DitherStrength
 36b04926 Divider
 0414d052 DoRotation
 6dee491f DoTranslation
@@ -576,6 +584,7 @@ fa144e3e ElementGroup
 3941d508 Elements[2]
 7d3e6e7d Elements[3]
 0a46a43a EmblemElements
+5ad01cc3 Emote
 aef7b46b EmoteData
 d7e81a83 EmoteIcons
 681a812f EmoteInfoPanel
@@ -625,6 +634,7 @@ b002f5f5 EventBackdrop
 b4d66609 EventToTrack
 8ff5f744 EventsToTrack
 10062fb6 EvoIcon
+c1f1eefc ExButton
 1e7871ec ExitFlags
 991fa1d6 ExitHitRegion
 56f2ddad ExpBar
@@ -967,6 +977,7 @@ e5e1d1d7 LayoutRegion
 fa4c41a0 LayoutStyle
 9d5bd447 LayoutType
 49e385de LeaderControls
+c12996d1 LeashDistance
 7825ec74 LeaveButton
 f221fb31 LeftIcon
 f43b8449 LeftIconRegion
@@ -1481,6 +1492,7 @@ baf34791 PulseStartColor
 6c0d487b PurchaseHeader
 987dd59e PurchaseableVfx
 b2c87912 PurchasedOverlay
+f4dfb8b8 QUEUE
 cdbc1b2a QuestComplete
 0b13c31a QuestReceived
 0ffd4ef0 QueueType
@@ -1633,6 +1645,7 @@ d22f9095 Score
 0363c399 ScoreboardScene
 454943b7 ScreenFade
 631b482e ScreenOffset
+203e6faa Script
 d2538e5a ScriptData
 88668caa ScriptDataObjectLists
 69400df7 ScriptHistoryIsAStack
@@ -1748,7 +1761,9 @@ ebac5e4c SoulGivenOnDeath
 a30565cd SoundEvents
 6cfc6633 SoundKey
 a059ebf8 SoundOnActivate
+9a580035 SoundOnCreate
 03406fbb SoundOnDeActivate
+64f306b1 SoundPersistent
 1bcf29d8 Source
 7e67db69 SourceIcon
 177de9ee SourceIcons
@@ -1774,6 +1789,7 @@ a3b8a1a8 SpectatorSoundKey
 96a3b0a9 SpeedDegrees
 ab82a72c SpeedDown
 2507110d SpeedUp
+a96fc6c9 Spell
 81e35eaf SpellDamageRatio
 52fde74f SpellDataValues
 da510d6f SpellFXOverrideSkins
@@ -1782,6 +1798,7 @@ da510d6f SpellFXOverrideSkins
 164a99e3 SpellPreloads
 6a4675e9 SpellRankPips
 6c2c1d94 SpellRankText
+e19a6b2d SpellSlot
 841704fa SpellSlots
 8b2a728d SpellToggleSlot
 e7fa2b10 SpellVOOverrideSkins
@@ -2166,6 +2183,7 @@ b6e43139 UseTargetAsCaster
 c592ad55 UseTargetingRefactor
 dafad87c UtilityDivider
 33b8543e UvRotationMult
+54fa99a1 VISIBLE
 dae0c6f9 ValidBuffs
 39f7fe5a ValidGoldSource
 7647b421 Value1
@@ -2199,6 +2217,7 @@ fb678d00 VoteIcon
 bbfe765d VoteNocolor
 52b48ed8 VoteTimeout
 51c13ad7 VoteYesColor
+50a09eb9 WEIGHT
 b68c7d1f WardSkinId
 792112ef Warning
 e4261d1e WarningIcon
@@ -2394,6 +2413,7 @@ edbcaa56 birthUvRotateRateMult
 cfb707de birthUvScrollRate
 32356474 birthUvScrollRateMult
 fa41ab8d birthVelocity
+0bbc40d8 blend
 23b75597 blendEnable
 8ffbd6de blendEquation
 fa784eab blendMode
@@ -2432,6 +2452,7 @@ e4d83b53 buoyancy
 df989f94 buttonDefinition
 46d5e740 buttonElements
 5df249a0 buttonSelected
+87f03406 callback
 1e4e8270 canCastOrQueueWhileCasting
 db633223 canCastWhileDisabled
 9acfbbaf canOnlyCastWhileDead
@@ -2462,6 +2483,7 @@ d41d4fce centerLocator
 ea595ca6 champion
 047f7e3b championId
 ad06db03 championMetadata
+09770505 championName
 22f23e2c championProgressiveTickData
 a977f4ae championSkinId
 2d78c328 championSkinName
@@ -2515,6 +2537,7 @@ f8f489b1 colors
 40b53231 combinableCounterDisplay
 0de5f1fe combinableNegativeNumberFormat
 91b41045 combinableNumberFormat
+f042a7ea comp
 a4fcbf59 comparisonByLevel
 365d9de2 completedSoundPath
 868eb76a complexEmitterDefinitionData
@@ -2539,11 +2562,14 @@ b3e7c1fb cooldownSpellQueueing
 9ecac3a1 cooldownTime
 3fdcc22e cooldownTimeSeconds
 7bd6c7e0 cooldownVoiceOver
+f969d2ee counterID
 d67b90f2 critAttacks
 8afc08bf critDamageMultiplier
 3ff62242 critPerLevel
 2226ab34 criticalAttack
 4b0f55ce cullEnable
+ddf28636 currency
+1f40f3cb currencyId
 796fb247 customExclusions
 1aaa051f customHealthBarTemplate
 6d8d5bf1 customInclusions
@@ -2606,6 +2632,7 @@ d32430e5 disableVerticalReverse
 42ab4c4a disabledRegions
 b44b0b57 disarm
 072d935c displayElements
+d6ddad9c displayGroup
 4fd51a36 displayName
 e89ff5ca displayTypes
 a6248fb6 dissipation
@@ -2795,6 +2822,7 @@ b0f389dc fov
 65237bf0 fragmentShader
 9b111ae4 frameRate
 c434b2e2 frameRateMult
+7b71324f frames
 2fb31c01 frequency
 9137d3b8 fresnel
 38ec08cf fresnelColor
@@ -2855,6 +2883,7 @@ bbb9794b healthPerTick
 e2bc28b7 healthPercentage
 d5bdbb42 height
 6cb549bd heightSolver
+bc53b1f6 helperText
 bbd43eee hideAfterSeconds
 be0bee70 hideWithLineIndicator
 a19ebeb8 highlightHealthbarIcons
@@ -2901,6 +2930,7 @@ d0f1f287 imageAssets
 c76fd482 imageInfo
 f511a169 imagePath
 b9516a6f importance
+f729e184 incrementalPurchase
 40c6c39e indicatorType
 cd8310f1 inertia
 98c52469 inherits
@@ -2945,6 +2975,7 @@ ae56503a italics
 565b9057 itemLinks
 4d5e9d13 itemLists
 4948dd56 itemType
+f8d0f0eb itemTypeId
 2103d934 itemVOGroup
 3a79338f items
 afbfd186 itemsLeft
@@ -5076,12 +5107,14 @@ b3716497 pitchYawRoll
 e7188105 playStyleDamage
 cd50f121 playStyleMobility
 dc62fe84 playStyleUtility
+2c99c300 player
 a2364252 playerBuffsOffeset
 ca229a11 playerBuffsOffset
 df1e9ff3 polymorph
 934f4e0a position
 fa45ef23 postRotateOrientationAxis
 7e6634de prefabDefinition
+6e96ba3c premiumEntitlementID
 f510291e preset
 0b44452a price
 bbd81e0d primaryAbilityResource
@@ -5089,17 +5122,21 @@ bbd81e0d primaryAbilityResource
 007b14f6 primitive
 94e4e309 priority
 a7084719 probabilityTables
+96483821 productID
 053f960b profileIcon
 719111e1 projectionFading
 28f08d30 projectionYRange
+11de6cdc properties
 0da7c432 pulseDuration
 197a43db pulseInterval
 f121a509 pulseOffset
 4c8efa77 pulseTime
 56dcec2a purchaseButton
 fc23f1cc purchaseIdentities
+0767d593 purchaseRateLimit
 416020ee quadType
 9ad55026 quality
+4b728fd8 quantity
 5b5e3b46 queueDisplayData
 e9790525 queueId
 34e71c29 queuedOrdersTriggerPreIssueOrder
@@ -5165,6 +5202,8 @@ d2f58721 resourceMap
 176acc5e restorePurchaseButton
 450192dc resurrectingAlpha
 9aa1ff1e reverbPreset
+2a4b4fcd rewardGroup
+a1d9de0b rewards
 e9c98281 rigPoseModifierData
 99fce18f rightTextureName
 98bc5cde roles
@@ -5274,6 +5313,7 @@ a63ebd41 skinBasedRelativeColorScheme
 6f1dd68b skinRarityOverride
 a1f805da skinScale
 68f2b69c skinUpgradeData
+bd113e91 skins
 14854159 skipVOOverride
 0a65794d skyLightColor
 b39b0430 skyLightScale
@@ -5312,6 +5352,7 @@ bfc37103 spellNames
 864343c8 splineWidth
 a0958d01 srcAlphaBlendFactor
 22c0c7d0 srcColorBlendFactor
+885a9a2d stage
 04a101fa stages
 7ce54f01 startAlpha
 826cd95e startDelay
@@ -5340,6 +5381,7 @@ b06c36e4 stencilPassDepthFailOp
 599391f5 stencilPassDepthPassOp
 7b43e2ec stencilRef
 cd909507 stencilReferenceVal
+c7441a0f step
 77a4e581 stoneName
 73d3ba3f stopEvent
 6086f717 storeDisplayName
@@ -5430,6 +5472,7 @@ eda78f54 themeMusicID
 2df21909 timerCountdownWarningStart
 126e61cf timerEnabled
 5d68eeb5 times
+b283d523 timestamp
 88e125fe tips1
 87e1246b tips2
 86e122d8 tips3
@@ -5470,6 +5513,7 @@ a5f167ec uncensoredIconSquares
 e582347f underline
 3fcb5693 unitHealthBarStyle
 30d4aa13 unitTagsString
+c918a49c units
 98337779 untargetableAlpha
 952a8343 untargetableSpawnTime
 d53df2e7 upgradeButton
@@ -5557,6 +5601,7 @@ a1aafc4c waterColoration
 7eb7e9f1 waterDrake
 afffad98 weaponMaterialCrit
 d3a1950d weaponMaterials
+b6d9f7fe weights
 6747c0fa wh
 4b92c1ec windingToCull
 45dc64bd windowLength
