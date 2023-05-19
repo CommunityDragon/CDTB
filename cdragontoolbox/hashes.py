@@ -741,7 +741,7 @@ class GameHashGuesser(HashGuesser):
                 if wadfile.type == 2:
                     continue # softlink; contains no actual content
                 if wadfile.ext in ('dds', 'jpg', 'png', 'tga', 'ttf', 'otf', 'ogg', 'webm', 'anm',
-                                   'skl', 'skn', 'scb', 'sco', 'troybin', 'luabin', 'luabin64', 'bnk', 'wpk'):
+                                   'skl', 'skn', 'scb', 'sco', 'troybin', 'bnk', 'wpk', 'tex'):
                     continue # don't grep filetypes known to not contain full paths
 
                 data = wad.read_file_data(f, wadfile)
