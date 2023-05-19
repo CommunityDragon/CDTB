@@ -229,7 +229,7 @@ class Wad:
         for wadfile in self.files:
             if wadfile.path_hash in hashes:
                 wadfile.path = hashes[wadfile.path_hash]
-                wadfile.ext = wadfile.path.rsplit('.', 1)[1]
+                wadfile.ext = os.path.splitext(wadfile.path)[1][1:]
 
     def load_subchunk_toc(self):
         """Find subchunk TOC if available and parse it"""
