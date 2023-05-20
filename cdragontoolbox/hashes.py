@@ -606,6 +606,8 @@ class GameHashGuesser(HashGuesser):
         re_suffix = re.compile(r'^(.*?)(\.[^.]+)?(\.[^.]+)$')
         for p in self.known.values():
             m = re_suffix.search(p)
+            if not m:
+                continue
             prefix, suffix, ext = m.groups()
             if suffix:
                 suffixes.add(suffix)
