@@ -271,6 +271,8 @@ class TftTransformer:
                 "name": champ.getv(0xC3143D66),
                 "cost": cost,
                 "icon": champ.getv(0x466DC3CC) or champ.getv("mIconPath"),
+                "tileIcon": champ.getv(0xDAC11DD4),
+                "squareIcon": champ.getv(0x16071366),
                 "traits": [traits[h]["name"] for h in champ_traits if h in traits],
                 "stats": {
                     "hp": record.getv("baseHP"),
