@@ -250,7 +250,7 @@ class Wad:
         # avoid opening the file if not needed
         unknown_ext = True
         for wadfile in self.files:
-            if not wadfile.path and not wadfile.ext:
+            if not wadfile.ext:
                 wadfile.ext = _hash_to_guessed_extensions.get(wadfile.path_hash)
                 if not wadfile.ext:
                     unknown_ext = True
@@ -259,7 +259,7 @@ class Wad:
 
         with open(self.path, 'rb') as f:
             for wadfile in self.files:
-                if not wadfile.path and not wadfile.ext:
+                if not wadfile.ext:
                     data = self.read_file_data(f, wadfile)
                     if not data:
                         continue
@@ -277,16 +277,20 @@ class Wad:
                     wadfile.path = f"{path}/{wadfile.path_hash:016x}"
 
     def sanitize_paths(self):
-        """Truncate files whose basename has a length of at least 255"""
+        """Sanitize paths for extract purposes; for example truncating files whose basename has a length of at least 250"""
 
         for wadfile in self.files:
             if wadfile.path:
-                path, filename = os.path.split(wadfile.path)
-                if len(filename) < 255:
-                    continue
+                ext = os.path.splitext(wadfile.path)[1]
+                if wadfile.ext and not ext:
+                    # extension was guessed, but the resolved path has no extension
+                    # in this case, append the guessed extension with custom suffix
+                    ext = f".cdtb.{wadfile.ext}"
+                    wadfile.path += ext
 
-                basename, ext = os.path.splitext(filename)
-                wadfile.path = os.path.join(path, f"{basename[:255-17-len(ext)]}.{wadfile.path_hash:016x}{ext}")
+                path, filename = os.path.split(wadfile.path)
+                if len(filename) >= 250:
+                    wadfile.path = os.path.join(path, f"{filename[:250-17-len(ext)]}.{wadfile.path_hash:016x}{ext}")
 
     def extract(self, output, overwrite=True):
         """Extract WAD file
@@ -320,4 +324,3 @@ class Wad:
             return wadfile.read_data(fwad, self.subchunk_toc)
         except MalformedSubchunkError:
             return None
-
