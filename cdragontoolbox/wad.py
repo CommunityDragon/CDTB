@@ -277,21 +277,20 @@ class Wad:
                     wadfile.path = f"{path}/{wadfile.path_hash:016x}"
 
     def sanitize_paths(self):
-        """Sanitize paths for extract purposes; for example truncating files whose basename has a length of at least 255"""
+        """Sanitize paths for extract purposes; for example truncating files whose basename has a length of at least 250"""
 
         for wadfile in self.files:
             if wadfile.path:
-                path, filename = os.path.split(wadfile.path)
-                basename, ext = os.path.splitext(filename)
+                ext = os.path.splitext(wadfile.path)[1]
                 if wadfile.ext and not ext:
                     # extension was guessed, but the resolved path has no extension
                     # in this case, append the guessed extension with custom suffix
-                    wadfile.path = f"{wadfile.path}.cdtb.{wadfile.ext}"
+                    ext = f".cdtb.{wadfile.ext}"
+                    wadfile.path += ext
 
-                if len(filename) < 255:
-                    continue
-
-                wadfile.path = os.path.join(path, f"{basename[:255-17-len(ext)]}.{wadfile.path_hash:016x}{ext}")
+                path, filename = os.path.split(wadfile.path)
+                if len(filename) >= 250:
+                    wadfile.path = os.path.join(path, f"{filename[:250-17-len(ext)]}.{wadfile.path_hash:016x}{ext}")
 
     def extract(self, output, overwrite=True):
         """Extract WAD file
