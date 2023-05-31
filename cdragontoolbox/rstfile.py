@@ -80,13 +80,15 @@ class RstFile:
             has_trenc = parser.unpack("<B")[0]
 
         data = parser.f.read()
-        
+
+        # Files are sometimes messed-up (e.g. windows-1252 quote)
+        # Don't fail on UTF-8 decoding errors
         for i, h in entries:
             if has_trenc and data[i] == 0xFF:
                 size = int.from_bytes(data[i+1:][:2], 'little')
                 d = b64encode(data[i+3:][:size])
-                self.entries[h] = d.decode('utf-8')
+                self.entries[h] = d.decode('utf-8', 'replace')
             else:
                 end = data.find(b"\0", i)
                 d = data[i:end]
-                self.entries[h] = d.decode('utf-8')
+                self.entries[h] = d.decode('utf-8', 'replace')
