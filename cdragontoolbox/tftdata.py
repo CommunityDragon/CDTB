@@ -163,16 +163,17 @@ class TftTransformer:
             char_lists = item.getv("characterLists")
             if char_lists is None:
                 continue
-            char_list = char_lists[0]
             set_info = item[0xD2538E5A].value
             set_name = set_info["SetName"].getv("mValue")
 
             if set_number is None or set_name is None:
                 continue
-            if char_list not in character_lists:
-                continue
+            set_characters = []
+            for char_list in char_lists:
+                if char_list not in character_lists:
+                    continue
+                set_characters += [character_names[char] for char in character_lists[char_list].getv("Characters") if char in character_names]
 
-            set_characters = [character_names[char] for char in character_lists[char_list].getv("Characters")]
             sets.append((set_number, set_mutator, set_name, set_characters))
         return sets
 
