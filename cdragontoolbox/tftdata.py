@@ -267,7 +267,8 @@ class TftTransformer:
                 cost = rarity + int(rarity / 6)
 
             champs[name] = ({
-                "apiName": record.getv("mCharacterName"),
+                "apiName": champ.getv("mName"),
+                "characterName": record.getv("mCharacterName"),
                 "name": champ.getv(0xC3143D66),
                 "cost": cost,
                 "icon": champ.getv(0x466DC3CC) or champ.getv("mIconPath"),
