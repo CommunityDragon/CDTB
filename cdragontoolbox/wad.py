@@ -282,10 +282,16 @@ class Wad:
         for wadfile in self.files:
             if wadfile.path:
                 ext = os.path.splitext(wadfile.path)[1]
-                if wadfile.ext and not ext:
-                    # extension was guessed, but the resolved path has no extension
-                    # in this case, append the guessed extension with custom suffix
-                    ext = f".cdtb.{wadfile.ext}"
+                if not ext:
+                    # some extensionless files conflict with folder names
+                    # append a custom suffix to resolve this conflict
+                    ext = ".cdtb"
+
+                    if wadfile.ext:
+                        # extension was guessed, but the resolved path has no extension
+                        # in this case, append the guessed extension
+                        ext += f".{wadfile.ext}"
+
                     wadfile.path += ext
 
                 path, filename = os.path.split(wadfile.path)
