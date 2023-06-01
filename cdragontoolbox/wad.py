@@ -306,8 +306,8 @@ class Wad:
 
         logger.info(f"extracting {self.path} to {output}")
 
-        self.set_unknown_paths("unknown")
         self.sanitize_paths()
+        self.set_unknown_paths("unknown")
 
         with open(self.path, 'rb') as fwad:
             for wadfile in self.files:
