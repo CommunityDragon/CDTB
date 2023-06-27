@@ -68728,6 +68728,7 @@ df62daa9ab spell_tft5_ziggsq_tooltip
 3c6ff9e738 spell_tft5_zyrae_tooltip
 1331bc43a1 spell_tft5_zyraq_name
 60d1230382 spell_tft5_zyraq_tooltip
+403df878a5 spell_tft6961_ahriq_tooltip
 3ac5497649 spell_tft6_ahriq_name
 42749eea6b spell_tft6_ahriq_stacks
 1ba1b8b66d spell_tft6_ahriq_tooltip
