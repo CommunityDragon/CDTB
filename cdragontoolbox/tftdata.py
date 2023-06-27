@@ -44,10 +44,10 @@ class TftTransformer:
         map22 = BinFile(map22_file)
 
         character_names = self.parse_character_names(map22)
-        sets = self.parse_sets(map22, character_names)
         traits = self.parse_traits(map22)
+        sets = self.parse_sets(map22, character_names, traits)
         champs = self.parse_champs(map22, traits, character_folder)
-        output_sets, output_set_data = self.build_output_sets(sets, traits, champs)
+        output_sets, output_set_data = self.build_output_sets(sets, champs)
         items = self.parse_items(map22)
 
         return {
@@ -113,15 +113,13 @@ class TftTransformer:
             with open(os.path.join(output, f"{lang}.json"), "w", encoding="utf-8") as f:
                 json.dump(instance, f, cls=NaiveJsonEncoder, indent=4, sort_keys=True)
 
-    def build_output_sets(self, sets, traits, champs):
+    def build_output_sets(self, sets, champs):
         """Build sets as output in the final JSON file"""
 
         output_sets = {}
         output_set_data = []
-        for set_number, set_mutator, set_name, set_chars in sets:
+        for set_number, set_mutator, set_name, set_chars, set_traits in sets:
             set_champs_pairs = [champs[name] for name in set_chars if name in champs]
-            set_traits_paths = {h for p in set_champs_pairs for h in p[1]}
-            set_traits = [traits[h] for h in set_traits_paths if h in traits]
             set_champions = [p[0] for p in set_champs_pairs]
             output_set_data.append({
                 "number": set_number,
@@ -142,17 +140,21 @@ class TftTransformer:
         # always use lowercased name: required for files, and bin data is inconsistent
         return {x.path: x.getv("name").lower() for x in map22.entries if x.type == "Character"}
 
-    def parse_sets(self, map22, character_names):
-        """Parse character sets to a list of `(name, number, characters)`"""
+    def parse_sets(self, map22, character_names, traits):
+        """Parse character sets to a list of `(name, number, characters, traits)`"""
         character_lists = {x.path: x for x in map22.entries if x.type == "MapCharacterList"}
+        trait_lists = {x.path: x for x in map22.entries if x.type == "TftTraitList"}
         set_collection = [x for x in map22.entries if x.type == 0x438850FF]
 
         if not set_collection:
             # backward compatibility
             longest_character_list = max(character_lists.values(), key=lambda v: len(v.fields[0].value))
+            longest_trait_list = max(trait_lists.values(), key=lambda v: len(v.fields[0].value))
             champion_list = longest_character_list.fields[0].value
+            trait_list = longest_trait_list.fields[0].value
             set_characters = [character_names.get(char) for char in champion_list]
-            return [(1, "Base", set_characters)]
+            set_traits = [traits.get(trait) for trait in trait_list]
+            return [(1, "Base", set_characters, set_traits)]
 
         sets = []
         for item in set_collection:
@@ -162,6 +164,9 @@ class TftTransformer:
                 set_mutator = item.getv("name")
             char_lists = item.getv("characterLists")
             if char_lists is None:
+                continue
+            set_trait_lists = item.getv("TraitLists")
+            if set_trait_lists is None:
                 continue
             set_info = item[0xD2538E5A].value
             set_name = set_info["SetName"].getv("mValue")
@@ -174,7 +179,14 @@ class TftTransformer:
                     continue
                 set_characters += [character_names[char] for char in character_lists[char_list].getv("Characters") if char in character_names]
 
-            sets.append((set_number, set_mutator, set_name, set_characters))
+            set_trait_paths = []
+            for trait_list in set_trait_lists:
+                if trait_list not in trait_lists:
+                    continue
+                set_trait_paths += trait_lists[trait_list].getv("mTraits")
+            set_traits = [traits[path] for path in set(set_trait_paths) if path in traits]
+
+            sets.append((set_number, set_mutator, set_name, set_characters, set_traits))
         return sets
 
     def parse_items(self, map22):
