@@ -293,10 +293,14 @@ class PatcherStorage(Storage):
     `channels/.../files/` contains symlinks to them.
     This can be disabled by setting the `use_extract_symlinks` option to false.
 
+    Sometimes, HTTPS requests to clientconfig.rpg.riotgames.com are denied.
+    If `clientconfig_data` is set, the provided file is used (if available).
+
     Configuration options:
       patchline -- the patchline name (`live` or `pbe`)
       region -- region from which use configuration
       use_extract_symlinks -- if false, disable use of symlinks for extracted files
+      clientconfig_data -- file to use as 'clientconfig.rpg.riotgames.com' data
 
     """
 
@@ -311,12 +315,15 @@ class PatcherStorage(Storage):
         super().__init__(path, self.URL_BASE)
         self.patchline = patchline
         self.use_extract_symlinks = True
+        self.clientconfig_data = None
 
     @classmethod
     def from_conf_data(cls, conf):
         storage = cls(conf['path'], conf.get('patchline', cls.DEFAULT_PATCHLINE))
         if conf.get('use_extract_symlinks') is False:
             storage.use_extract_symlinks = False
+        if 'clientconfig_data' in conf:
+            storage.clientconfig_data = conf['clientconfig_data']
         return storage
 
     def base_release_path(self):
@@ -373,9 +380,13 @@ class PatcherStorage(Storage):
             print(f"{timestamp}", file=f)
 
     def get_latest_client_manifest(self):
-        r = self.s.get(f"https://clientconfig.rpg.riotgames.com/api/v1/config/public?namespace=keystone.products.league_of_legends.patchlines")
-        r.raise_for_status()
-        data = r.json()
+        if self.clientconfig_data is not None and os.path.exists(self.clientconfig_data):
+            with open(self.clientconfig_data) as f:
+                data = json.load(f)
+        else:
+            r = self.s.get("https://clientconfig.rpg.riotgames.com/api/v1/config/public?namespace=keystone.products.league_of_legends.patchlines")
+            r.raise_for_status()
+            data = r.json()
         region = 'PBE' if self.patchline == 'pbe' else self.CLIENT_LIVE_REGION
         for config in data[f"keystone.products.league_of_legends.patchlines.{self.patchline}"]["platforms"]["win"]["configurations"]:
             if config['id'] == region:
