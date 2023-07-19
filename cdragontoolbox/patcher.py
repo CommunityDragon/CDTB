@@ -294,13 +294,13 @@ class PatcherStorage(Storage):
     This can be disabled by setting the `use_extract_symlinks` option to false.
 
     Sometimes, HTTPS requests to clientconfig.rpg.riotgames.com are denied.
-    If `clientconfig_data` is set, the provided file is used (if available).
+    If `clientconfig_data` is set, the provided file (if available) or URL is used.
 
     Configuration options:
       patchline -- the patchline name (`live` or `pbe`)
       region -- region from which use configuration
       use_extract_symlinks -- if false, disable use of symlinks for extracted files
-      clientconfig_data -- file to use as 'clientconfig.rpg.riotgames.com' data
+      clientconfig_data -- file or URL to use as 'clientconfig.rpg.riotgames.com' data
 
     """
 
@@ -380,11 +380,13 @@ class PatcherStorage(Storage):
             print(f"{timestamp}", file=f)
 
     def get_latest_client_manifest(self):
-        if self.clientconfig_data is not None and os.path.exists(self.clientconfig_data):
-            with open(self.clientconfig_data) as f:
+        url_or_path = self.clientconfig_data
+        if url_or_path and not url_or_path.startswith('http://') and not url_or_path.startswith('https://') and os.path.exists(url_or_path):
+            with open(url_or_path) as f:
                 data = json.load(f)
         else:
-            r = self.s.get("https://clientconfig.rpg.riotgames.com/api/v1/config/public?namespace=keystone.products.league_of_legends.patchlines")
+            url = url_or_path or "https://clientconfig.rpg.riotgames.com/api/v1/config/public?namespace=keystone.products.league_of_legends.patchlines"
+            r = self.s.get(url)
             r.raise_for_status()
             data = r.json()
         region = 'PBE' if self.patchline == 'pbe' else self.CLIENT_LIVE_REGION
