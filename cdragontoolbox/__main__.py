@@ -3,7 +3,6 @@ import os
 import sys
 import argparse
 import json
-import re
 import textwrap
 import fnmatch
 import logging
@@ -15,8 +14,6 @@ from cdragontoolbox.storage import (
     parse_storage_component,
     storage_conf_from_path,
 )
-from cdragontoolbox.rads import RadsStorage
-from cdragontoolbox.patcher import PatcherStorage
 from cdragontoolbox.wad import Wad
 from cdragontoolbox.export import CdragonRawPatchExporter
 from cdragontoolbox.binfile import BinFile

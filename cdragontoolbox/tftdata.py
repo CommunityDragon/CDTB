@@ -3,7 +3,7 @@ import glob
 import os
 import copy
 import re
-from .binfile import BinFile, BinHashBase, BinHashValue, BinEmbedded
+from .binfile import BinFile, BinHashBase, BinEmbedded
 from .rstfile import RstFile
 
 

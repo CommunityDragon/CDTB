@@ -13,14 +13,12 @@ from .storage import (
     PatchVersion,
     get_system_yaml_version,
     get_content_metadata_version,
-    get_exe_version,
 )
 from .tools import (
     BinaryParser,
     write_file_or_remove,
     zstd_decompress,
 )
-from .data import Language
 
 logger = logging.getLogger(__name__)
 
@@ -117,7 +115,7 @@ class PatcherManifest:
 
         # offsets to tables (convert to absolute)
         offsets_base = parser.tell()
-        offsets = list(offsets_base + 4*i + v for i, v in enumerate(parser.unpack(f'<6l')))
+        offsets = list(offsets_base + 4*i + v for i, v in enumerate(parser.unpack('<6l')))
 
         parser.seek(offsets[0])
         self.bundles = list(self._parse_table(parser, self._parse_bundle))
@@ -245,7 +243,7 @@ class PatcherManifest:
         parser.seek(fields_pos)
         parser.skip(2) # vtable size
         parser.skip(2) # object size
-        for i, field, offset in zip(range(nfields), fields, parser.unpack(f'<{nfields}H')):
+        for _, field, offset in zip(range(nfields), fields, parser.unpack(f'<{nfields}H')):
             if field is None:
                 continue
             name, fmt = field

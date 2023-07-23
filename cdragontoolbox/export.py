@@ -9,7 +9,7 @@ from io import BytesIO
 from PIL import Image
 
 from .storage import PatchVersion
-from .wad import Wad, MalformedSubchunkError
+from .wad import Wad
 from .binfile import BinFile
 from .sknfile import SknFile
 from .rstfile import hashfile_rst, RstFile, key_to_hash as key_to_rsthash
@@ -401,7 +401,7 @@ class CdragonRawPatchExporter:
             for path in sorted(new_paths):
                 print(path, file=f)
 
-        logger.info(f"export TFT data files")
+        logger.info("export TFT data files")
         self.export_tft_data()
 
     def export_tft_data(self):

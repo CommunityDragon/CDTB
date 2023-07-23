@@ -80,7 +80,7 @@ def sigint_callback(callback):
     try:
         yield
     finally:
-        handler_back = signal.signal(signal.SIGINT, previous_handler)
+        _handler_back = signal.signal(signal.SIGINT, previous_handler)
 
 def progress_iterate(sequence, formatter=None):
     """Iterate over sequence, display progress on SIGINT"""
@@ -222,7 +222,7 @@ class HashGuesser:
         words = list(words) # Ensure words is a list
         format_part = "{sep}%%s" * (nnew-1)
         format_part = f"%s%%s{format_part}%s"
-        re_extract = re.compile(f"([^/_.-]+)(?=((?:[-_][^/_.-]+){{{nold-1}}})[^/]*\.[^/]+$)")
+        re_extract = re.compile(rf"([^/_.-]+)(?=((?:[-_][^/_.-]+){{{nold-1}}})[^/]*\.[^/]+$)")
         temp_formats = set()
         for path in paths:
             for m in re_extract.finditer(path):
@@ -267,7 +267,7 @@ class HashGuesser:
         formats = set()
         for path in paths:
             for m in re_extract.finditer(path):
-                formats.add(f'%s%s%s' % (path[:m.start()], fmt, path[m.end():]))
+                formats.add('%s%s%s' % (path[:m.start()], fmt, path[m.end():]))
 
         nrange = range(nmax)
         logger.debug(f"substitute numbers: {len(formats)} formats, nmax = {nmax}")
@@ -330,7 +330,7 @@ class LcuHashGuesser(HashGuesser):
         regex = re.compile(r'^plugins/([^/]+)/[^/]+/[^/]+/')
         region_lang_list = [(r, l) for r in regions for l in langs]
         known = list(self.known.values())
-        logger.debug(f"substitute region and lang")
+        logger.debug("substitute region and lang")
         for region_lang in progress_iterator(region_lang_list, lambda rl: f"{rl[0]}/{rl[1]}"):
             replacement = r'plugins/\1/%s/%s/' % region_lang
             self.check_iter(regex.sub(replacement, p) for p in known)
@@ -646,7 +646,7 @@ class GameHashGuesser(HashGuesser):
                 group_skin_ids.extend(d['id'] for d in skin_data['chromas'])
             char_to_skin_groups.setdefault(char_name, []).append([int(i) % 1000 for i in group_skin_ids])
 
-        logger.debug(f"find skin groups .bin files using chroma groups")
+        logger.debug("find skin groups .bin files using chroma groups")
         for char, groups in progress_iterator(char_to_skin_groups.items(), lambda v: v[0]):
             str_groups = [[f"_skins_skin{i}" for i in group] for group in groups] + [["_skins_root"]]
             for n in range(len(str_groups)):
@@ -672,7 +672,7 @@ class GameHashGuesser(HashGuesser):
             char_to_skins.setdefault(char, {0}).add(nskin)
 
         # generate all combinations
-        logger.debug(f"find skin groups .bin files")
+        logger.debug("find skin groups .bin files")
         for char, skins in progress_iterator(char_to_skins.items(), lambda v: v[0]):
             # note: skins are in lexicographic order: skin11 is before skin2
             str_skins = sorted(f"_skins_skin{i}" for i in skins)

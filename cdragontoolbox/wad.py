@@ -103,7 +103,6 @@ class WadFileHeader:
         elif self.type == 4:
             # Data is split into individual subchunks that may be zstd compressed
             if subchunk_toc is not None:
-                subchunk_entries = [struct.unpack('<IIQ', subchunk_toc[16*(subchunk_index := self.first_subchunk_index+i):16*(subchunk_index+1)]) for i in range(self.subchunk_count)]
                 chunks_data = []
                 offset = 0
                 for index in range(self.first_subchunk_index, self.first_subchunk_index + self.subchunk_count):
@@ -174,6 +173,7 @@ class WadFileHeader:
         for prefix, ext in WadFileHeader._magic_numbers_ext.items():
             if data.startswith(prefix):
                 return ext
+        return None
 
 
 class Wad:

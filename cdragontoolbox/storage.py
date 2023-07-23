@@ -4,7 +4,7 @@ import itertools
 import json
 import glob
 from contextlib import contextmanager
-from typing import List, Tuple, Union, Optional, Generator, Iterable
+from typing import List, Tuple, Union, Optional, Generator
 import logging
 import requests
 import hachoir.parser
@@ -435,8 +435,7 @@ def get_system_yaml_version(path) -> str:
             m = re.match(r"""^ *(?:game-|)branch: .*["'/]([0-9.]+)["']?$""", line)
             if m:
                 return m.group(1)
-        else:
-            return None
+        return None
 
 
 def get_exe_version(path) -> str:
