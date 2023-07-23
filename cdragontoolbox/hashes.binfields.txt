@@ -51,6 +51,7 @@ e9a0a7f1 AdviceEmptyText
 c59afad1 AdviceIconDefault
 13f36cf9 AdviceLabel
 3fb502ed Aggro
+3e6c51c8 AiScript
 d5ef6d17 Airborne
 9156f4d4 AlertIcon
 8f78f4b3 AliveIcon
@@ -96,7 +97,10 @@ e7d30d42 ArenaInfoPanel
 5a439ba5 ArmLength
 f84984d4 Armor
 d5d36ff5 ArmorIcon
+f3da4ee2 ArmorMax
 b7bf62a1 ArmorPenetration
+bd9669f8 ArmorUpgrade
+90c4c347 ArmorUpgradeGrowth
 4f02b933 ArrowIcon
 aea44051 Aspect
 81082e4b AssetBinName
@@ -225,6 +229,7 @@ c7878a1b BounceRadius
 6e304492 BreakpointAmount
 5855caa8 BriefText
 0e1a23ca BriefTextBackdrop
+4a2aa0cc Buff
 3f0d4c0f BuffAddType
 b8c35392 BuffEffects
 a10ad504 BuffType
@@ -254,6 +259,7 @@ c256041d ButtonIcons
 ab91ba1f ButtonScene
 496a4392 ButtonStyle
 7348db33 ButtonStyles
+b6b04242 ButtonText
 93ec9f26 Buttons
 7d83e942 ButtonsRegion
 013bb8da BuyExpButton
@@ -264,6 +270,7 @@ d65e723c CameraAnimation
 6495fab8 CameraBone
 b587877d CameraLockButton
 64fe3d2f CameraView
+a9ef3654 Camp
 a0e8bf2a CampLevel
 f135454f CampName
 6463e656 CanBeMadeObsolete
@@ -446,6 +453,8 @@ a0dc95ba DamageBuffName
 4293e6ae DamageDisplayData
 cf5d9d5b DamageFlashMeter
 0a671d7b DamageFlowTakeDealDamageFlip
+718456c6 DamageInhibitor
+5fb9bd8e DamageMax
 eba69111 DamageMeter
 d12128e3 DamageOverview
 d17c71e5 DamageProperties
@@ -454,6 +463,8 @@ f60c25c4 DamageSkinIcon
 871c0429 DamageTags
 f6f283a3 DamageTakenPie
 e5b78177 DamageText
+59eb67ec DamageUpgrade
+59b5a4e0 DamageUpgradeLate
 bb61b895 Damping
 9ac4d782 DashRange
 aae01626 DataCollections
@@ -640,6 +651,7 @@ c1f1eefc ExButton
 991fa1d6 ExitHitRegion
 56f2ddad ExpBar
 cbbd569e ExpBarDivider
+7543819e ExpRadius
 25e023d0 ExpScene
 472ed1ef ExpText
 ccfbfa84 ExpVfx
@@ -650,6 +662,7 @@ e467132e ExpandedByDefault
 e64cdc86 ExperienceBar
 db6d671a ExperienceHitRegion
 53a54b1e ExperienceMeter
+badf029a Extension
 47e0cdf1 ExtraAbilities
 2cc9296f ExtraBars
 aacfd877 FaceVelocity
@@ -744,6 +757,7 @@ f7eff847 GameStartEvent
 cfe609d6 GeneralSettings
 271fb40d GenericBackgroundTexture
 df684997 GenericIcon
+6d9c47ab GlobalRotationTimeInSeconds
 ec66d793 Gold
 9d7f2df2 GoldIcon
 4d3d9423 GoldIconDefinition
@@ -757,6 +771,11 @@ c83e08d0 GridSkipFirstCell
 5fb91e8c Group
 af939497 GroupFramed
 fb59da5c GroupLink
+7a19f501 HPInhibitor
+643db497 HPUpgrade
+2bb2b6b8 HPUpgradeGrowth
+d438afe4 HPUpgradeGrowthLate
+15988bbb HPUpgradeLate
 e1d30578 HTMLStyleSheet
 cfbebd9f Halo
 cec577d1 Hash
@@ -866,6 +885,7 @@ d36508cd InputHandler
 228ee863 InputParameters
 315b9a19 InputScene
 006fd80c InputText
+57b6c998 Inputs
 c585b541 InterruptibleDamage
 50c33eec InterruptibleDisable
 36a37f21 InterruptibleImmobilize
@@ -978,6 +998,7 @@ fa4c41a0 LayoutStyle
 9d5bd447 LayoutType
 49e385de LeaderControls
 c12996d1 LeashDistance
+c4beadc8 LeashRadius
 7825ec74 LeaveButton
 f221fb31 LeftIcon
 f43b8449 LeftIconRegion
@@ -1024,6 +1045,8 @@ e9ca9aee Links
 32c274bd LobbyCloseButton
 d4cfe813 LobbyMusicState
 573e7831 LobbyScene
+0dd8fce3 LocalGoldGiven
+10708343 LocalGoldGivenOnLastHit
 eeb5073d LocalPlayer
 d368581c LocalThemeMusic
 fbc94a2c LocalizedDescription
@@ -1031,6 +1054,7 @@ fbc94a2c LocalizedDescription
 8d7a04b6 LocalizedShortDescription
 0bf5a9a6 Location
 f7cb2205 LocationName
+ef0d7842 Lock
 7fb0bd0a LockButton
 1f022f95 LockGroup
 875144e9 LockText
@@ -1042,6 +1066,7 @@ ec47ae37 LogoIcon
 128a2d92 LogoLink
 ddef486b Loop
 09aa0736 LootIcon
+5c1ba470 LootItem
 bd3842ad Lore2
 5a4e1ece LossOfControlValueText
 864c2489 LostExpText
@@ -1052,6 +1077,7 @@ bd3842ad Lore2
 00758e29 MagicPenetration
 b6f318ee MagicResist
 fad4c40b MagicResistIcon
+c772db3b MagicResistanceUpgrade
 022e368c MagicalDamage
 71e55eed MagicalDamageCritical
 47482875 Magnitude
@@ -1148,6 +1174,7 @@ c4ecff00 MinLevelUpLevel
 4d3600d7 MinScale
 8a8a009a Mini
 0261b251 MinimapContent
+1f4e4c65 MinimapIcon
 2070742c MinimapRadialButtons
 2051c3e8 MinimapSelectionLine
 37b7e946 MinimapTooltipAnchor
@@ -1357,6 +1384,7 @@ a75595ed ParBar
 304ff962 ParRegenText
 7c44cff8 ParameterData
 42042493 ParameterName
+eacdfcfd Parent
 e3fe3059 ParentList
 e8e0dd0b ParentScene
 500d2d4c ParentTables
@@ -1388,6 +1416,7 @@ f1ed03d1 PhysicalDamage
 695b5cd0 PinButton
 68151ff1 PingAbilityIcons
 1cc88c1d PingButton
+59e0ab85 PingCategory
 f96fee7c PingMuteButton
 7201bb23 PingMuting
 9eb8549d PipAvailable
@@ -1426,6 +1455,7 @@ d7177733 PlayerProfileScene
 856af76d PlayerSlots
 4893610a PlayerTemplate
 c30f3060 PlusIcon
+051cb889 Polygon
 c2c92932 Polymorphed
 3023effb PopularIcon
 b3e2f60e PopupHitRegion
@@ -1480,6 +1510,8 @@ acdc3f70 ProgressMeterBg
 3f3b1eee PromoteAccountButton
 d8d71d83 PromoteButton
 52fd4a5b PropName
+ccbbbcf8 PropNames
+d6b302c8 Property
 a819195c ProvisionalTextRight
 12afd903 PublicName
 efc505f6 PulseBackground
@@ -1505,6 +1537,8 @@ ceb9f0e4 RadialBackdrop
 8adc7cce RadialExpBar
 cd810dff RadialOverlays
 7eb2af0c Rage
+fadc0cd2 Range
+5120063b RangeValue
 20404526 RankIconData
 36cd05cf RankIcons
 ded25f4d RankPips
@@ -1593,6 +1627,7 @@ be61dfc0 RestoreLuaStackAfterException
 5e3d1c98 Resurrecting
 93ee4daa RetryFailedSpellLoad
 e71097c1 RevealEffect
+8d90f938 RevealEvent
 16ba2823 RevealFlags
 698fa777 RewardIcon
 16021a23 RewardReadyVfx
@@ -1647,6 +1682,7 @@ d22f9095 Score
 d2538e5a ScriptData
 88668caa ScriptDataObjectLists
 69400df7 ScriptHistoryIsAStack
+dcb68071 ScriptName
 dcf513e8 ScrollRegionElement
 3c99e7ed SearchIconDefinition
 3c4f003d SearchItemDescriptionDefinition
@@ -1755,6 +1791,7 @@ fe28c700 SlotsLayout
 a46aab48 SocialTooltipAnchor
 3eec020d SortedByKeys
 ebac5e4c SoulGivenOnDeath
+9d3b176c SoundEvent
 0262b4a7 SoundEventName
 6cfc6633 SoundKey
 a059ebf8 SoundOnActivate
@@ -1774,6 +1811,7 @@ f6647cd6 SourceResolutionWidth
 721e9831 Sources
 ef29baeb SourcesX
 ee29b958 SourcesY
+88923ff7 SpawnCount
 d940d530 Special
 2a16e3e6 SpecialOfferButton
 afadcb3f SpecialOfferButtonDefinition
@@ -1791,6 +1829,7 @@ a96fc6c9 Spell
 52fde74f SpellDataValues
 da510d6f SpellFXOverrideSkins
 5a434ed3 SpellLayout
+ed5e0ca1 SpellLevel
 90a09233 SpellPips
 164a99e3 SpellPreloads
 6a4675e9 SpellRankPips
@@ -1829,6 +1868,7 @@ e9f33fa7 StartPercentage
 fda3759b StartingItemBundles
 62246441 StartingJointForTrailFollowTEMP
 013859f0 StartingJointName
+f9e45233 StartupDelayInSeconds
 e84fe8d3 StatComponents
 fbefb0a6 StatFilters
 b3db383c StatFormulas
@@ -1909,6 +1949,7 @@ b157685d TRAKey
 e2db859f TabNameTraKey
 210dd2c4 TabOrder
 4a9c9bdf Table
+8f30eadc TableName
 8799ac14 TableValue
 0c1dcd2d Tabs
 0e8c8e17 TagLink
@@ -2012,11 +2053,13 @@ bf551875 TimerBarFx
 3393b80b TimerBorderBg
 b52b690b TimerElements
 22d4499e TimerFillTexture
+0ec4726f TimerIcon
 0cc6f662 TimerKeyName
 8eba997b TimerSyncForReplay
 014f72c9 TimerText
 9e71dae2 TimerVfx
 ca2d9683 Timers
+e0c5d401 TimesShownPerCycle
 ba6c0bc4 TimestampText
 b52f0137 Timing
 84f6f1cd TipBodyText
@@ -2090,6 +2133,7 @@ b077b518 TransitionMaxAlpha
 9200c8ce TransitionMinAlpha
 8d6d21cf Transitional
 21328a43 Transitions
+ecca6f9a TriggerTime
 9d0cca5b TriggeredBy
 7cd54d45 TriggeredFromScript
 e241a860 TrueDamage
@@ -2098,6 +2142,7 @@ d5ce2141 TrueDamageCritical
 c5612cad TutorialVfx
 b56b83fd TwoStar
 2640188a TwoStars
+2b57350d UIElement
 3a8bfbed UIRect
 189cbd4b UVScroll
 4431e0e3 UiData
@@ -2328,6 +2373,7 @@ f2eb4b1f attackRank
 4c73c8c6 attributeFlags
 596b6a3e audioParameterFlexID
 a185a643 audioParameterTimeScaledDuration
+1d721851 augments
 a8bdced9 authoredWidth
 04cfe414 autoScale
 cf0bf7fe axisFraction
@@ -2352,6 +2398,7 @@ f8f29f92 bankUnits
 416bc18f banner
 1a9e9484 bannerFlagId
 91c02319 bannerFrameId
+33bd70d7 bannerList
 3f74778c bannerName
 7b9fba40 bannerTheme
 3ddc94d8 base
@@ -2560,6 +2607,7 @@ f969d2ee counterID
 d67b90f2 critAttacks
 8afc08bf critDamageMultiplier
 3ff62242 critPerLevel
+51540388 critical
 2226ab34 criticalAttack
 4b0f55ce cullEnable
 ddf28636 currency
@@ -2684,6 +2732,7 @@ f0f7a695 emoteLoadout
 911be685 emoteStartButton
 cb80af27 emoteVictoryButton
 e862b379 emoteYOffset
+18a7beee empty
 02f3b39e enabled
 3adcf3d2 endAlpha
 4f2cd510 endLocator
@@ -2926,12 +2975,15 @@ cd8310f1 inertia
 382825a9 initialSubmeshMouseOversToHide
 f4ba5c9e initialSubmeshShadowsToHide
 80b7f78f initialSubmeshToHide
+69c27bbb initializer
 ff578b94 inkFillRate
 1bf2d68f inkFillTime
 6abaa1e5 innerTextureName
+416225e9 innerring
 0b99db0e inputTextLengthMax
 8563e50a intensity
 3c8368c0 intensityScale
+6eacca83 internalName
 cedd8578 interval
 3e073677 intime
 2e3d90b1 intro
@@ -3021,6 +3073,7 @@ b471dc2a locators
 9980070c lockedToEmitter
 74672198 logicalParameters
 72fdbb19 logicalParamters
+ed8e521b loginStrategy
 7593992d looping
 6e95967d lootTableButton
 ba383df4 lore1
@@ -4942,6 +4995,7 @@ e75d681f messageVisibleTime
 49f68636 meterFilledButtonFadeInDelay
 d893c6b0 microTickPerTickData
 e5cefbcd microTicksBetween
+05fd2ac8 milestoneId
 7db59929 minAlpha
 fb22823e minAngle
 91e64df1 minAngleCos
@@ -4967,6 +5021,7 @@ fe195c64 minionScoreValue
 6563bee8 miscRenderFlags
 1985fb4b missileGroupSpawners
 165e061e missileSpeed
+938b38b3 modes
 6592b854 modulationFactor
 0c134bb4 momentumFromHit
 0574b158 moreInfoButton
@@ -5462,10 +5517,12 @@ b283d523 timestamp
 87e1246b tips2
 86e122d8 tips3
 9865b509 title
+63791a24 titleIcon
 cef47d3f tooltipDelay
 d6b7a622 tooltipOnly
 fb014d9a topCenterOffset
 7b4ebcc4 topIconSize
+607e3955 totalDuration
 61246780 towerBurstData
 91401571 towerTargetingEffect2DeathDefinition
 d9bf88d3 towerTargetingEffect2Definition
@@ -5563,6 +5620,7 @@ f54aa658 verticalOffset
 73f9c3e6 victoryBannerSound
 d25da809 victoryMusicID
 4eb9a495 videoAssets
+3fad4c30 viewType
 30462fc4 vintageCutoffDate
 9554002c viscosity
 a0c70f80 visibilityComponent
