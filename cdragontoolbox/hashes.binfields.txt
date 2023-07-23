@@ -605,7 +605,6 @@ a03379b8 EmptyPips
 6fb394db EnableCustomPlayerScoreColoring
 fea35e52 EnableExtendedTooltip
 065db9cf EnableUnitStatusHealthBarNames
-02f3b39e Enabled
 7b9b52c3 EnabledWidgets
 6a8e75aa End
 bd8e2d9b EndFrame
@@ -833,7 +832,6 @@ fc31b31f IconMinimap
 32073228 IconOverlayElement
 77274757 IconPath
 ddbda0d2 IconRight
-0f4122b2 IconScale
 50ce2e41 IconSize
 74180b10 IdleAnimationName
 487fcd1a IgnoreGlobalScale
@@ -1446,7 +1444,6 @@ f6ef1749 PortraitPath
 558e874a PortraitScene
 4e20b84b PortraitTimer
 76e1ca64 PortraitUiData
-934f4e0a Position
 e0b29ef4 PositiveBuffs
 8b376269 PostAttackMoveDelay
 98195bc5 PostponeTargetSpellOrders
@@ -1607,7 +1604,6 @@ d9ecc0a5 RiftHeraldUpdate
 35400ee4 RightBias
 7a865b10 RightIcon
 a55a6b7c RollOverEvent
-a55a6b7c RolloverEvent
 bbf7c1da RootNodes
 8b0cfc93 RootScene
 63025e38 RootSkin
@@ -1760,7 +1756,6 @@ a46aab48 SocialTooltipAnchor
 3eec020d SortedByKeys
 ebac5e4c SoulGivenOnDeath
 0262b4a7 SoundEventName
-a30565cd SoundEvents
 6cfc6633 SoundKey
 a059ebf8 SoundOnActivate
 9a580035 SoundOnCreate
@@ -2073,7 +2068,6 @@ aee644a1 TouchFeedbackElement
 3f6fb5cb TowerDetectionRadius
 bb45cdaf TowerIcon
 4f809608 TowerScore
-b157685d TraKey
 919de1f4 TrackDuration
 88d10c22 TrackObjectiveSteal
 0e48d4d3 TrackerData
@@ -2094,7 +2088,6 @@ bb0173ee TransactionId
 8f80acad TransitionIn
 b077b518 TransitionMaxAlpha
 9200c8ce TransitionMinAlpha
-2686a483 TransitionTime
 8d6d21cf Transitional
 21328a43 Transitions
 9d0cca5b TriggeredBy
@@ -2270,7 +2263,6 @@ c74608c8 alternateRightLeft
 6ea2a666 alwaysDraw
 df73f8e2 alwaysSnapFacing
 3fda1a59 ambientEvent
-42edcab4 anchor
 35b8ee35 anchorLeft
 ea0df64e anchorRight
 2434c560 angelOffsetRadian
@@ -2589,7 +2581,6 @@ edf1840c defaultAnimation
 123393ed defaultAnimations
 2ffc1bc2 defaultIndex
 37fd915d defaultSound
-1bf466b2 defaultStateElements
 28da4278 defaultTechnique
 32b374fa defaultTexturePath
 1eb71cc8 defaultWordWrapMargin
@@ -2633,7 +2624,6 @@ d32430e5 disableVerticalReverse
 33f36f05 disabled
 42ab4c4a disabledRegions
 b44b0b57 disarm
-072d935c displayElements
 d6ddad9c displayGroup
 4fd51a36 displayName
 e89ff5ca displayTypes
@@ -2649,7 +2639,6 @@ e21d4240 doesNotGiveMinionScore
 10ea55cd doesParticleLifetimeScale
 06216465 doubleSided
 b88c0d43 drag
-4652f49d dragRegionElement
 f810361e dragon
 543e52eb drawType
 c803c9f6 drawingLayer
@@ -2677,7 +2666,6 @@ c13d6d31 effectAmounts
 48130c4f effectName
 91879aca effectRadius
 6c5e591c elderDrake
-5a94b0cc elements
 3e1c2d84 emblemLinks
 2135c4d4 emissionMeshName
 bda98597 emissionMeshScale
@@ -2891,7 +2879,6 @@ be0bee70 hideWithLineIndicator
 a19ebeb8 highlightHealthbarIcons
 b0ef060f highlightTimeoutSeconds
 fc2725ce hitFxScale
-6bf3194e hitRegionElement
 fd3d43af horizonColor
 f4867212 horizontalAlignment
 49b51f19 hotkeyModifierText
@@ -2905,7 +2892,6 @@ e0346e4b hoverLineIndicatorBaseTextureName
 5bb930bf hoverLineIndicatorTargetTextureName
 2a062e78 hoverLineIndicatorWidth
 53ac2647 hoverLineIndicatorWidthMinimap
-bcd200cf hoverStateElements
 0fd6a4da hpPerLevel
 643cb399 hpPerTick
 cc3ef161 hpRegenPerLevel
@@ -3697,7 +3683,6 @@ fe0f0ccb mFriendlyLaneMinionBarColor
 b9e1c243 mFromAttacker
 8763f23f mFromOwner
 c4f41d79 mFullScreen
-c4f41d79 mFullscreen
 1cda45ec mFxAa
 5dbd6263 mGDSObjectPathTemplates
 27c03215 mGameComponentList
@@ -3789,7 +3774,6 @@ bbe19802 mHotkey
 392bdb3c mHoverDescription
 180f1a00 mHoverNotUseableCursor
 f4a2e4f3 mHovertipList
-7c0a8359 mHtmlStyleSheet
 d95eb979 mHudScoreData
 e723d68b mHudSpellSlotResetFeedbackData
 84fd9809 mIcon
@@ -5241,7 +5225,6 @@ b0d0037c sceneLayer
 c96dae5d scoreDisplayQuest
 065faaf6 screenHeight
 ca504a1d scrollDirection
-dcf513e8 scrollRegionElement
 dfc96107 scrollSpeed
 90adba64 scrollingScene
 f9205db4 searchTags
@@ -5577,7 +5560,6 @@ fc926160 vScrolling
 12804f14 verticalAlignment
 018bb815 verticalFacing
 f54aa658 verticalOffset
-2adc883e vfxSystem
 73f9c3e6 victoryBannerSound
 d25da809 victoryMusicID
 4eb9a495 videoAssets
