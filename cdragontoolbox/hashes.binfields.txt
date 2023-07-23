@@ -124,6 +124,8 @@ f1695b8d AudioFlexValueParameterName
 14df3d1e AugmentContainerIcon
 2c15dfef AugmentContainerIconFrame
 8731b20e AugmentIcons
+19ae3e16 AugmentNameId
+827dc19e AugmentPlatformId
 10d5509e AugmentTitle
 5a075a9b AugmentTooltipButton
 f68eb447 AutoBuffActivateAttachBoneNames
