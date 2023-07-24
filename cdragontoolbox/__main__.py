@@ -2,7 +2,7 @@
 import os
 import sys
 import argparse
-import json
+import rapidjson
 import textwrap
 import fnmatch
 import logging
@@ -308,7 +308,7 @@ def command_bin_dump(parser, args):
     with open(args.bin, 'rb') as f:
         binfile = BinFile(f, btype_version=parsed_version)
     if args.json:
-        json.dump(binfile.to_serializable(), sys.stdout)
+        rapidjson.dump(binfile.to_serializable(), sys.stdout, mapping_mode=rapidjson.MM_COERCE_KEYS_TO_STRINGS)
     else:
         for entry in binfile.entries:
             print(entry)

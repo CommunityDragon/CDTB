@@ -1,6 +1,7 @@
 import os
 import errno
 import json
+import rapidjson
 import re
 import shutil
 import struct
@@ -710,7 +711,7 @@ class BinConverter(FileConverter):
                 binfile = BinFile(output_path, btype_version=self.btype_version)
             except ValueError as e:
                 raise FileConversionError(f"failed to parse bin file: {e}")
-            fout.write(json.dumps(binfile.to_serializable()).encode('ascii'))
+            fout.write(rapidjson.dumps(binfile.to_serializable(), mapping_mode=rapidjson.MM_COERCE_KEYS_TO_STRINGS).encode('ascii'))
 
 class SknConverter(FileConverter):
     def __init__(self):
