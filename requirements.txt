@@ -3,4 +3,4 @@ hachoir
 xxhash
 pyzstd
 Pillow
-python-rapidjson
+ujson

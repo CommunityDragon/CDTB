@@ -2,7 +2,6 @@
 import os
 import sys
 import argparse
-import rapidjson
 import textwrap
 import fnmatch
 import logging
@@ -24,6 +23,7 @@ from cdragontoolbox.hashes import (
     LcuHashGuesser,
     GameHashGuesser,
 )
+from cdragontoolbox.tools import json_dump
 
 
 def parse_component_arg(parser, storage: Storage, component: str):
@@ -308,7 +308,7 @@ def command_bin_dump(parser, args):
     with open(args.bin, 'rb') as f:
         binfile = BinFile(f, btype_version=parsed_version)
     if args.json:
-        rapidjson.dump(binfile.to_serializable(), sys.stdout, mapping_mode=rapidjson.MM_COERCE_KEYS_TO_STRINGS)
+        json_dump(binfile.to_serializable(), sys.stdout)
     else:
         for entry in binfile.entries:
             print(entry)

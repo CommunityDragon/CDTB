@@ -1,7 +1,5 @@
 import os
 import errno
-import json
-import rapidjson
 import re
 import shutil
 import struct
@@ -17,6 +15,7 @@ from .rstfile import hashfile_rst, RstFile, key_to_hash as key_to_rsthash
 from .tools import (
     write_file_or_remove,
     write_dir_or_remove,
+    json_dumps
 )
 
 logger = logging.getLogger(__name__)
@@ -711,7 +710,7 @@ class BinConverter(FileConverter):
                 binfile = BinFile(output_path, btype_version=self.btype_version)
             except ValueError as e:
                 raise FileConversionError(f"failed to parse bin file: {e}")
-            fout.write(rapidjson.dumps(binfile.to_serializable(), mapping_mode=rapidjson.MM_COERCE_KEYS_TO_STRINGS).encode('ascii'))
+            fout.write(json_dumps(binfile.to_serializable()).encode('ascii'))
 
 class SknConverter(FileConverter):
     def __init__(self):
@@ -765,4 +764,4 @@ class RstConverter(FileConverter):
             rst_json["entries"][key] = value
 
         with write_file_or_remove(output_path + '.json', False) as fout:
-            fout.write(json.dumps(rst_json, ensure_ascii=False))
+            fout.write(json_dumps(rst_json, ensure_ascii=False))
