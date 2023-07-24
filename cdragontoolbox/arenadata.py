@@ -78,14 +78,14 @@ class ArenaTransformer:
         for augment in augment_entries:
 
             augment_datavalues = {}
+            augment_calculations = {}
             augment_spellobject = augment.getv(0x1418F849)
             if augment_spellobject:
                 augment_spell = spellobject_entries[augment_spellobject].getv('mSpell')
                 for datavalue in augment_spell.getv('mDataValues', []):
-                    augment_datavalues[datavalue.getv("mName")] = datavalue.getv("mValues", [None])[0]
+                    augment_datavalues[datavalue.getv("mName")] = datavalue.getv("mValues", [0])[0]
 
                 #Giving raw calculations data due to not having a well defined standard
-                augment_calculations = {}
                 if augment_spell.get('mSpellCalculations'):
                     augment_calculations = augment_spell.get('mSpellCalculations').to_serializable()[1]
             
@@ -96,8 +96,8 @@ class ArenaTransformer:
                 "name": augment.getv(0x2127EB37),
                 "desc": augment.getv("DescriptionTra"),
                 "tooltip": augment.getv(0x366935FC),
-                "iconSmall": augment.getv(0x45481FB5).lower().replace(".dds",".png").replace(".tex",".png"),
-                "iconLarge": augment.getv(0xF1F7E50D).lower().replace(".dds",".png").replace(".tex",".png"),
+                "iconSmall": convert_cdragon_path(augment.getv(0x45481FB5)),
+                "iconLarge": convert_cdragon_path(augment.getv(0xF1F7E50D)),
                 "rarity": augment.getv("rarity", 0),
                 "dataValues": augment_datavalues,
                 "calculations": augment_calculations,
@@ -105,7 +105,8 @@ class ArenaTransformer:
 
         return augments
 
-
+def convert_cdragon_path(path):
+    return path.lower().replace(".dds", ".png").replace(".tex", ".png")
 
 def main():
     import argparse
