@@ -3,8 +3,17 @@ import glob
 import os
 import copy
 import re
-from .binfile import BinFile
-from .tftdata import NaiveJsonEncoder, load_translations
+from .binfile import BinFile, BinHashBase
+from .rstfile import RstFile
+
+
+class NaiveJsonEncoder(json.JSONEncoder):
+    def default(self, other):
+        if isinstance(other, BinHashBase):
+            if other.s is None:
+                return other.hex()
+            return other.s
+        return other.__dict__
 
 
 class ArenaTransformer:
@@ -31,13 +40,8 @@ class ArenaTransformer:
         """
 
         stringtable_dir = os.path.join(self.input_dir, "data/menu")
-        # Support both 'font_config_*.txt' (old) and 'main_*.stringtable' (new)
-        if os.path.exists(os.path.join(stringtable_dir, "fontconfig_en_us.txt")):
-            stringtable_pattern = "fontconfig_??_??.txt"
-            stringtable_format = "fontconfig_%s.txt"
-        else:
-            stringtable_pattern = "main_??_??.stringtable"
-            stringtable_format = "main_%s.stringtable"
+        stringtable_pattern = "main_??_??.stringtable"
+        stringtable_format = "main_%s.stringtable"
 
         if langs is None:
             langs = []
@@ -52,7 +56,7 @@ class ArenaTransformer:
         template = self.build_template()
         for lang in langs:
             instance = copy.deepcopy(template)
-            replacements = load_translations(os.path.join(stringtable_dir, stringtable_format % lang))
+            replacements = RstFile(os.path.join(stringtable_dir, stringtable_format % lang))
 
             def replace_in_data(entry):
                 for key in ("name", "desc", "tooltip"):
@@ -66,29 +70,24 @@ class ArenaTransformer:
                 json.dump(instance, f, cls=NaiveJsonEncoder, indent=4, sort_keys=True)
 
     def parse_augments(self, map30):
-        """Returns a list of augments sorted by numerical id"""
+        """Returns a list of augments"""
         augment_entries = [x for x in map30.entries if x.type == 0x6DFAB860]
-        spellobject_entries = {str(x.path): x for x in map30.entries if x.type == "SpellObject"}
+        spellobject_entries = {x.path: x for x in map30.entries if x.type == "SpellObject"}
 
         augments = []
         for augment in augment_entries:
 
             augment_datavalues = {}
-            if augment.getv(0x1418F849):
-                try:
-                    for datavalue in spellobject_entries[str(augment.getv(0x1418F849))].getv('mSpell').getv('mDataValues'):
-                        augment_datavalues[datavalue.getv("mName")] = datavalue.getv("mValues")[0]
-                except TypeError:
-                    pass
+            augment_spellobject = augment.getv(0x1418F849)
+            if augment_spellobject:
+                augment_spell = spellobject_entries[augment_spellobject].getv('mSpell')
+                for datavalue in augment_spell.getv('mDataValues', []):
+                    augment_datavalues[datavalue.getv("mName")] = datavalue.getv("mValues", [None])[0]
 
                 #Giving raw calculations data due to not having a well defined standard
                 augment_calculations = {}
-                try:
-                    augment_calculations.update(
-                        spellobject_entries[str(augment.getv(0x1418F849))].getv('mSpell').get('mSpellCalculations').to_serializable()[1]
-                    )
-                except AttributeError:
-                    pass
+                if augment_spell.get('mSpellCalculations'):
+                    augment_calculations = augment_spell.get('mSpellCalculations').to_serializable()[1]
             
 
             augments.append({
@@ -97,15 +96,15 @@ class ArenaTransformer:
                 "name": augment.getv(0x2127EB37),
                 "desc": augment.getv("DescriptionTra"),
                 "tooltip": augment.getv(0x366935FC),
-                "iconSmall": augment.getv(0x45481FB5),
-                "iconLarge": augment.getv(0xF1F7E50D),
-                "rarity": augment.getv("rarity") or 0,
-                "datavalues": augment_datavalues,
+                "iconSmall": augment.getv(0x45481FB5).lower().replace(".dds",".png").replace(".tex",".png"),
+                "iconLarge": augment.getv(0xF1F7E50D).lower().replace(".dds",".png").replace(".tex",".png"),
+                "rarity": augment.getv("rarity", 0),
+                "dataValues": augment_datavalues,
                 "calculations": augment_calculations,
             })
 
-        augments.sort(key=lambda x:x['id'])
         return augments
+
 
 
 def main():
