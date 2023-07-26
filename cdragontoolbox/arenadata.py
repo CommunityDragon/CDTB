@@ -88,7 +88,6 @@ class ArenaTransformer:
                 #Giving raw calculations data due to not having a well defined standard
                 if augment_spell.get('mSpellCalculations'):
                     augment_calculations = augment_spell.get('mSpellCalculations').to_serializable()[1]
-            
 
             augments.append({
                 "id": augment.getv(0x827DC19E),

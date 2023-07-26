@@ -403,6 +403,8 @@ class CdragonRawPatchExporter:
 
         logger.info("export TFT data files")
         self.export_tft_data()
+        logger.info("export Arena data files")
+        self.export_arena_data()
 
     def export_tft_data(self):
         if self.patch.version != 'main' and self.patch.version < PatchVersion('9.14'):
@@ -411,6 +413,14 @@ class CdragonRawPatchExporter:
         from .tftdata import TftTransformer
         transformer = TftTransformer(os.path.join(self.output, "game"))
         transformer.export(os.path.join(self.output, "cdragon/tft"), langs=None)
+
+    def export_arena_data(self):
+        if self.patch.version != 'main' and self.patch.version < PatchVersion('13.14'):
+            return  # no supported Arena data before 13.14
+        # don't import in module to be able to execute arenadata module
+        from .arenadata import ArenaTransformer
+        transformer = ArenaTransformer(os.path.join(self.output, "game"))
+        transformer.export(os.path.join(self.output, "cdragon/arena"), langs=None)
 
     def _create_exporter(self, patch):
         if patch.version == 'main':
