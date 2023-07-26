@@ -92,6 +92,7 @@ cf15f26a Animations
 25e5198f AnnouncementsMapping
 5af22504 AntiTrollPingAfterDeath
 65bba5e8 Arena
+32263cf0 ArenaData
 0f9e7be2 ArenaIconPath
 e7d30d42 ArenaInfoPanel
 5a439ba5 ArmLength
@@ -125,8 +126,10 @@ e0613999 Audio
 f1695b8d AudioFlexValueParameterName
 5cfe9324 AudioSource
 76503b91 AudioType
+85e383b4 AugmentColors
 14df3d1e AugmentContainerIcon
 2c15dfef AugmentContainerIconFrame
+c1716cff AugmentDisplayTags
 8731b20e AugmentIcons
 19ae3e16 AugmentNameId
 827dc19e AugmentPlatformId
@@ -266,6 +269,7 @@ b6b04242 ButtonText
 92759f4a BuyExpButtonScene
 d8c2bcff CCScore
 0ae88c3b CallForHelpSpike
+04d2dcb4 CameoList
 d65e723c CameraAnimation
 6495fab8 CameraBone
 b587877d CameraLockButton
@@ -313,6 +317,7 @@ b3f33cf8 ChampionButtonTemplate
 8e277b93 ChampionGoldText
 3e4882a9 ChampionNameLink
 a48e3ad9 ChampionSpells
+d3f2229f ChampionTags
 4a4e8672 ChampionsPerRow
 9292a6c1 Chance
 2ac71ccc ChannelDuration
@@ -497,6 +502,7 @@ fe7cef23 DefaultMaterial
 d46d37b7 DefaultOn
 4ac45539 DefaultPalette
 e55627ef DefaultPipSpacer
+e3fcf341 DefaultRespawnPoints
 db62c463 DefaultState
 1bf466b2 DefaultStateElements
 4f50f19a DefaultTextureName
@@ -591,7 +597,6 @@ a59d87e5 EditButton
 7d009a51 EffectNameForOtherTeam
 5c1fc8bc EffectType
 fa144e3e ElementGroup
-5a94b0cc Elements
 3d3bcb26 Elements[0]
 39398643 Elements[1]
 3941d508 Elements[2]
@@ -668,8 +673,10 @@ badf029a Extension
 aacfd877 FaceVelocity
 54222157 FadeAmount
 7146b6bc FadeBar
+05ca119c FadeFinish
 77cd7e28 FadeInData
 d8fb5a45 FadeOutData
+84b1d5a1 FadeStart
 a40f930a FadeTime
 c61cab67 FalloffRate
 96f6d338 Ferocity
@@ -809,7 +816,6 @@ cd880326 HighlightIcon
 f581291f HintText
 b6f9350f HitArea
 f3eb6a16 HitRegion
-6bf3194e HitRegionElement
 2c79840f Honor
 e5c73ef5 HorizontalFillDirection
 a1527ead HorizontalJustification
@@ -1027,8 +1033,10 @@ eb079194 LimitedTournamentPause
 53e09c75 LineMissileDelayDestroyAtEndSeconds
 db386b37 LineMissileTimePulseBetweenCollisionSpellHits
 69a31b79 LinearOverlays
+b929b43e Linger
 7d4f3ccc LingerErosionDriveCurve
 6861179c LingerRotation0
+b2dcc7dc LingerScale
 7d8eb884 LingerScale0
 ed01b2a5 LinkedTraits
 e9ca9aee Links
@@ -1174,6 +1182,7 @@ c4ecff00 MinLevelUpLevel
 4d3600d7 MinScale
 8a8a009a Mini
 0261b251 MinimapContent
+04474405 MinimapEnabled
 1f4e4c65 MinimapIcon
 2070742c MinimapRadialButtons
 2051c3e8 MinimapSelectionLine
@@ -1197,6 +1206,7 @@ c921e814 MissionIcon
 6a6c9550 MissionIconBackground
 ec323bfe MissionsButton
 1257d9a3 MobileBinPath
+1cf84925 MobileMixEvent
 ec6ee012 Mode
 f855908d ModeInclusions
 072f09a8 ModeLabel
@@ -1247,6 +1257,7 @@ c187dd64 MythicPurchasedVfx
 c50ea4ff NameLocKey
 2f575f76 NameTag
 d5ced975 NameText
+2127eb37 NameTra
 6194e22e NameTraKey
 f7197db9 NavGridPath
 4a989cc9 NavHeaderScene
@@ -1398,6 +1409,7 @@ a75d185e Passive
 a42ed7f4 PathTargetPosition
 e4bf75ab PathfindingV2
 7f81a49d PauseOnEnd
+561de536 PcMixEvent
 3ee7119e PenetrationAppliesToTurrets
 5753b933 PercentMPPoolMod
 38cc8288 PercentMPRegenMod
@@ -1620,6 +1632,7 @@ e68ccb2e ResetOnEnd
 76208c51 ResetTimer
 58322317 ResizeDragRegion
 1f4dd8bb ResourceBars
+98155aac RespawnPoints
 ad17ba74 RespawnTimer
 b9355f63 RespawnTimerText
 be61dfc0 RestoreLuaStackAfterException
@@ -1642,8 +1655,10 @@ a55a6b7c RollOverEvent
 bbf7c1da RootNodes
 8b0cfc93 RootScene
 63025e38 RootSkin
+1418f849 RootSpell
 a0c57a4c Rooted
 e5ffa4a9 RoundTemplate
+b7b53758 Rounds
 590bd78c RowHorizontalAlignment
 bbd94716 RowVerticalAlignment
 2a37b398 Rows
@@ -1683,7 +1698,6 @@ d2538e5a ScriptData
 88668caa ScriptDataObjectLists
 69400df7 ScriptHistoryIsAStack
 dcb68071 ScriptName
-dcf513e8 ScrollRegionElement
 3c99e7ed SearchIconDefinition
 3c4f003d SearchItemDescriptionDefinition
 cb7a6a6b SearchViewPaneDefinition
@@ -1915,6 +1929,7 @@ dc4a41ff SubPurchaseIcon
 3b5d2f94 SubPurchaseTitle
 27215cd1 SubmitButton
 a77beff4 SubmitButtonDefinition
+9d29afc1 SubPhases
 34bd8b7a SubtitleText
 2a260f84 SubtitleTextHandle
 f489c470 SummonerEmoteButtons
@@ -1983,6 +1998,7 @@ d30c289a Team2
 3d967f91 Team2Text
 0864efa3 TeamBorders
 f61f63d4 TeamData
+54d8e282 TeamDisplayData
 cf4eea7a TeamFightData
 b00b708b TeamHealthMeter
 529c6838 TeamKillsIcon
@@ -2714,6 +2730,7 @@ c13d6d31 effectAmounts
 48130c4f effectName
 91879aca effectRadius
 6c5e591c elderDrake
+5a94b0cc elements
 3e1c2d84 emblemLinks
 2135c4d4 emissionMeshName
 bda98597 emissionMeshScale
@@ -2928,6 +2945,7 @@ be0bee70 hideWithLineIndicator
 a19ebeb8 highlightHealthbarIcons
 b0ef060f highlightTimeoutSeconds
 fc2725ce hitFxScale
+6bf3194e hitRegionElement
 fd3d43af horizonColor
 f4867212 horizontalAlignment
 49b51f19 hotkeyModifierText
@@ -3187,6 +3205,7 @@ e4d66086 mAttackDelayCastOffsetPercentAttackSpeedRatio
 146ab791 mAttributes
 ddac2570 mAudioAction
 421526d5 mAudioBanks
+dcd452ce mAugmentTags
 c28533dd mAutoAttackMinPostCastLockoutDeltaTimeSec
 98aee252 mAutoAttackMinPreCastLockoutDeltaTimeSec
 92368c91 mAutoRect
@@ -3260,6 +3279,7 @@ f68b3a51 mBuffTimerSimulationType
 41fe3d28 mBuffVfxSpawnConditions
 0f2abdbe mBuffs
 614e7a4d mBuildDepth
+54161e51 mBuildTags
 708df348 mCCScoreMultipliers
 0bfd5c3e mCacs
 dca91c56 mCalculations
@@ -3736,6 +3756,7 @@ fe0f0ccb mFriendlyLaneMinionBarColor
 b9e1c243 mFromAttacker
 8763f23f mFromOwner
 c4f41d79 mFullScreen
+c4f41d79 mFullscreen
 1cda45ec mFxAa
 5dbd6263 mGDSObjectPathTemplates
 27c03215 mGameComponentList
@@ -5280,6 +5301,7 @@ b0d0037c sceneLayer
 c96dae5d scoreDisplayQuest
 065faaf6 screenHeight
 ca504a1d scrollDirection
+dcf513e8 scrollRegionElement
 dfc96107 scrollSpeed
 90adba64 scrollingScene
 f9205db4 searchTags

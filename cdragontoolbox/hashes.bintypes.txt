@@ -89,6 +89,7 @@ e6caaf8c AttackEvents
 994bd692 AudioSystemDataPropertiesInstance
 42f9c69e AudioTagListProperties
 a3640c69 AudioTagListPropertiesInstance
+6dfab860 AugmentData
 1ddbf456 AvatarVarsTable
 ff6fd571 AvatarVarsTableInstance
 f69490f9 BackdropElement
@@ -231,6 +232,8 @@ df40db9e CheatMenuUIDataInstance
 4577ec44 CheatSet
 7f872c1f CheatSetInstance
 e1f5a982 CherryAugmentSelectionViewController
+0ed7b9fb CherryCameo
+bba8c3c3 CherryCameoList
 274447fc CherryEliminationViewController
 fbbb1174 CherryRoundsViewController
 359b5c4f CherryScoreboardViewController
@@ -1177,6 +1180,9 @@ db961a4b LinearTransformProcessorDataInstance
 af31eaf7 LiveFeatureTogglesInstance
 c7dcf45f LoLFeatureToggles
 6a18461c LoLFeatureTogglesInstance
+f163deff LoLModesPhaseData
+a2860180 LoLModesRoundData
+7e67f6dd LoLModesRoundsListData
 dd4505cb LoLSpellPreloadData
 a152ff38 LoLSpellPreloadDataInstance
 f53884fe LoLSpellScriptInstance
@@ -1271,6 +1277,7 @@ a844df61 MapLocator
 acfa07ea MapLocatorArray
 6604a5d5 MapLocatorArrayInstance
 c1ad6f3e MapLocatorInstance
+2a4ec840 MapMinimap
 7abcb65c MapMotionPath
 1c7aba6e MapNavGrid
 38d3b701 MapNavigationGridOverlay
@@ -1632,6 +1639,7 @@ da0bc105 ResetGoldCheat
 59f539d2 ResetGoldCheatInstance
 ef3a0f33 ResourceResolver
 0c5bb730 ResourceResolverInstance
+4cb037a7 RespawnPointDataList
 a3d2b899 RetiredStatStoneData
 836354ec ReturnChildrenOnMovementCompleteSpec
 d45fa322 ReturnToCaster
@@ -2209,6 +2217,7 @@ b520045a VfxChildParticleSetDefinitionData
 1a72ed36 VfxDistortionDefinitionDataInstance
 bfc2e133 VfxEmissionSurfaceData
 45ecc930 VfxEmissionSurfaceDataInstance
+8324a97b VfxEmitterAudio
 09cde442 VfxEmitterDefinitionData
 01b7cd7d VfxEmitterDefinitionDataInstance
 0a94f3d4 VfxFieldAccelerationDefinitionData
@@ -2226,6 +2235,7 @@ d7e1efec VfxFieldOrbitalDefinitionDataInstance
 51d3dcdc VfxFloatOverLifeMaterialDriver
 c039d307 VfxFloatOverLifeMaterialDriverInstance
 88c8b7c7 VfxGroupDefinitionData
+9b19f2b5 VfxLingerDefinitionData
 f9a4891f VfxMaterialOverrideDefinition
 d9b82e87 VfxMaterialOverrideDefinitionData
 d5ae0f54 VfxMaterialOverrideDefinitionDataInstance
