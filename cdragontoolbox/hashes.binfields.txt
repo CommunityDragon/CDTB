@@ -268,6 +268,7 @@ b6b04242 ButtonText
 013bb8da BuyExpButton
 92759f4a BuyExpButtonScene
 d8c2bcff CCScore
+b3711c47 CHECK
 0ae88c3b CallForHelpSpike
 04d2dcb4 CameoList
 d65e723c CameraAnimation
@@ -1920,6 +1921,7 @@ c5a50e34 StreakText
 ac307ed6 Style
 bd34fd7f StyleOverrides
 616627c4 SubPart
+9d29afc1 SubPhases
 a67dbab3 SubPurchaseDesc
 fbd508b7 SubPurchaseDivider
 67c3b51b SubPurchaseElements
@@ -1929,7 +1931,6 @@ dc4a41ff SubPurchaseIcon
 3b5d2f94 SubPurchaseTitle
 27215cd1 SubmitButton
 a77beff4 SubmitButtonDefinition
-9d29afc1 SubPhases
 34bd8b7a SubtitleText
 2a260f84 SubtitleTextHandle
 f489c470 SummonerEmoteButtons
@@ -3755,7 +3756,6 @@ fe0f0ccb mFriendlyLaneMinionBarColor
 663eb02a mFromAnyone
 b9e1c243 mFromAttacker
 8763f23f mFromOwner
-c4f41d79 mFullScreen
 c4f41d79 mFullscreen
 1cda45ec mFxAa
 5dbd6263 mGDSObjectPathTemplates

@@ -1433,6 +1433,7 @@ d5a6ab25 NotMaterialDriver
 d2c26ff2 NotMaterialDriverInstance
 a855e6b2 NotScriptCondition
 f8eda32d NotScriptConditionInstance
+9847b086 NotificationDialog
 9b9b3633 NotificationSettings
 16a40caa NotificationsPanelViewController
 6f18d402 NotificationsViewController
@@ -1562,6 +1563,7 @@ fd91cc12 PingRadialBaseViewController
 9160350b PlatformSpellInfoInstance
 9303df07 PlayGameRootScene
 4e5647fc PlayGameViewController
+690f8fb5 PlayerAugmentsViewController
 520b38ec PlayerCardWidgetConfig
 65aa46ed PlayerFields
 cd1215b8 PlayerFrameViewController
@@ -1592,6 +1594,7 @@ afc2369e RSTableSet
 c803bd35 RSValueGet
 bad95a7a RScript
 222275e5 RScriptInstance
+3f22b20c RadialMenuViewController
 6616ca3f RandomChanceCondition
 f663c272 RandomChanceScriptCondition
 8a9701ed RandomChanceScriptConditionInstance
@@ -2114,6 +2117,7 @@ fb2aa4b7 Turret
 6c68755e UIButtonDefinition
 a68fa594 UIButtonState
 2b57350d UIElement
+9e490c6c UIElementI
 0c6b491a UIMetricTeamScoreMeters
 17e5a283 UIPerkSummonerSpecialistSelector
 f9c32319 UIScene
