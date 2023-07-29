@@ -241,6 +241,7 @@ fbbb1174 CherryRoundsViewController
 374bca72 ChildMissileParentRepulsion
 64a056ca ChildMissileRepulsion
 911cbd12 ChildMissileSiblingRepulsion
+8085e5d1 CinematicBarsViewController
 039b5ebc CircleMovement
 a66643e7 CircleMovementInstance
 4a9d1e4f CircleMovementSpec
@@ -490,6 +491,7 @@ fb0dfd42 DestroyOnMovementComplete
 5d42067d DestroyOnMovementCompleteInstance
 124170c5 DestroyOnMovementCompleteSpec
 516ca527 DirectValueGet
+993b0561 DirectedTrackingElementViewController
 df6dc76a Direction
 9143dd55 DistanceToPlayerMaterialFloatDriver
 08c26f62 DistanceToPlayerMaterialFloatDriverInstance
@@ -1195,6 +1197,7 @@ f725cf62 LoadScreenTipSet
 732daac5 LoadingScreenChallengesData
 15793a8c LoadingScreenClash
 4f3e1bdd LoadingScreenClashTeam
+2dfb2488 LoadingScreenClassicViewController
 868f2575 LoadingScreenEmblemData
 604da433 LoadingScreenLatency
 e259ae3e LoadingScreenLatencyThreshold
@@ -1568,6 +1571,10 @@ fd91cc12 PingRadialBaseViewController
 65aa46ed PlayerFields
 cd1215b8 PlayerFrameViewController
 03a48829 PlayerInventoryViewController
+7fae76b4 PlayerMuteViewController
+58e072e0 PlayerPerksViewController
+ba43011f PlayerReportViewController
+c0037ef9 PlayerStatStonesViewController
 ddcd3678 PostGameViewController
 a6e60faf PracticeToolViewController
 a66424c6 PresetAnimatorCheat
@@ -1635,6 +1642,7 @@ a90263ef RemoveFromCustomTableBlock
 fbfd48ce RenderStyleData
 19315b59 RenderStyleDataInstance
 2bf1aafe ReplayCameraControlsViewController
+fb654061 ReplayControlsViewController
 9bd65ac8 ReplayVisibilityMenuViewController
 784718b8 ReportGoldCheat
 63a7b8ed ResetFirstBloodCheat
@@ -1649,6 +1657,7 @@ d45fa322 ReturnToCaster
 20893a59 ReturnToCasterOnMovementComplete
 85eb97a6 ReturnToCasterOnMovementCompleteInstance
 1518ba9a ReturnToCasterOnMovementCompleteSpec
+2a4b4fcd RewardGroup
 55063179 RigResource
 4d75b5c6 RigResourceInstance
 633a5e0d RootCrowdControlFilter
@@ -1804,6 +1813,7 @@ d486d6e9 SpellLockDeltaTimeData
 5e7e5a06 SpellObject
 600119a1 SpellObjectInstance
 d45ebe4a SpellPassiveData
+61a8deda SpellPickChoiceViewController
 bc49afde SpellRankUpRequirements
 7d690fa9 SpellRankUpRequirementsInstance
 a3bd0d60 SplineInfo
@@ -1821,6 +1831,7 @@ f5567460 StatStoneCollection
 ed237fc4 StatStoneData
 2be1af9f StatStoneDataInstance
 f72d6994 StatStoneEventToTrack
+d40fb1c3 StatStoneMilestoneCalloutViewController
 96766ff4 StatStoneSet
 127798fd StatUIData
 c145a43a StatUIDataInstance
@@ -1838,6 +1849,7 @@ e8e2a06c StaticMaterialShaderParamDefInstance
 0c86247e StaticMaterialSwitchDefInstance
 060a4413 StaticMaterialTechniqueDef
 4919d810 StaticMaterialTechniqueDefInstance
+02d1d21e StatusIcon
 a5666564 StealthData
 cecd5450 StealthVfx
 e8774a0b StealthVfxInstance
@@ -1901,15 +1913,21 @@ cdf6b9aa SyncGroupDataInstance
 d1c5edb6 TFTAnnouncementData
 9e2b8a86 TFTArmoryViewController
 de224c6d TFTAttachmentSlotStyleData
+a525e9d5 TFTAugmentInfoViewController
 d6d0730b TFTBattlepassViewController
 7d056314 TFTBotLoadoutConfiguration
 304496f1 TFTCharacterRecord
+feed65c7 TFTCharacterRoleCardViewController
+2558886d TFTCombatRecapViewController
 ef039d8b TFTCompanionBucket
 6a569767 TFTCompanionEvolutionViewController
+ab3db96c TFTCustomAnnouncementViewController
 8701b32d TFTDamageSkin
 54530df7 TFTDragData
+6cae7c7b TFTEliminationViewController
 c12f716a TFTEmotePanelViewController
 03314f38 TFTGameVariationData
+a7ae8586 TFTHintMessageViewController
 1233dbf1 TFTHudAnnouncementData
 5dc27e61 TFTHudCombatRecapData
 dade98fa TFTHudMobileDownscaleData
@@ -1921,12 +1939,17 @@ dade98fa TFTHudMobileDownscaleData
 43c3d118 TFTItemCodexViewController
 977716a6 TFTItemList
 85bb4e73 TFTItemMaterialController
+2257630d TFTItemPanelViewController
 24d8cf5a TFTLobbyViewController
 6c831cc9 TFTMapCharacterLists
+9fb61c0c TFTMatchupBannerViewController
 01d7548e TFTModeData
 7d28a28a TFTNotificationData
 474e7388 TFTOutOfGameCharData
+9bdea32a TFTPayoutViewController
 25cb010c TFTPhaseData
+7a18122a TFTPlayerChoiceViewController
+c87f4ce3 TFTReturnToBoardViewController
 f4a6bb27 TFTRoundData
 438850ff TFTSetData
 e1a5f350 TFTSoulFighterTournamentBracketsViewController
@@ -1935,7 +1958,9 @@ f737def9 TFTStageData
 26868b0f TFTStreak
 956ad097 TFTStreakData
 e007e6f5 TFTTraitContributionData
+6ab22868 TFTTraitInfoCardViewController
 c130c1e5 TFTTraitSetData
+c2662ac4 TFTTraitTrackerViewController
 7504f4c1 TFTUnitUpgradeData
 5e6f0af9 TableGet
 8799ac14 TableValue
@@ -1997,6 +2022,7 @@ e132f2d0 TftBaseTraitSetData
 cb928b94 TftChangeDamageSkinCheat
 18ee4f3b TftConditionalTraitSetData
 d6ff2a28 TftDamageSkinDescriptor
+f260c3ae TftDropRateTable
 f2a4458b TftDropRates
 62ff42f4 TftEffectAmount
 8f85e859 TftFinisherData
@@ -2284,7 +2310,6 @@ a14bd4d0 VfxPrimitiveRay
 2185818d VfxPrimitiveTrailBase
 efd52b0a VfxPrimitiveTrailBaseInstance
 53a6c97e VfxProbabilityTableData
-86d1477b VfxProbabilityTableDataGrande
 96e47c49 VfxProbabilityTableDataInstance
 0f743d03 VfxProjectionDefinitionData
 af8038c0 VfxProjectionDefinitionDataInstance
