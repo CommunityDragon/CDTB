@@ -47,7 +47,6 @@ class ArenaTransformer:
         if langs is None:
             langs = []
             for path in glob.glob(os.path.join(stringtable_dir, stringtable_glob)):
-                # Note: may need to be adjusted if format changes
                 m = re.search(stringtable_regex, path)
                 if m:
                     langs.append(m.group(1))
