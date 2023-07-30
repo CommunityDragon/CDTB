@@ -75,8 +75,8 @@ class TftTransformer:
         if langs is None:
             langs = []
             for path in glob.glob(os.path.join(stringtable_dir, stringtable_pattern)):
-                # Note: must be adjusted if format changes
-                m = re.search(r'/\w*_(.._..)\.\w*$', path)
+                # Note: may need to be adjusted if format changes
+                m = re.search(stringtable_pattern.replace('??_??', '(.._..)') + '$', path)
                 if m:
                     langs.append(m.group(1))
 
