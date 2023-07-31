@@ -40,14 +40,14 @@ class ArenaTransformer:
         """
 
         stringtable_dir = os.path.join(self.input_dir, "data/menu")
-        stringtable_pattern = "main_??_??.stringtable"
+        stringtable_glob = "main_??_??.stringtable"
         stringtable_format = "main_%s.stringtable"
+        stringtable_regex = r"main_(.._..)\.stringtable$"
 
         if langs is None:
             langs = []
-            for path in glob.glob(os.path.join(stringtable_dir, stringtable_pattern)):
-                # Note: must be adjusted if format changes
-                m = re.search(r'/\w*_(.._..)\.\w*$', path)
+            for path in glob.glob(os.path.join(stringtable_dir, stringtable_glob)):
+                m = re.search(stringtable_regex, path)
                 if m:
                     langs.append(m.group(1))
 

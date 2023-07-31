@@ -66,17 +66,19 @@ class TftTransformer:
         stringtable_dir = os.path.join(self.input_dir, "data/menu")
         # Support both 'font_config_*.txt' (old) and 'main_*.stringtable' (new)
         if os.path.exists(os.path.join(stringtable_dir, "fontconfig_en_us.txt")):
-            stringtable_pattern = "fontconfig_??_??.txt"
+            stringtable_glob = "fontconfig_??_??.txt"
             stringtable_format = "fontconfig_%s.txt"
+            stringtable_regex = r"fontconfig_(.._..)\.txt$"
         else:
-            stringtable_pattern = "main_??_??.stringtable"
+            stringtable_glob = "main_??_??.stringtable"
             stringtable_format = "main_%s.stringtable"
+            stringtable_regex = r"main_(.._..)\.stringtable$"
+
 
         if langs is None:
             langs = []
-            for path in glob.glob(os.path.join(stringtable_dir, stringtable_pattern)):
-                # Note: must be adjusted if format changes
-                m = re.search(r'/\w*_(.._..)\.\w*$', path)
+            for path in glob.glob(os.path.join(stringtable_dir, stringtable_glob)):
+                m = re.search(stringtable_regex, path)
                 if m:
                     langs.append(m.group(1))
 
