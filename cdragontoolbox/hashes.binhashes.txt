@@ -6536,6 +6536,7 @@ de4efd10 Items/223508
 a797e48a Items/223814
 f49ad887 Items/224005
 2be65247 Items/224401
+2de6556d Items/224403
 754cb900 Items/224628
 764cba93 Items/224629
 004fd268 Items/224633
@@ -7306,6 +7307,9 @@ c38036de Jhin_Skin05_Taunt_Child_Star
 4d8334ca Jhin_Skin05_Taunt_Object_WarpIn
 1cae353d Jhin_Skin05_Taunt_Shot
 e9d838d5 Jhin_Skin05_Taunt_Snap
+8997dd76 Jhin_Skin37_R_BlackHole01
+8897dbe3 Jhin_Skin37_R_BlackHole02
+8797da50 Jhin_Skin37_R_BlackHole03
 a685b57b Jhin_Taunt_01
 7e8e0c77 Jhin_ViewCone
 5183cc20 Jhin_W_beam
@@ -17827,6 +17831,7 @@ aae41644 Spell4_Torunfast
 37ea55c2 Spell4_Trans
 e51aaccd Spell4_Unburrowed
 476afcd5 Spell4_Up
+dd8094d4 Spell4_Upper
 d5bbabad Spell4_W
 4b07ae2e Spell4_Winddown
 34edfa7b Spell4_Windup
