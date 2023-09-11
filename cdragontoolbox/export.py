@@ -664,8 +664,8 @@ class TexConverter(FileConverter):
             ddspf = struct.pack('<LL4s20x', 32, 0x4, b'DXT1')
         elif format == 0x0c:  # DXT5
             ddspf = struct.pack('<LL4s20x', 32, 0x4, b'DXT5')
-        elif format == 0x14:  # RGBA8
-            ddspf = struct.pack('<LL4x5L', 32, 0x41, 8*4, 0x000000ff, 0x0000ff00, 0x00ff0000, 0xff000000)
+        elif format == 0x14:  # BGRA8
+            ddspf = struct.pack('<LL4x5L', 32, 0x41, 8*4, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000)
         else:
             raise FileConversionError(f"unsupported TEX format: {format:x}")
 
@@ -678,8 +678,8 @@ class TexConverter(FileConverter):
             elif format == 0x0c:  # DXT5
                 block_size = 4
                 bytes_per_block = 16
-            elif format == 0x14:  # RGBA8
-                block_size = 4
+            elif format == 0x14:  # BGRA8
+                block_size = 1
                 bytes_per_block = 4
 
             # Find mipmap count
