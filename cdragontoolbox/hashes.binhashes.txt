@@ -18772,6 +18772,11 @@ c5dc0147 Spell1_Min
 c71bd853 Spell1_Neg0
 d69b20f7 Spell1_NoMove_ToIdle
 ce928f07 Spell1_Nomove
+6eff036a Spell1_OnW_0
+22c5507b Spell1_OnW_Neg180
+70b80879 Spell1_OnW_Neg90
+6cb6139f Spell1_OnW_Pos180
+876c6215 Spell1_OnW_Pos90
 87b671cf Spell1_Out
 67e9ca6f Spell1_Out_ToIdle
 ee835138 Spell1_Outro
@@ -18993,6 +18998,7 @@ bc6a7f0e Spell2_Slayer_Run
 566d650d Spell2_Strong
 d8358ac3 Spell2_Strong_Into_Idle
 84b1e00b Spell2_TRA
+6e4bc276 Spell2_Takeoff
 3a9ff77a Spell2_Throw
 53ab0d2d Spell2_ToIdle
 78e56838 Spell2_ToRun
@@ -19252,6 +19258,7 @@ a968c147 Spell3_ToRun
 ab485f99 Spell3_To_Idle
 d45ac664 Spell3_To_Run
 9a295303 Spell3_To_Run_0
+62c6417a Spell3_Todashing
 326eeaba Spell3_ULT
 bcd154f1 Spell3_Unsheath
 c50e7ac2 Spell3_Unsheath_to_Idle
@@ -19462,6 +19469,7 @@ ef9722b9 Spell4_To_Run-179
 2258ae91 Spell4_To_Run0
 06488116 Spell4_To_Run179
 3c846762 Spell4_To_Run90
+40470e67 Spell4_Todashing
 aae41644 Spell4_Torunfast
 37ea55c2 Spell4_Trans
 e51aaccd Spell4_Unburrowed
