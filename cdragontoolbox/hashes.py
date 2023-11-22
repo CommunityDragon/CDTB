@@ -9,11 +9,46 @@ import json
 import struct
 import logging
 from contextlib import contextmanager
+from pathlib import Path
 from typing import Dict
 from xxhash import xxh64_intdigest
 from .data import REGIONS, Language
 
 logger = logging.getLogger(__name__)
+
+
+def _default_hash_dir():
+    """
+    Hash directory is search for in this order
+
+    - `$CDRAGONTOOLBOX_HASHES_DIR` if set
+    - `$CDRAGON_DATA/hashes/lol` if `$CDRAGON_DATA` is set
+    - If one of the following "data" directory exists, use `<dir>/hashes/lol`
+      - `$XDG_DATA_HOME/cdragon`
+      - `$LOCALAPPDATA/cdragon`
+      - `~/.local/share/cdragon` (see `Path.home()` for `~`)
+    - Module directory (legacy, will be removed)
+
+    """
+    def _env_dir(name):
+        value = os.environ.get(name)
+        return Path(value) if value else None
+    if path := _env_dir('CDRAGONTOOLBOX_HASHES_DIR'):
+        return path
+    if path := _env_dir('CDRAGON_DATA'):
+        return path / 'hashes/lol'
+
+    path = _env_dir('XDG_DATA_HOME')
+    if not path or not path.is_absolute():
+        path = _env_dir('LOCALAPPDATA') or Path.home() / ".local/share"
+    path = path / 'cdragon'
+    if path.is_dir():
+        return path / 'data/hashes/lol'
+
+    # Legacy fallback; will be removed in the future
+    return Path(__file__).parent
+
+default_hash_dir = _default_hash_dir()
 
 
 class HashFile:
@@ -36,8 +71,8 @@ class HashFile:
             for h, s in sorted(self.hashes.items(), key=lambda kv: kv[1]):
                 print(self.line_format.format(h, s), file=f)
 
-hashfile_lcu = HashFile(os.path.join(os.path.dirname(__file__), "hashes.lcu.txt"))
-hashfile_game = HashFile(os.path.join(os.path.dirname(__file__), "hashes.game.txt"))
+hashfile_lcu = HashFile(default_hash_dir / "hashes.lcu.txt")
+hashfile_game = HashFile(default_hash_dir / "hashes.game.txt")
 
 def default_hashfile(path):
     """Return the default hashfile for the given WAD file"""

@@ -2,7 +2,7 @@ import os
 from xxhash import xxh64_intdigest
 from base64 import b64encode
 from .tools import BinaryParser
-from .hashes import HashFile
+from .hashes import HashFile, default_hash_dir
 
 
 def key_to_hash(key, bits=40):
@@ -11,7 +11,7 @@ def key_to_hash(key, bits=40):
     return key & ((1 << bits) - 1)
 
 
-hashfile_rst = HashFile(os.path.join(os.path.dirname(__file__), "hashes.rst.txt"), hash_size=10)
+hashfile_rst = HashFile(default_hash_dir / "hashes.rst.txt", hash_size=10)
 
 class RstFile:
     def __init__(self, path_or_f=None):

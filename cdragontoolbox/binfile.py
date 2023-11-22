@@ -1,7 +1,7 @@
 import os
 from enum import IntEnum
 import struct
-from .hashes import HashFile, hashfile_game
+from .hashes import HashFile, default_hash_dir, hashfile_game
 from xxhash import xxh64_intdigest
 
 
@@ -14,10 +14,10 @@ def _repr_indent_list(values):
     return "[\n%s]" % ''.join(f"  {_repr_indent(v)}\n" for v in values)
 
 
-hashfile_binentries = HashFile(os.path.join(os.path.dirname(__file__), "hashes.binentries.txt"), hash_size=8)
-hashfile_binhashes = HashFile(os.path.join(os.path.dirname(__file__), "hashes.binhashes.txt"), hash_size=8)
-hashfile_binfields = HashFile(os.path.join(os.path.dirname(__file__), "hashes.binfields.txt"), hash_size=8)
-hashfile_bintypes = HashFile(os.path.join(os.path.dirname(__file__), "hashes.bintypes.txt"), hash_size=8)
+hashfile_binentries = HashFile(default_hash_dir / "hashes.binentries.txt", hash_size=8)
+hashfile_binhashes = HashFile(default_hash_dir / "hashes.binhashes.txt", hash_size=8)
+hashfile_binfields = HashFile(default_hash_dir / "hashes.binfields.txt", hash_size=8)
+hashfile_bintypes = HashFile(default_hash_dir / "hashes.bintypes.txt", hash_size=8)
 hashfile_binpaths = hashfile_game
 
 def compute_binhash(s):

@@ -21,6 +21,7 @@ from cdragontoolbox.sknfile import SknFile
 from cdragontoolbox.hashes import (
     HashFile,
     default_hashfile,
+    default_hash_dir,
     LcuHashGuesser,
     GameHashGuesser,
 )
@@ -310,7 +311,7 @@ def create_parser():
     parser = argparse.ArgumentParser('cdragontoolbox',
         description="Toolbox to work with League of Legends game and client files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog=textwrap.dedent("""
+        epilog=textwrap.dedent(f"""
             The following formats are supported for components:
 
               patch=version    patch with given version
@@ -322,6 +323,15 @@ def create_parser():
               X.Y       patch X.Y (all subpatches)
               X.Y.      latest subpatch for patch X.Y (latest elements)
               <empty>   latest available subpatch
+
+            Hashes directory: {default_hash_dir}
+
+            Environment variables
+
+              CDRAGONTOOLBOX_STORAGE     default `--storage` value
+              CDRAGONTOOLBOX_EXPORT      default 'export --output` value
+              CDRAGONTOOLBOX_HASHES_DIR  path to directory with hash files
+              CDRAGON_DATA               path to `Data` repository, for hash files
 
         """),
     )
