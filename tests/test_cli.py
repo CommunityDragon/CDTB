@@ -8,9 +8,6 @@ from cdragontoolbox.storage import (
     Patch,
     PatchElement,
 )
-from cdragontoolbox.rads import (
-    RadsStorage,
-)
 import cdragontoolbox.__main__ as cdtb_main
 from cdragontoolbox.__main__ import (
     create_parser,

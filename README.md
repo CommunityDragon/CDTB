@@ -25,19 +25,19 @@ Here are some examples, use `python3 -m cdragontoolbox -h` for details.
 ```sh
 # download and extract files for the latest patch to the directory `cdn`
 # (files from the new patcher will be used)
-python3 -m cdragontoolbox -v download -s patcher:cdn patch=
+python3 -m cdragontoolbox -v download -s cdn patch=
 
 # download and extract files from the PBE to the directory `cdn`
-python3 -m cdragontoolbox -v download -s patcher:cdn --patchline pbe patch=main
+python3 -m cdragontoolbox -v download -s cdn --patchline pbe patch=main
 
 # same, but don't download language-specific files
-python3 -m cdragontoolbox download -s patcher:cdn --no-lang patch=
+python3 -m cdragontoolbox download -s cdn --no-lang patch=
 
 # list patch versions (using already downloaded data in `cdn/`)
-python3 -m cdragontoolbox versions -s cdn/ patch
+python3 -m cdragontoolbox versions -s cdn patch
 
 # list game files for patch 9.9
-python3 -m cdragontoolbox files -s cdn/ game=9.9
+python3 -m cdragontoolbox files -s cdn game=9.9
 
 # extract a WAD file
 python3 -m cdragontoolbox wad-extract path/to/assets.wad
@@ -46,48 +46,11 @@ python3 -m cdragontoolbox wad-extract path/to/assets.wad
 python3 -m cdragontoolbox wad-list path/to/assets.wad
 
 # export files from PBE
-python3 -m cdragontoolbox export -s patcher:cdn --patchline pbe --full main
+python3 -m cdragontoolbox export -s cdn --patchline pbe --full main
 
 # export files of patch 7.23 into export/7.23 (deprecated)
 python3 -m cdragontoolbox export -o export 7.23
 ```
-
-## Components
-
-### Solutions
-
-Solutions are the top-level components downloaded by the patcher. They are
-located under the `solutions/` directory.
-Currently, two solutions are used: `league_client_sln` for the LCU and
-`lol_game_client_sln` for the in-game client.
-
-Each solution version is located under `solutions/{name}/releases/{version}`.
-
-### Projects
-
-Each solution version depends on several projects: a *main* project and
-additional projects for each available language. They are located under the
-`projects/` directory.
-Projects are actually named after the solution, and suffixed by the language
-code if any. For instance: `league_client_en_gb`.
-
-Each project version is located under `projects/{name}/releases/{version}`.
-
-When a project is updated, only files that have changed since the previous
-version are located under this version directory. Files reused from a previous
-version stay in this version directory.
-As a result, downloading the latest version of a project actually download
-files of previous project versions too.
-
-### Patches
-
-A patch version is the version used publicly by Riot (for instance `7.23`) and
-retrieved from downloaded files
-
-Patch version changes independently from solution and project versions.
-
-**Note:** PBE use a single patch version: `main`.
-
 
 ## WAD files
 
@@ -100,13 +63,4 @@ lot of unresolved hashes.
 
 An hash list is provided and regularly updated with new hashes as they are
 discovered, especially after client updates.
-
-
-## PBE and Korean files
-
-PBE and Korean game files have their own download URLs.
-Use `--cdn pbe` or `--cdn kr` to fetch PBE or Korean files.
-
-Note that they should not be mixed with files from the default CDN. By default,
-PBE files are downloaded to `RADS.pbe` and Korean files to `RADS.kr`.
 

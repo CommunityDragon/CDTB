@@ -13,6 +13,7 @@ from cdragontoolbox.storage import (
     parse_storage_component,
     storage_conf_from_path,
 )
+from cdragontoolbox.patcher import PatcherStorage
 from cdragontoolbox.wad import Wad
 from cdragontoolbox.export import CdragonRawPatchExporter
 from cdragontoolbox.binfile import BinFile
@@ -48,29 +49,17 @@ def parse_storage_args(parser, args) -> Storage:
     """Parse storage-related arguments into a Storage"""
 
     default_path = os.environ.get('CDRAGONTOOLBOX_STORAGE')
-    default_cdn = os.environ.get('CDRAGONTOOLBOX_CDN', 'default')
-
-    cdn = default_cdn if args.cdn is None else args.cdn
-    # don't use CDRAGONTOOLBOX_STORAGE when using non-default --cdn is set to
-    # avoid mixing files from different CDNs
-    if cdn != default_cdn and default_path is not None and args.storage is None:
-        parser.error("--storage must be provided when changing --cdn value")
 
     path = default_path if args.storage is None else args.storage
     if path is None:
         conf = {
-            'type': 'rads',
-            'path': "RADS" if cdn == 'default' else f"RADS.{cdn}",
-            'cdn': cdn,
+            'type': 'patcher',
+            'path': 'cdn',
         }
     else:
         conf = storage_conf_from_path(path)
         if conf is None:
             parser.error(f"cannot retrieve storage configuration from '{path}'")
-        if conf['type'] == 'rads':
-            conf['cdn'] = cdn
-        elif cdn != 'default':
-            parser.error("--cdn is only supported for 'rads' storage")
         if args.patchline is not None:
             if conf['type'] == 'patcher':
                 conf['patchline'] = args.patchline
@@ -334,13 +323,6 @@ def create_parser():
               X.Y.      latest subpatch for patch X.Y (latest elements)
               <empty>   latest available subpatch
 
-            Multiple storages types are supported. The -s,--storage value can
-            be prefixed by the storage type to use. If no prefix is provided,
-            the type will be guessed, if possible.
-
-              rads:PATH     RADS storage, same file structure as on CDN
-              patcher:PATH  storage for bundle-based patcher
-
         """),
     )
 
@@ -355,8 +337,6 @@ def create_parser():
     storage_parser = argparse.ArgumentParser(add_help=False)
     storage_parser.add_argument('-s', '--storage', default=None,
                                 help="path to downloaded files, with an optional storage type prefix (`type:path`)")
-    storage_parser.add_argument('--cdn', choices=["default", "pbe", "kr"], default=None,
-                                help="use a different CDN")
     storage_parser.add_argument('--patchline', choices=["pbe", "live"], default=None,
                                 help="select a patchline")
 
