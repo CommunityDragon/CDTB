@@ -466,12 +466,13 @@ class CdragonRawPatchExporter:
         # - keep images and skin files
         # - keep .bin files, except 'data/*_skins_*.bin' files
         # - keep .txt files (some contain useful data)
+        # - keep font files
         # - add 'game/' prefix to export path
         def filter_path(path):
             _, ext = os.path.splitext(path)
             if ext == '.bin':
                 return '_skins_' not in path
-            return ext in ('.dds', '.tga', '.tex', '.skn', '.txt', '.stringtable')
+            return ext in ('.dds', '.tga', '.tex', '.skn', '.txt', '.stringtable', '.ttf', '.otf')
 
         for path, wad in exporter.wads.items():
             if path.endswith('.wad.client'):
