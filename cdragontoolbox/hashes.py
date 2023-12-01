@@ -1,6 +1,7 @@
 import os
 import sys
 import re
+import datetime
 import glob
 import itertools
 import signal
@@ -11,8 +12,10 @@ import logging
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Dict
+import requests
 from xxhash import xxh64_intdigest
 from .data import REGIONS, Language
+from .tools import write_file_or_remove
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +30,6 @@ def _default_hash_dir():
       - `$XDG_DATA_HOME/cdragon`
       - `$LOCALAPPDATA/cdragon`
       - `~/.local/share/cdragon` (see `Path.home()` for `~`)
-    - Module directory (legacy, will be removed)
 
     """
     def _env_dir(name):
@@ -38,15 +40,12 @@ def _default_hash_dir():
     if path := _env_dir('CDRAGON_DATA'):
         return path / 'hashes/lol'
 
+    # Always search in XDG_DATA_HOME, even on Windows
     path = _env_dir('XDG_DATA_HOME')
     if not path or not path.is_absolute():
+        # Assume LOCALAPPDATA is not set when not on Windows
         path = _env_dir('LOCALAPPDATA') or Path.home() / ".local/share"
-    path = path / 'cdragon'
-    if path.is_dir():
-        return path / 'data/hashes/lol'
-
-    # Legacy fallback; will be removed in the future
-    return Path(__file__).parent
+    return path / 'cdragon/data/hashes/lol'
 
 default_hash_dir = _default_hash_dir()
 
@@ -61,9 +60,12 @@ class HashFile:
 
     def load(self, force=False) -> Dict[int, str]:
         if force or self.hashes is None:
-            with open(self.filename) as f:
-                hashes = (l.strip().split(' ', 1) for l in f)
-                self.hashes = {int(h, 16): s for h, s in hashes}
+            try:
+                with open(self.filename) as f:
+                    hashes = (l.strip().split(' ', 1) for l in f)
+                    self.hashes = {int(h, 16): s for h, s in hashes}
+            except FileNotFoundError:
+                raise FileNotFoundError(f"Hash file not found; try to run 'fetch-hashes' command: {self.filename}")
         return self.hashes
 
     def save(self):
@@ -82,6 +84,30 @@ def default_hashfile(path):
         return hashfile_lcu
     else:
         raise ValueError(f"no default hashes for WAD file '{path}'")
+
+def update_default_hashfile(basename):
+    """Update a hashfile if a new version is available for download"""
+
+    path = default_hash_dir / basename
+    url = f"https://raw.communitydragon.org/data/hashes/lol/{basename}"
+
+    try:
+        last_time = path.stat().st_mtime
+        # CloudFlare does not support 'if-modified-since'
+        # We have to send a separate HEAD
+        r = requests.head(url)
+        r.raise_for_status()
+        last_modified = datetime.datetime.strptime(r.headers['last-modified'], '%a, %d %b %Y %H:%M:%S GMT').replace(tzinfo=datetime.timezone.utc)
+        if last_time >= last_modified.timestamp():
+            return  # up to date
+    except FileNotFoundError:
+        pass  # Never downloaded
+
+    logger.debug(f"update hash file from {url}")
+    r = requests.get(url)
+    r.raise_for_status()
+    with write_file_or_remove(path) as f:
+        f.write(r.content)
 
 
 def build_wordlist(paths):

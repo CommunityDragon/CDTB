@@ -5,6 +5,7 @@ import argparse
 import textwrap
 import fnmatch
 import logging
+from pathlib import Path
 import cdragontoolbox
 from cdragontoolbox.storage import (
     Storage,
@@ -20,10 +21,11 @@ from cdragontoolbox.binfile import BinFile
 from cdragontoolbox.sknfile import SknFile
 from cdragontoolbox.hashes import (
     HashFile,
-    default_hashfile,
-    default_hash_dir,
     LcuHashGuesser,
     GameHashGuesser,
+    default_hashfile,
+    default_hash_dir,
+    update_default_hashfile,
 )
 from cdragontoolbox.tools import json_dump
 
@@ -85,6 +87,30 @@ def command_versions(parser, args):
     for patch in args.storage.patches(stored=args.stored):
         if args.type == 'patch' or args.type in (e.name for e in patch.elements):
             print(patch.version)
+
+
+def command_fetch_hashes(parser, args):
+    if default_hash_dir == Path(__file__).parent:
+        if os.name == 'nt':
+            user_dir = Path(os.environ.get('LOCALAPPDATA', 'LOCALAPPDATA'))
+        else:
+            user_dir = Path.home() / ".local/share"
+        user_dir = user_dir / 'cdragon'
+        parser.error(f"Cannot update hashes bundled with source; create {user_dir} to store them locally")
+
+    print(f"Updating hash files: {default_hash_dir}")
+    default_hash_dir.mkdir(parents=True, exist_ok=True)
+    hash_files = [
+        'hashes.binentries.txt',
+        'hashes.binfields.txt',
+        'hashes.binhashes.txt',
+        'hashes.bintypes.txt',
+        'hashes.game.txt',
+        'hashes.lcu.txt',
+        'hashes.rst.txt',
+    ]
+    for basename in hash_files:
+        update_default_hashfile(basename)
 
 
 def command_wad_extract(parser, args):
@@ -376,6 +402,12 @@ def create_parser():
                            help="when listing patch versions, don't use only stored solutions")
     subparser.add_argument('type', choices={'patch', 'game', 'client'},
                            help="display versions of given component type")
+
+
+    # Tooling and maintenance
+
+    subparser = subparsers.add_parser('fetch-hashes',
+                                      help="download up-to-date hash lists")
 
 
     # WAD commands

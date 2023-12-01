@@ -13,6 +13,22 @@ pip install -r requirements.txt
 **Windows users:** precompiled packages can be found [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/).
 
 
+## Updating hashes
+
+Most commands require hash lists which are updated frequently and and not bundled with this code.
+
+To download them locally from `raw.communitydragon.org`, run:
+```
+python3 -m cdragontoolbox fetch-hashes
+```
+
+The command will print where they are downloaded.
+By default, they will land in `~/.local/share/cdragon` (or `%LOCALAPPDATA%/cdragon` on Windows).
+An alternate location can be configured using the `CDRAGONTOOLBOX_HASHES_DIR` or `CDRAGON_DATA` environment variables.
+
+Hashes are versionned in the [Data](https://github.com/CommunityDragon/Data) repository.
+
+
 ## Command-line examples
 
 The CLI interface allows:
