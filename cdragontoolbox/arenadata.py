@@ -76,7 +76,7 @@ class ArenaTransformer:
 
         augments = []
         for augment in augment_entries:
-            if augment.getv("enabled", True) == False:
+            if not augment.getv("enabled", True):
                 continue
             augment_datavalues = {}
             augment_calculations = {}
