@@ -76,7 +76,8 @@ class ArenaTransformer:
 
         augments = []
         for augment in augment_entries:
-
+            if not augment.getv("enabled", True):
+                continue
             augment_datavalues = {}
             augment_calculations = {}
             augment_spellobject = augment.getv(0x1418F849)
