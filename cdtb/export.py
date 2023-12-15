@@ -437,7 +437,7 @@ class CdragonRawPatchExporter:
             BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
             SknConverter(),
             RstConverter(re.compile(r'game/.*/menu/.*\.(txt|stringtable)$')),
-            AtlasInfoConverter(re.compile(r'game/clientstates/.*\.cdtb$'))
+            AtlasInfoConverter(re.compile(r'game/clientstates/.*\.cdtb$')),
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -806,14 +806,9 @@ class AtlasInfoConverter(FileConverter):
     def parse_atlasinfo(f):
         parser = BinaryParser(f)
 
-        atlas_info = {}
         atlas_count, = parser.unpack("<L")
-        atlas_paths = [None] * atlas_count
-
-        for i in range(atlas_count):
-            atlas_path = parser.unpack_string()
-            atlas_paths[i] = atlas_path
-            atlas_info[atlas_path] = {}
+        atlas_paths = [parser.unpack_string() for _ in range(atlas_count)]
+        atlas_info = {atlas_path: {} for atlas_path in atlas_paths}
 
         texture_count, = parser.unpack("<L")
         for _ in range(texture_count):
