@@ -812,8 +812,8 @@ class AtlasInfoConverter(FileConverter):
 
         texture_count, = parser.unpack("<L")
         for _ in range(texture_count):
-            texture_path = parser.unpack_string()
+            texture_name = parser.unpack_string()
             startX, startY, endX, endY, atlas_index = parser.unpack("<ffffL")
-            atlas_info[atlas_paths[atlas_index]][texture_path] = {"startX": startX, "startY": startY, "endX": endX, "endY": endY}
+            atlas_info[atlas_paths[atlas_index]][texture_name] = {"startX": startX, "startY": startY, "endX": endX, "endY": endY}
 
         return atlas_info
