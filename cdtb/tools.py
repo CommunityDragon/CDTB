@@ -78,3 +78,9 @@ class BinaryParser:
     def unpack_string(self):
         """Unpack string prefixed by its 32-bit length"""
         return self.f.read(self.unpack('<L')[0]).decode('utf-8')
+
+def convert_cdragon_path(path):
+    path, ext = os.path.splitext(path.lower())
+    if ext == ".dds" or ext == ".tex":
+        ext = ".png"
+    return path + ext
