@@ -14,6 +14,7 @@ from .sknfile import SknFile
 from .rstfile import hashfile_rst, RstFile, key_to_hash as key_to_rsthash
 from .tools import (
     BinaryParser,
+    convert_cdragon_path,
     json_dump,
     write_file_or_remove,
     write_dir_or_remove,
@@ -807,13 +808,13 @@ class AtlasInfoConverter(FileConverter):
         parser = BinaryParser(f)
 
         atlas_count, = parser.unpack("<L")
-        atlas_paths = [parser.unpack_string() for _ in range(atlas_count)]
-        atlas_info = {atlas_path: {} for atlas_path in atlas_paths}
+        atlas_paths = [convert_cdragon_path(parser.unpack_string()) for _ in range(atlas_count)]
+        atlas_info = {}
 
         texture_count, = parser.unpack("<L")
         for _ in range(texture_count):
             texture_name = parser.unpack_string()
             startX, startY, endX, endY, atlas_index = parser.unpack("<ffffL")
-            atlas_info[atlas_paths[atlas_index]][texture_name] = {"startX": startX, "startY": startY, "endX": endX, "endY": endY}
+            atlas_info[texture_name] = {"atlasPath": atlas_paths[atlas_index], "startX": startX, "startY": startY, "endX": endX, "endY": endY}
 
         return atlas_info
