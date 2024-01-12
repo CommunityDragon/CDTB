@@ -812,7 +812,7 @@ class GameHashGuesser(HashGuesser):
                     continue
                 if wadfile.ext in ('bin', 'inibin'):
                     # bin files: find strings based on prefix, then parse the length
-                    for m in re.finditer(br'(?:ASSETS|DATA|Characters|Shaders|Maps/MapGeometry|Gameplay|ClientStates)/', data):
+                    for m in re.finditer(br'(?:ASSETS|DATA|Characters|Shaders|Maps/MapGeometry|Gameplay|ClientStates|Patching)/', data):
                         i = m.start()
                         n = data[i-2] + (data[i-1] << 8)
                         try:
@@ -831,7 +831,7 @@ class GameHashGuesser(HashGuesser):
                         elif path.startswith('maps'):
                             self.check(f"data/{path}.mapgeo")
                             self.check(f"data/{path}.materials.bin")
-                        elif path.startswith('clientstates'):
+                        elif path.startswith('clientstates') or path.startswith('patching'):
                             self.check(path.rsplit('/', 1)[0])
                             self.check(path.rsplit('/', 2)[0])
                         else:
