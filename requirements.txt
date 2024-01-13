@@ -1,6 +1,0 @@
-requests
-hachoir
-xxhash
-pyzstd
-Pillow
-ujson

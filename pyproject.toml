@@ -1,0 +1,44 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cdtb"
+version = "1.0.0"
+authors = [
+    { name="CDragon team" },
+]
+description = "A toolbox to work with League of Legends game files"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+  "requests",
+  "hachoir",
+  "xxhash",
+  "pyzstd",
+  "Pillow",
+  "ujson",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+]
+
+[project.urls]
+Homepage = "https://communitydragon.org"
+Repository = "https://github.com/CommunityDragon/CDTB"
+
+[project.scripts]
+cdtb = "cdtb.__main__:main"
+
+[project.optional-dependencies]
+tests = [
+  "pytest",
+  "pytest-mock",
+]
+
+[tool.hatch.build.targets.sdist]
+include = ["/cdtb/*.py"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["cdtb"]
