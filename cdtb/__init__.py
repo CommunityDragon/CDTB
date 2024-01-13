@@ -1,20 +1,20 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from cdragontoolbox.storage import (
+from cdtb.storage import (
     Storage,
     Patch,
     PatchElement,
 )
-from cdragontoolbox.wad import (
+from cdtb.wad import (
     Wad,
 )
-from cdragontoolbox.export import (
+from cdtb.export import (
     Exporter,
     CdragonRawPatchExporter,
 )
 
 # import storages to register them
-import cdragontoolbox.rads
-import cdragontoolbox.patcher
+import cdtb.rads
+import cdtb.patcher
 

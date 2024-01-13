@@ -1,7 +1,7 @@
 import os
 import pytest
 from tools import *
-from cdragontoolbox.rads import (
+from cdtb.rads import (
     RadsVersion,
     RadsStorage,
     RadsProject, RadsProjectVersion,

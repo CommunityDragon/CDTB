@@ -1,5 +1,5 @@
 import pytest
-import cdragontoolbox.export as cdtb_export
+import cdtb.export as cdtb_export
 
 
 # use an intermediate argvalues variable to avoid large pytest backtraces

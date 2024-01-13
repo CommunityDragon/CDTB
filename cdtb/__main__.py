@@ -6,20 +6,20 @@ import textwrap
 import fnmatch
 import logging
 from pathlib import Path
-import cdragontoolbox
-from cdragontoolbox.storage import (
+import cdtb
+from cdtb.storage import (
     Storage,
     Patch,
     PatchVersion,
     parse_storage_component,
     storage_conf_from_path,
 )
-from cdragontoolbox.patcher import PatcherStorage
-from cdragontoolbox.wad import Wad
-from cdragontoolbox.export import CdragonRawPatchExporter
-from cdragontoolbox.binfile import BinFile
-from cdragontoolbox.sknfile import SknFile
-from cdragontoolbox.hashes import (
+from cdtb.patcher import PatcherStorage
+from cdtb.wad import Wad
+from cdtb.export import CdragonRawPatchExporter
+from cdtb.binfile import BinFile
+from cdtb.sknfile import SknFile
+from cdtb.hashes import (
     HashFile,
     LcuHashGuesser,
     GameHashGuesser,
@@ -27,7 +27,7 @@ from cdragontoolbox.hashes import (
     default_hash_dir,
     update_default_hashfile,
 )
-from cdragontoolbox.tools import json_dump
+from cdtb.tools import json_dump
 
 
 def parse_component_arg(parser, storage: Storage, component: str):
@@ -51,7 +51,7 @@ def parse_component_args(parser, storage: Storage, components):
 def parse_storage_args(parser, args) -> Storage:
     """Parse storage-related arguments into a Storage"""
 
-    default_path = os.environ.get('CDRAGONTOOLBOX_STORAGE')
+    default_path = os.environ.get('CDTB_STORAGE')
 
     path = default_path if args.storage is None else args.storage
     if path is None:
@@ -334,7 +334,7 @@ def command_bin_dump(parser, args):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser('cdragontoolbox',
+    parser = argparse.ArgumentParser('cdtb',
         description="Toolbox to work with League of Legends game and client files",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent(f"""
@@ -354,9 +354,9 @@ def create_parser():
 
             Environment variables
 
-              CDRAGONTOOLBOX_STORAGE     default `--storage` value
-              CDRAGONTOOLBOX_EXPORT      default 'export --output` value
-              CDRAGONTOOLBOX_HASHES_DIR  path to directory with hash files
+              CDTB_STORAGE     default `--storage` value
+              CDTB_EXPORT      default 'export --output` value
+              CDTB_HASHES_DIR  path to directory with hash files
               CDRAGON_DATA               path to `Data` repository, for hash files
 
         """),
@@ -367,7 +367,7 @@ def create_parser():
 
     subparsers = parser.add_subparsers(dest='command', help="command")
 
-    default_export = os.environ.get('CDRAGONTOOLBOX_EXPORT', 'export')
+    default_export = os.environ.get('CDTB_EXPORT', 'export')
 
     # storage arguments
     storage_parser = argparse.ArgumentParser(add_help=False)
@@ -510,7 +510,7 @@ def main(argv = None):
         format='%(asctime)s %(levelname)s %(name)s - %(message)s',
     )
 
-    logger = cdragontoolbox.logger
+    logger = cdtb.logger
     if args.verbose >= 2:
         logger.setLevel(logging.DEBUG)
     elif args.verbose >= 1:

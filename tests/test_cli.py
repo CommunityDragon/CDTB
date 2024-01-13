@@ -1,15 +1,15 @@
 import os
 import argparse
 import pytest
-import cdragontoolbox
-from cdragontoolbox.storage import (
+import cdtb
+from cdtb.storage import (
     Storage,
     PatchVersion,
     Patch,
     PatchElement,
 )
-import cdragontoolbox.__main__ as cdtb_main
-from cdragontoolbox.__main__ import (
+import cdtb.__main__ as cdtb_main
+from cdtb.__main__ import (
     create_parser,
     parse_storage_args,
 )
@@ -46,8 +46,8 @@ def test_cli_export_versions(runner, storage, monkeypatch, mocker, args, version
     def fake_patch(version):
         return Patch._create([PatchElement('game', PatchVersion(version))])
 
-    with mocker.patch('cdragontoolbox.__main__.CdragonRawPatchExporter'):
-        mock = cdragontoolbox.__main__.CdragonRawPatchExporter
+    with mocker.patch('cdtb.__main__.CdragonRawPatchExporter'):
+        mock = cdtb.__main__.CdragonRawPatchExporter
         mock.return_value = mock_instance = mocker.Mock()
         mock.storage = storage
 

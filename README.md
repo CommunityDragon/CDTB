@@ -22,12 +22,12 @@ Most commands require hash lists which are updated frequently and and not bundle
 
 To download them locally from `raw.communitydragon.org`, run:
 ```
-python3 -m cdragontoolbox fetch-hashes
+python3 -m cdtb fetch-hashes
 ```
 
 The command will print where they are downloaded.
 By default, they will land in `~/.local/share/cdragon` (or `%LOCALAPPDATA%/cdragon` on Windows).
-An alternate location can be configured using the `CDRAGONTOOLBOX_HASHES_DIR` or `CDRAGON_DATA` environment variables.
+An alternate location can be configured using the `CDTB_HASHES_DIR` or `CDRAGON_DATA` environment variables.
 
 Hashes are versionned in the [Data](https://github.com/CommunityDragon/Data) repository.
 
@@ -39,36 +39,36 @@ The CLI interface allows:
  - list and extract content of WAD files
  - export game files to be served by CDragon
 
-Here are some examples, use `python3 -m cdragontoolbox -h` for details.
+Here are some examples, use `python3 -m cdtb -h` for details.
 
 ```sh
 # download and extract files for the latest patch to the directory `cdn`
 # (files from the new patcher will be used)
-python3 -m cdragontoolbox -v download -s cdn patch=
+python3 -m cdtb -v download -s cdn patch=
 
 # download and extract files from the PBE to the directory `cdn`
-python3 -m cdragontoolbox -v download -s cdn --patchline pbe patch=main
+python3 -m cdtb -v download -s cdn --patchline pbe patch=main
 
 # same, but don't download language-specific files
-python3 -m cdragontoolbox download -s cdn --no-lang patch=
+python3 -m cdtb download -s cdn --no-lang patch=
 
 # list patch versions (using already downloaded data in `cdn/`)
-python3 -m cdragontoolbox versions -s cdn patch
+python3 -m cdtb versions -s cdn patch
 
 # list game files for patch 9.9
-python3 -m cdragontoolbox files -s cdn game=9.9
+python3 -m cdtb files -s cdn game=9.9
 
 # extract a WAD file
-python3 -m cdragontoolbox wad-extract path/to/assets.wad
+python3 -m cdtb wad-extract path/to/assets.wad
 
 # list content of a WAD file
-python3 -m cdragontoolbox wad-list path/to/assets.wad
+python3 -m cdtb wad-list path/to/assets.wad
 
 # export files from PBE
-python3 -m cdragontoolbox export -s cdn --patchline pbe --full main
+python3 -m cdtb export -s cdn --patchline pbe --full main
 
 # export files of patch 7.23 into export/7.23 (deprecated)
-python3 -m cdragontoolbox export -o export 7.23
+python3 -m cdtb export -o export 7.23
 ```
 
 ## WAD files

@@ -1,6 +1,6 @@
 import os
 import pytest
-from cdragontoolbox.storage import (
+from cdtb.storage import (
     BaseVersion,
     PatchVersion,
 )

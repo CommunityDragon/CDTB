@@ -24,7 +24,7 @@ def _default_hash_dir():
     """
     Hash directory is search for in this order
 
-    - `$CDRAGONTOOLBOX_HASHES_DIR` if set
+    - `$CDTB_HASHES_DIR` if set
     - `$CDRAGON_DATA/hashes/lol` if `$CDRAGON_DATA` is set
     - If one of the following "data" directory exists, use `<dir>/hashes/lol`
       - `$XDG_DATA_HOME/cdragon`
@@ -35,7 +35,7 @@ def _default_hash_dir():
     def _env_dir(name):
         value = os.environ.get(name)
         return Path(value) if value else None
-    if path := _env_dir('CDRAGONTOOLBOX_HASHES_DIR'):
+    if path := _env_dir('CDTB_HASHES_DIR'):
         return path
     if path := _env_dir('CDRAGON_DATA'):
         return path / 'hashes/lol'
