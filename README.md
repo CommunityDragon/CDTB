@@ -3,6 +3,9 @@
 A toolbox to work with League of Legends game files and export files for CDragon.
 It can be used as a library or a command-line tool.
 
+Most things are discussed on our [Discord server](https://discord.gg/rZQwuek). Feel free to join!
+
+
 ## Dependencies
 
 To install dependencies, run:
