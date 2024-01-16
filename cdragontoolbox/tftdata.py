@@ -39,14 +39,13 @@ class TftTransformer:
     def build_template(self):
         """Parse bin data into template data"""
         map22_file = os.path.join(self.input_dir, "data", "maps", "shipping", "map22", "map22.bin")
-        character_folder = os.path.join(self.input_dir, "data", "characters")
 
         map22 = BinFile(map22_file)
 
         character_names = self.parse_character_names(map22)
         traits = self.parse_traits(map22)
         sets = self.parse_sets(map22, character_names, traits)
-        champs = self.parse_champs(map22, traits, character_folder)
+        champs = self.parse_champs(map22, traits)
         output_sets, output_set_data = self.build_output_sets(sets, champs)
         items = self.parse_items(map22)
 
@@ -140,11 +139,11 @@ class TftTransformer:
     def parse_character_names(self, map22):
         """Parse character names, indexed by entry path"""
         # always use lowercased name: required for files, and bin data is inconsistent
-        return {x.path: x.getv("name").lower() for x in map22.entries if x.type == "Character"}
+        return {x.path: x.getv("name").lower() for x in map22.entries if x.type == "Character" or x.type == "TftCharacter"}
 
     def parse_sets(self, map22, character_names, traits):
         """Parse character sets to a list of `(name, number, characters, traits)`"""
-        character_lists = {x.path: x for x in map22.entries if x.type == "MapCharacterList"}
+        character_lists = {x.path: x for x in map22.entries if x.type == "MapCharacterList" or x.type == "TftCharacterList"}
         trait_lists = {x.path: x for x in map22.entries if x.type == "TftTraitList"}
         set_collection = [x for x in map22.entries if x.type == 0x438850FF]
 
@@ -164,8 +163,8 @@ class TftTransformer:
             set_mutator = item.getv("Mutator")
             if set_mutator is None:
                 set_mutator = item.getv("name")
-            char_lists = item.getv("characterLists")
-            if char_lists is None:
+            char_lists = item.getv("characterLists", []) + item.getv("tftCharacterLists", [])
+            if not char_lists:
                 continue
             set_trait_lists = item.getv("TraitLists")
             if set_trait_lists is None:
@@ -236,13 +235,15 @@ class TftTransformer:
             item["associatedTraits"] = [traits_by_hash[h] for h in item["associatedTraits"]]
         return items
 
-    def parse_champs(self, map22, traits, character_folder):
+    def parse_champs(self, map22, traits):
         """Parse champion information
 
         Return a map of `(data, traits)`, indexed by champion internal names.
         """
         champ_entries = [x for x in map22.entries if x.type == "TftShopData"]
         champs = {}
+        data_characters_dir = os.path.join(self.input_dir, "data", "characters")
+        characters_dir = os.path.join(self.input_dir, "characters")
 
         for champ in champ_entries:
             # always use lowercased name: required for files, and bin data is inconsistent
@@ -250,7 +251,9 @@ class TftTransformer:
             if name == "tft_template":
                 continue
 
-            self_path = os.path.join(character_folder, name, name + ".bin")
+            self_path = os.path.join(characters_dir, name + ".cdtb.bin")
+            if not os.path.exists(self_path):
+                self_path = os.path.join(data_characters_dir, name, name + ".bin")
             if not os.path.exists(self_path):
                 continue
 
