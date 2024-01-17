@@ -774,6 +774,7 @@ class GameHashGuesser(HashGuesser):
             "data/characters/{c}/hud/{c}_square.dds",
             "assets/characters/{c}/hud/{c}_circle.dds",
             "assets/characters/{c}/hud/{c}_square.dds",
+            "characters/{c}"
         ]
 
         logger.debug(f"guess characters files: {len(chars)} characters")
