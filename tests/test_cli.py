@@ -46,21 +46,21 @@ def test_cli_export_versions(runner, storage, monkeypatch, mocker, args, version
     def fake_patch(version):
         return Patch._create([PatchElement('game', PatchVersion(version))])
 
-    with mocker.patch('cdtb.__main__.CdragonRawPatchExporter'):
-        mock = cdtb.__main__.CdragonRawPatchExporter
-        mock.return_value = mock_instance = mocker.Mock()
-        mock.storage = storage
+    mocker.patch('cdtb.__main__.CdragonRawPatchExporter')
+    mock = cdtb.__main__.CdragonRawPatchExporter
+    mock.return_value = mock_instance = mocker.Mock()
+    mock.storage = storage
 
-        def storage_patches(stored=False):
-            for v in ('7.25', '7.24', '7.23', '7.22'):
-                yield PatchElement('game', PatchVersion(v))
-        monkeypatch.setattr(storage, 'patch_elements', storage_patches)
+    def storage_patches(stored=False):
+        for v in ('7.25', '7.24', '7.23', '7.22'):
+            yield PatchElement('game', PatchVersion(v))
+    monkeypatch.setattr(storage, 'patch_elements', storage_patches)
 
-        runner("export " + args)
+    runner("export " + args)
 
-        patch = fake_patch(version)
-        previous_patch = None if previous_version is None else fake_patch(previous_version)
-        mock.assert_called_once_with(os.path.join('export', '7.24'), patch, previous_patch, symlinks=False)
+    patch = fake_patch(version)
+    previous_patch = None if previous_version is None else fake_patch(previous_version)
+    mock.assert_called_once_with(os.path.join('export', '7.24'), patch, previous_patch, symlinks=False)
 
-        mock_instance.process.assert_called_once_with(overwrite=True)
+    mock_instance.process.assert_called_once_with(overwrite=True)
 
