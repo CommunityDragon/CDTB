@@ -5,15 +5,13 @@ It can be used as a library or a command-line tool.
 
 Most things are discussed on our [Discord server](https://discord.gg/rZQwuek). Feel free to join!
 
+## Install
 
-## Dependencies
-
-To install dependencies, run:
 ```
-pip install -r requirements.txt
+pip3 install cdtb
 ```
 
-**Windows users:** precompiled packages can be found [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/).
+**Windows users:** if needed precompiled packages of binary dependencies can be found [here](https://www.lfd.uci.edu/~gohlke/pythonlibs/).
 
 
 ## Updating hashes
@@ -22,7 +20,7 @@ Most commands require hash lists which are updated frequently and and not bundle
 
 To download them locally from `raw.communitydragon.org`, run:
 ```
-python3 -m cdtb fetch-hashes
+cdtb fetch-hashes
 ```
 
 The command will print where they are downloaded.
@@ -39,36 +37,36 @@ The CLI interface allows:
  - list and extract content of WAD files
  - export game files to be served by CDragon
 
-Here are some examples, use `python3 -m cdtb -h` for details.
+Here are some examples, use `cdtb -h` for details.
 
 ```sh
 # download and extract files for the latest patch to the directory `cdn`
 # (files from the new patcher will be used)
-python3 -m cdtb -v download -s cdn patch=
+cdtb -v download -s cdn patch=
 
 # download and extract files from the PBE to the directory `cdn`
-python3 -m cdtb -v download -s cdn --patchline pbe patch=main
+cdtb -v download -s cdn --patchline pbe patch=main
 
 # same, but don't download language-specific files
-python3 -m cdtb download -s cdn --no-lang patch=
+cdtb download -s cdn --no-lang patch=
 
 # list patch versions (using already downloaded data in `cdn/`)
-python3 -m cdtb versions -s cdn patch
+cdtb versions -s cdn patch
 
 # list game files for patch 9.9
-python3 -m cdtb files -s cdn game=9.9
+cdtb files -s cdn game=9.9
 
 # extract a WAD file
-python3 -m cdtb wad-extract path/to/assets.wad
+cdtb wad-extract path/to/assets.wad
 
 # list content of a WAD file
-python3 -m cdtb wad-list path/to/assets.wad
+cdtb wad-list path/to/assets.wad
 
 # export files from PBE
-python3 -m cdtb export -s cdn --patchline pbe --full main
+cdtb export -s cdn --patchline pbe --full main
 
 # export files of patch 7.23 into export/7.23 (deprecated)
-python3 -m cdtb export -o export 7.23
+cdtb export -o export 7.23
 ```
 
 ## WAD files
