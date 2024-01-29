@@ -333,7 +333,10 @@ class TftTransformer:
                 field_prefix = ''
             for trait_set in trait_sets:
                 variables = {}
-                for effect in trait_set.getv("effectAmounts", []):
+                effect_list = trait_set.getv("effectAmounts", [])
+                for x in trait.getv(0x6F4CF34D, []):
+                    effect_list.extend(x.getv("effectAmounts", []))
+                for effect in effect_list:
                     name = str(effect.getv("name")) if "name" in effect else "null"
                     variables[name] = effect.getv("value", "null")
 
