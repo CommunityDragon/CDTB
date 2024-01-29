@@ -324,6 +324,10 @@ class TftTransformer:
             if "Template" in trait.getv("mName"):
                 continue
 
+            base_effect_list = []
+            for trait_set in trait.getv(0x6f4cf34d, []):
+                base_effect_list.extend(trait_set.getv("effectAmounts", []))
+
             effects = []
             if "mTraitSets" in trait:
                 trait_sets = trait.getv("mTraitSets")
@@ -333,10 +337,7 @@ class TftTransformer:
                 field_prefix = ''
             for trait_set in trait_sets:
                 variables = {}
-                effect_list = trait_set.getv("effectAmounts", [])
-                for x in trait.getv(0x6F4CF34D, []):
-                    effect_list.extend(x.getv("effectAmounts", []))
-                for effect in effect_list:
+                for effect in base_effect_list + trait_set.getv("effectAmounts", []):
                     name = str(effect.getv("name")) if "name" in effect else "null"
                     variables[name] = effect.getv("value", "null")
 
