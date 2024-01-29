@@ -5,6 +5,7 @@ import copy
 import re
 from .binfile import BinFile, BinHashBase
 from .rstfile import RstFile
+from .tools import convert_cdragon_path
 
 
 class NaiveJsonEncoder(json.JSONEncoder):
@@ -104,9 +105,6 @@ class ArenaTransformer:
             })
 
         return augments
-
-def convert_cdragon_path(path):
-    return path.lower().replace(".dds", ".png").replace(".tex", ".png")
 
 def main():
     import argparse
