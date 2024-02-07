@@ -1,10 +1,9 @@
 import json
-import glob
 import os
 import copy
-import re
 from .binfile import BinFile, BinHashBase
 from .rstfile import RstFile
+from .tools import stringtable_paths
 
 
 class NaiveJsonEncoder(json.JSONEncoder):
@@ -39,24 +38,16 @@ class ArenaTransformer:
         Otherwise, export for given `xx_yy` language codes.
         """
 
-        stringtable_dir = os.path.join(self.input_dir, "data/menu")
-        stringtable_glob = "main_??_??.stringtable"
-        stringtable_format = "main_%s.stringtable"
-        stringtable_regex = r"main_(.._..)\.stringtable$"
-
+        stringtables = stringtable_paths(self.input_dir)
         if langs is None:
-            langs = []
-            for path in glob.glob(os.path.join(stringtable_dir, stringtable_glob)):
-                m = re.search(stringtable_regex, path)
-                if m:
-                    langs.append(m.group(1))
+            langs = list(stringtables)
 
         os.makedirs(output, exist_ok=True)
 
         template = self.build_template()
         for lang in langs:
             instance = copy.deepcopy(template)
-            replacements = RstFile(os.path.join(stringtable_dir, stringtable_format % lang))
+            replacements = RstFile(stringtables[lang])
 
             def replace_in_data(entry):
                 for key in ("name", "desc", "tooltip"):
