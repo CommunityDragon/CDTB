@@ -476,9 +476,13 @@ class CdragonRawPatchExporter:
 
         for path, wad in exporter.wads.items():
             if path.endswith('.wad.client'):
+                if lang_match := re.search(r"\.(.._..)\.wad\.client$", path):
+                    subdir = f"game/{lang_match.group(1).lower()}"
+                else:
+                    subdir = "game"
                 wad.files = [wf for wf in wad.files if filter_path(wf.path)]
                 for wf in wad.files:
-                    wf.path = f"game/{wf.path}"
+                    wf.path = f"{subdir}/{wf.path}"
         # remove emptied WADs
         for path, wad in list(exporter.wads.items()):
             if not wad.files:
