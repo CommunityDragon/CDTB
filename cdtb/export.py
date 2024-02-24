@@ -439,8 +439,7 @@ class CdragonRawPatchExporter:
         exporter.add_patch_files(patch)
         return exporter
 
-    @staticmethod
-    def _transform_exported_files(exporter):
+    def _transform_exported_files(self, exporter):
         """Filter exported files, resolve unknowns, etc."""
 
         # resolve unknowns paths
@@ -476,10 +475,12 @@ class CdragonRawPatchExporter:
 
         for path, wad in exporter.wads.items():
             if path.endswith('.wad.client'):
-                if lang_match := re.search(r"\.(.._..)\.wad\.client$", path):
-                    subdir = f"game/{lang_match.group(1).lower()}"
-                else:
-                    subdir = "game"
+                subdir = "game"
+                # Export language-specific files to a dedicated subdir to avoid conflicts
+                # Don't do it for patches prior 14.4, to avoid breaking URLs, and possibly our own code
+                if self.patch.version == "main" or self.patch.version >= PatchVersion("14.4"):
+                    if lang_match := re.search(r"\.(.._..)\.wad\.client$", path):
+                        subdir = f"game/{lang_match.group(1).lower()}"
                 wad.files = [wf for wf in wad.files if filter_path(wf.path)]
                 for wf in wad.files:
                     wf.path = f"{subdir}/{wf.path}"
