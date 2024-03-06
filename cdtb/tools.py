@@ -1,4 +1,6 @@
+import glob
 import os
+import re
 import shutil
 import struct
 from contextlib import contextmanager
@@ -78,3 +80,24 @@ class BinaryParser:
     def unpack_string(self):
         """Unpack string prefixed by its 32-bit length"""
         return self.f.read(self.unpack('<L')[0]).decode('utf-8')
+
+def stringtable_paths(base_dir):
+    """
+    Collect "stringtables" paths, indexed by locale (e.g. `en_us`)
+    """
+
+    # Path format history (from oldest to newest)
+    # - data/menu/font_config_<lang>.txt
+    # - data/menu/main_<lang>.stringtable
+    # - <lang>/data/menu/en_us/main.stringtable
+    #   (Directory is always `en_us`, cdtb has been adjusted to export to a language-specific subdir.)
+
+    # Find the current format; assume 'en_us' language is always available
+    if os.path.exists(os.path.join(base_dir, "en_us/data/menu/en_us/main.stringtable")):
+        return {re.search(r"(.._..)/data/menu/en_us/main.stringtable$", path).group(1): path for path in glob.glob(os.path.join(base_dir, "??_??/data/menu/en_us/main.stringtable"))}
+    elif os.path.exists(os.path.join(base_dir, "data/menu/main_en_us.stringtable")):
+        return {re.search(r"main_(.._..)\.stringtable$", path).group(1): path for path in glob.glob(os.path.join(base_dir, "data/menu/main_??_??.stringtable"))}
+    elif os.path.exists(os.path.join(base_dir, "data/menu/fontconfig_??_??.txt")):
+        return {re.search(r"fontconfig_(.._..)\.txt$", path).group(1): path for path in glob.glob(os.path.join(base_dir, "data/menu/fontconfig_??_??.txt"))}
+    else:
+        raise RuntimeError("cannot find stringtable files")

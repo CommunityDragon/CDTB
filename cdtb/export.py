@@ -434,7 +434,7 @@ class CdragonRawPatchExporter:
             TexConverter(),
             BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
             SknConverter(),
-            RstConverter(re.compile(r'game/data/menu/.*\.(txt|stringtable)$'))
+            RstConverter(re.compile(r'game/.*/menu/.*\.(txt|stringtable)$'))
         ]
         exporter.add_patch_files(patch)
         return exporter
