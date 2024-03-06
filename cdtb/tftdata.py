@@ -318,7 +318,7 @@ class TftTransformer:
                 trait_sets = trait.getv("mTraitSets")
                 field_prefix = 'm'
             else:
-                trait_sets = trait.getv(0x93dd1f25)
+                trait_sets = trait.getv("mConditionalTraitSets", [])
                 field_prefix = ''
             for trait_set in trait_sets:
                 variables = {}
