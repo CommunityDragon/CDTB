@@ -1,18 +1,8 @@
-import json
 import os
 import copy
-from .binfile import BinFile, BinHashBase
+from .binfile import BinFile
 from .rstfile import RstFile
-from .tools import stringtable_paths
-
-
-class NaiveJsonEncoder(json.JSONEncoder):
-    def default(self, other):
-        if isinstance(other, BinHashBase):
-            if other.s is None:
-                return other.hex()
-            return other.s
-        return other.__dict__
+from .tools import json_dump, stringtable_paths
 
 
 class ArenaTransformer:
@@ -58,7 +48,7 @@ class ArenaTransformer:
                 replace_in_data(augment)
 
             with open(os.path.join(output, f"{lang}.json"), "w", encoding="utf-8") as f:
-                json.dump(instance, f, cls=NaiveJsonEncoder, indent=4, sort_keys=True)
+                json_dump(instance, f, indent=4, sort_keys=True, ensure_ascii=False)
 
     def parse_augments(self, map30):
         """Returns a list of augments"""

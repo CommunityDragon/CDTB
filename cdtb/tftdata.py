@@ -1,18 +1,9 @@
-import json
 import os
 import copy
-from .binfile import BinFile, BinHashBase, BinEmbedded
+from .binfile import BinFile, BinEmbedded
 from .rstfile import RstFile
-from .tools import stringtable_paths
+from .tools import json_dump, stringtable_paths
 
-
-class NaiveJsonEncoder(json.JSONEncoder):
-    def default(self, other):
-        if isinstance(other, BinHashBase):
-            if other.s is None:
-                return other.hex()
-            return other.s
-        return other.__dict__
 
 def load_translations(path):
     with open(path, "rb") as f:
@@ -97,7 +88,7 @@ class TftTransformer:
                 replace_in_data(data)
 
             with open(os.path.join(output, f"{lang}.json"), "w", encoding="utf-8") as f:
-                json.dump(instance, f, cls=NaiveJsonEncoder, indent=4, sort_keys=True)
+                json_dump(instance, f, indent=4, sort_keys=True, ensure_ascii=False)
 
     def build_output_sets(self, sets, champs):
         """Build sets as output in the final JSON file"""
