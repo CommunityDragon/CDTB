@@ -324,7 +324,7 @@ class Exporter:
                 except OSError as e:
                     # Path components longer than 255 are not supported, ignore such files
                     if e.errno in (errno.EINVAL, errno.ENAMETOOLONG):
-                        logger.warning(f"ignore file with invalid path: {wad.path}")
+                        logger.warning(f"ignore file with invalid path: {wadfile.path}")
                     else:
                         raise
 
