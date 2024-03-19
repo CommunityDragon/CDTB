@@ -247,10 +247,16 @@ class TftTransformer:
 
             spell_name = record.getv("spellNames")[0]
             spell_name = spell_name.rsplit("/", 1)[-1].lower()
+            spell_key_name = None
+            spell_key_tooltip = None
             for entry in tft_bin.entries:
                 if entry.type == "SpellObject" and entry.getv("mScriptName").lower() == spell_name:
                     ability = entry.getv("mSpell")
                     ability_variables = [{"name": value.getv("mName"), "value": value.getv("mValues")} for value in ability.getv("mDataValues", [])]
+                    if "mClientData" in ability:
+                        loc_keys = ability.getv("mClientData").getv("mTooltipData").getv("mLocKeys")
+                        spell_key_name = loc_keys.get("keyName")
+                        spell_key_tooltip = loc_keys.get("keyTooltip")
                     break
             else:
                 ability_variables = []
@@ -282,8 +288,8 @@ class TftTransformer:
                     "range": record.getv("attackRange", 0) // 180,
                 },
                 "ability": {
-                    "name": champ.getv(0x87A69A5E),
-                    "desc": champ.getv(0xBC4F18B3),
+                    "name": champ.getv(0x87A69A5E) or spell_key_name,
+                    "desc": champ.getv(0xBC4F18B3) or spell_key_tooltip,
                     "icon": champ.getv(0xDF0AD83B) or champ.getv("mPortraitIconPath"),
                     "variables": ability_variables,
                 },
