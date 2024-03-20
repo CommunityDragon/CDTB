@@ -165,6 +165,16 @@ class BinObjectWithFields:
         except KeyError:
             return default
 
+    def get_path(self, *args, default=None):
+        """Get value by accessing successive field names"""
+        v = self
+        try:
+            for key in args:
+                v = v[key].value
+            return v
+        except KeyError:
+            return default
+
     def to_serializable(self):
         return dict(f.to_serializable() for f in self.fields)
 
