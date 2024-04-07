@@ -153,7 +153,7 @@ def storage_conf_from_path(path):
         storage_type, storage_path = path.split(':', 1)
         return {'type': storage_type, 'path': storage_path}
     else:
-        return {'type': 'patcher', 'path': storage_path}
+        return {'type': 'patcher', 'path': path}
 
 def guess_storage_conf(path):
     """Try to guess storage configuration from path"""
