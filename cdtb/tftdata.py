@@ -234,7 +234,7 @@ class TftTransformer:
                 continue
 
             tft_bin = BinFile(self_path)
-            record = next(x for x in tft_bin.entries if x.type == "TFTCharacterRecord")
+            record = next((x for x in tft_bin.entries if x.type == "TFTCharacterRecord"), {})
             if "spellNames" not in record:
                 continue
 
