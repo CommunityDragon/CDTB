@@ -63,7 +63,7 @@ class HashFile:
             try:
                 with open(self.filename) as f:
                     hashes = (l.split(' ', 1) for l in f)
-                    self.hashes = {int(h, 16): s.rstrip() for h, s in hashes}
+                    self.hashes = {int(h, 16): s.rstrip('\n') for h, s in hashes}
             except FileNotFoundError:
                 raise FileNotFoundError(f"Hash file not found; try to run 'fetch-hashes' command: {self.filename}")
         return self.hashes
