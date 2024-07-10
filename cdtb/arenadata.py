@@ -2,7 +2,7 @@ import os
 import copy
 from .binfile import BinFile
 from .rstfile import RstFile
-from .tools import json_dump, stringtable_paths
+from .tools import convert_cdragon_path, json_dump, stringtable_paths
 
 
 class ArenaTransformer:
@@ -85,9 +85,6 @@ class ArenaTransformer:
             })
 
         return augments
-
-def convert_cdragon_path(path):
-    return path.lower().replace(".dds", ".png").replace(".tex", ".png")
 
 def main():
     import argparse

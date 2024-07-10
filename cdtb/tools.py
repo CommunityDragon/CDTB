@@ -101,3 +101,9 @@ def stringtable_paths(base_dir):
         return {re.search(r"fontconfig_(.._..)\.txt$", path).group(1): path for path in glob.glob(os.path.join(base_dir, "data/menu/fontconfig_??_??.txt"))}
     else:
         raise RuntimeError("cannot find stringtable files")
+
+def convert_cdragon_path(path):
+    path, ext = os.path.splitext(path.lower())
+    if ext == ".dds" or ext == ".tex":
+        ext = ".png"
+    return path + ext

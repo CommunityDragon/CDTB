@@ -13,6 +13,9 @@ from .binfile import BinFile
 from .sknfile import SknFile
 from .rstfile import hashfile_rst, RstFile, key_to_hash as key_to_rsthash
 from .tools import (
+    BinaryParser,
+    convert_cdragon_path,
+    json_dump,
     write_file_or_remove,
     write_dir_or_remove,
     json_dumps
@@ -432,9 +435,10 @@ class CdragonRawPatchExporter:
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
             TexConverter(),
+            AtlasInfoConverter(re.compile(r'game/clientstates/.*\.cdtb$|assets/items/icons2d/autoatlas/.*/atlas_info\.bin$')),
             BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
             SknConverter(),
-            RstConverter(re.compile(r'game/.*/menu/.*\.(txt|stringtable)$'))
+            RstConverter(re.compile(r'game/.*/menu/.*\.(txt|stringtable)$')),
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -781,4 +785,36 @@ class RstConverter(FileConverter):
             rst_json["entries"][key] = value
 
         with write_file_or_remove(output_path + '.json', False) as fout:
-            fout.write(json_dumps(rst_json, ensure_ascii=False))
+            json_dump(rst_json, fout, ensure_ascii=False)
+
+class AtlasInfoConverter(FileConverter):
+    def __init__(self, regex):
+        self.regex = regex
+
+    def is_handled(self, path):
+        return self.regex.search(path) is not None
+
+    def converted_paths(self, path):
+        yield path + '.json'
+
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, path)
+
+        with write_file_or_remove(output_path + ".json", False) as fout:
+            json_dump(self.parse_atlasinfo(fin), fout, ensure_ascii=False)
+
+    @staticmethod
+    def parse_atlasinfo(f):
+        parser = BinaryParser(f)
+
+        atlas_count, = parser.unpack("<L")
+        atlas_paths = [convert_cdragon_path(parser.unpack_string()) for _ in range(atlas_count)]
+        atlas_info = {}
+
+        texture_count, = parser.unpack("<L")
+        for _ in range(texture_count):
+            texture_name = parser.unpack_string()
+            startX, startY, endX, endY, atlas_index = parser.unpack("<ffffL")
+            atlas_info[texture_name] = {"atlasPath": atlas_paths[atlas_index], "startX": startX, "startY": startY, "endX": endX, "endY": endY}
+
+        return atlas_info
