@@ -449,7 +449,7 @@ class CdragonRawPatchExporter:
         return exporter
 
     @staticmethod
-    def _transform_exported_files(exporter, patch_version):
+    def _transform_exported_files(exporter: Exporter, patch_version):
         """Filter exported files, resolve unknowns, etc."""
 
         # resolve unknowns paths
@@ -477,11 +477,15 @@ class CdragonRawPatchExporter:
         # - keep .txt files (some contain useful data)
         # - keep font files
         # - add 'game/' prefix to export path
-        def filter_path(path):
-            _, ext = os.path.splitext(path)
-            if ext == '.bin':
-                return '_skins_' not in path
-            return ext in ('.dds', '.tga', '.tex', '.skn', '.txt', '.stringtable', '.ttf', '.otf')
+        def filter_path(exporter, path):
+            keep = False
+            for exported_path in exporter.converted_exported_paths(path):
+                _, ext = os.path.splitext(exported_path)
+                if ext == '.bin':
+                    return '_skins_' not in exported_path
+                else:
+                    keep |= ext in ('.png', '.skn', '.txt', '.stringtable', '.json', '.ttf', '.otf')
+            return keep
 
         for path, wad in exporter.wads.items():
             if path.endswith('.wad.client'):
@@ -491,9 +495,9 @@ class CdragonRawPatchExporter:
                 if patch_version == "main" or patch_version >= PatchVersion("14.4"):
                     if lang_match := re.search(r"\.(.._..)\.wad\.client$", path):
                         subdir = f"game/{lang_match.group(1).lower()}"
-                wad.files = [wf for wf in wad.files if filter_path(wf.path)]
                 for wf in wad.files:
                     wf.path = f"{subdir}/{wf.path}"
+                wad.files = [wf for wf in wad.files if filter_path(exporter, wf.path)]
         # remove emptied WADs
         for path, wad in list(exporter.wads.items()):
             if not wad.files:
