@@ -440,10 +440,10 @@ class CdragonRawPatchExporter:
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
             TexConverter(),
-            AtlasInfoConverter(re.compile(r'game/clientstates/.*\.cdtb$|assets/items/icons2d/autoatlas/.*/atlas_info\.bin$')),
+            AtlasInfoConverter(re.compile(r'game/clientstates/.*\.cdtb$|game/assets/items/icons2d/autoatlas/.*/atlas_info\.bin$')),
             BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
             SknConverter(),
-            RstConverter(re.compile(r'game/.*/menu/.*\.(txt|stringtable)$')),
+            RstConverter(re.compile(r'game/(.*/){0,1}data/menu/.*\.(txt|stringtable)$')),
         ]
         exporter.add_patch_files(patch)
         return exporter
