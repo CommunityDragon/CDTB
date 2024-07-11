@@ -85,8 +85,8 @@ class Exporter:
         self.converters: List[FileConverter] = []
 
 
-    def exported_paths(self):
-        """Generate paths of extracted files"""
+    def _exported_paths(self):
+        """Generate paths of all exported files, excluding converted paths"""
         yield from self.plain_files
         for wad in self.wads.values():
             yield from (wf.path for wf in wad.files)
@@ -96,11 +96,15 @@ class Exporter:
         for wad in self.wads.values():
             yield from (wf.path_hash for wf in wad.files if not wf.path)
 
-    def converted_exported_paths(self):
-        """Generate paths of extracted files after conversion"""
-        for path in self.exported_paths():
-            converter = self._get_converter(path)
-            yield from converter.converted_paths(path)
+    def all_converted_exported_paths(self):
+        """Generate paths of all exported files, including converted paths"""
+        for path in self._exported_paths():
+            yield from self.converted_exported_paths(path)
+
+    def converted_exported_paths(self, path):
+        """Returns all paths that the given path will be exported as"""
+        converter = self._get_converter(path)
+        yield from converter.converted_paths(path)
 
     def walk_output_dir(self, skip_recurse=None):
         """Generate a list of files on disk (even if not in exported files)
@@ -365,16 +369,16 @@ class CdragonRawPatchExporter:
             self._transform_exported_files(prev_exporter, self.prev_patch.version)
 
         # collect list of paths to extract (new ones, previous ones)
-        new_paths = set(exporter.converted_exported_paths())
+        new_paths = set(exporter.all_converted_exported_paths())
         symlinked_paths = None
         changed_paths = new_paths  # default: use all new paths
         if self.prev_patch:
-            prev_paths = set(prev_exporter.converted_exported_paths())
+            prev_paths = set(prev_exporter.all_converted_exported_paths())
             # filter out files from previous patch
             exporter.filter_exporter(prev_exporter)
             # collect a list of new paths to actually extract (changed ones)
             if self.create_symlinks:
-                changed_paths = set(exporter.converted_exported_paths())
+                changed_paths = set(exporter.all_converted_exported_paths())
                 # build a list of symlinks
                 # note: Game files contain some duplicates which will appear in several WAD files.
                 # A new version of any duplicate will override any unmodified one.
