@@ -5,6 +5,7 @@ import shutil
 import struct
 import logging
 from io import BytesIO
+from typing import Dict, List
 from PIL import Image
 
 from .storage import PatchVersion
@@ -79,9 +80,9 @@ class Exporter:
 
     def __init__(self, output: str):
         self.output = os.path.normpath(output)
-        self.wads = {}  # {export_path: Wad}
-        self.plain_files = {}  # {export_path: path}
-        self.converters = []
+        self.wads: Dict[str, Wad] = {}  # {export_path: Wad}
+        self.plain_files: Dict[str, str] = {}  # {export_path: path}
+        self.converters: List[FileConverter] = []
 
 
     def exported_paths(self):
