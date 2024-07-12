@@ -102,7 +102,7 @@ class Exporter:
             yield from self.converted_exported_paths(path)
 
     def converted_exported_paths(self, path):
-        """Returns all paths that the given path will be exported as"""
+        """Generate all paths that the given path will be exported as"""
         converter = self._get_converter(path)
         yield from converter.converted_paths(path)
 
@@ -443,7 +443,7 @@ class CdragonRawPatchExporter:
             AtlasInfoConverter(re.compile(r'game/clientstates/.*\.cdtb$|game/assets/items/icons2d/autoatlas/.*/atlas_info\.bin$')),
             BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
             SknConverter(),
-            RstConverter(re.compile(r'game/(.*/){0,1}data/menu/.*\.(txt|stringtable)$')),
+            RstConverter(re.compile(r'game/(?:.*/)?data/menu/.*\.(txt|stringtable)$')),
         ]
         exporter.add_patch_files(patch)
         return exporter
