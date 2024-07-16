@@ -12,7 +12,7 @@ from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
 from .sknfile import SknFile
-from .rstfile import hashfile_rst, RstFile, key_to_hash as key_to_rsthash
+from .rstfile import RstFile, get_hashfile as get_rsthashfile, key_to_hash as key_to_rsthash
 from .tools import (
     BinaryParser,
     convert_cdragon_path,
@@ -418,8 +418,9 @@ class CdragonRawPatchExporter:
         if self.patch.version != 'main' and self.patch.version < PatchVersion('9.14'):
             return  # no supported TFT data before 9.14
         # don't import in module to be able to execute tftdata module
+        game_version = int(self.patch.version)
         from .tftdata import TftTransformer
-        transformer = TftTransformer(os.path.join(self.output, "game"))
+        transformer = TftTransformer(os.path.join(self.output, "game"), game_version)
         transformer.export(os.path.join(self.output, "cdragon/tft"), langs=None)
 
     def export_arena_data(self):
@@ -431,19 +432,15 @@ class CdragonRawPatchExporter:
         transformer.export(os.path.join(self.output, "cdragon/arena"), langs=None)
 
     def _create_exporter(self, patch):
-        if patch.version == 'main':
-            btype_version = 9999  # also use the latest version
-        else:
-            v0, v1 = patch.version.t
-            btype_version = v0 * 100 + v1
+        game_version = int(patch.version)
         exporter = Exporter(self.output)
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
             TexConverter(),
             AtlasInfoConverter(re.compile(r'game/clientstates/.*\.cdtb$|game/assets/items/icons2d/autoatlas/.*/atlas_info\.bin$')),
-            BinConverter(re.compile(r'game/.*\.bin$'), btype_version),
+            BinConverter(re.compile(r'game/.*\.bin$'), game_version),
             SknConverter(),
-            RstConverter(re.compile(r'game/(?:.*/)?data/menu/.*\.(txt|stringtable)$')),
+            RstConverter(re.compile(r'game/(?:.*/)?data/menu/.*\.(txt|stringtable)$'), game_version),
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -767,9 +764,10 @@ class SknConverter(FileConverter):
                     f.write(sknfile.to_obj(entry))
 
 class RstConverter(FileConverter):
-    def __init__(self, regex):
+    def __init__(self, regex, game_version=1415):
         self.regex = regex
-        self.hashes = hashfile_rst.load()
+        self.hashes = get_rsthashfile(game_version).load()
+        self.rsthash_version = game_version
 
     def is_handled(self, path):
         return self.regex.search(path) is not None
@@ -783,7 +781,7 @@ class RstConverter(FileConverter):
         with write_file_or_remove(output_path) as fout:
             shutil.copyfileobj(fin, fout)
 
-        rstfile = RstFile(output_path)
+        rstfile = RstFile(output_path, self.rsthash_version)
         hashes = {key_to_rsthash(hash, rstfile.hash_bits): value for hash, value in self.hashes.items()}
         rst_json = {"entries": {}, "version": rstfile.version}
         for key, value in rstfile.entries.items():

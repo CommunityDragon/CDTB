@@ -88,6 +88,12 @@ class PatchVersion(BaseVersion):
                 self.s = '.'.join(str(x) for x in self.t)
             assert len(self.t) == 2, "invalid patch version format"
 
+    def __int__(self):
+        if self.t == "main":
+            return 9999 # return highest possible number
+        else:
+            v0, v1 = self.t
+            return v0 * 100 + v1
 
 class RequestStreamReader:
     """Wrapper for reading data from stream request"""

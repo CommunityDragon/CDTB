@@ -5,11 +5,11 @@ from .rstfile import RstFile
 from .tools import json_dump, stringtable_paths
 
 
-def load_translations(path):
+def load_translations(path, rsthash_version=1415):
     with open(path, "rb") as f:
         if f.read(3) == b"RST":
             f.seek(0)
-            return RstFile(f)
+            return RstFile(f, rsthash_version)
         else:
             translations = {}
             for line in f:
@@ -23,8 +23,9 @@ def load_translations(path):
 
 
 class TftTransformer:
-    def __init__(self, input_dir):
+    def __init__(self, input_dir, game_version=1415):
         self.input_dir = input_dir
+        self.rsthash_version = game_version
 
     def build_template(self):
         """Parse bin data into template data"""
@@ -62,7 +63,7 @@ class TftTransformer:
         template = self.build_template()
         for lang in langs:
             instance = copy.deepcopy(template)
-            replacements = load_translations(stringtables[lang])
+            replacements = load_translations(stringtables[lang], self.rsthash_version)
 
             def replace_in_data(entry):
                 for key in ("name", "desc"):
@@ -345,9 +346,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="directory with extracted bin files")
     parser.add_argument("-o", "--output", default="tft", help="output directory")
+    parser.add_argument('-V', '--patch-version', default="14.15",
+                           help="patch version the input files belong to (default: %(default)s)")
     args = parser.parse_args()
 
-    tft_transformer = TftTransformer(args.input)
+    parsed_version = sum(int(num) * (100 ** i) for i, num in enumerate(reversed(args.patch_version.split('.'))))
+
+    tft_transformer = TftTransformer(args.input, game_version=parsed_version)
     tft_transformer.export(args.output, langs=None)
 
 if __name__ == "__main__":
