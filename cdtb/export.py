@@ -12,7 +12,7 @@ from .storage import PatchVersion
 from .wad import Wad
 from .binfile import BinFile
 from .sknfile import SknFile
-from .rstfile import RstFile, get_hashfile as get_rsthashfile, key_to_hash as key_to_rsthash
+from .rstfile import RstFile, get_hashfile as get_rsthashfile
 from .tools import (
     BinaryParser,
     convert_cdragon_path,
@@ -782,7 +782,7 @@ class RstConverter(FileConverter):
             shutil.copyfileobj(fin, fout)
 
         rstfile = RstFile(output_path, self.rsthash_version)
-        hashes = {key_to_rsthash(hash, rstfile.hash_bits): value for hash, value in self.hashes.items()}
+        hashes = {rstfile.truncate_hash(hash): value for hash, value in self.hashes.items()}
         rst_json = {"entries": {}, "version": rstfile.version}
         for key, value in rstfile.entries.items():
             if key in hashes:

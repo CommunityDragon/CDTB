@@ -5,30 +5,23 @@ from .tools import BinaryParser
 from .hashes import HashFile, default_hash_dir
 
 
-def key_to_hash(key, bits=40, rsthash_version=1415):
-    if isinstance(key, str):
-        if rsthash_version >= 1415:
-            key = xxh3_64_intdigest(key.lower())
-        else:
-            key = xxh64_intdigest(key.lower())
-    return key & ((1 << bits) - 1)
-
 def get_hashfile(game_version=1415):
     if game_version >= 1415:
-        return hashfile_rst_new
+        return hashfile_rst_xxh3
     else:
-        return hashfile_rst
+        return hashfile_rst_xxh64
 
-hashfile_rst = HashFile(default_hash_dir / "hashes.rst.txt", hash_size=10)
-hashfile_rst_new = HashFile(default_hash_dir / "hashes.rstnew.txt", hash_size=10)
+hashfile_rst_xxh64 = HashFile(default_hash_dir / "hashes.rst.xxh64.txt", hash_size=10)
+hashfile_rst_xxh3 = HashFile(default_hash_dir / "hashes.rst.xxh3.txt", hash_size=10)
 
 class RstFile:
-    def __init__(self, path_or_f=None, rsthash_version=1415):
+    def __init__(self, path_or_f=None, game_version=1415):
         self.font_config = None
         self.entries = {}
         self.hash_bits = 40
         self.version = None
-        self.rsthash_version = rsthash_version
+        self.rsthash_version = game_version
+        self.key_hasher = None
 
         if path_or_f is not None:
             if isinstance(path_or_f, str):
@@ -37,16 +30,23 @@ class RstFile:
             else:
                 self.parse_rst(path_or_f)
 
+    def _get_key_hasher(self):
+        if self.rsthash_version >= 1415:
+            func = xxh3_64_intdigest
+        else:
+            func = xxh64_intdigest
+        return lambda key: func(key) & ((1 << self.hash_bits) - 1)
+
     def __getitem__(self, key):
         try:
-            h = key_to_hash(key, self.hash_bits, self.rsthash_version)
+            h = self.key_hasher(key)
             return self.entries[h]
         except (TypeError, KeyError):
             raise KeyError(key)
 
     def __contains__(self, key):
         try:
-            h = key_to_hash(key, self.hash_bits, self.rsthash_version)
+            h = self.key_hasher(key)
             return h in self.entries
         except TypeError:
             return False
@@ -56,6 +56,9 @@ class RstFile:
             return self[key]
         except KeyError:
             return default
+
+    def truncate_hash(self, hash):
+        return hash & ((1 << self.hash_bits) - 1)
 
     def parse_rst(self, f):
         parser = BinaryParser(f)
@@ -77,6 +80,8 @@ class RstFile:
         else:
             raise ValueError(f"unsupported RST version: {version}")
         self.version = version
+
+        self.key_hasher = self._get_key_hasher()
 
         hash_mask = (1 << self.hash_bits) - 1
         count, = parser.unpack("<L")
