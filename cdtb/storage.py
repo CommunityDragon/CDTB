@@ -88,7 +88,7 @@ class PatchVersion(BaseVersion):
                 self.s = '.'.join(str(x) for x in self.t)
             assert len(self.t) == 2, "invalid patch version format"
 
-    def __int__(self):
+    def as_int(self):
         if self.t == "main":
             return 9999 # return highest possible number
         else:
@@ -477,4 +477,3 @@ def parse_storage_component(storage: Storage, component: str) -> Union[None, Pat
         return patch
     else:
         return storage.patch_element(name, version, stored=version is not None)
-

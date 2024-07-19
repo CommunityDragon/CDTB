@@ -418,7 +418,7 @@ class CdragonRawPatchExporter:
         if self.patch.version != 'main' and self.patch.version < PatchVersion('9.14'):
             return  # no supported TFT data before 9.14
         # don't import in module to be able to execute tftdata module
-        game_version = int(self.patch.version)
+        game_version = self.patch.version.as_int()
         from .tftdata import TftTransformer
         transformer = TftTransformer(os.path.join(self.output, "game"), game_version)
         transformer.export(os.path.join(self.output, "cdragon/tft"), langs=None)
@@ -432,7 +432,7 @@ class CdragonRawPatchExporter:
         transformer.export(os.path.join(self.output, "cdragon/arena"), langs=None)
 
     def _create_exporter(self, patch):
-        game_version = int(patch.version)
+        game_version = patch.version.as_int()
         exporter = Exporter(self.output)
         exporter.converters = [
             ImageConverter(('.dds', '.tga')),
