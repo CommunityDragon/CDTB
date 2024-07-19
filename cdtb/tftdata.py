@@ -1,5 +1,6 @@
 import os
 import copy
+from .storage import PatchVersion
 from .binfile import BinFile, BinEmbedded
 from .rstfile import RstFile
 from .tools import json_dump, stringtable_paths
@@ -346,11 +347,11 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="directory with extracted bin files")
     parser.add_argument("-o", "--output", default="tft", help="output directory")
-    parser.add_argument('-V', '--patch-version', default="14.15",
-                           help="patch version the input files belong to (default: %(default)s)")
+    parser.add_argument('-V', '--patch-version', default=None,
+                           help="patch version the input files belong to in the format XX.YY (default: latest patch)")
     args = parser.parse_args()
 
-    parsed_version = sum(int(num) * (100 ** i) for i, num in enumerate(reversed(args.patch_version.split('.'))))
+    parsed_version = PatchVersion(args.patch_version if args.patch_version else "main").as_int()
 
     tft_transformer = TftTransformer(args.input, game_version=parsed_version)
     tft_transformer.export(args.output, langs=None)

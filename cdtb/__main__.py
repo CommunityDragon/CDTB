@@ -319,7 +319,7 @@ def command_bin_dump(parser, args):
     if not os.path.isfile(args.bin):
         parser.error(f"BIN file not found: {args.bin}")
 
-    parsed_version = sum(int(num) * (100 ** i) for i, num in enumerate(reversed(args.patch_version.split('.'))))
+    parsed_version = PatchVersion(args.patch_version if args.patch_version else "main").as_int()
 
     with open(args.bin, 'rb') as f:
         binfile = BinFile(f, btype_version=parsed_version)
@@ -472,8 +472,8 @@ def create_parser():
                                       help="dump a BIN file as a text tree")
     subparser.add_argument('-j', '--json', action='store_true',
                            help="extract to JSON")
-    subparser.add_argument('-V', '--patch-version', default="10.8",
-                           help="patch version this BIN file belongs to (default: %(default)s)")
+    subparser.add_argument('-V', '--patch-version', default=None,
+                           help="patch version this BIN file belongs to in the format XX.YY (default: latest patch)")
     subparser.add_argument('bin',
                            help="BIN file to extract")
 
