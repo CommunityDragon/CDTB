@@ -19,8 +19,8 @@ def key_to_hash(key, bits=64, rsthash_version=1415):
     return key & ((1 << bits) - 1)
 
 
-hashfile_rst_xxh64 = HashFile(default_hash_dir / "hashes.rst.xxh64.txt", hash_size=10)
-hashfile_rst_xxh3 = HashFile(default_hash_dir / "hashes.rst.xxh3.txt", hash_size=10)
+hashfile_rst_xxh64 = HashFile(default_hash_dir / "hashes.rst.xxh64.txt", hash_size=16)
+hashfile_rst_xxh3 = HashFile(default_hash_dir / "hashes.rst.xxh3.txt", hash_size=16)
 
 class RstFile:
     def __init__(self, path_or_f=None, game_version=1415):
