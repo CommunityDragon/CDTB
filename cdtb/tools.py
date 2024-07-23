@@ -97,6 +97,8 @@ def stringtable_paths(base_dir):
         return {re.search(r"(.._..)/data/menu/en_us/main.stringtable$", path).group(1): path for path in glob.glob(os.path.join(base_dir, "??_??/data/menu/en_us/main.stringtable"))}
     elif os.path.exists(os.path.join(base_dir, "data/menu/main_en_us.stringtable")):
         return {re.search(r"main_(.._..)\.stringtable$", path).group(1): path for path in glob.glob(os.path.join(base_dir, "data/menu/main_??_??.stringtable"))}
+    if os.path.exists(os.path.join(base_dir, "data/menu/en_us/main.stringtable")):
+        return {re.search(r"data/menu\\(.._..)\\main.stringtable$", path).group(1): path for path in glob.glob(os.path.join(base_dir, "data/menu/??_??/main.stringtable"))}
     elif os.path.exists(os.path.join(base_dir, "data/menu/fontconfig_??_??.txt")):
         return {re.search(r"fontconfig_(.._..)\.txt$", path).group(1): path for path in glob.glob(os.path.join(base_dir, "data/menu/fontconfig_??_??.txt"))}
     else:
