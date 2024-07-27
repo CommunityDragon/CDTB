@@ -52,7 +52,7 @@ class TftTransformer:
         Otherwise, export for given `xx_yy` language codes.
         """
 
-        stringtables = stringtable_paths(self.input_dir)
+        stringtables = stringtable_paths(self.input_dir, "tft")
 
         if langs is None:
             langs = list(stringtables)

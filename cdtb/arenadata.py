@@ -28,7 +28,7 @@ class ArenaTransformer:
         Otherwise, export for given `xx_yy` language codes.
         """
 
-        stringtables = stringtable_paths(self.input_dir)
+        stringtables = stringtable_paths(self.input_dir, "lol")
         if langs is None:
             langs = list(stringtables)
 
