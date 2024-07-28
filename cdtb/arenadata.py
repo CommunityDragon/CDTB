@@ -1,13 +1,15 @@
 import os
 import copy
+from .storage import PatchVersion
 from .binfile import BinFile
 from .rstfile import RstFile
 from .tools import convert_cdragon_path, json_dump, stringtable_paths
 
 
 class ArenaTransformer:
-    def __init__(self, input_dir):
+    def __init__(self, input_dir, game_version=1415):
         self.input_dir = input_dir
+        self.rsthash_version = game_version
 
     def build_template(self):
         """Parse bin data into template data"""
@@ -37,7 +39,7 @@ class ArenaTransformer:
         template = self.build_template()
         for lang in langs:
             instance = copy.deepcopy(template)
-            replacements = RstFile(stringtables[lang])
+            replacements = RstFile(stringtables[lang], self.rsthash_version)
 
             def replace_in_data(entry):
                 for key in ("name", "desc", "tooltip"):
@@ -91,9 +93,13 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("input", help="directory with extracted bin files")
     parser.add_argument("-o", "--output", default="arena", help="output directory")
+    parser.add_argument('-V', '--patch-version', default=None,
+                           help="patch version the input files belong to in the format XX.YY (default: latest patch)")
     args = parser.parse_args()
 
-    arena_transformer = ArenaTransformer(args.input)
+    parsed_version = PatchVersion(args.patch_version if args.patch_version else "main").as_int()
+
+    arena_transformer = ArenaTransformer(args.input, game_version=parsed_version)
     arena_transformer.export(args.output, langs=None)
 
 if __name__ == "__main__":

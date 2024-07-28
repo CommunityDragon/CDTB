@@ -1,24 +1,34 @@
-import os
-from xxhash import xxh64_intdigest
+from xxhash import xxh3_64_intdigest, xxh64_intdigest
 from base64 import b64encode
 from .tools import BinaryParser
 from .hashes import HashFile, default_hash_dir
 
 
-def key_to_hash(key, bits=40):
+def get_hashfile(game_version=1415):
+    if game_version >= 1415:
+        return hashfile_rst_xxh3
+    else:
+        return hashfile_rst_xxh64
+
+def key_to_hash(key, bits=64, rsthash_version=1415):
     if isinstance(key, str):
-        key = xxh64_intdigest(key.lower())
+        if rsthash_version >= 1415:
+            key = xxh3_64_intdigest(key.lower())
+        else:
+            key = xxh64_intdigest(key.lower())
     return key & ((1 << bits) - 1)
 
 
-hashfile_rst = HashFile(default_hash_dir / "hashes.rst.txt", hash_size=10)
+hashfile_rst_xxh64 = HashFile(default_hash_dir / "hashes.rst.xxh64.txt", hash_size=16)
+hashfile_rst_xxh3 = HashFile(default_hash_dir / "hashes.rst.xxh3.txt", hash_size=16)
 
 class RstFile:
-    def __init__(self, path_or_f=None):
+    def __init__(self, path_or_f=None, game_version=1415):
         self.font_config = None
         self.entries = {}
         self.hash_bits = 40
         self.version = None
+        self.rsthash_version = game_version
 
         if path_or_f is not None:
             if isinstance(path_or_f, str):
@@ -29,14 +39,14 @@ class RstFile:
 
     def __getitem__(self, key):
         try:
-            h = key_to_hash(key, self.hash_bits)
+            h = key_to_hash(key, self.hash_bits, self.rsthash_version)
             return self.entries[h]
         except (TypeError, KeyError):
             raise KeyError(key)
 
     def __contains__(self, key):
         try:
-            h = key_to_hash(key, self.hash_bits)
+            h = key_to_hash(key, self.hash_bits, self.rsthash_version)
             return h in self.entries
         except TypeError:
             return False
