@@ -96,7 +96,7 @@ def stringtable_paths(base_dir, game):
 
     # Find the current format; assume 'en_us' language is always available
     if os.path.exists(os.path.join(base_dir, f"en_us/data/menu/en_us/{game}.stringtable")):
-        return {re.search(rf"(.._..)/data/menu/en_us/{game}.stringtable$", path.replace('\\', '/')).group(1): path for path in glob.glob(os.path.join(base_dir, f"??_??/data/menu/en_us/{game}.stringtable"))}
+        return {re.search(f"(.._..)/data/menu/en_us/{game}.stringtable$", path.replace('\\', '/')).group(1): path for path in glob.glob(os.path.join(base_dir, f"??_??/data/menu/en_us/{game}.stringtable"))}
     elif os.path.exists(os.path.join(base_dir, "en_us/data/menu/en_us/main.stringtable")):
         return {re.search(r"(.._..)/data/menu/en_us/main.stringtable$", path.replace('\\', '/')).group(1): path for path in glob.glob(os.path.join(base_dir, "??_??/data/menu/en_us/main.stringtable"))}
     elif os.path.exists(os.path.join(base_dir, "data/menu/main_en_us.stringtable")):
