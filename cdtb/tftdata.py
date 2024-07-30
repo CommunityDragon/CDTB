@@ -182,8 +182,8 @@ class TftTransformer:
                         set_augment_ids.add(item_entries[item_entry].getv("mName"))
                     else:
                         set_items_ids.add(item_entries[item_entry].getv("mName"))
-            set_augments = list(set_augment_ids)
-            set_items = list(set_items_ids)
+            set_augments = sorted(set_augment_ids)
+            set_items = sorted(set_items_ids)
 
             sets.append((set_number, set_mutator, set_name, set_characters, set_traits, set_augments, set_items))
         return sets
