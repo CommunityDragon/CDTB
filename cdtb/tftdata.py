@@ -97,7 +97,7 @@ class TftTransformer:
 
         output_sets = {}
         output_set_data = []
-        for set_number, set_mutator, set_name, set_chars, set_traits in sets:
+        for set_number, set_mutator, set_name, set_chars, set_traits, set_augments, set_items in sets:
             set_champs_pairs = [champs[name] for name in set_chars if name in champs]
             set_champions = [p[0] for p in set_champs_pairs]
             output_set_data.append({
@@ -106,6 +106,8 @@ class TftTransformer:
                 "name": set_name,
                 "traits": set_traits,
                 "champions": set_champions,
+                "augments": set_augments,
+                "items": set_items,
             })
             output_sets[set_number] = {
                 "name": set_name,
@@ -120,10 +122,12 @@ class TftTransformer:
         return {x.path: x.getv("name").lower() for x in map22.entries if x.type == "Character" or x.type == "TftCharacter"}
 
     def parse_sets(self, map22, character_names, traits):
-        """Parse character sets to a list of `(name, number, characters, traits)`"""
+        """Parse character sets to a list of `(name, number, characters, traits, augments, items)`"""
         character_lists = {x.path: x for x in map22.entries if x.type == "MapCharacterList" or x.type == "TftCharacterList"}
         trait_lists = {x.path: x for x in map22.entries if x.type == "TftTraitList"}
         set_collection = [x for x in map22.entries if x.type == 0x438850FF]
+        item_lists = {x.path: x for x in map22.entries if x.type == "TFTItemList"}
+        item_entries = {x.path: x for x in map22.entries if x.type == "TftItemData"}
 
         if not set_collection:
             # backward compatibility
@@ -165,7 +169,23 @@ class TftTransformer:
                 set_trait_paths += trait_lists[trait_list].getv("mTraits")
             set_traits = [traits[path] for path in set(set_trait_paths) if path in traits]
 
-            sets.append((set_number, set_mutator, set_name, set_characters, set_traits))
+            set_augment_ids = set()
+            set_items_ids = set()
+            for item_list in item.getv("ItemLists", []):
+                if item_list not in item_lists:
+                    continue
+                item_list_entry = item_lists[item_list]
+                for item_entry in item_list_entry.getv("mItems", []):
+                    if item_entry not in item_entries:
+                        continue
+                    if item_entries[item_entry].getv("IsAugment"):
+                        set_augment_ids.add(item_entries[item_entry].getv("mName"))
+                    else:
+                        set_items_ids.add(item_entries[item_entry].getv("mName"))
+            set_augments = list(set_augment_ids)
+            set_items = list(set_items_ids)
+
+            sets.append((set_number, set_mutator, set_name, set_characters, set_traits, set_augments, set_items))
         return sets
 
     def parse_items(self, map22):
