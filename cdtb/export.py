@@ -413,6 +413,8 @@ class CdragonRawPatchExporter:
         self.export_tft_data()
         logger.info("export Arena data files")
         self.export_arena_data()
+        logger.info("export StrawBerry data files")
+        self.export_strawberry_data()
 
     def export_tft_data(self):
         if self.patch.version != 'main' and self.patch.version < PatchVersion('9.14'):
@@ -430,6 +432,14 @@ class CdragonRawPatchExporter:
         from .arenadata import ArenaTransformer
         transformer = ArenaTransformer(os.path.join(self.output, "game"))
         transformer.export(os.path.join(self.output, "cdragon/arena"), langs=None)
+
+    def export_strawberry_data(self):
+        if self.patch.version != 'main' and self.patch.version < PatchVersion('14.16'):
+            return  # no supported Arena data before 14.16
+        # don't import in module to be able to execute strawberry module
+        from .strawberry import StrawBerryTransformer
+        transformer = StrawBerryTransformer(os.path.join(self.output, "game"))
+        transformer.export(os.path.join(self.output, "cdragon/strawberry"), langs=None)
 
     def _create_exporter(self, patch):
         game_version = patch.version.as_int()
