@@ -3,7 +3,6 @@ import errno
 import struct
 import gzip
 import json
-import imghdr
 import logging
 from xxhash import xxh3_64_intdigest
 
@@ -13,13 +12,6 @@ from .tools import (
     write_file_or_remove,
     zstd_decompress,
 )
-
-def test_jpeg_photoshop(h, f):
-    if h[:4] == b'\xff\xd8\xff\xe1':
-        return 'jpeg'
-
-imghdr.tests.append(test_jpeg_photoshop)
-
 
 logger = logging.getLogger(__name__)
 
@@ -41,32 +33,38 @@ class WadFileHeader:
     """Single file entry in a WAD archive"""
 
     _magic_numbers_ext = {
-        b'OggS': 'ogg',
-        bytes.fromhex('00010000'): 'ttf',
-        bytes.fromhex('1a45dfa3'): 'webm',
-        b'true': 'ttf',
-        b'OTTO\0': 'otf',
-        b'"use strict";': 'min.js',
-        b'<template ': 'template.html',
-        b'<!-- Elements -->': 'template.html',
-        b'DDS ': 'dds',
-        b'<svg': 'svg',
-        b'PROP': 'bin',
-        b'PTCH': 'bin',
-        b'BKHD': 'bnk',
-        b'r3d2Mesh': 'scb',
-        b'r3d2anmd': 'anm',
-        b'r3d2canm': 'anm',
-        b'r3d2sklt': 'skl',
-        b'r3d2': 'wpk',
-        bytes.fromhex('33221100'): 'skn',
-        b'PreLoadBuildingBlocks = {': 'preload',
-        b'\x1bLuaQ\x00\x01\x04\x04': 'luabin',
-        b'\x1bLuaQ\x00\x01\x04\x08': 'luabin64',
-        bytes.fromhex('023d0028'): 'troybin',
-        b'[ObjectBegin]': 'sco',
-        b'OEGM': 'mapgeo',
-        b'TEX\0': 'tex'
+        (b'\xff\xd8\xff\xdb', 'jpg'),
+        (b'\xff\xd8\xff\xe1', 'jpg'),
+        (lambda data: data[6:10] in (b'JFIF', b'Exif'), 'jpg'),
+        (b'\x89PNG\r\n\x1a\n', 'png'),
+        (b'GIF87a', 'gif'),
+        (b'GIF89a', 'gif'),
+        (b'OggS', 'ogg'),
+        (bytes.fromhex('00010000'), 'ttf'),
+        (bytes.fromhex('1a45dfa3'), 'webm'),
+        (b'true', 'ttf'),
+        (b'OTTO\0', 'otf'),
+        (b'"use strict";', 'min.js'),
+        (b'<template ', 'template.html'),
+        (b'<!-- Elements -->', 'template.html'),
+        (b'DDS ', 'dds'),
+        (b'<svg', 'svg'),
+        (b'PROP', 'bin'),
+        (b'PTCH', 'bin'),
+        (b'BKHD', 'bnk'),
+        (b'r3d2Mesh', 'scb'),
+        (b'r3d2anmd', 'anm'),
+        (b'r3d2canm', 'anm'),
+        (b'r3d2sklt', 'skl'),
+        (b'r3d2', 'wpk'),
+        (bytes.fromhex('33221100'), 'skn'),
+        (b'PreLoadBuildingBlocks = {', 'preload'),
+        (b'\x1bLuaQ\x00\x01\x04\x04', 'luabin'),
+        (b'\x1bLuaQ\x00\x01\x04\x08', 'luabin64'),
+        (bytes.fromhex('023d0028'), 'troybin'),
+        (b'[ObjectBegin]', 'sco'),
+        (b'OEGM', 'mapgeo'),
+        (b'TEX\0', 'tex'),
     }
 
     def __init__(self, path_hash, offset, compressed_size, size, type, duplicate=None, first_subchunk_index=None, sha256=None):
@@ -153,26 +151,23 @@ class WadFileHeader:
 
     @staticmethod
     def guess_extension(data):
-        # image type
-        typ = imghdr.what(None, h=data)
-        if typ == 'jpeg':
-            return 'jpg'
-        elif typ == 'xbm':
-            pass  # some HLSL files are recognized as xbm
-        elif typ is not None:
-            return typ
+        # Detect known extensions from first data bytes
+        for matcher, ext in WadFileHeader._magic_numbers_ext:
+            if isinstance(matcher, bytes):
+                if not data.startswith(matcher):
+                    continue
+            elif not matcher(data):
+                continue
+            return ext
 
-        # json
+        # Detect JSON compatible data
         try:
             json.loads(data)
             return 'json'
         except (json.JSONDecodeError, UnicodeDecodeError):
             pass
 
-        # others
-        for prefix, ext in WadFileHeader._magic_numbers_ext.items():
-            if data.startswith(prefix):
-                return ext
+        # Unknown
         return None
 
 
