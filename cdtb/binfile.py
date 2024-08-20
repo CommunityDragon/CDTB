@@ -1,8 +1,7 @@
-import os
 from enum import IntEnum
 import struct
-from .hashes import HashFile, default_hash_dir, hashfile_game
 from xxhash import xxh64_intdigest
+from .hashes import HashFile, default_hash_dir, hashfile_game
 
 
 def _repr_indent(v):

@@ -1,5 +1,5 @@
-from xxhash import xxh3_64_intdigest, xxh64_intdigest
 from base64 import b64encode
+from xxhash import xxh3_64_intdigest, xxh64_intdigest
 from .tools import BinaryParser
 from .hashes import HashFile, default_hash_dir
 

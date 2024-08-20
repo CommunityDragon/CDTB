@@ -1,7 +1,7 @@
 import os
 import re
 import zlib
-from typing import List, Dict, Union, Optional, Generator, Iterable
+from typing import List, Dict, Union, Optional, Generator
 from collections import defaultdict
 import logging
 import requests
@@ -11,7 +11,6 @@ from .tools import write_file_or_remove
 from .storage import (
     BaseVersion,
     Storage,
-    Patch,
     PatchElement,
     PatchVersion,
     get_system_yaml_version,

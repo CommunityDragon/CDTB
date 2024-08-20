@@ -54,6 +54,7 @@ class ArenaTransformer:
 
     def parse_augments(self, map30):
         """Returns a list of augments"""
+
         augment_entries = [x for x in map30.entries if x.type == 0x6DFAB860]
         spellobject_entries = {x.path: x for x in map30.entries if x.type == "SpellObject"}
 
@@ -69,7 +70,7 @@ class ArenaTransformer:
                 for datavalue in augment_spell.getv('mDataValues', []):
                     augment_datavalues[datavalue.getv("mName")] = datavalue.getv("mValues", [0])[0]
 
-                #Giving raw calculations data due to not having a well defined standard
+                # Giving raw calculations data due to not having a well defined standard
                 if augment_spell.get('mSpellCalculations'):
                     augment_calculations = augment_spell.get('mSpellCalculations').to_serializable()[1]
 
@@ -94,7 +95,7 @@ def main():
     parser.add_argument("input", help="directory with extracted bin files")
     parser.add_argument("-o", "--output", default="arena", help="output directory")
     parser.add_argument('-V', '--patch-version', default=None,
-                           help="patch version the input files belong to in the format XX.YY (default: latest patch)")
+                        help="patch version the input files belong to in the format XX.YY (default: latest patch)")
     args = parser.parse_args()
 
     parsed_version = PatchVersion(args.patch_version if args.patch_version else "main").as_int()

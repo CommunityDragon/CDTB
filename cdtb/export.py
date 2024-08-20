@@ -698,6 +698,9 @@ class TexConverter(FileConverter):
             elif format == 0x14:  # BGRA8
                 block_size = 1
                 bytes_per_block = 4
+            else:
+                # Note: already checked above
+                raise FileConversionError(f"unsupported TEX format: {format:x}")
 
             # Find mipmap count
             n = max(width, height)
