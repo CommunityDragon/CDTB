@@ -1,4 +1,3 @@
-import os
 import pytest
 from cdtb.storage import (
     BaseVersion,
@@ -17,10 +16,12 @@ def test_base_version_init_ok(t, s):
     assert BaseVersion(s).s == s
 
 @pytest.mark.parametrize("arg, exc", [
-    (None, TypeError),
+    (None, ValueError),
     ("", ValueError),
     ((), ValueError),
-    (("1", "2"), TypeError),
+    (("a", "b"), ValueError),
+    # Supported but could be refused
+    #(("1", "2"), ValueError),
 ])
 def test_base_version_init_bad(arg, exc):
     with pytest.raises(exc):
@@ -55,12 +56,12 @@ def test_patch_version_init_ok(arg, t, s):
     assert v.s == s
 
 @pytest.mark.parametrize("arg, exc", [
-    (None, TypeError),
+    (None, ValueError),
     ("", ValueError),
     ("bad", ValueError),
     ("9", AssertionError),
 ])
-def test_base_version_init_bad(arg, exc):
+def test_patch_version_init_bad(arg, exc):
     with pytest.raises(exc):
         PatchVersion(arg)
 
