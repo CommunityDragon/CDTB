@@ -476,3 +476,9 @@ def parse_storage_component(storage: Storage, component: str) -> Union[None, Pat
         return patch
     else:
         return storage.patch_element(name, version, stored=version is not None)
+
+# Import known storages to register them
+# Put the imports at the end to avoid circular dependenceis
+from . import rads as _rads  # noqa
+from . import patcher as _patcher   # noqa
+
