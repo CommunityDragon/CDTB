@@ -42,3 +42,6 @@ include = ["/cdtb/*.py"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["cdtb"]
+
+[tool.ruff.lint]
+ignore = ["E741"]

@@ -148,7 +148,7 @@ def progress_iterate(sequence, formatter=None):
     """Iterate over sequence, display progress on SIGINT"""
 
     if formatter is None:
-        formatter = lambda v: v
+        formatter = lambda v: v  # noqa
 
     interrupted = False
     def handler():

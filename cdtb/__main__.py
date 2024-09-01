@@ -14,7 +14,6 @@ from cdtb.storage import (
     parse_storage_component,
     storage_conf_from_path,
 )
-from cdtb.patcher import PatcherStorage
 from cdtb.wad import Wad
 from cdtb.export import CdragonRawPatchExporter
 from cdtb.binfile import BinFile
