@@ -120,7 +120,7 @@ class WadFileHeader:
                 # No subchunk TOC, try to decompress
                 try:
                     return zstd_decompress(data)
-                except:
+                except Exception:
                     raise MalformedSubchunkError(data)
         raise ValueError(f"unsupported file type: {self.type}")
 
@@ -331,5 +331,5 @@ class Wad:
         try:
             return wadfile.read_data(fwad, self.subchunk_toc)
         except MalformedSubchunkError:
-            logger.warning(f"failed to read subchunked wad entry " + (wadfile.path if wadfile.path is not None else f"{wadfile.path_hash:016x}"))
+            logger.warning("failed to read subchunked wad entry " + (wadfile.path if wadfile.path is not None else f"{wadfile.path_hash:016x}"))
             return None

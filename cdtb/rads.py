@@ -442,7 +442,7 @@ class RadsProjectVersion:
     The data in these ProjectVersions are contained in Bin files, which are extracted.
     """
 
-    def __init__(self, project: RadsProject, version: 'Version'):
+    def __init__(self, project: RadsProject, version: RadsVersion):
         self.path = f"{project.path}/{version}"
         self.project = project
         self.version = version
@@ -629,7 +629,7 @@ def parse_rads_component(storage: RadsStorage, component: str):
             return RadsSolutionVersion(solution, RadsVersion(version))
     elif typ == 'patch':
         if version is None:
-            raise ValueError(f"patch requires a version")
+            raise ValueError("patch requires a version")
         elif version == '':
             return storage.patch(None)
         else:
