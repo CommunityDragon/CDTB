@@ -21,11 +21,13 @@ class BaseVersion:
     """
 
     def __init__(self, v: Union[str, tuple]):
+        if not v:
+            raise ValueError(v)
         if isinstance(v, str):
             self.s = v
             self.t = tuple(int(x) for x in v.split('.'))
         elif isinstance(v, tuple):
-            self.s = '.'.join(str(x) for x in v)
+            self.s = '.'.join(str(int(x)) for x in v)
             self.t = v
         else:
             raise TypeError(v)

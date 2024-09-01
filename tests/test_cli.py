@@ -1,5 +1,4 @@
 import os
-import argparse
 import pytest
 import cdtb
 from cdtb.storage import (
@@ -9,10 +8,7 @@ from cdtb.storage import (
     PatchElement,
 )
 import cdtb.__main__ as cdtb_main
-from cdtb.__main__ import (
-    create_parser,
-    parse_storage_args,
-)
+from cdtb.__main__ import create_parser
 
 
 @pytest.fixture

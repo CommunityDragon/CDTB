@@ -1,6 +1,6 @@
 import os
 import pytest
-from tools import *
+from tools import count_calls, mock_response
 from cdtb.rads import (
     RadsVersion,
     RadsStorage,
@@ -89,7 +89,7 @@ def test_project_get_versions(storage, monkeypatch):
 
     @count_calls
     def request_get(path):
-        assert path == f"projects/name/releases/releaselisting"
+        assert path == "projects/name/releases/releaselisting"
         return mock_response(b'0.0.1.7\r\n0.0.1.6\r\n0.0.1.5\r\n')
     monkeypatch.setattr(storage, 'request_get', request_get)
 
