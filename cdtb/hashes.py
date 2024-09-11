@@ -859,7 +859,14 @@ class GameHashGuesser(HashGuesser):
                         dirname = os.path.dirname(wadfile.path)
                         for m in re.finditer(br'#include "([^"]+)"', data):
                             subpath = m.group(1).lower().decode('ascii')
-                            self.check(os.path.normpath(f"{dirname}/{subpath}"))
+                            self.check(os.path.normpath(f"{dirname}/{subpath}").replace('\\', '/'))
+
+                elif wadfile.ext == 'atlas':
+                    if wadfile.path:
+                        dirname = os.path.dirname(wadfile.path)
+                        for line in data.split(b'\n'):
+                            maybe_path = line.lower().decode('ascii')
+                            self.check(f"{dirname}/{maybe_path}")
 
                 else:
                     # fallback: search for path-looking strings in all remaining files
