@@ -453,7 +453,7 @@ class CdragonRawPatchExporter:
         for path, wad in exporter.wads.items():
             unknown_path = "unknown"
             # league_client: extract unknown files under plugin directory
-            m = re.search(r'^(plugins/rcp-.+?)/[^/]*assets\.wad$', path, re.I)
+            m = re.search(r'^(plugins/rcp-.+?)/[^/]*assets\d*\.wad$', path, re.I)
             if m is not None:
                 unknown_path = f"{m.group(1).lower()}/unknown"
             wad.set_unknown_paths(unknown_path)
