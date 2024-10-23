@@ -6,6 +6,7 @@ import time
 import hashlib
 import logging
 from typing import List, Optional, Generator
+from multiprocessing.pool import ThreadPool
 
 from .storage import (
     Storage,
@@ -555,8 +556,7 @@ class PatcherReleaseElement:
         """Download bundles from CDN"""
 
         logger.info(f"download bundles for {self}")
-        for bundle_id in sorted(self.bundle_ids(langs=langs)):
-            self.release.storage.download_bundle(bundle_id)
+        ThreadPool(8).map(self.release.storage.download_bundle, sorted(self.bundle_ids(langs=langs)), 1)
 
     def extract(self, langs=True, overwrite=False):
         """Extract files to the storage"""
