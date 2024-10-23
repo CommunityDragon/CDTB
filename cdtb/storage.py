@@ -190,7 +190,7 @@ class Storage(metaclass=StorageRegister):
     def __init__(self, path, url):
         self.path = path
         self.url = url
-        self.s = requests.session()
+        self.s = requests.Session()
 
     @staticmethod
     def from_path(path):
