@@ -22,6 +22,15 @@ def load_translations(path, rsthash_version=1415):
                     translations[key] = val
             return translations
 
+def collect_effects(data):
+    """Collect effects from item or trait data"""
+
+    if "effectAmounts" in data:
+        return {str(effect.getv("name")): effect.getv("value") for effect in data.getv("effectAmounts")}
+    elif "constants" in data:
+        return {str(k): v.getv("mValue") for k, v in data.getv("constants").getv(0xdf085b93, {}).items()}
+    return {}
+
 
 class TftTransformer:
     def __init__(self, input_dir, game_version=1415):
@@ -201,11 +210,6 @@ class TftTransformer:
             if "Template" in name or name == "TFT_Item_Null":
                 continue
 
-            effects = {}
-            for effect in item.getv("effectAmounts", []):
-                name = str(effect.getv("name")) if "name" in effect else effect.path.hex()
-                effects[name] = effect.getv("value", "null")
-
             item_data = {
                 "id": item.getv("mId"),
                 "name": item.getv(0xC3143D66),
@@ -216,7 +220,7 @@ class TftTransformer:
                 "composition": [x.h for x in item.getv(0x8B83BA8A, [])],  # updated below
                 "associatedTraits": [x.h for x in item.getv("AssociatedTraits", [])], # updated below
                 "incompatibleTraits": [x.h for x in item.getv("IncompatibleTraits", [])], # updated below
-                "effects": effects,
+                "effects": collect_effects(item),
             }
             items.append(item_data)
             items_by_hash[item.path.h] = item_data
@@ -327,9 +331,9 @@ class TftTransformer:
             if "Template" in trait.getv("mName"):
                 continue
 
-            base_effect_list = []
+            base_effects = {}
             for trait_set in trait.getv(0x6f4cf34d, []):
-                base_effect_list.extend(trait_set.getv("effectAmounts", []))
+                base_effects |= collect_effects(trait_set)
 
             effects = []
             if "mTraitSets" in trait:
@@ -339,16 +343,11 @@ class TftTransformer:
                 trait_sets = trait.getv("mConditionalTraitSets", [])
                 field_prefix = ''
             for trait_set in trait_sets:
-                variables = {}
-                for effect in base_effect_list + trait_set.getv("effectAmounts", []):
-                    name = str(effect.getv("name")) if "name" in effect else "null"
-                    variables[name] = effect.getv("value", "null")
-
                 effects.append({
                     "minUnits": trait_set.getv(field_prefix + "MinUnits"),
                     "maxUnits": trait_set.getv(field_prefix + "MaxUnits") or 25000,
                     "style": trait_set.getv(field_prefix + "Style", 1),
-                    "variables": variables,
+                    "variables": base_effects | collect_effects(trait_set),
                 })
 
             traits[trait.path] = {
