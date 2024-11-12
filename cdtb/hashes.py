@@ -865,8 +865,11 @@ class GameHashGuesser(HashGuesser):
                     if wadfile.path:
                         dirname = os.path.dirname(wadfile.path)
                         for line in data.split(b'\n'):
-                            maybe_path = line.lower().decode('ascii')
-                            self.check(f"{dirname}/{maybe_path}")
+                            try:
+                                maybe_path = line.lower().decode('ascii')
+                                self.check(f"{dirname}/{maybe_path}")
+                            except UnicodeDecodeError:
+                                pass
 
                 else:
                     # fallback: search for path-looking strings in all remaining files
