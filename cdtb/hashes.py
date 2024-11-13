@@ -114,9 +114,10 @@ def build_wordlist(paths):
     """Build a list of words from paths"""
 
     words = set()
-    re_split = re.compile(r'[/_.-]')
     for path in paths:
-        words |= set(re_split.split(path)[:-1])
+        # this is much faster than using re.split(r'[/_.-]')
+        path = path.replace('/', '-').replace('_', '-').replace('.', '-')
+        words |= set(path.split('-')[:-1])
 
     # filter out large numbers
     re_filter_words = re.compile(r'^[0-9]{3,}$')
