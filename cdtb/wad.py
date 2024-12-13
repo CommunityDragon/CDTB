@@ -134,6 +134,7 @@ class WadFileHeader:
         try:
             data = self.read_data(fwad, subchunk_toc)
         except MalformedSubchunkError:
+            logger.warning(f"failed to read subchunked wad entry {self.path}")
             return
         if data is None:
             return
@@ -317,11 +318,12 @@ class Wad:
     def read_file_data(self, fwad, wadfile):
         """Retrieve (uncompressed) data from WAD file object
 
-        Similar to `WadFileHeader.read_data()` but use wad's subchuk information if available.
-        Subchunk errors are ignored and None is returned if one happens.
+        Similar to `WadFileHeader.read_data()` but use wad's subchunk information if available.
+        Subchunk errors are logged and None is returned if one happens.
         """
 
         try:
             return wadfile.read_data(fwad, self.subchunk_toc)
         except MalformedSubchunkError:
+            logger.warning(f"failed to read subchunked wad entry " + (wadfile.path if wadfile.path is not None else f"{wadfile.path_hash:016x}"))
             return None
