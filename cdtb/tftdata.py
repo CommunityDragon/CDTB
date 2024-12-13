@@ -246,6 +246,7 @@ class TftTransformer:
         champs = {}
         data_characters_dir = os.path.join(self.input_dir, "data", "characters")
         characters_dir = os.path.join(self.input_dir, "characters")
+        role_entries = {x.path: x for x in map22.entries if x.type == "TFTCharacterRoleData"}
 
         for champ in champ_entries:
             # always use lowercased name: required for files, and bin data is inconsistent
@@ -291,6 +292,9 @@ class TftTransformer:
                 rarity = champ.getv("mRarity", 0) + 1
                 cost = rarity + int(rarity / 6)
 
+            role_key = record.getv("CharacterRole")
+            role = role_entries[role_key].getv("name") if role_key is not None else None
+
             champs[name] = ({
                 "apiName": champ.getv("mName"),
                 "characterName": record.getv("mCharacterName"),
@@ -300,6 +304,7 @@ class TftTransformer:
                 "tileIcon": champ.getv(0xDAC11DD4),
                 "squareIcon": champ.getv(0x16071366),
                 "traits": [traits[h]["name"] for h in champ_traits if h in traits],
+                "role": role,
                 "stats": {
                     "hp": record.getv("baseHP"),
                     "mana": record["primaryAbilityResource"].value.getv("arBase", 100),
