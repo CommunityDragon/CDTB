@@ -214,8 +214,14 @@ class Wad:
 
             if version_major == 1:
                 self.files = [WadFileHeader(*parser.unpack("<QIIII")) for _ in range(entry_count)]
-            else:
+            elif version_major <= 2 or (version_major == 3 and version_minor <= 3):
                 self.files = [WadFileHeader(*parser.unpack("<QIIIB?HQ")) for _ in range(entry_count)]
+            else:
+                self.files = []
+                for _ in range(entry_count):
+                    path_hash, offset, compressed_size, size, type, subchunk_index_hi, subchunk_index_lo, checksum = parser.unpack("<QIIIBBHQ")
+                    subchunk_index = subchunk_index_lo + (subchunk_index_hi << 16)
+                    self.files.append(WadFileHeader(path_hash, offset, compressed_size, size, type, False, subchunk_index, checksum))
 
     def resolve_paths(self, hashes=None):
         """Guess path of files"""
