@@ -292,8 +292,8 @@ class TftTransformer:
                 rarity = champ.getv("mRarity", 0) + 1
                 cost = rarity + int(rarity / 6)
 
-            role_key = record.getv("CharacterRole", None)
-            role = role_entries[role_key].getv("name", None) if role_key is not None else None
+            role_key = record.getv("CharacterRole")
+            role = role_entries[role_key].getv("name") if role_key is not None else None
 
             champs[name] = ({
                 "apiName": champ.getv("mName"),
