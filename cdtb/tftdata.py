@@ -246,7 +246,7 @@ class TftTransformer:
         champs = {}
         data_characters_dir = os.path.join(self.input_dir, "data", "characters")
         characters_dir = os.path.join(self.input_dir, "characters")
-        role_entries = [x for x in map22.entries if x.type == "TFTCharacterRoleData"]
+        role_entries = {x.path: x for x in map22.entries if x.type == "TFTCharacterRoleData"}
 
         for champ in champ_entries:
             # always use lowercased name: required for files, and bin data is inconsistent
