@@ -294,6 +294,8 @@ class TftTransformer:
 
             role_key = record.getv("CharacterRole")
             role = role_entries[role_key].getv("name") if role_key is not None else None
+            ability_resource_info = record.getv("primaryAbilityResource")
+            mana = ability_resource_info.getv("arBase", 100) if ability_resource_info is not None else 100
 
             champs[name] = ({
                 "apiName": champ.getv("mName"),
@@ -307,7 +309,7 @@ class TftTransformer:
                 "role": role,
                 "stats": {
                     "hp": record.getv("baseHP"),
-                    "mana": record["primaryAbilityResource"].value.getv("arBase", 100),
+                    "mana": mana,
                     "initialMana": record.getv("mInitialMana", 0),
                     "damage": record.getv("BaseDamage"),
                     "armor": record.getv("baseArmor"),
