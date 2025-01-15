@@ -74,6 +74,8 @@ class RstFile:
             pass
         elif version in (4, 5):
             self.hash_bits = 39
+            if self.rsthash_version >= 1502:
+                self.hash_bits = 38
         else:
             raise ValueError(f"unsupported RST version: {version}")
         self.version = version
