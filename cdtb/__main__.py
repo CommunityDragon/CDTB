@@ -108,6 +108,8 @@ def command_fetch_hashes(parser, args):
         'hashes.game.txt',
         'hashes.lcu.txt',
         'hashes.rst.txt',
+        'hashes.rst.xxh64.txt',
+        'hashes.rst.xxh3.txt',
     ]
     for basename in hash_files:
         update_default_hashfile(basename)
