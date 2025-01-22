@@ -767,10 +767,10 @@ class SknConverter(FileConverter):
                     f.write(sknfile.to_obj(entry))
 
 class RstConverter(FileConverter):
-    def __init__(self, regex, game_version=1415):
+    def __init__(self, regex, game_version=1502):
         self.regex = regex
         self.hashes = get_rsthashfile(game_version).load()
-        self.rsthash_version = game_version
+        self.game_version = game_version
 
     def is_handled(self, path):
         return self.regex.search(path) is not None
@@ -784,7 +784,7 @@ class RstConverter(FileConverter):
         with write_file_or_remove(output_path) as fout:
             shutil.copyfileobj(fin, fout)
 
-        rstfile = RstFile(output_path, self.rsthash_version)
+        rstfile = RstFile(output_path, self.game_version)
         hashes = {key_to_rsthash(hash, bits=rstfile.hash_bits): value for hash, value in self.hashes.items()}
         rst_json = {"entries": {}, "version": rstfile.version}
         for key, value in rstfile.entries.items():

@@ -23,12 +23,12 @@ hashfile_rst_xxh64 = HashFile(default_hash_dir / "hashes.rst.xxh64.txt", hash_si
 hashfile_rst_xxh3 = HashFile(default_hash_dir / "hashes.rst.xxh3.txt", hash_size=16)
 
 class RstFile:
-    def __init__(self, path_or_f=None, game_version=1415):
+    def __init__(self, path_or_f=None, game_version=1502):
         self.font_config = None
         self.entries = {}
         self.hash_bits = 40
         self.version = None
-        self.rsthash_version = game_version
+        self.game_version = game_version
 
         if path_or_f is not None:
             if isinstance(path_or_f, str):
@@ -39,14 +39,14 @@ class RstFile:
 
     def __getitem__(self, key):
         try:
-            h = key_to_hash(key, self.hash_bits, self.rsthash_version)
+            h = key_to_hash(key, self.hash_bits, self.game_version)
             return self.entries[h]
         except (TypeError, KeyError):
             raise KeyError(key)
 
     def __contains__(self, key):
         try:
-            h = key_to_hash(key, self.hash_bits, self.rsthash_version)
+            h = key_to_hash(key, self.hash_bits, self.game_version)
             return h in self.entries
         except TypeError:
             return False
@@ -74,7 +74,7 @@ class RstFile:
             pass
         elif version in (4, 5):
             self.hash_bits = 39
-            if self.rsthash_version >= 1502:
+            if self.game_version >= 1502:
                 self.hash_bits = 38
         else:
             raise ValueError(f"unsupported RST version: {version}")

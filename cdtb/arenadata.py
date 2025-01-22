@@ -7,9 +7,9 @@ from .tools import convert_cdragon_path, json_dump, stringtable_paths
 
 
 class ArenaTransformer:
-    def __init__(self, input_dir, game_version=1415):
+    def __init__(self, input_dir, game_version=1502):
         self.input_dir = input_dir
-        self.rsthash_version = game_version
+        self.game_version = game_version
 
     def build_template(self):
         """Parse bin data into template data"""
@@ -39,7 +39,7 @@ class ArenaTransformer:
         template = self.build_template()
         for lang in langs:
             instance = copy.deepcopy(template)
-            replacements = RstFile(stringtables[lang], self.rsthash_version)
+            replacements = RstFile(stringtables[lang], self.game_version)
 
             def replace_in_data(entry):
                 for key in ("name", "desc", "tooltip"):
