@@ -6,11 +6,11 @@ from .rstfile import RstFile
 from .tools import json_dump, stringtable_paths
 
 
-def load_translations(path, rsthash_version=1415):
+def load_translations(path, game_version=1502):
     with open(path, "rb") as f:
         if f.read(3) == b"RST":
             f.seek(0)
-            return RstFile(f, rsthash_version)
+            return RstFile(f, game_version)
         else:
             translations = {}
             for line in f:
@@ -33,9 +33,9 @@ def collect_effects(data):
 
 
 class TftTransformer:
-    def __init__(self, input_dir, game_version=1415):
+    def __init__(self, input_dir, game_version=1502):
         self.input_dir = input_dir
-        self.rsthash_version = game_version
+        self.game_version = game_version
 
     def build_template(self):
         """Parse bin data into template data"""
@@ -73,7 +73,7 @@ class TftTransformer:
         template = self.build_template()
         for lang in langs:
             instance = copy.deepcopy(template)
-            replacements = load_translations(stringtables[lang], self.rsthash_version)
+            replacements = load_translations(stringtables[lang], self.game_version)
 
             def replace_in_data(entry):
                 for key in ("name", "desc"):
