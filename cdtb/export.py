@@ -162,36 +162,6 @@ class Exporter:
             for src, dst in elem.paths(langs=True):
                 self.add_path(src, dst)
 
-    def filter_path(self, source_path, export_path):
-        """Remove files that are in the provided path
-
-        Paths have the same meaning as for add_path().
-
-        WAD files are first compared by source path, then by file's sha256.
-        Plain files are simply removed.
-        """
-
-        if export_path in self.plain_files:
-            del self.plain_files[export_path]
-        elif source_path.endswith('.wad') or source_path.endswith('.wad.client'):
-            self_wad = self.wads.get(export_path)
-            if self_wad is None:
-                return  # not exported
-            if self_wad.path == source_path:
-                # same path: WADs are identical
-                logger.debug(f"filter identical WAD file: {source_path}")
-                del self.wads[export_path]
-            else:
-                # compare the sha256 hashes to find the common files
-                # don't resolve hashes: we just need the sha256
-                logger.debug(f"filter modified WAD file: {source_path}")
-                other_wad = Wad(source_path, hashes={})
-                other_sha256 = {wf.path_hash: wf.sha256 for wf in other_wad.files}
-                # change the files from the wad so it only extract these
-                self_wad.files = [wf for wf in self_wad.files if wf.sha256 != other_sha256.get(wf.path_hash)]
-                if not self_wad.files:
-                    del self.wads[export_path]
-
     def filter_export_paths(self, predicate):
         """Filter paths to export using a predicate
 
