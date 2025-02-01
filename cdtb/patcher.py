@@ -442,12 +442,8 @@ class PatcherStorage(Storage):
             # assume chunk is compressed
             return zstd_decompress(f.read(chunk.size))
 
-    def extract_file(self, file: PatcherFile, output, overwrite=False):
+    def extract_file(self, file: PatcherFile, output):
         """Extract a file from its chunks, which must be available"""
-
-        if not overwrite and os.path.isfile(output) and os.path.getsize(output) == file.size:
-            logger.debug(f"skip {file.name}: already built to {output}")
-            return
 
         if self.use_extract_symlinks:
             real_output = self.fspath(f"cdtb/files/{file.hexdigest()}")
@@ -507,11 +503,11 @@ class PatcherRelease:
             if elem is not None:
                 yield elem
 
-    def download_bundles(self, langs=True):
+    def download_bundles(self, langs=True, skip_extracted=True):
         """Download bundles from CDN for the release"""
 
         for elem in self.elements():
-            elem.download_bundles(langs=langs)
+            elem.download_bundles(langs=langs, skip_extracted=skip_extracted)
 
     def extract(self, langs=True, overwrite=False):
         """Extract release files from downloaded bundles"""
@@ -546,17 +542,19 @@ class PatcherReleaseElement:
     def __repr__(self):
         return f"<{self.__class__.__qualname__} {self.release.version} {self.name}>"
 
-    def bundle_ids(self, langs=True) -> set:
+    def bundle_ids(self, langs=True, skip_extracted=False) -> set:
         """Return IDs of bundles used by the element as a set"""
 
         files = [f for f in self.manif.filter_files(langs) if not f.link]
+        if skip_extracted:
+            files = (f for f in files if not self.is_extracted_file(f))
         return {chunk.bundle.bundle_id for f in files for chunk in f.chunks}
 
-    def download_bundles(self, langs=True):
+    def download_bundles(self, langs=True, skip_extracted=True):
         """Download bundles from CDN"""
 
         logger.info(f"download bundles for {self}")
-        ThreadPool(8).map(self.release.storage.download_bundle, sorted(self.bundle_ids(langs=langs)), 1)
+        ThreadPool(8).map(self.release.storage.download_bundle, sorted(self.bundle_ids(langs=langs, skip_extracted=skip_extracted)), 1)
 
     def extract(self, langs=True, overwrite=False):
         """Extract files to the storage"""
@@ -570,9 +568,18 @@ class PatcherReleaseElement:
         """Return the path to which a file is extracted"""
         return f"{self.release.storage_dir}/files/{file.name}"
 
+    def is_extracted_file(self, file: PatcherFile) -> bool:
+        """Return True if `file` is already extracted"""
+        output = self.extract_path(file)
+        return os.path.isfile(output) and os.path.getsize(output) == file.size
+
     def extract_file(self, file: PatcherFile, overwrite=False):
         """Extract a single file"""
-        self.release.storage.extract_file(file, self.extract_path(file), overwrite=overwrite)
+
+        if not overwrite and self.is_extracted_file(file):
+            logger.debug(f"skip {file.name}: already extracted")
+        else:
+            self.release.storage.extract_file(file, self.extract_path(file), overwrite=overwrite)
 
     def patch_version(self) -> Optional[PatchVersion]:
         """Return patch version or None if there is none
@@ -618,8 +625,9 @@ class PatcherReleaseElement:
         file_name, extractor = retrievers[self.name]
         file = self.manif.files[file_name]
         # download and extract file if needed
-        for bundle_id in {chunk.bundle.bundle_id for chunk in file.chunks}:
-            self.release.storage.download_bundle(bundle_id)
+        if not self.is_extracted_file(file):
+            for bundle_id in {chunk.bundle.bundle_id for chunk in file.chunks}:
+                self.release.storage.download_bundle(bundle_id)
         self.extract_file(file)
 
         version = extractor(self.extract_path(file))
