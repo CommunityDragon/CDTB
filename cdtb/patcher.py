@@ -511,7 +511,7 @@ class PatcherRelease:
         """Download bundles from CDN for the release"""
 
         for elem in self.elements():
-            elem.download(langs=langs)
+            elem.download_bundles(langs=langs)
 
     def extract(self, langs=True, overwrite=False):
         """Extract release files from downloaded bundles"""
