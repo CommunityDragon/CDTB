@@ -579,7 +579,7 @@ class PatcherReleaseElement:
         if not overwrite and self.is_extracted_file(file):
             logger.debug(f"skip {file.name}: already extracted")
         else:
-            self.release.storage.extract_file(file, self.extract_path(file), overwrite=overwrite)
+            self.release.storage.extract_file(file, self.extract_path(file))
 
     def patch_version(self) -> Optional[PatchVersion]:
         """Return patch version or None if there is none
