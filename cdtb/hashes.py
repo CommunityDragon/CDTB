@@ -833,7 +833,8 @@ class GameHashGuesser(HashGuesser):
                         elif path.startswith('maps'):
                             self.check(f"data/{path}.mapgeo")
                             self.check(f"data/{path}.materials.bin")
-                        elif path.startswith('clientstates') or path.startswith('patching'):
+                        elif path.startswith('clientstates') or path.startswith('patching') or path.startswith('loadouts'):
+                            self.check(path)
                             self.check(path.rsplit('/', 1)[0])
                             self.check(path.rsplit('/', 2)[0])
                         else:
