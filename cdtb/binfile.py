@@ -384,9 +384,20 @@ class BinFile:
 
     def to_serializable(self):
         serialized = {entry.path.to_serializable(): entry.to_serializable() for entry in self.entries}
+        if self.linked_files is not None:
+            serialized["__linked"] = self.linked_files
         if self.patch_entries is not None:
             serialized["__patches"] = {entry.path.to_serializable(): entry.to_serializable() for entry in self.patch_entries}
         return serialized
+
+    def dump(self, f):
+        if self.linked_files is not None:
+            print(f"<Linked: {_repr_indent_list(self.linked_files)}>", file=f)
+        for entry in self.entries:
+            print(entry, file=f)
+        if self.patch_entries is not None:
+            for entry in self.patch_entries:
+                print(entry, file=f)
 
 
 class BinReader:
