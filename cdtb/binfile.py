@@ -384,6 +384,8 @@ class BinFile:
 
     def to_serializable(self):
         serialized = {entry.path.to_serializable(): entry.to_serializable() for entry in self.entries}
+        if self.linked_files is not None:
+            serialized["__linked"] = self.linked_files
         if self.patch_entries is not None:
             serialized["__patches"] = {entry.path.to_serializable(): entry.to_serializable() for entry in self.patch_entries}
         return serialized

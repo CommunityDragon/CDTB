@@ -327,6 +327,8 @@ def command_bin_dump(parser, args):
     if args.json:
         json_dump(binfile.to_serializable(), sys.stdout)
     else:
+        if binfile.linked_files is not None:
+            print(f"linked: {binfile.linked_files}")
         for entry in binfile.entries:
             print(entry)
         if binfile.patch_entries is not None:
