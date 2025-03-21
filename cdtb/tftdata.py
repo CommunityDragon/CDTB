@@ -221,6 +221,7 @@ class TftTransformer:
                 "associatedTraits": [x.h for x in item.getv("AssociatedTraits", [])], # updated below
                 "incompatibleTraits": [x.h for x in item.getv("IncompatibleTraits", [])], # updated below
                 "effects": collect_effects(item),
+                "tags": [x.h for x in item.getv("ItemTags", [])]
             }
             items.append(item_data)
             items_by_hash[item.path.h] = item_data
