@@ -196,11 +196,12 @@ class Exporter:
                 del self.wads[path]
             else:
                 # compare the sha256 hashes to find the common files
-                # don't resolve hashes: we just need the sha256
                 logger.debug(f"filter modified WAD file: {path}")
-                other_sha256 = {wf.path_hash: wf.sha256 for wf in other_wad.files}
+                other_wad = {wf.path_hash: wf for wf in other_wad.files}
                 # change the files from the wad so it only extract these
-                self_wad.files = [wf for wf in self_wad.files if wf.sha256 != other_sha256.get(wf.path_hash)]
+                # in case sha is the same but export path(s) changes, also keep the file
+                self_wad.files = [wf for wf in self_wad.files if (other_wf := other_wad.get(wf.path_hash)) is None or wf.sha256 != other_wf.sha256
+                                  or list(self.converted_exported_paths(wf.path)) != list(other.converted_exported_paths(other_wf.path))]
                 if not self_wad.files:
                     del self.wads[path]
 
@@ -462,6 +463,10 @@ class CdragonRawPatchExporter:
                 if patch_version == "main" or patch_version >= PatchVersion("14.4"):
                     if lang_match := re.search(r"\.(.._..)\.wad\.client$", path):
                         subdir = f"game/{lang_match.group(1).lower()}"
+                # for patch 14.3, only export localized UI wad into subdirs
+                elif patch_version >= PatchVersion("14.3"):
+                    if ui_lang_match := re.search(r"UI\.(.._..)\.wad\.client$", path):
+                        subdir = f"game/{ui_lang_match.group(1).lower()}"
                 for wf in wad.files:
                     wf.path = f"{subdir}/{wf.path}"
                 wad.files = [wf for wf in wad.files if filter_path(exporter, wf.path)]
