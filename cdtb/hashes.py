@@ -827,6 +827,7 @@ class GameHashGuesser(HashGuesser):
                         elif path.endswith('.lua'):
                             self.check(path[:-4] + '.luabin')
                             self.check(path[:-4] + '.luabin64')
+                            self.check(path[:-4] + '.preload')
                         elif path.startswith('shaders'):
                             self.check_iter(f"assets/shaders/generated/{path}{ext}" for ext in self.shader_extensions)
                             self.check_iter(f"assets/shaders/generated/{path}{ext}{variant}" for ext in self.shader_extensions for variant in self.shader_variants)
@@ -901,5 +902,6 @@ class GameHashGuesser(HashGuesser):
             if p.endswith('.lua'):
                 self.check(p[:-4] + '.luabin')
                 self.check(p[:-4] + '.luabin64')
+                self.check(p[:-4] + '.preload')
             else:
                 self.check(p)
