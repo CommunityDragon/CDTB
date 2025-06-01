@@ -464,7 +464,7 @@ class CdragonRawPatchExporter:
                     if lang_match := re.search(r"\.(.._..)\.wad\.client$", path):
                         subdir = f"game/{lang_match.group(1).lower()}"
                 # for patch 14.3, only export localized UI wad into subdirs
-                elif patch_version >= PatchVersion("14.3"):
+                elif patch_version == PatchVersion("14.3"):
                     if ui_lang_match := re.search(r"UI\.(.._..)\.wad\.client$", path):
                         subdir = f"game/{ui_lang_match.group(1).lower()}"
                 for wf in wad.files:
