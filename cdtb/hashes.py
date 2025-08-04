@@ -582,7 +582,7 @@ class GameHashGuesser(HashGuesser):
         return build_wordlist(self.known.values())
 
     def get_characters(self):
-        re_char = re.compile(r'^(?:assets|data)/characters/([^/]+)/')
+        re_char = re.compile(r'^(?:assets/|data/)?characters/([^/.]+)(?:/|$)')
         chars = set()
         for p in self.known.values():
             m = re_char.match(p)
@@ -822,6 +822,7 @@ class GameHashGuesser(HashGuesser):
                         except UnicodeDecodeError:
                             continue
                         if path.startswith('characters'):
+                            self.check(path)
                             self.check(f"assets/{path}")
                             self.check(f"data/{path}")
                         elif path.endswith('.lua'):
