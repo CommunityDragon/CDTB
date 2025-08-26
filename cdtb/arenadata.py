@@ -67,7 +67,7 @@ class ArenaTransformer:
             augment_spellobject = augment.getv(0x1418F849)
             if augment_spellobject:
                 augment_spell = spellobject_entries[augment_spellobject].getv('mSpell')
-                for datavalue in augment_spell.getv('mDataValues', []):
+                for datavalue in augment_spell.getv("DataValues", augment_spell.getv('mDataValues', [])):
                     augment_datavalues[datavalue.getv("mName")] = datavalue.getv("mValues", [0])[0]
 
                 # Giving raw calculations data due to not having a well defined standard

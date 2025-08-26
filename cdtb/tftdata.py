@@ -280,7 +280,7 @@ class TftTransformer:
             for entry in tft_bin.entries:
                 if entry.type == "SpellObject" and entry.getv("mScriptName").lower() == spell_name:
                     ability = entry.getv("mSpell")
-                    ability_variables = [{"name": value.getv("mName"), "value": value.getv("mValues")} for value in ability.getv("mDataValues", [])]
+                    ability_variables = [{"name": value.getv("mName"), "value": value.getv("mValues")} for value in ability.getv("DataValues", ability.getv("mDataValues", []))]
                     if loc_keys := ability.get_path("mClientData", "mTooltipData", "mLocKeys"):
                         spell_key_name = loc_keys.get("keyName")
                         spell_key_tooltip = loc_keys.get("keyTooltip")
