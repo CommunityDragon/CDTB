@@ -235,13 +235,6 @@ class BinEmbedded(BinObjectWithFieldsAndType):
         sfields = _repr_indent_list(self.fields)
         return f"<EMBEDDED {self.type!r} {sfields}>"
 
-class BinNested(BinObjectWithFields):
-    """Nested binary value"""
-
-    def __repr__(self):
-        sfields = _repr_indent_list(self.fields)
-        return f"<{sfields}>"
-
 class BinField:
     """Base class for binary fields
 
@@ -328,30 +321,30 @@ class BinMapField(BinField):
     def to_serializable(self):
         return (self.name.to_serializable(), {_to_serializable(k): _to_serializable(v) for k,v in self.value.items()})
 
-class BinNestedField(BinField):
-    def __init__(self, hname, value):
-        super().__init__(hname)
+class BinPatchField:
+    def __init__(self, path, btype, value):
+        self.path = path
+        self.type = btype
         self.value = value
 
     def __repr__(self):
-        sfields = _repr_indent_list(self.value.fields)
-        return f"<{self.name!r} {sfields}>"
+        return f"<{self.path} {self.type.name} {self.value!r}>"
 
     def to_serializable(self):
-        return (self.name.to_serializable(), self.value.to_serializable())
+        return (self.path, _to_serializable(self.value))
 
 
-class BinPtchEntry:
-    def __init__(self, hpath, value):
+class BinPatchEntry:
+    def __init__(self, hpath):
         self.path = BinEntryPath(hpath)
-        self.value = value
+        self.fields = []
 
     def __repr__(self):
-        sfields = _repr_indent_list(self.value.fields)
-        return f"<BinPtchEntry {self.path!r} {sfields}>"
+        sfields = _repr_indent_list(self.fields)
+        return f"<BinPatchEntry {self.path!r} {sfields}>"
 
     def to_serializable(self):
-        return self.value.to_serializable()
+        return dict(f.to_serializable() for f in self.fields)
 
 class BinEntry(BinObjectWithFieldsAndType):
     def __init__(self, hpath, htype, fields):
@@ -445,19 +438,14 @@ class BinReader:
         for _ in range(count):
             hpath = self.read_fmt('<2L')[0]
             btype = self.parse_bintype(self.read_u8())
-            objectpath = self.read_string()
-            parts = objectpath.split('.')
-            binvalue = self._vtype_to_field_reader[btype](self, compute_binhash(parts[-1]), btype)
+            object_path = self.read_string()
+            binvalue = self._vtype_to_bvalue_reader[btype](self)
+
             if hpath not in patch_entries:
-                patch_entries[hpath] = BinPtchEntry(hpath, BinNested([]))
+                patch_entries[hpath] = BinPatchEntry(hpath)
+            new_entry = patch_entries[hpath]
 
-            current_nesting = patch_entries[hpath].value
-            for part in parts[:-1]:
-                if part not in current_nesting:
-                    current_nesting[part] = BinNestedField(compute_binhash(part), BinNested([]))
-                current_nesting = current_nesting.getv(part)
-
-            current_nesting[parts[-1]] = binvalue
+            new_entry.fields.append(BinPatchField(object_path, btype, binvalue))
 
         return list(patch_entries.values())
 
