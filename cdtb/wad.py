@@ -32,7 +32,7 @@ class MalformedSubchunkError(Exception):
 class WadFileHeader:
     """Single file entry in a WAD archive"""
 
-    _magic_numbers_ext = {
+    _magic_numbers_ext = [
         (b'\xff\xd8\xff\xdb', 'jpg'),
         (b'\xff\xd8\xff\xe1', 'jpg'),
         (lambda data: data[6:10] in (b'JFIF', b'Exif'), 'jpg'),
@@ -65,7 +65,7 @@ class WadFileHeader:
         (b'[ObjectBegin]', 'sco'),
         (b'OEGM', 'mapgeo'),
         (b'TEX\0', 'tex'),
-    }
+    ]
 
     def __init__(self, path_hash, offset, compressed_size, size, type, duplicate=None, first_subchunk_index=None, sha256=None):
         self.path_hash = path_hash
