@@ -225,8 +225,13 @@ class BinStruct(BinObjectWithFieldsAndType):
     """Structured binary value"""
 
     def __repr__(self):
+        if self.value.type.h == 0:
+            return f"<STRUCT {None}>"
         sfields = _repr_indent_list(self.fields)
         return f"<STRUCT {self.type!r} {sfields}>"
+
+    def to_serializable(self):
+        return super().to_serializable() if self.type.h else None
 
 class BinEmbedded(BinObjectWithFieldsAndType):
     """Embedded binary value"""
@@ -276,6 +281,8 @@ class BinStructField(BinField):
         self.value = value
 
     def __repr__(self):
+        if self.value.type.h == 0:
+            return f"<{self.name!r} STRUCT {None}>"
         sfields = _repr_indent_list(self.value.fields)
         return f"<{self.name!r} STRUCT {self.value.type!r} {sfields}>"
 
@@ -301,11 +308,11 @@ class BinOptionField(BinField):
         self.value = value
 
     def __repr__(self):
-        svalue = '-' if self.value is None else f'(\n  {_repr_indent(self.value)}\n)'
+        svalue = None if self.value is None else f'{self.value!r}'
         return f"<{self.name!r} OPTION({self.vtype.name}) {svalue}>"
 
     def to_serializable(self):
-        return (self.name.to_serializable(), None if self.value is None else _to_serializable(self.value))
+        return (self.name.to_serializable(), None if self.value is None else self.value)
 
 class BinMapField(BinField):
     def __init__(self, hname, ktype, vtype, values):
@@ -525,11 +532,7 @@ class BinReader:
         return BinStruct(htype, [self.read_field() for _ in range(count)])
 
     def read_embedded(self):
-        htype, = self.read_fmt('<L')
-        if htype == 0:
-            count = 0
-        else:
-            _, count = self.read_fmt('<LH')
+        htype, _, count = self.read_fmt('<LLH')
         return BinEmbedded(htype, [self.read_field() for _ in range(count)])
 
     def read_field(self):
