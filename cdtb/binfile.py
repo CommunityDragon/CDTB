@@ -221,28 +221,28 @@ class BinType(IntEnum):
     FLAG = 0x87
 
 def format_binvalue(btype, bvalue):
-    if btype in (BinType.LIST, BinType.LIST2):
-        svalues = _repr_indent_list(bvalue.values)
-        return f"{btype.name}({bvalue.vtype.name}) {svalues}"
-    elif btype == BinType.STRUCT:
-        if bvalue.type.h == 0:
-            return f"STRUCT {None}"
-        sfields = _repr_indent_list(bvalue.fields)
-        return f"STRUCT {bvalue.type!r} {sfields}"
-    elif btype == BinType.EMBEDDED:
-        sfields = _repr_indent_list(bvalue.fields)
-        return f"EMBEDDED {bvalue.type!r} {sfields}"
-    elif btype == BinType.OPTION:
-        svalue = None if bvalue.value is None else f'{bvalue.value!r}'
-        return f"OPTION({bvalue.vtype.name}) {svalue}"
-    elif btype == BinType.MAP:
-        svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in bvalue.values.items())
-        return f"MAP({bvalue.ktype.name},{bvalue.vtype.name}) {{\n{svalues}}}"
-    else:
-        return f"{btype.name} {bvalue!r}"
+    match btype:
+        case BinType.LIST | BinType.LIST2:
+            svalues = _repr_indent_list(bvalue.values)
+            return f"{btype.name}({bvalue.vtype.name}) {svalues}"
+        case BinType.STRUCT:
+            if bvalue.type.h == 0:
+                return f"STRUCT {None}"
+            sfields = _repr_indent_list(bvalue.fields)
+            return f"STRUCT {bvalue.type!r} {sfields}"
+        case BinType.EMBEDDED:
+            sfields = _repr_indent_list(bvalue.fields)
+            return f"EMBEDDED {bvalue.type!r} {sfields}"
+        case BinType.OPTION:
+            return f"OPTION({bvalue.vtype.name}) {bvalue.value!r}"
+        case BinType.MAP:
+            svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in bvalue.values.items())
+            return f"MAP({bvalue.ktype.name},{bvalue.vtype.name}) {{\n{svalues}}}"
+        case _:
+            return f"{btype.name} {bvalue!r}"
 
 
-class BinList():
+class BinList:
     def __init__(self, vtype, values: list):
         self.vtype = vtype
         self.values = values
@@ -268,7 +268,7 @@ class BinEmbedded(BinObjectWithFieldsAndType):
     def __repr__(self):
         return f"<{format_binvalue(BinType.EMBEDDED, self)}>"
 
-class BinOption():
+class BinOption:
     def __init__(self, vtype, value):
         self.vtype = vtype
         self.value = value
@@ -277,9 +277,9 @@ class BinOption():
         return f"<{format_binvalue(BinType.OPTION, self)}>"
 
     def to_serializable(self):
-        return None if self.value is None else self.value
+        return self.value
 
-class BinMap():
+class BinMap:
     def __init__(self, ktype, vtype, values: dict):
         self.ktype = ktype
         self.vtype = vtype
@@ -292,7 +292,7 @@ class BinMap():
         return {_to_serializable(k): _to_serializable(v) for k,v in self.values.items()}
 
 class BinField:
-    """A field is a value (possibly nested) associated to a hash."""
+    """A field is a value (possibly nested) associated to a hash"""
 
     def __init__(self, hname, btype, value):
         self.name = BinFieldName(hname)
