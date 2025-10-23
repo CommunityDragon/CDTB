@@ -292,81 +292,18 @@ class BinMap():
         return {_to_serializable(k): _to_serializable(v) for k,v in self.values.items()}
 
 class BinField:
-    """Base class for binary fields
-
-    A field is a value (possibly nested) associated to a hash.
-    """
-    def __init__(self, hname):
-        self.name = BinFieldName(hname)
-
-class BinBasicField(BinField):
-    """Binary field for fixed-width, non-nested values"""
+    """A field is a value (possibly nested) associated to a hash."""
 
     def __init__(self, hname, btype, value):
-        super().__init__(hname)
+        self.name = BinFieldName(hname)
         self.type = btype
         self.value = value
 
     def __repr__(self):
-        return f"<{self.name!r} {self.type.name} {self.value!r}>"
+        return f"<{self.name!r} {format_binvalue(self.type, self.value)}>"
 
     def to_serializable(self):
         return (self.name.to_serializable(), _to_serializable(self.value))
-
-class BinListField(BinField):
-    def __init__(self, hname, value: BinList):
-        super().__init__(hname)
-        self.value = value
-
-    def __repr__(self):
-        return f"<{self.name!r} {format_binvalue(BinType.LIST, self.value)}>"
-
-    def to_serializable(self):
-        return (self.name.to_serializable(), self.value.to_serializable())
-
-class BinStructField(BinField):
-    def __init__(self, hname, value: BinStruct):
-        super().__init__(hname)
-        self.value = value
-
-    def __repr__(self):
-        return f"<{self.name!r} {format_binvalue(BinType.STRUCT, self.value)}>"
-
-    def to_serializable(self):
-        return (self.name.to_serializable(), self.value.to_serializable())
-
-class BinEmbeddedField(BinField):
-    def __init__(self, hname, value: BinEmbedded):
-        super().__init__(hname)
-        self.value = value
-
-    def __repr__(self):
-        return f"<{self.name!r} {format_binvalue(BinType.EMBEDDED, self.value)}>"
-
-    def to_serializable(self):
-        return (self.name.to_serializable(), self.value.to_serializable())
-
-class BinOptionField(BinField):
-    def __init__(self, hname, value: BinOption):
-        super().__init__(hname)
-        self.value = value
-
-    def __repr__(self):
-        return f"<{self.name!r} {format_binvalue(BinType.OPTION, self.value)}>"
-
-    def to_serializable(self):
-        return (self.name.to_serializable(), self.value.to_serializable())
-
-class BinMapField(BinField):
-    def __init__(self, hname, value: BinMap):
-        super().__init__(hname)
-        self.value = value
-
-    def __repr__(self):
-        return f"<{self.name!r} {format_binvalue(BinType.MAP, self.value)}>"
-
-    def to_serializable(self):
-        return (self.name.to_serializable(), self.value.to_serializable())
 
 class BinPatchField:
     """Similar to BinField but with string path instead of hashed name"""
@@ -596,25 +533,7 @@ class BinReader:
     def read_field(self):
         hname, ftype = self.read_fmt('<LB')
         ftype = self.parse_bintype(ftype)
-        return self._vtype_to_field_reader[ftype](self, hname, ftype)
-
-    def read_field_basic(self, hname, btype):
-        return BinBasicField(hname, btype, self.read_bvalue(btype))
-
-    def read_field_list(self, hname, btype):
-        return BinListField(hname, self.read_bvalue(btype))
-
-    def read_field_struct(self, hname, btype):
-        return BinStructField(hname, self.read_bvalue(btype))
-
-    def read_field_embedded(self, hname, btype):
-        return BinEmbeddedField(hname, self.read_bvalue(btype))
-
-    def read_field_option(self, hname, btype):
-        return BinOptionField(hname, self.read_bvalue(btype))
-
-    def read_field_map(self, hname, btype):
-        return BinMapField(hname, self.read_bvalue(btype))
+        return BinField(hname, ftype, self.read_bvalue(ftype))
 
     def parse_bintype(self, v):
         if self.btype_version < 923:
@@ -656,36 +575,6 @@ class BinReader:
         BinType.OPTION: read_option,
         BinType.MAP: read_map,
         BinType.FLAG: read_flag,
-    }
-
-    _vtype_to_field_reader = {
-        BinType.EMPTY: read_field_basic,
-        BinType.BOOL: read_field_basic,
-        BinType.S8: read_field_basic,
-        BinType.U8: read_field_basic,
-        BinType.S16: read_field_basic,
-        BinType.U16: read_field_basic,
-        BinType.S32: read_field_basic,
-        BinType.U32: read_field_basic,
-        BinType.S64: read_field_basic,
-        BinType.U64: read_field_basic,
-        BinType.FLOAT: read_field_basic,
-        BinType.VEC2_FLOAT: read_field_basic,
-        BinType.VEC3_FLOAT: read_field_basic,
-        BinType.VEC4_FLOAT: read_field_basic,
-        BinType.MATRIX4X4: read_field_basic,
-        BinType.RGBA: read_field_basic,
-        BinType.STRING: read_field_basic,
-        BinType.HASH: read_field_basic,
-        BinType.PATH: read_field_basic,
-        BinType.LIST: read_field_list,
-        BinType.LIST2: read_field_list,
-        BinType.STRUCT: read_field_struct,
-        BinType.EMBEDDED: read_field_embedded,
-        BinType.LINK: read_field_basic,
-        BinType.OPTION: read_field_option,
-        BinType.MAP: read_field_map,
-        BinType.FLAG: read_field_basic,
     }
 
 
