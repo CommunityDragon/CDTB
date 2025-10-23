@@ -211,8 +211,8 @@ class BinType(IntEnum):
     HASH = 17
     PATH = 18  # introduced in 10.23
     # Complex types (0x80 flag introduced in 9.23)
-    CONTAINER = 0x80
-    CONTAINER2 = 0x81  # introduced in 10.8
+    LIST = 0x80
+    LIST2 = 0x81  # introduced in 10.8
     STRUCT = 0x82
     EMBEDDED = 0x83
     LINK = 0x84
@@ -257,7 +257,7 @@ class BinBasicField(BinField):
     def to_serializable(self):
         return (self.name.to_serializable(), _to_serializable(self.value))
 
-class BinContainerField(BinField):
+class BinListField(BinField):
     def __init__(self, hname, btype, values):
         super().__init__(hname)
         self.type = btype
@@ -265,7 +265,7 @@ class BinContainerField(BinField):
 
     def __repr__(self):
         svalues = _repr_indent_list(self.value)
-        return f"<{self.name!r} CONTAINER({self.type.name}) {svalues}>"
+        return f"<{self.name!r} LIST({self.type.name}) {svalues}>"
 
     def to_serializable(self):
         return (self.name.to_serializable(), [_to_serializable(v) for v in self.value])
@@ -540,10 +540,10 @@ class BinReader:
     def read_field_basic(self, hname, btype):
         return BinBasicField(hname, btype, self.read_bvalue(btype))
 
-    def read_field_container(self, hname, btype):
+    def read_field_list(self, hname, btype):
         vtype, _, count = self.read_fmt('<BLL')
         vtype = self.parse_bintype(vtype)
-        return BinContainerField(hname, vtype, [self.read_bvalue(vtype) for _ in range(count)])
+        return BinListField(hname, vtype, [self.read_bvalue(vtype) for _ in range(count)])
 
     def read_field_struct(self, hname, btype):
         return BinStructField(hname, self.read_bvalue(btype))
@@ -622,8 +622,8 @@ class BinReader:
         BinType.STRING: read_field_basic,
         BinType.HASH: read_field_basic,
         BinType.PATH: read_field_basic,
-        BinType.CONTAINER: read_field_container,
-        BinType.CONTAINER2: read_field_container,
+        BinType.LIST: read_field_list,
+        BinType.LIST2: read_field_list,
         BinType.STRUCT: read_field_struct,
         BinType.EMBEDDED: read_field_embedded,
         BinType.LINK: read_field_basic,
