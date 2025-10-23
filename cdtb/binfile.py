@@ -446,7 +446,7 @@ class BinReader:
             hpath = self.read_fmt('<2L')[0]
             btype = self.parse_bintype(self.read_u8())
             object_path = self.read_string()
-            binvalue = self._vtype_to_bvalue_reader[btype](self)
+            binvalue = self.read_bvalue(btype)
 
             if hpath not in patch_entries:
                 patch_entries[hpath] = BinPatchEntry(hpath)
