@@ -329,6 +329,8 @@ class BinMapField(BinField):
         return (self.name.to_serializable(), {_to_serializable(k): _to_serializable(v) for k,v in self.value.items()})
 
 class BinPatchField:
+    """Similar to BinField but with string path instead of hashed name"""
+
     def __init__(self, path, btype, value):
         self.path = path
         self.type = btype
