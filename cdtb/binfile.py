@@ -220,6 +220,27 @@ class BinType(IntEnum):
     MAP = 0x86
     FLAG = 0x87
 
+def format_binvalue(btype, bvalue):
+    if btype in (BinType.LIST, BinType.LIST2):
+        svalues = _repr_indent_list(bvalue.values)
+        return f"{btype.name}({bvalue.vtype.name}) {svalues}"
+    elif btype == BinType.STRUCT:
+        if bvalue.type.h == 0:
+            return f"STRUCT {None}"
+        sfields = _repr_indent_list(bvalue.fields)
+        return f"STRUCT {bvalue.type!r} {sfields}"
+    elif btype == BinType.EMBEDDED:
+        sfields = _repr_indent_list(bvalue.fields)
+        return f"EMBEDDED {bvalue.type!r} {sfields}"
+    elif btype == BinType.OPTION:
+        svalue = None if bvalue.value is None else f'{bvalue.value!r}'
+        return f"OPTION({bvalue.vtype.name}) {svalue}"
+    elif btype == BinType.MAP:
+        svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in bvalue.values.items())
+        return f"MAP({bvalue.ktype.name},{bvalue.vtype.name}) {{\n{svalues}}}"
+    else:
+        return f"{btype.name} {bvalue!r}"
+
 
 class BinList():
     def __init__(self, vtype, values: list):
@@ -227,8 +248,7 @@ class BinList():
         self.values = values
 
     def __repr__(self):
-        svalues = _repr_indent_list(self.values)
-        return f"<LIST({self.vtype.name}) {svalues}>"
+        return f"<{format_binvalue(BinType.LIST, self)}>"
 
     def to_serializable(self):
         return [_to_serializable(v) for v in self.values]
@@ -237,10 +257,7 @@ class BinStruct(BinObjectWithFieldsAndType):
     """Structured binary value"""
 
     def __repr__(self):
-        if self.value.type.h == 0:
-            return f"<STRUCT {None}>"
-        sfields = _repr_indent_list(self.fields)
-        return f"<STRUCT {self.type!r} {sfields}>"
+        return f"<{format_binvalue(BinType.STRUCT, self)}>"
 
     def to_serializable(self):
         return super().to_serializable() if self.type.h else None
@@ -249,8 +266,7 @@ class BinEmbedded(BinObjectWithFieldsAndType):
     """Embedded binary value"""
 
     def __repr__(self):
-        sfields = _repr_indent_list(self.fields)
-        return f"<EMBEDDED {self.type!r} {sfields}>"
+        return f"<{format_binvalue(BinType.EMBEDDED, self)}>"
 
 class BinOption():
     def __init__(self, vtype, value):
@@ -258,8 +274,7 @@ class BinOption():
         self.value = value
 
     def __repr__(self):
-        svalue = None if self.value is None else f'{self.value!r}'
-        return f"<OPTION({self.vtype.name}) {svalue}>"
+        return f"<{format_binvalue(BinType.OPTION, self)}>"
 
     def to_serializable(self):
         return None if self.value is None else self.value
@@ -271,8 +286,7 @@ class BinMap():
         self.values = values
 
     def __repr__(self):
-        svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in self.values.items())
-        return f"<MAP({self.ktype.name},{self.vtype.name}) {{\n{svalues}}}>"
+        return f"<{format_binvalue(BinType.MAP, self)}>"
 
     def to_serializable(self):
         return {_to_serializable(k): _to_serializable(v) for k,v in self.values.items()}
@@ -305,8 +319,7 @@ class BinListField(BinField):
         self.value = value
 
     def __repr__(self):
-        svalues = _repr_indent_list(self.value.values)
-        return f"<{self.name!r} LIST({self.value.type.name}) {svalues}>"
+        return f"<{self.name!r} {format_binvalue(BinType.LIST, self.value)}>"
 
     def to_serializable(self):
         return (self.name.to_serializable(), self.value.to_serializable())
@@ -317,10 +330,7 @@ class BinStructField(BinField):
         self.value = value
 
     def __repr__(self):
-        if self.value.type.h == 0:
-            return f"<{self.name!r} STRUCT {None}>"
-        sfields = _repr_indent_list(self.value.fields)
-        return f"<{self.name!r} STRUCT {self.value.type!r} {sfields}>"
+        return f"<{self.name!r} {format_binvalue(BinType.STRUCT, self.value)}>"
 
     def to_serializable(self):
         return (self.name.to_serializable(), self.value.to_serializable())
@@ -331,8 +341,7 @@ class BinEmbeddedField(BinField):
         self.value = value
 
     def __repr__(self):
-        sfields = _repr_indent_list(self.value.fields)
-        return f"<{self.name!r} EMBEDDED {self.value.type!r} {sfields}>"
+        return f"<{self.name!r} {format_binvalue(BinType.EMBEDDED, self.value)}>"
 
     def to_serializable(self):
         return (self.name.to_serializable(), self.value.to_serializable())
@@ -343,8 +352,7 @@ class BinOptionField(BinField):
         self.value = value
 
     def __repr__(self):
-        svalue = None if self.value.value is None else f'{self.value.value!r}'
-        return f"<{self.name!r} OPTION({self.value.vtype.name}) {svalue}>"
+        return f"<{self.name!r} {format_binvalue(BinType.OPTION, self.value)}>"
 
     def to_serializable(self):
         return (self.name.to_serializable(), self.value.to_serializable())
@@ -355,8 +363,7 @@ class BinMapField(BinField):
         self.value = value
 
     def __repr__(self):
-        svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in self.value.values.items())
-        return f"<{self.name!r} MAP({self.value.ktype.name},{self.value.vtype.name}) {{\n{svalues}}}>"
+        return f"<{self.name!r} {format_binvalue(BinType.MAP, self.value)}>"
 
     def to_serializable(self):
         return (self.name.to_serializable(), self.value.to_serializable())
@@ -370,7 +377,7 @@ class BinPatchField:
         self.value = value
 
     def __repr__(self):
-        return f"<{self.path} {self.type.name} {self.value!r}>"
+        return f"<{self.path} {format_binvalue(self.type, self.value)}>"
 
     def to_serializable(self):
         return (self.path, _to_serializable(self.value))
