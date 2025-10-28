@@ -160,9 +160,10 @@ class BinObjectWithFields:
 
     def getv(self, key, default=None):
         try:
-            return self[key].value
+            v = self[key].value
         except KeyError:
             return default
+        return _to_python_type(v)
 
     def get_path(self, *args, default=None):
         """Get value by accessing successive field names"""
@@ -170,9 +171,9 @@ class BinObjectWithFields:
         try:
             for key in args:
                 v = v[key].value
-            return v
         except KeyError:
             return default
+        return _to_python_type(v)
 
     def to_serializable(self):
         return dict(f.to_serializable() for f in self.fields)
@@ -223,7 +224,7 @@ class BinType(IntEnum):
 def format_binvalue(btype, bvalue):
     match btype:
         case BinType.LIST | BinType.LIST2:
-            svalues = _repr_indent_list(bvalue)
+            svalues = _repr_indent_list(bvalue.values)
             return f"{btype.name}({bvalue.vtype.name}) {svalues}"
         case BinType.STRUCT:
             if bvalue.type.h == 0:
@@ -236,22 +237,22 @@ def format_binvalue(btype, bvalue):
         case BinType.OPTION:
             return f"OPTION({bvalue.vtype.name}) {bvalue.value!r}"
         case BinType.MAP:
-            svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in bvalue.items())
+            svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in bvalue.values.items())
             return f"MAP({bvalue.ktype.name},{bvalue.vtype.name}) {{\n{svalues}}}"
         case _:
             return f"{btype.name} {bvalue!r}"
 
 
-class BinList(list):
+class BinList:
     def __init__(self, vtype, values: list):
-        super().__init__(values)
         self.vtype = vtype
+        self.values = values
 
     def __repr__(self):
         return f"<{format_binvalue(BinType.LIST, self)}>"
 
     def to_serializable(self):
-        return [_to_serializable(v) for v in self]
+        return [_to_serializable(v) for v in self.values]
 
 class BinStruct(BinObjectWithFieldsAndType):
     """Structured binary value"""
@@ -279,17 +280,17 @@ class BinOption:
     def to_serializable(self):
         return self.value
 
-class BinMap(dict):
+class BinMap:
     def __init__(self, ktype, vtype, values: dict):
-        super().__init__(values)
         self.ktype = ktype
         self.vtype = vtype
+        self.values = values
 
     def __repr__(self):
         return f"<{format_binvalue(BinType.MAP, self)}>"
 
     def to_serializable(self):
-        return {_to_serializable(k): _to_serializable(v) for k,v in self.items()}
+        return {_to_serializable(k): _to_serializable(v) for k,v in self.values.items()}
 
 class BinField:
     """A field is a value (possibly nested) associated to a hash"""
@@ -580,3 +581,13 @@ class BinReader:
 
 def _to_serializable(v):
     return v.to_serializable() if hasattr(v, 'to_serializable') else v
+
+def _to_python_type(v):
+    """Given a BinX value, return it's Python value, when possible"""
+    match v:
+        case BinList() | BinMap():
+            return v.values
+        case BinOption():
+            return v.value
+        case _:
+            return v
