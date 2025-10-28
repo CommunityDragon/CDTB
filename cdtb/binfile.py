@@ -223,7 +223,7 @@ class BinType(IntEnum):
 def format_binvalue(btype, bvalue):
     match btype:
         case BinType.LIST | BinType.LIST2:
-            svalues = _repr_indent_list(bvalue.values)
+            svalues = _repr_indent_list(bvalue)
             return f"{btype.name}({bvalue.vtype.name}) {svalues}"
         case BinType.STRUCT:
             if bvalue.type.h == 0:
@@ -236,22 +236,22 @@ def format_binvalue(btype, bvalue):
         case BinType.OPTION:
             return f"OPTION({bvalue.vtype.name}) {bvalue.value!r}"
         case BinType.MAP:
-            svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in bvalue.values.items())
+            svalues = ''.join(f"  {k} => {_repr_indent(v)}\n" for k, v in bvalue.items())
             return f"MAP({bvalue.ktype.name},{bvalue.vtype.name}) {{\n{svalues}}}"
         case _:
             return f"{btype.name} {bvalue!r}"
 
 
-class BinList:
+class BinList(list):
     def __init__(self, vtype, values: list):
+        super().__init__(values)
         self.vtype = vtype
-        self.values = values
 
     def __repr__(self):
         return f"<{format_binvalue(BinType.LIST, self)}>"
 
     def to_serializable(self):
-        return [_to_serializable(v) for v in self.values]
+        return [_to_serializable(v) for v in self]
 
 class BinStruct(BinObjectWithFieldsAndType):
     """Structured binary value"""
@@ -279,17 +279,17 @@ class BinOption:
     def to_serializable(self):
         return self.value
 
-class BinMap:
+class BinMap(dict):
     def __init__(self, ktype, vtype, values: dict):
+        super().__init__(values)
         self.ktype = ktype
         self.vtype = vtype
-        self.values = values
 
     def __repr__(self):
         return f"<{format_binvalue(BinType.MAP, self)}>"
 
     def to_serializable(self):
-        return {_to_serializable(k): _to_serializable(v) for k,v in self.values.items()}
+        return {_to_serializable(k): _to_serializable(v) for k,v in self.items()}
 
 class BinField:
     """A field is a value (possibly nested) associated to a hash"""

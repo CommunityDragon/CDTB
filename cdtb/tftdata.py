@@ -1,7 +1,7 @@
 import os
 import copy
 from .storage import PatchVersion
-from .binfile import BinFile, BinEmbedded
+from .binfile import BinFile, BinEmbedded, BinOption, BinType
 from .rstfile import RstFile
 from .tools import json_dump, stringtable_paths
 
@@ -353,7 +353,7 @@ class TftTransformer:
             for trait_set in trait_sets:
                 effects.append({
                     "minUnits": trait_set.getv(field_prefix + "MinUnits"),
-                    "maxUnits": trait_set.getv(field_prefix + "MaxUnits") or 25000,
+                    "maxUnits": trait_set.getv(field_prefix + "MaxUnits", BinOption(BinType.U32, None)).value or 25000,
                     "style": trait_set.getv(field_prefix + "Style", 1),
                     "variables": base_effects | collect_effects(trait_set),
                 })
