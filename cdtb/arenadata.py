@@ -55,7 +55,7 @@ class ArenaTransformer:
     def parse_augments(self, map30):
         """Returns a list of augments"""
 
-        augment_entries = [x for x in map30.entries if x.type == 0x6DFAB860]
+        augment_entries = [x for x in map30.entries if x.type == "AugmentData"]
         spellobject_entries = {x.path: x for x in map30.entries if x.type == "SpellObject"}
 
         augments = []
@@ -64,11 +64,11 @@ class ArenaTransformer:
                 continue
             augment_datavalues = {}
             augment_calculations = {}
-            augment_spellobject = augment.getv(0x1418F849)
+            augment_spellobject = augment.getv("RootSpell")
             if augment_spellobject:
                 augment_spell = spellobject_entries[augment_spellobject].getv('mSpell')
                 for datavalue in augment_spell.getv("DataValues", augment_spell.getv('mDataValues', [])):
-                    augment_datavalues[datavalue.getv("mName")] = datavalue.getv("mValues", [0])[0]
+                    augment_datavalues[datavalue.getv("name", datavalue.getv("mName"))] = datavalue.getv("values", datavalue.getv("mValues", [0])[0])
 
                 # Giving raw calculations data due to not having a well defined standard
                 if augment_spell.get('mSpellCalculations'):
