@@ -411,6 +411,7 @@ class CdragonRawPatchExporter:
             BinConverter(re.compile(r'game/.*\.bin$'), game_version),
             SknConverter(),
             RstConverter(re.compile(r'game/(?:.*/)?data/menu/.*\.(txt|stringtable)$'), game_version),
+            ChampionSkinInfoConverter(),
         ]
         exporter.add_patch_files(patch)
         return exporter
@@ -805,3 +806,44 @@ class AtlasInfoConverter(FileConverter):
             atlas_info[texture_name] = {"atlasPath": atlas_paths[atlas_index], "startX": startX, "startY": startY, "endX": endX, "endY": endY}
 
         return atlas_info
+
+class ChampionSkinInfoConverter(FileConverter):
+    def is_handled(self, path):
+        return path == "game/global/champions/championskins.info"
+
+    def converted_paths(self, path):
+        yield path + '.json'
+
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, path)
+
+        with write_file_or_remove(output_path + ".json", False) as fout:
+            json_dump(self.parse_championskininfo(fin), fout, ensure_ascii=False)
+
+    @staticmethod
+    def parse_championskininfo(f):
+        parser = BinaryParser(f)
+
+        magic, = parser.unpack("4s")
+        if magic != b"mahC":
+            raise ValueError("invalid magic code")
+        version, = parser.unpack("<L")
+        if version != 2:
+            raise ValueError(f"unsupported version: {version}")
+
+        nchampions, = parser.unpack("<L")
+        skin_info = {}
+
+        for _ in range(nchampions):
+            champion_name = parser.unpack_string()
+            nskins, = parser.unpack("<L")
+            skins = {}
+            for _ in range(nskins):
+                id, = parser.unpack("<L")
+                flag, = parser.unpack("B")
+                skin_name = parser.unpack_string()
+                skins[id] = {"name": skin_name, "prestige": flag == 4}
+
+            skin_info[champion_name] = skins
+
+        return skin_info

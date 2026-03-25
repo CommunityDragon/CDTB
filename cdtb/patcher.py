@@ -241,7 +241,7 @@ class PatcherManifest:
         fields_pos = entry_pos - parser.unpack('<l')[0]
         output = {}
         parser.seek(fields_pos)
-        vtable_size = parser.unpack(f'<H')[0]
+        vtable_size = parser.unpack('<H')[0]
         parser.skip(2) # object size
         noffsets = (vtable_size - 4) // 2
         offsets = parser.unpack(f'<{noffsets}H')
