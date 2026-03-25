@@ -826,6 +826,7 @@ class GameHashGuesser(HashGuesser):
                             self.check(f"assets/{path}")
                             self.check(f"data/{path}")
                         elif path.endswith('.lua'):
+                            self.check(path)
                             self.check(path[:-4] + '.luabin')
                             self.check(path[:-4] + '.luabin64')
                             self.check(path[:-4] + '.preload')
@@ -849,6 +850,7 @@ class GameHashGuesser(HashGuesser):
                     for m in re.finditer(br'Name="([^"]+)"', data):
                         path = m.group(1).lower().decode('ascii')
                         if path.endswith('.lua'):
+                            self.check(path)
                             self.check(path[:-4] + '.luabin')
                             self.check(path[:-4] + '.luabin64')
                         elif path.endswith('.troy'):
@@ -901,6 +903,7 @@ class GameHashGuesser(HashGuesser):
 
         for p in paths:
             if p.endswith('.lua'):
+                self.check(p)
                 self.check(p[:-4] + '.luabin')
                 self.check(p[:-4] + '.luabin64')
                 self.check(p[:-4] + '.preload')
