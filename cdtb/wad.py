@@ -255,7 +255,7 @@ class Wad:
 
     def guess_extensions(self):
         # avoid opening the file if not needed
-        unknown_ext = True
+        unknown_ext = False
         for wadfile in self.files:
             if not wadfile.ext:
                 wadfile.ext = _hash_to_guessed_extensions.get(wadfile.path_hash)
