@@ -263,7 +263,14 @@ class TftTransformer:
 
             tft_bin = BinFile(self_path)
             record = next((x for x in tft_bin.entries if x.type == "TFTCharacterRecord"), {})
-            if "spellNames" not in record:
+            if "spells" in record:
+                spell_ref = next((s for s in record.getv("spells") if s.h != 0), None)
+                spell_match = lambda entry, sr=spell_ref: entry.path == sr
+            elif "spellNames" in record:
+                spell_name = record.getv("spellNames")[0]
+                spell_name = spell_name.rsplit("/", 1)[-1].lower()
+                spell_match = lambda entry, sn=spell_name: entry.getv("mScriptName", "").lower() == sn
+            else:
                 continue
 
             champ_traits = []  # trait paths, as hashes
@@ -273,12 +280,10 @@ class TftTransformer:
                 else:
                     champ_traits.append(trait.h)
 
-            spell_name = record.getv("spellNames")[0]
-            spell_name = spell_name.rsplit("/", 1)[-1].lower()
             spell_key_name = None
             spell_key_tooltip = None
             for entry in tft_bin.entries:
-                if entry.type == "SpellObject" and entry.getv("mScriptName").lower() == spell_name:
+                if entry.type == "SpellObject" and spell_match(entry):
                     ability = entry.getv("mSpell")
                     ability_variables = [{"name": value.getv("name", value.getv("mName")), "value": value.getv("values", value.getv("mValues"))} for value in ability.getv("DataValues", ability.getv("mDataValues", []))]
                     if loc_keys := ability.get_path("mClientData", "mTooltipData", "mLocKeys"):
