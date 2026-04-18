@@ -344,7 +344,8 @@ class HashGuesser:
         for path in self.known.values():
             prefix, ext = os.path.splitext(path)
             prefixes.add(prefix)
-            extensions.add(ext)
+            if not ext.endswith('00'): # exclude shader variants
+                extensions.add(ext)
 
         logger.debug(f"substitute extensions: {len(prefixes)} prefixes, {len(extensions)} extensions")
         for prefix in progress_iterator(sorted(prefixes)):
