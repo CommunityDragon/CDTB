@@ -216,6 +216,7 @@ class TftTransformer:
                 "apiName": item.getv("mName"),
                 "desc": item.getv(0x765F18DA),
                 "icon": item.getv("mIconPath"),
+                "isAugment": item.getv(0xB4EE03E8, False),
                 "unique": item.getv(0x9596A387, False),
                 "composition": [x.h for x in item.getv(0x8B83BA8A, [])],  # updated below
                 "associatedTraits": [x.h for x in item.getv("AssociatedTraits", [])], # updated below
