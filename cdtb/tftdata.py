@@ -48,12 +48,13 @@ class TftTransformer:
         sets = self.parse_sets(map22, character_names, traits)
         champs = self.parse_champs(map22, traits)
         output_sets, output_set_data = self.build_output_sets(sets, champs)
-        items = self.parse_items(map22)
+        items, augments = self.parse_items(map22)
 
         return {
             "sets": output_sets,
             "setData": output_set_data,
             "items": items,
+            "augments": augments,
         }
 
     def export(self, output, langs=None):
@@ -205,8 +206,11 @@ class TftTransformer:
 
         items = []
         items_by_hash = {}  # {item_hash: item}
+        augments = []
+        augments_by_hash = {}
         for item in item_entries:
             name = item.getv("mName")
+            isAugment = item.getv("IsAugment", False)
             if "Template" in name or name == "TFT_Item_Null":
                 continue
 
@@ -223,20 +227,25 @@ class TftTransformer:
                 "effects": collect_effects(item),
                 "tags": [str(x) for x in item.getv("ItemTags", [])]
             }
-            items.append(item_data)
-            items_by_hash[item.path.h] = item_data
 
-
-        for item in items:
-            if item["id"] is not None:
-                # patchs < 13.5: mId exist and "from" is a list of those IDs
-                item["from"] = [items_by_hash[h]["id"] for h in item["composition"]]
+            if isAugment:
+                augments.append(item_data)
+                augments_by_hash[item.path.h] = item_data
             else:
-                item["from"] = None
-            item["composition"] = [items_by_hash[h]["apiName"] for h in item["composition"]]
-            item["incompatibleTraits"] = [traits_by_hash[h] for h in item["incompatibleTraits"]]
-            item["associatedTraits"] = [traits_by_hash[h] for h in item["associatedTraits"]]
-        return items
+                items.append(item_data)
+                items_by_hash[item.path.h] = item_data
+
+        for itemList in [items, augments]:
+            for item in itemList:
+                if item["id"] is not None:
+                    # patchs < 13.5: mId exist and "from" is a list of those IDs
+                    item["from"] = [items_by_hash[h]["id"] for h in item["composition"]]
+                else:
+                    item["from"] = None
+                item["composition"] = [items_by_hash[h]["apiName"] for h in item["composition"]]
+                item["incompatibleTraits"] = [traits_by_hash[h] for h in item["incompatibleTraits"]]
+                item["associatedTraits"] = [traits_by_hash[h] for h in item["associatedTraits"]]
+        return items, augments
 
     def parse_champs(self, map22, traits):
         """Parse champion information
