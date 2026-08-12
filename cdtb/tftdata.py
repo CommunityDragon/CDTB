@@ -215,7 +215,7 @@ class TftTransformer:
                 "name": item.getv("mDisplayNameTra"),
                 "apiName": item.getv("mName"),
                 "desc": item.getv("mDescriptionNameTra"),
-                "icon": item.getv("mIconPath"),
+                "icon": str(item.getv("mIconPath")),
                 "isAugment": item.getv("IsAugment", False),
                 "unique": item.getv("mIsUnique", False),
                 "composition": [x.h for x in item.getv("mComposition", [])],  # updated below
@@ -311,9 +311,9 @@ class TftTransformer:
                 "characterName": record.getv("mCharacterName"),
                 "name": champ.getv("mDisplayNameTra"),
                 "cost": cost,
-                "icon": champ.getv("PcSplashPath") or champ.getv("mIconPath"),
-                "tileIcon": champ.getv("TeamPlannerPortraitPath"),
-                "squareIcon": champ.getv("SquareSplashPath"),
+                "icon": str(champ.getv("PcSplashPath")) or champ.getv("mIconPath"),
+                "tileIcon": str(champ.getv("TeamPlannerPortraitPath")),
+                "squareIcon": str(champ.getv("SquareSplashPath")),
                 "traits": [traits[h]["name"] for h in champ_traits if h in traits],
                 "role": role,
                 "stats": {
@@ -331,7 +331,7 @@ class TftTransformer:
                 "ability": {
                     "name": champ.getv("mAbilityNameTra") or spell_key_name,
                     "desc": champ.getv("mDescriptionTra") or spell_key_tooltip,
-                    "icon": champ.getv("AbilityIconPath") or champ.getv("mPortraitIconPath"),
+                    "icon": str(champ.getv("AbilityIconPath")) or champ.getv("mPortraitIconPath"),
                     "variables": ability_variables,
                 },
             }, champ_traits)
@@ -370,7 +370,7 @@ class TftTransformer:
                 "apiName": trait.getv("mName"),
                 "name": trait.getv("mDisplayNameTra"),
                 "desc": trait.getv("mDescriptionNameTra"),
-                "icon": trait.getv("mIconPath"),
+                "icon": str(trait.getv("mIconPath")),
                 "effects": effects,
             }
 
