@@ -787,7 +787,6 @@ class RstConverter(FileConverter):
 class AtlasInfoConverter(FileConverter):
     def __init__(self, regex):
         self.regex = regex
-        self.hashes = hashfile_game.load()
 
     def is_handled(self, path):
         return self.regex.search(path) is not None
@@ -801,28 +800,29 @@ class AtlasInfoConverter(FileConverter):
         with write_file_or_remove(output_path + ".json", False) as fout:
             json_dump(self.parse_atlasinfo(fin), fout, ensure_ascii=False)
 
-    def parse_atlasinfo(self, f):
+    @staticmethod
+    def parse_atlasinfo(f):
         parser = BinaryParser(f)
+        atlas_info = {}
 
         maybe_magic = parser.raw(4)
         if maybe_magic == b'IMAA':
-            # new version, everything is hash based
+            # patch 16.17+, everything is hash based
+            hashes = hashfile_game.load()
             atlas_count, = parser.unpack("<L")
             atlas_hashes = [parser.unpack("<Q")[0] for _ in range(atlas_count)]
-            atlas_paths = [convert_cdragon_path(self.hashes[atlas_hash]) if atlas_hash in self.hashes else f'{{{atlas_hash:016X}}}' for atlas_hash in atlas_hashes]
-            atlas_info = {}
+            atlas_paths = [convert_cdragon_path(hashes[atlas_hash]) if atlas_hash in hashes else f'{{{atlas_hash:016x}}}' for atlas_hash in atlas_hashes]
 
             texture_count, = parser.unpack("<L")
             for _ in range(texture_count):
-                texture_hash, = parser.unpack("<Q") # we don't have a hashtable to resolve these...
-                texture_path = self.hashes.get(texture_hash, f'{{{texture_hash:016X}}}')
+                texture_hash, = parser.unpack("<Q")
+                texture_path = hashes.get(texture_hash, f'{{{texture_hash:016x}}}')
                 startX, startY, endX, endY, atlas_index = parser.unpack("<ffffL")
                 atlas_info[texture_path] = {"atlasPath": atlas_paths[atlas_index], "startX": startX, "startY": startY, "endX": endX, "endY": endY}
         else:
-            # old version, everything is a string
+            # before patch 16.17, everything is a string
             atlas_count = struct.unpack("<L", maybe_magic)
             atlas_paths = [convert_cdragon_path(parser.unpack_string()) for _ in range(atlas_count)]
-            atlas_info = {}
 
             texture_count, = parser.unpack("<L")
             for _ in range(texture_count):
