@@ -134,7 +134,7 @@ class TftTransformer:
         """Parse character sets to a list of `(name, number, characters, traits, augments, items)`"""
         character_lists = {x.path: x for x in map22.entries if x.type == "MapCharacterList" or x.type == "TftCharacterList"}
         trait_lists = {x.path: x for x in map22.entries if x.type == "TftTraitList"}
-        set_collection = [x for x in map22.entries if x.type == 0x438850FF]
+        set_collection = [x for x in map22.entries if x.type == "TFTSetData"]
         item_lists = {x.path: x for x in map22.entries if x.type == "TFTItemList"}
         item_entries = {x.path: x for x in map22.entries if x.type == "TftItemData"}
 
@@ -160,7 +160,7 @@ class TftTransformer:
             set_trait_lists = item.getv("TraitLists")
             if set_trait_lists is None:
                 continue
-            set_info = item.getv(0xD2538E5A)
+            set_info = item.getv("ScriptData")
             set_name = set_info["SetName"].getv("mValue")
 
             if set_number is None or set_name is None:
@@ -212,13 +212,13 @@ class TftTransformer:
 
             item_data = {
                 "id": item.getv("mId"),
-                "name": item.getv(0xC3143D66),
+                "name": item.getv("mDisplayNameTra"),
                 "apiName": item.getv("mName"),
-                "desc": item.getv(0x765F18DA),
+                "desc": item.getv("mDescriptionNameTra"),
                 "icon": item.getv("mIconPath"),
-                "isAugment": item.getv(0xB4EE03E8, False),
-                "unique": item.getv(0x9596A387, False),
-                "composition": [x.h for x in item.getv(0x8B83BA8A, [])],  # updated below
+                "isAugment": item.getv("IsAugment", False),
+                "unique": item.getv("mIsUnique", False),
+                "composition": [x.h for x in item.getv("mComposition", [])],  # updated below
                 "associatedTraits": [x.h for x in item.getv("AssociatedTraits", [])], # updated below
                 "incompatibleTraits": [x.h for x in item.getv("IncompatibleTraits", [])], # updated below
                 "effects": collect_effects(item),
@@ -277,7 +277,7 @@ class TftTransformer:
             champ_traits = []  # trait paths, as hashes
             for trait in record.getv("mLinkedTraits", []):
                 if isinstance(trait, BinEmbedded):
-                    champ_traits.extend(field.value for field in trait.fields if field.name.h == 0x053A1F33)
+                    champ_traits.extend(field.value for field in trait.fields if field.name == "TraitData")
                 else:
                     champ_traits.append(trait.h)
 
@@ -309,29 +309,29 @@ class TftTransformer:
             champs[name] = ({
                 "apiName": champ.getv("mName"),
                 "characterName": record.getv("mCharacterName"),
-                "name": champ.getv(0xC3143D66),
+                "name": champ.getv("mDisplayNameTra"),
                 "cost": cost,
-                "icon": champ.getv(0x466DC3CC) or champ.getv("mIconPath"),
-                "tileIcon": champ.getv(0xDAC11DD4),
-                "squareIcon": champ.getv(0x16071366),
+                "icon": champ.getv("PcSplashPath") or champ.getv("mIconPath"),
+                "tileIcon": champ.getv("TeamPlannerPortraitPath"),
+                "squareIcon": champ.getv("SquareSplashPath"),
                 "traits": [traits[h]["name"] for h in champ_traits if h in traits],
                 "role": role,
                 "stats": {
-                    "hp": hp_struct.getv("BaseValue") if (hp_struct := record.getv(0x8662cf12)) is not None else record.getv("baseHP"),
+                    "hp": hp_struct.getv("BaseValue") if (hp_struct := record.getv("baseHPModifiable")) is not None else record.getv("baseHP"),
                     "mana": mana,
                     "initialMana": record.getv("mInitialMana", 0),
-                    "damage": damage_struct.getv("BaseValue") if (damage_struct := record.getv(0x4af40dc3)) is not None else record.getv("BaseDamage"),
-                    "armor": armor_struct.getv("BaseValue") if (armor_struct := record.getv(0xea6100d5)) is not None else record.getv("baseArmor"),
-                    "magicResist": mr_struct.getv("BaseValue") if (mr_struct := record.getv(0x33c0bf27)) is not None else record.getv("baseSpellBlock"),
+                    "damage": damage_struct.getv("BaseValue") if (damage_struct := record.getv("baseDamageModifiable")) is not None else record.getv("BaseDamage"),
+                    "armor": armor_struct.getv("BaseValue") if (armor_struct := record.getv("baseArmorModifiable")) is not None else record.getv("baseArmor"),
+                    "magicResist": mr_struct.getv("BaseValue") if (mr_struct := record.getv("baseMR")) is not None else record.getv("baseSpellBlock"),
                     "critMultiplier": record.getv("critDamageMultiplier"),
                     "critChance": record.getv("baseCritChance"),
-                    "attackSpeed": attackspeed_struct.getv("BaseValue") if (attackspeed_struct := record.getv(0x836cc82a)) is not None else record.getv("attackSpeed"),
-                    "range": (range_struct.getv("BaseValue", 0) if (range_struct := record.getv(0x7bd4b298)) is not None else record.getv("attackRange", 0)) // 180,
+                    "attackSpeed": attackspeed_struct.getv("BaseValue") if (attackspeed_struct := record.getv("attackSpeedModifiable")) is not None else record.getv("attackSpeed"),
+                    "range": (range_struct.getv("BaseValue", 0) if (range_struct := record.getv("attackRangeModifiable")) is not None else record.getv("attackRange", 0)) // 180,
                 },
                 "ability": {
-                    "name": champ.getv(0x87A69A5E) or spell_key_name,
-                    "desc": champ.getv(0xBC4F18B3) or spell_key_tooltip,
-                    "icon": champ.getv(0xDF0AD83B) or champ.getv("mPortraitIconPath"),
+                    "name": champ.getv("mAbilityNameTra") or spell_key_name,
+                    "desc": champ.getv("mDescriptionTra") or spell_key_tooltip,
+                    "icon": champ.getv("AbilityIconPath") or champ.getv("mPortraitIconPath"),
                     "variables": ability_variables,
                 },
             }, champ_traits)
@@ -348,7 +348,7 @@ class TftTransformer:
                 continue
 
             base_effects = {}
-            for trait_set in trait.getv(0x6f4cf34d, []):
+            for trait_set in trait.getv("InnateTraitSets", []):
                 base_effects |= collect_effects(trait_set)
 
             effects = []
@@ -368,8 +368,8 @@ class TftTransformer:
 
             traits[trait.path] = {
                 "apiName": trait.getv("mName"),
-                "name": trait.getv(0xC3143D66),
-                "desc": trait.getv(0x765F18DA),
+                "name": trait.getv("mDisplayNameTra"),
+                "desc": trait.getv("mDescriptionNameTra"),
                 "icon": trait.getv("mIconPath"),
                 "effects": effects,
             }
