@@ -13,6 +13,7 @@ from .wad import Wad
 from .binfile import BinFile
 from .sknfile import SknFile
 from .rstfile import RstFile, get_hashfile as get_rsthashfile, key_to_hash as key_to_rsthash
+from .hashes import hashfile_game
 from .tools import (
     BinaryParser,
     convert_cdragon_path,
@@ -802,16 +803,32 @@ class AtlasInfoConverter(FileConverter):
     @staticmethod
     def parse_atlasinfo(f):
         parser = BinaryParser(f)
-
-        atlas_count, = parser.unpack("<L")
-        atlas_paths = [convert_cdragon_path(parser.unpack_string()) for _ in range(atlas_count)]
         atlas_info = {}
 
-        texture_count, = parser.unpack("<L")
-        for _ in range(texture_count):
-            texture_name = parser.unpack_string()
-            startX, startY, endX, endY, atlas_index = parser.unpack("<ffffL")
-            atlas_info[texture_name] = {"atlasPath": atlas_paths[atlas_index], "startX": startX, "startY": startY, "endX": endX, "endY": endY}
+        maybe_magic = parser.raw(4)
+        if maybe_magic == b'IMAA':
+            # patch 16.17+, everything is hash based
+            hashes = hashfile_game.load()
+            atlas_count, = parser.unpack("<L")
+            atlas_hashes = [parser.unpack("<Q")[0] for _ in range(atlas_count)]
+            atlas_paths = [convert_cdragon_path(hashes[atlas_hash]) if atlas_hash in hashes else f'{{{atlas_hash:016x}}}' for atlas_hash in atlas_hashes]
+
+            texture_count, = parser.unpack("<L")
+            for _ in range(texture_count):
+                texture_hash, = parser.unpack("<Q")
+                texture_path = hashes.get(texture_hash, f'{{{texture_hash:016x}}}')
+                startX, startY, endX, endY, atlas_index = parser.unpack("<ffffL")
+                atlas_info[texture_path] = {"atlasPath": atlas_paths[atlas_index], "startX": startX, "startY": startY, "endX": endX, "endY": endY}
+        else:
+            # before patch 16.17, everything is a string
+            atlas_count = struct.unpack("<L", maybe_magic)
+            atlas_paths = [convert_cdragon_path(parser.unpack_string()) for _ in range(atlas_count)]
+
+            texture_count, = parser.unpack("<L")
+            for _ in range(texture_count):
+                texture_name = parser.unpack_string()
+                startX, startY, endX, endY, atlas_index = parser.unpack("<ffffL")
+                atlas_info[texture_name] = {"atlasPath": atlas_paths[atlas_index], "startX": startX, "startY": startY, "endX": endX, "endY": endY}
 
         return atlas_info
 
