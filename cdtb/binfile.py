@@ -278,7 +278,7 @@ class BinOption:
         return f"<{format_binvalue(BinType.OPTION, self)}>"
 
     def to_serializable(self):
-        return self.value
+        return _to_serializable(self.value)
 
 class BinMap:
     def __init__(self, ktype, vtype, values: dict):
