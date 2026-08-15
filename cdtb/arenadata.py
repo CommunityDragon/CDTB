@@ -75,13 +75,13 @@ class ArenaTransformer:
                     augment_calculations = augment_spell.get('mSpellCalculations').to_serializable()[1]
 
             augments.append({
-                "id": augment.getv(0x827DC19E),
-                "apiName": augment.getv(0x19AE3E16),
-                "name": augment.getv(0x2127EB37),
+                "id": augment.getv("AugmentPlatformId"),
+                "apiName": augment.getv("AugmentNameId"),
+                "name": augment.getv("NameTra"),
                 "desc": augment.getv("DescriptionTra"),
-                "tooltip": augment.getv(0x366935FC),
-                "iconSmall": convert_cdragon_path(augment.getv(0x45481FB5)),
-                "iconLarge": convert_cdragon_path(augment.getv(0xF1F7E50D)),
+                "tooltip": augment.getv("AugmentTooltipTra"),
+                "iconSmall": convert_cdragon_path(augment.getv("AugmentSmallIconPath")),
+                "iconLarge": convert_cdragon_path(augment.getv("AugmentLargeIconPath")),
                 "rarity": augment.getv("rarity", 0),
                 "dataValues": augment_datavalues,
                 "calculations": augment_calculations,
