@@ -821,7 +821,7 @@ class AtlasInfoConverter(FileConverter):
                 atlas_info[texture_path] = {"atlasPath": atlas_paths[atlas_index], "startX": startX, "startY": startY, "endX": endX, "endY": endY}
         else:
             # before patch 16.17, everything is a string
-            atlas_count = struct.unpack("<L", maybe_magic)
+            atlas_count, = struct.unpack("<L", maybe_magic)
             atlas_paths = [convert_cdragon_path(parser.unpack_string()) for _ in range(atlas_count)]
 
             texture_count, = parser.unpack("<L")
