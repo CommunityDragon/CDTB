@@ -775,16 +775,27 @@ class GameHashGuesser(HashGuesser):
             "data/characters/{c}/hud/{c}_circle.dds",
             "data/characters/{c}/hud/{c}_square.dds",
             "assets/characters/{c}/hud/{c}_circle.dds",
+            "assets/characters/{c}/hud/{c}_circle.tex",
+            "assets/characters/{c}/hud/{c}_circle_classic.tex",
             "assets/characters/{c}/hud/{c}_square.dds",
+            "assets/characters/{c}/hud/{c}_square.tex",
+            "assets/characters/{c}/hud/{c}_square_301.tex",
+            "assets/characters/{c}/skins/base/{c}_base_tx_cm.tex",
+            "assets/characters/{c}/skins/base/{c}loadscreen.tex",
             "characters/{c}"
         ]
 
         logger.debug(f"guess characters files: {len(chars)} characters")
         for c in progress_iterator(sorted(chars)):
             self.check_iter(s.format(c=c) for s in formats)
-            nskins = 500 if c == 'sightward' else 200
+            nskins = 400 # jade skins have 3xx skins, sightward has many hundreds, so just use 400 for all
             self.check_iter(f"data/characters/{c}/skins/skin{i}.bin" for i in range(nskins))
             self.check_iter(f"data/characters/{c}/animations/skin{i}.bin" for i in range(nskins))
+            self.check_iter(f"assets/characters/{c}/hud/{c}_circle_{i}.tex" for i in range(nskins))
+            self.check_iter(f"assets/characters/{c}/hud/icons2d/{c}_{char}{n}{ext}.dds" for char in ["", "p", "q", "w", "e", "r"] for n in ["", "1", "2", "3", "4"] for ext in ["", "_passive"])
+            self.check_iter(f"assets/characters/{c}/skins/skin{i:02}/{c}loadscreen_{i}.tex" for i in range(nskins))
+            self.check_iter(f"assets/characters/{c}/skins/skin{i:02}/{c}loadscreen_{i}_le.tex" for i in range(nskins))
+            self.check_iter(f"assets/characters/{c}/skins/skin{i:02}/{c}_skin{i:02}_tx_cm.tex" for i in range(nskins))
             if c.startswith('pet'):
                 self.check_iter(f"data/characters/{c}/tiers/tier{i}.bin" for i in range(10))
 
