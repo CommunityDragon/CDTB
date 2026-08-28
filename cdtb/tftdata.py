@@ -263,7 +263,10 @@ class TftTransformer:
                 continue
 
             tft_bin = BinFile(self_path)
-            record = next((x for x in tft_bin.entries if x.type == "TFTCharacterRecord"), {})
+            record = next((x for x in tft_bin.entries if x.type == "TFTCharacterRecord"), None)
+            if record is None:
+                continue
+
             if "spells" in record:
                 spell_ref = next((s for s in record.getv("spells") if s.h != 0), None)
                 spell_match = lambda entry, sr=spell_ref: entry.path == sr
@@ -271,8 +274,6 @@ class TftTransformer:
                 spell_name = record.getv("spellNames")[0]
                 spell_name = spell_name.rsplit("/", 1)[-1].lower()
                 spell_match = lambda entry, sn=spell_name: entry.getv("mScriptName", "").lower() == sn
-            else:
-                continue
 
             champ_traits = []  # trait paths, as hashes
             for trait in record.getv("mLinkedTraits", []):
