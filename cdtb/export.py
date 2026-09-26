@@ -747,7 +747,7 @@ class BinEntryConverter(FileConverter):
         raw_entry = fin.read()
         entry_length, = struct.unpack('<L', raw_entry[4:8])
         bin_data = b'PROP\3\0\0\0\0\0\0\0\1\0\0\0' + raw_entry[0:4] + struct.pack('<L', entry_length + 4) + b'\0\0\0\0' + raw_entry[8:]
-        with write_file_or_remove(output_path + '.json') as fout:
+        with write_file_or_remove(output_path + '.json', False) as fout:
             try:
                 binfile = BinFile(BytesIO(bin_data), btype_version=self.btype_version)
             except ValueError as e:
