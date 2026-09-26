@@ -409,6 +409,7 @@ class CdragonRawPatchExporter:
             ImageConverter(('.dds', '.tga')),
             TexConverter(),
             AtlasInfoConverter(re.compile(r'game/.*\.cdtb$|game/assets/items/icons2d/autoatlas/.*/atlas_info\.bin$')),
+            BinEntryConverter(game_version),
             BinConverter(re.compile(r'game/.*\.bin$'), game_version),
             SknConverter(),
             RstConverter(re.compile(r'game/(?:.*/)?data/menu/.*\.(txt|stringtable)$'), game_version),
@@ -728,6 +729,30 @@ class BinConverter(FileConverter):
             except ValueError as e:
                 raise FileConversionError(f"failed to parse bin file: {e}")
             fout.write(json_dumps(binfile.to_serializable()).encode('ascii'))
+
+class BinEntryConverter(FileConverter):
+    """Like BinConverter, but for bins consisting of a single entry without header"""
+
+    def __init__(self, btype_version=None):
+        self.btype_version = btype_version
+
+    def is_handled(self, path):
+        return path == "game/ux/tftactivesets.bin"
+
+    def converted_paths(self, path):
+        yield path + '.json'
+
+    def convert(self, fin, output, path):
+        output_path = os.path.join(output, path)
+        raw_entry = fin.read()
+        entry_length, = struct.unpack('<L', raw_entry[4:8])
+        bin_data = b'PROP\3\0\0\0\0\0\0\0\1\0\0\0' + raw_entry[0:4] + struct.pack('<L', entry_length + 4) + b'\0\0\0\0' + raw_entry[8:]
+        with write_file_or_remove(output_path + '.json') as fout:
+            try:
+                binfile = BinFile(BytesIO(bin_data), btype_version=self.btype_version)
+            except ValueError as e:
+                raise FileConversionError(f"failed to parse bin file: {e}")
+            json_dump(binfile.to_serializable(), fout, ensure_ascii=False)
 
 class SknConverter(FileConverter):
     def __init__(self):
