@@ -103,6 +103,7 @@ def command_fetch_hashes(parser, args):
         'hashes.binentries.txt',
         'hashes.binfields.txt',
         'hashes.binhashes.txt',
+        'hashes.binhashes.xxh3.txt',
         'hashes.bintypes.txt',
         'hashes.game.txt',
         'hashes.lcu.txt',
