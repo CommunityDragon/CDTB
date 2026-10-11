@@ -90,7 +90,7 @@ class BinHashValue64(BinHashBase):
 
     @classmethod
     def compute_hash(cls, s):
-        return xxh3_64_intdigest(s)
+        return xxh3_64_intdigest(s.lower())
 
     def hex(self):
         return f"{self.h:016x}"
