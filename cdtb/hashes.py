@@ -755,6 +755,7 @@ class GameHashGuesser(HashGuesser):
             prefix, ext = m.groups()
             if ext in ('png', 'jpg'):
                 self.check(f"{prefix}.dds")
+                self.check(f"{prefix}.tex")
             else:
                 self.check(f"{prefix}.{ext}")
 
