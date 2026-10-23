@@ -849,6 +849,8 @@ class GameHashGuesser(HashGuesser):
                         elif path.startswith('maps/mapgeometry/'):
                             self.check(f"data/{path}.mapgeo")
                             self.check(f"data/{path}.materials.bin")
+                            self.check(f"data/{path}.navregions")
+                            self.check(f"data/{path}.navsdfinfo")
                         elif any(path.startswith(prefix) for prefix in ['clientstates', 'patching', 'loadouts', 'maps']):
                             self.check(path)
                             self.check(path.rsplit('/', 1)[0])

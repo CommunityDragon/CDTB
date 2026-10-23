@@ -70,6 +70,10 @@ class WadFileHeader:
         (b'\0asm', 'wasm'),
         (b'UnityFS', 'bundle'),
         (b'UnityWebData1.0', 'data'),
+        (b'NVRG', 'navregions'),
+        (b'NSDI', 'navsdfinfo'),
+        (b'GMSH', 'gmesh'),
+        # (b'TMSH', 'tmesh'),
     ]
 
     def __init__(self, path_hash, offset, compressed_size, size, type, duplicate=None, first_subchunk_index=None, sha256=None):
